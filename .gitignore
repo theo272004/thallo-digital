@@ -1,0 +1,11 @@
+# Tool prototype — contains secrets (.env with API keys), node_modules,
+# and the leads database. NEVER publish this to GitHub Pages.
+brand-seo-snapshot-prototype/
+
+# Local Claude Code dev config (launch.json, etc.)
+.claude/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.log
