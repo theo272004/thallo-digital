@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agendar Llamada Estratégica | Thallo Digital</title>
+  <meta name="description" content="Agenda una llamada estratégica gratuita para analizar la visibilidad de tu marca B2B en buscadores tradicionales y de inteligencia artificial.">
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+
+    <!-- HEADER -->
+  <header id="main-header">
+    <div class="container header-container">
+      <a href="./index.html" class="logo" id="header-logo">
+        <svg viewBox="0 0 100 100" style="width: 28px; height: 28px; fill: #f47a3a; flex-shrink: 0;">
+          <g transform="translate(50,50)">
+            <path d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" />
+            <path d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" transform="rotate(72)" />
+            <path d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" transform="rotate(144)" />
+            <path d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" transform="rotate(216)" />
+            <path d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" transform="rotate(288)" />
+          </g>
+        </svg>
+        thallo <span>digital</span>
+      </a>
+      <button class="burger" id="mobile-menu-btn" aria-label="Abrir menú" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <nav id="main-nav">
+        <ul>
+          <li><a href="./index.html#approach-section" id="nav-approach">Approach</a></li>
+          <li><a href="./services.html" id="nav-services">Services</a></li>
+          <li><a href="./resultados.html" id="nav-results">Case Studies</a></li>
+          <li><a href="./recursos.html" id="nav-resources">Insights</a></li>
+          <li><a href="./nosotros.html" id="nav-about">About</a></li>
+          <li><a href="./contacto.html" class="active-accent nav-cta" id="nav-contact">Book a Strategy Call &rarr;</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- CONTACT HERO -->
+    <section class="section section-large reveal fade-in" id="contact-hero">
+      <div class="container">
+        <div style="max-width: 600px; margin: 0 auto; text-align: center;">
+          <span class="tagline">Calificación & Agenda</span>
+          <h1 id="contact-title">Hablemos</h1>
+          <p style="font-size: 1.15rem;" id="contact-intro">
+            Queremos entender tu producto y mercado. Si cumples con nuestro perfil de cliente ideal, agendaremos una auditoría de visibilidad en IA sin costo.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT FORM SECTION -->
+    <section class="section reveal" style="padding-top: 0;" id="contact-form-section">
+      <div class="container">
+        <div class="grid-2">
+          
+          <!-- Trust Column / Benefits -->
+          <div style="display: flex; flex-direction: column; justify-content: center;" id="contact-trust-col">
+            <span class="tagline">¿Qué puedes esperar?</span>
+            <h2 style="font-size: 2rem;">Desbloquea tu cuota de voz en la IA</h2>
+            <p style="margin-bottom: 2rem;">
+              Analizaremos la huella digital de tu marca antes de la reunión. Hablarás directamente con un socio estratega para evaluar tus datos, sin discursos de ventas agresivos.
+            </p>
+            
+            <div style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 2rem; border-radius: 8px; margin-bottom: 2rem;" id="value-promise-card">
+              <h4 style="font-family: var(--font-sans); font-weight: 700; font-size: 1.05rem; color: var(--accent); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                Nuestra Promesa de Valor:
+              </h4>
+              <p style="font-size: 0.95rem; color: var(--text-primary);">
+                Te enviaremos una **Mini-Auditoría en PDF** de la presencia de tu marca en ChatGPT y Perplexity 2 horas antes de nuestra llamada, lista para que la revises con tu equipo.
+              </p>
+            </div>
+            
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.75rem; color: var(--text-secondary); font-size: 0.95rem;">
+              <li style="position: relative; padding-left: 1.5rem;"><span style="color: var(--accent); position: absolute; left: 0;">✓</span> Cero SPAM. Tu información es privada.</li>
+              <li style="position: relative; padding-left: 1.5rem;"><span style="color: var(--accent); position: absolute; left: 0;">✓</span> Calificación inmediata tras el envío.</li>
+              <li style="position: relative; padding-left: 1.5rem;"><span style="color: var(--accent); position: absolute; left: 0;">✓</span> Propuesta estratégica a la medida si calificas.</li>
+            </ul>
+          </div>
+
+          <!-- Form Column -->
+          <div class="contact-container" id="contact-box" style="margin: 0; width: 100%;">
+            <form id="qualify-form" onsubmit="event.preventDefault(); handleFormSubmit();">
+              
+              <div class="form-group">
+                <label for="name">Nombre Completo</label>
+                <input type="text" id="name" required placeholder="Ej. Nicolas Gomez">
+              </div>
+
+              <div class="form-group">
+                <label for="email">Correo Corporativo</label>
+                <input type="email" id="email" required placeholder="nicolas@empresa.com">
+              </div>
+
+              <div class="form-group">
+                <label for="website">Sitio Web de la Empresa</label>
+                <input type="url" id="website" required placeholder="https://empresa.com">
+              </div>
+
+              <div class="form-group">
+                <label for="arr">Facturación Anual (ARR)</label>
+                <select id="arr" required>
+                  <option value="" disabled selected>Selecciona tu rango de ingresos...</option>
+                  <option value="less">&lt; $1M USD/año</option>
+                  <option value="ideal">$1M - $2M USD/año (Perfil Ideal)</option>
+                  <option value="more">&gt; $2M USD/año</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="challenge">Mayor desafío de visibilidad</label>
+                <select id="challenge" required>
+                  <option value="" disabled selected>Selecciona tu mayor dolor...</option>
+                  <option value="invisibilidad">Invisibilidad: Solo nos encuentran por marca</option>
+                  <option value="commodity">Contenido Genérico: Publicamos sin resultados</option>
+                  <option value="no-system">Sin Sistema: No tenemos estrategia de SEO/GEO consistente</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; border-radius: 99px;" id="submit-btn">
+                Enviar &amp; Calificar
+              </button>
+
+            </form>
+
+            <!-- CALENDAR SIMULATION (SUCCESS STATE) -->
+            <div id="calendar-sim" style="display: none; background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 2.5rem; border-radius: 8px; text-align: center; animation: fadeIn 0.5s ease forwards;">
+              <div style="font-size: 2.5rem; color: var(--accent); margin-bottom: 1rem;">✓</div>
+              <h3 style="margin-bottom: 1rem;">Perfil Pre-Calificado</h3>
+              <p style="margin-bottom: 2rem; font-size: 0.95rem; color: var(--text-secondary);">
+                Gracias por tu información. Tu empresa califica para nuestra sesión estratégica. Por favor, selecciona un espacio disponible en nuestro calendario de socios.
+              </p>
+              
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.5rem;" id="time-slots-container">
+                <button class="btn btn-secondary slot-btn" onclick="confirmBooking('Lunes 10:00 AM')" id="slot-1" style="padding: 0.75rem 0.5rem; font-size: 0.8rem; border-radius: 8px;">Lunes 10:00 AM</button>
+                <button class="btn btn-secondary slot-btn" onclick="confirmBooking('Martes 2:00 PM')" id="slot-2" style="padding: 0.75rem 0.5rem; font-size: 0.8rem; border-radius: 8px;">Martes 2:00 PM</button>
+                <button class="btn btn-secondary slot-btn" onclick="confirmBooking('Miércoles 4:00 PM')" id="slot-3" style="padding: 0.75rem 0.5rem; font-size: 0.8rem; border-radius: 8px;">Miércoles 4:00 PM</button>
+              </div>
+            </div>
+
+            <div id="booking-success" style="display: none; text-align: center; background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 2.5rem; border-radius: 8px;">
+              <div style="font-size: 2.5rem; color: var(--accent); margin-bottom: 1rem;">📅</div>
+              <h3>Llamada Confirmada</h3>
+              <p style="margin-top: 1rem; color: var(--text-secondary);" id="booking-details"></p>
+              <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 2rem;">
+                Recibirás una invitación de Google Meet en tu bandeja de entrada en los próximos minutos.
+              </p>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+  </main>
+
+    <!-- FOOTER -->
+  <footer id="main-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand" id="footer-brand-section">
+          <a href="./index.html" class="logo">
+            <svg viewBox="0 0 100 100" style="width: 24px; height: 24px; fill: #f47a3a; flex-shrink: 0;">
+              <g transform="translate(50,50)">
+                <path d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" />
+                <path d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" transform="rotate(72)" />
+                <path d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" transform="rotate(144)" />
+                <path d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" transform="rotate(216)" />
+                <path d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" transform="rotate(288)" />
+              </g>
+            </svg>
+            thallo <span>digital</span>
+          </a>
+          <p>
+            Agencia B2B de autoridad y visibilidad. Convertimos empresas en la referencia de su categoría.
+          </p>
+        </div>
+        <div class="footer-links" id="footer-services-links">
+          <h4>Servicios</h4>
+          <ul>
+            <li><a href="./services/authority-content.html">Contenido de Autoridad</a></li>
+            <li><a href="./services/ai-visibility.html">Visibilidad en IA & Búsqueda</a></li>
+            <li><a href="./services/distribution.html">Distribución B2B</a></li>
+          </ul>
+        </div>
+        <div class="footer-links" id="footer-company-links">
+          <h4>Compañía</h4>
+          <ul>
+            <li><a href="./nosotros.html">Filosofía</a></li>
+            <li><a href="./resultados.html">Resultados</a></li>
+            <li><a href="./recursos.html">Recursos / Blog</a></li>
+            <li><a href="./contacto.html">Contacto</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Thallo Digital. Todos los derechos reservados.</p>
+        <p>Optimizado para Google, Perplexity y ChatGPT.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./js/main.js"></script>
+  
+  <!-- Form script integration -->
+  <script>
+    function handleFormSubmit() {
+      document.getElementById('qualify-form').style.display = 'none';
+      document.getElementById('calendar-sim').style.display = 'block';
+    }
+
+    function confirmBooking(time) {
+      document.getElementById('calendar-sim').style.display = 'none';
+      const successBox = document.getElementById('booking-success');
+      successBox.style.display = 'block';
+      document.getElementById('booking-details').innerHTML = `Tu auditoría estratégica está agendada para: <strong style="color: var(--accent);">${time} (Zona Horaria Local)</strong>.`;
+    }
+  </script>
+</body>
+</html>
