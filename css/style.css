@@ -4,20 +4,20 @@
    DESIGN SYSTEM & VARIABLES - THALLO ORANGE & WHITE EDITION
    ========================================================================== */
 :root {
-  --bg-primary: #ffffff;      /* Pure White */
-  --bg-secondary: #f5f5f5;    /* Nieve / Light Gray */
-  --bg-tertiary: #e8e8e8;     /* Soft Grey */
+  --bg-primary: #f3efe6;      /* Pure White */
+  --bg-secondary: #eae4d7;    /* Nieve / Light Gray */
+  --bg-tertiary: #ddd5c4;     /* Soft Grey */
   
-  --text-primary: #111111;    /* Carbon Black */
-  --text-secondary: #555555;  /* Slate / Charcoal */
-  --text-muted: #888888;      /* Grey Muted */
+  --text-primary: #1c2620;    /* Carbon Black */
+  --text-secondary: #50554a;  /* Slate / Charcoal */
+  --text-muted: #6b6f64;      /* Grey Muted */
   
-  --accent: #f47a3a;          /* Thallo Orange */
-  --accent-hover: #e06522;
-  --accent-transparent: rgba(244, 122, 58, 0.06);
-  --accent-border: rgba(244, 122, 58, 0.15);
+  --accent: #2f5641;          /* Thallo Orange */
+  --accent-hover: #1f3d2f;
+  --accent-transparent: rgba(47, 86, 65, 0.06);
+  --accent-border: rgba(47, 86, 65, 0.15);
   
-  --border-color: #e8e8e8;    /* Thin Light Border */
+  --border-color: #d9d1c0;    /* Thin Light Border */
   --border-light: rgba(0, 0, 0, 0.05);
   
   --font-serif: 'Fraunces', Georgia, serif;
@@ -439,10 +439,10 @@ nav a.active-accent {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle, #f47a3a 35%, #e06522 100%);
+  background: radial-gradient(circle, #2f5641 35%, #1f3d2f 100%);
   transform: translate(60px, -20px);
   z-index: 1;
-  box-shadow: 0 12px 40px rgba(244, 122, 58, 0.2);
+  box-shadow: 0 12px 40px rgba(47, 86, 65, 0.2);
   overflow: hidden;
 }
 
@@ -738,7 +738,7 @@ nav a.active-accent {
   align-items: center;
   justify-content: center;
   z-index: 10;
-  box-shadow: 0 4px 20px rgba(244, 122, 58, 0.15);
+  box-shadow: 0 4px 20px rgba(47, 86, 65, 0.15);
 }
 
 .flywheel-outer-ring {
@@ -939,7 +939,7 @@ nav a.active-accent {
   padding: 0.75rem 1.25rem;
   border-radius: 18px 18px 2px 18px;
   font-size: 0.95rem;
-  box-shadow: 0 2px 8px rgba(244, 122, 58, 0.15);
+  box-shadow: 0 2px 8px rgba(47, 86, 65, 0.15);
 }
 
 .sim-prompt span.user-label {
@@ -1141,7 +1141,7 @@ nav a.active-accent {
 .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
   border-color: var(--accent);
   background-color: #ffffff;
-  box-shadow: 0 0 0 4px rgba(244, 122, 58, 0.15);
+  box-shadow: 0 0 0 4px rgba(47, 86, 65, 0.15);
 }
 
 /* ==========================================================================

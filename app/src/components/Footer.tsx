@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="footer-grid">
           <div className="footer-brand" id="footer-brand-section">
             <Link to="/" className="logo" style={{ marginBottom: '1rem' }}>
-              <svg viewBox="0 0 100 100" style={{ width: 26, height: 26, fill: '#f47a3a', flexShrink: 0 }}>
+              <svg viewBox="0 0 100 100" style={{ width: 26, height: 26, fill: '#2f5641', flexShrink: 0 }}>
                 <g transform="translate(50,50)">
                   {PETALS.map((r) => (
                     <path key={r} d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" transform={`rotate(${r})`} />

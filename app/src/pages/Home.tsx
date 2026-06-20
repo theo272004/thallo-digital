@@ -86,7 +86,7 @@ export default function Home() {
             </div>
 
             <div className="authority-earned-badge">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#f47a3a" strokeWidth="2" style={{ flexShrink: 0 }}>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#2f5641" strokeWidth="2" style={{ flexShrink: 0 }}>
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
               </svg>
               <span>Authority isn't claimed. It's earned.</span>

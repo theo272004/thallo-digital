@@ -11,7 +11,7 @@ export default function Header() {
     <header id="main-header">
       <div className="container header-container">
         <Link to="/" className="logo" id="header-logo" onClick={close}>
-          <svg viewBox="0 0 100 100" style={{ width: 28, height: 28, fill: '#f47a3a', flexShrink: 0 }}>
+          <svg viewBox="0 0 100 100" style={{ width: 28, height: 28, fill: '#2f5641', flexShrink: 0 }}>
             <g transform="translate(50,50)">
               {PETALS.map((r) => (
                 <path key={r} d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" transform={`rotate(${r})`} />
