@@ -5,6 +5,10 @@ brand-seo-snapshot-prototype/
 # Local Claude Code dev config (launch.json, etc.)
 .claude/
 
+# Node / React app build artifacts
+node_modules/
+app/dist/
+
 # OS / editor cruft
 .DS_Store
 Thumbs.db
