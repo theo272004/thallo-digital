@@ -3,7 +3,11 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
-import Placeholder from './pages/Placeholder';
+import Services from './pages/Services';
+import Results from './pages/Results';
+import Insights from './pages/Insights';
+import About from './pages/About';
+import Contact from './pages/Contact';
 import ThalloAI from './pages/ThalloAI';
 import { useScrollReveal } from './hooks/useScrollReveal';
 
@@ -29,11 +33,11 @@ export default function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/services" element={<Placeholder tagline="Servicios B2B" title="Nuestros Servicios" blurb="Contenido de autoridad original, visibilidad en búsqueda e IA (SEO + GEO + AEO), y distribución B2B estratégica." />} />
-          <Route path="/results" element={<Placeholder tagline="Resultados" title="Resultados reales" blurb="Casos de éxito B2B con atribución financiera directa al pipeline." />} />
-          <Route path="/insights" element={<Placeholder tagline="Recursos" title="Ideas de Autoridad" blurb="Guías sobre GEO, AEO y cómo construir autoridad citable en la era de la IA." />} />
-          <Route path="/about" element={<Placeholder tagline="Filosofía" title="Nuestra Filosofía" blurb="Consultora boutique especializada en autoridad y visibilidad B2B." />} />
-          <Route path="/contact" element={<Placeholder tagline="Contacto" title="Hablemos" blurb="Agenda una auditoría de visibilidad en IA sin costo." />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/results" element={<Results />} />
+          <Route path="/insights" element={<Insights />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/thallo-ai" element={<ThalloAI />} />
           <Route path="*" element={<Home />} />
         </Routes>
