@@ -107,7 +107,7 @@ export default function Hero() {
       {/* Subtle background grids */}
       <BackgroundGrid />
 
-      <div className="wrap grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 w-full">
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 w-full">
         {/* Left Column - Taglines and value grids */}
         <HeroText />
 
