@@ -1,78 +1,111 @@
 import React from 'react';
+import Eyebrow from '@/components/ui/Eyebrow';
+import { SplitReveal } from '@/components/motion';
 
 export default function Services() {
   const list = [
     {
       idx: '01',
-      title: 'Authority Content',
-      desc: 'We engineer original expert research, technical papers, and industry-defining insights that AI models scrape and reference as trusted sources.',
+      kicker: 'Entry',
+      title: 'AI Visibility Audit',
+      desc: 'See exactly where you show up when buyers ask AI — and where the gaps are.',
       items: [
-        'Proprietary Industry Surveys',
-        'Expert Interview Series',
-        'Technical Whitepapers',
-        'Crawlable SEO Infrastructure'
+        'Visibility benchmark vs. competitors',
+        'Share-of-answer assessment',
+        'Technical readiness review',
+        'Prioritized roadmap',
       ],
-      price: 'Retainers from $3,500/mo'
+      price: 'From $800 · one-time · 2–3 weeks',
+      featured: false,
     },
     {
       idx: '02',
-      title: 'AI Visibility (GEO)',
-      desc: 'We optimize your entire digital footprint for Generative Engine Optimization (GEO). We ensure LLMs like ChatGPT, Claude, and Gemini cite you first.',
+      kicker: 'Core',
+      title: 'The Authority Engine',
+      desc: 'Our monthly program that builds, publishes, and compounds authority across search and AI.',
       items: [
-        'Citation & Reference Architecture',
-        'Brand Association Mapping',
-        'Model Response Fine-Tuning',
-        'Competitive LLM Benchmark Audits'
+        'Deeply researched original content',
+        'Site built to be read & cited',
+        'Distribution where buyers research',
+        'Monthly reporting on business outcomes',
       ],
-      price: 'Retainers from $4,000/mo'
+      price: 'From $2,500 / month · 6-month term',
+      featured: true,
     },
     {
       idx: '03',
-      title: 'Distribution',
-      desc: 'We place your insights directly into the circles your buyers trust. We build authority that secures citations in newsletters and premium hubs.',
+      kicker: 'Accelerate',
+      title: 'Flagship Projects',
+      desc: 'High-value assets that earn citations and put you on the map — on your terms.',
       items: [
-        'Strategic PR & Newsletters Placement',
-        'Industry Consensus Contribution',
-        'Key Opinion Leader Co-citation',
-        'Digital Distribution Networks'
+        'Proprietary data studies',
+        'Digital PR & podcasts',
+        'Interactive tools & calculators',
+        'Industry reports',
       ],
-      price: 'Retainers from $3,000/mo'
-    }
+      price: 'From $600 · priced by scope',
+      featured: false,
+    },
   ];
 
   return (
-    <section className="bg-white py-24 border-b border-gray-100" id="services">
+    <section className="bg-white py-28 border-b border-gray-100" id="services">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="max-w-3xl mb-16">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#55672E]"></span>
-            <span className="text-[10px] font-bold tracking-[0.12em] uppercase text-gray-500">Our Solutions</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-medium tracking-tight text-gray-900 mb-6 font-sans">
-            Convert visibility into B2B authority.
-          </h2>
-          <p className="text-gray-500 font-medium text-[15px] leading-relaxed max-w-[50ch]">
-            We help your brand transition from standard keyword rankings to becoming the primary citation in AI answers and enterprise research.
+        <div className="max-w-2xl mb-16">
+          <Eyebrow className="mb-5">Services</Eyebrow>
+          <SplitReveal
+            as="h2"
+            className="text-4xl sm:text-5xl font-medium tracking-tight text-gray-900 mb-6 font-sans leading-[1.05]"
+            html="One engine, built to make you the reference."
+          />
+          <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch]">
+            A low-risk way in, a compounding core program, and premium projects when you&rsquo;re ready to accelerate.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
           {list.map((svc) => (
-            <div className="p-8 bg-gray-50/50 border border-gray-100 rounded-3xl flex flex-col justify-between" key={svc.idx}>
+            <div
+              key={svc.idx}
+              data-reveal
+              className={`p-8 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
+                svc.featured
+                  ? 'bg-[#39471D] border border-[#39471D] shadow-[0_30px_70px_-30px_rgba(57,71,29,0.6)]'
+                  : 'bg-gray-50/60 border border-gray-100 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-30px_rgba(57,71,29,0.25)]'
+              }`}
+            >
               <div>
-                <span className="text-[9px] font-bold text-gray-400 block tracking-widest mb-4">
-                  {svc.idx} / SOLUTIONS
-                </span>
-                <h3 className="text-lg font-bold text-gray-900 mb-3">{svc.title}</h3>
-                <p className="text-xs text-gray-500 leading-relaxed font-medium mb-6">{svc.desc}</p>
-                <ul className="card-bullet-list">
-                  {svc.items.map((item, idx) => (
-                    <li key={idx} className="font-semibold text-gray-800">{item}</li>
+                <div className="flex items-center justify-between mb-6">
+                  <span className={`font-mono text-[10px] font-bold tracking-[0.18em] uppercase ${svc.featured ? 'text-[#DFFF3B]' : 'text-gray-400'}`}>
+                    {svc.idx} / {svc.kicker}
+                  </span>
+                  {svc.featured && (
+                    <span className="font-mono text-[9px] font-bold tracking-widest uppercase text-[#39471D] bg-[#DFFF3B] px-2 py-1 rounded-md">
+                      Most chosen
+                    </span>
+                  )}
+                </div>
+                <h3 className={`text-2xl font-semibold mb-3 ${svc.featured ? 'text-white' : 'text-gray-900'}`}>
+                  {svc.title}
+                </h3>
+                <p className={`text-sm leading-relaxed font-medium mb-7 ${svc.featured ? 'text-[#CBD0AC]' : 'text-gray-500'}`}>
+                  {svc.desc}
+                </p>
+                <ul className="flex flex-col gap-3">
+                  {svc.items.map((item, i) => (
+                    <li key={i} className={`flex items-start gap-2.5 text-sm font-medium ${svc.featured ? 'text-gray-100' : 'text-gray-700'}`}>
+                      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke={svc.featured ? '#DFFF3B' : '#55672E'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 flex-shrink-0">
+                        <path d="M20 6 9 17l-5-5" />
+                      </svg>
+                      {item}
+                    </li>
                   ))}
                 </ul>
               </div>
-              <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#39471D]">{svc.price}</span>
+              <div className={`mt-8 pt-6 border-t ${svc.featured ? 'border-white/15' : 'border-gray-200/70'}`}>
+                <span className={`font-mono text-[12px] font-bold ${svc.featured ? 'text-[#DFFF3B]' : 'text-[#39471D]'}`}>
+                  {svc.price}
+                </span>
               </div>
             </div>
           ))}

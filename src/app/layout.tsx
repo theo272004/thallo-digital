@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Instrument_Serif, Space_Mono } from "next/font/google";
 import "./globals.css";
+import SmoothScrollProvider from "@/components/motion/SmoothScrollProvider";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -39,7 +40,9 @@ export default function RootLayout({
       className={`${inter.variable} ${instrumentSerif.variable} ${spaceMono.variable} h-full antialiased`}
       style={{ scrollBehavior: 'smooth' }}
     >
-      <body className="min-h-full flex flex-col font-sans bg-white text-gray-900">{children}</body>
+      <body className="min-h-full flex flex-col font-sans bg-white text-gray-900">
+        <SmoothScrollProvider>{children}</SmoothScrollProvider>
+      </body>
     </html>
   );
 }

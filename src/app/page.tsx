@@ -15,9 +15,14 @@ import BlogSection from '@/components/BlogSection';
 import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
 import ThalloAIPage from '@/components/ThalloAIPage';
+import Industries from '@/components/Industries';
+import { useRevealBatch } from '@/components/motion';
 
 export default function Home() {
   const [view, setView] = useState('home'); // 'home' or 'ai-tool'
+
+  // Staggered fade+rise for every [data-reveal] element; re-scans on view swap.
+  useRevealBatch(view);
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -32,6 +37,7 @@ export default function Home() {
             <TheProblem />
             <Services />
             <HowItWorks />
+            <Industries />
             <ResultsDashboard />
             <Testimonials />
             <VideoSection />

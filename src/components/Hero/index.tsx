@@ -6,7 +6,7 @@ import HeroText from './HeroText';
 import HeroPhone from './HeroPhone';
 import FloatingCards from './FloatingCards';
 import ConnectionLines from './ConnectionLines';
-import { initHeroAnimations, playFloatingLoop } from './HeroAnimations';
+import { initHeroAnimations } from './HeroAnimations';
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -88,11 +88,8 @@ export default function Hero() {
     // Get all floating card elements currently in view
     const cardElements = Array.from(container.querySelectorAll('.floating-card-wrapper')) as HTMLElement[];
 
-    // Initialize ScrollTrigger coordinates
+    // Initialize the gentle scroll parallax (single transform source, no jitter)
     initHeroAnimations(container, phoneEl, cardElements);
-
-    // Start slow yoyo float animation
-    playFloatingLoop(phoneEl);
   }, []);
 
   function delay(ms: number) {
@@ -112,15 +109,15 @@ export default function Hero() {
         <HeroText />
 
         {/* Right Column - iPhone Visual Stack and Floating Cards */}
-        <div className="relative w-full max-w-[700px] h-[520px] mx-auto flex items-center justify-center">
-          {/* SVG Connector Lines */}
-          <ConnectionLines step={step} />
-
-          {/* Floating Cards Depth Layer */}
-          <FloatingCards step={step} />
+        <div className="relative w-full max-w-[700px] h-[400px] lg:h-[520px] mx-auto flex items-center justify-center">
+          {/* Connector lines + source cards — desktop only (they'd overlap on mobile) */}
+          <div className="hidden lg:block">
+            <ConnectionLines step={step} />
+            <FloatingCards step={step} />
+          </div>
 
           {/* Emergent Premium Phone Mockup */}
-          <div ref={phoneRef} className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[300px] z-10">
+          <div ref={phoneRef} className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[270px] sm:w-[300px] z-10">
             <HeroPhone query={query} step={step} answer={answer} />
           </div>
         </div>

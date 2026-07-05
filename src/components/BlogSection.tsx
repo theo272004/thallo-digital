@@ -1,4 +1,6 @@
 import React from 'react';
+import Eyebrow from '@/components/ui/Eyebrow';
+import { SplitReveal } from '@/components/motion';
 
 export default function BlogSection() {
   const posts = [
@@ -26,21 +28,20 @@ export default function BlogSection() {
     <section className="bg-white py-24 border-b border-gray-100" id="blog">
       <div className="max-w-7xl mx-auto px-6">
         <div className="max-w-3xl mb-16">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#55672E]"></span>
-            <span className="text-[10px] font-bold tracking-[0.12em] uppercase text-gray-500">Insights</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-medium tracking-tight text-gray-900 mb-6 font-sans">
-            Inside the AI Visibility playbook.
-          </h2>
-          <p className="text-gray-500 font-medium text-[15px] leading-relaxed max-w-[45ch]">
+          <Eyebrow className="mb-5">Insights</Eyebrow>
+          <SplitReveal
+            as="h2"
+            className="text-4xl sm:text-5xl font-medium tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
+            html="Inside the AI visibility playbook."
+          />
+          <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch]">
             Read our latest research and frameworks on GEO, B2B authority building, and content engineering.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {posts.map((post, idx) => (
-            <div className="border border-gray-100 bg-white rounded-3xl overflow-hidden hover:shadow-md transition-shadow duration-300" key={idx}>
+            <div data-reveal className="border border-gray-100 bg-white rounded-3xl overflow-hidden hover:shadow-md transition-shadow duration-300" key={idx}>
               <div className="p-6 bg-gray-50/50 border-b border-gray-50 flex items-center justify-between">
                 <span className="text-[9px] font-bold text-[#39471D] uppercase tracking-wider bg-emerald-50 px-2 py-0.5 rounded-md">
                   {post.tag}

@@ -155,3 +155,11 @@
   color: var(--olive-light);
   font-size: 0.65rem;
 }
+
+/* Shorter phone crop on mobile so the (initially sparse) screen doesn't leave a
+   tall empty gap. `.phone-crop-container` here overrides the Tailwind h-* class. */
+@media (max-width: 639px) {
+  .phone-crop-container {
+    height: 400px;
+  }
+}

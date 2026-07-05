@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import Eyebrow from '@/components/ui/Eyebrow';
+import { SplitReveal } from '@/components/motion';
 
 interface ResultData {
   score: number;
@@ -47,14 +49,13 @@ export default function VisibilityCheck() {
         <div className="bg-gray-50/50 border border-gray-100 rounded-[32px] p-8 sm:p-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Panel: Form */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#55672E]"></span>
-              <span className="text-[10px] font-bold tracking-[0.12em] uppercase text-gray-500">Interactive Diagnosis</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-gray-900 mb-6 font-sans">
-              Check your AI Visibility.
-            </h2>
-            <p className="text-gray-500 font-medium text-xs leading-relaxed max-w-[45ch] mb-8">
+            <Eyebrow className="mb-5">Interactive Diagnosis</Eyebrow>
+            <SplitReveal
+              as="h2"
+              className="text-4xl sm:text-5xl font-medium tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
+              html="Check your AI visibility."
+            />
+            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch] mb-8">
               Enter your B2B brand and category to estimate your current recommendation rate across ChatGPT, Claude, and Google AI Overview.
             </p>
             <form onSubmit={handleCheck} className="flex flex-col gap-4">

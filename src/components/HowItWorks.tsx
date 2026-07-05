@@ -3,6 +3,8 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Eyebrow from '@/components/ui/Eyebrow';
+import { SplitReveal } from '@/components/motion';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -119,14 +121,13 @@ export default function HowItWorks() {
         {/* Right Column: Steps Stepper */}
         <div className="flex flex-col gap-10">
           <div className="mb-6">
-            <div className="flex items-center gap-2 mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#55672E]"></span>
-              <span className="text-[10px] font-bold tracking-[0.12em] uppercase text-gray-500">Our Method</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-medium tracking-tight text-gray-900 mb-6 font-sans">
-              How we build AI visibility.
-            </h2>
-            <p className="text-gray-500 font-medium text-[15px] leading-relaxed max-w-[45ch]">
+            <Eyebrow className="mb-5">Our Method</Eyebrow>
+            <SplitReveal
+              as="h2"
+              className="text-4xl sm:text-5xl font-medium tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
+              html="How we build AI visibility."
+            />
+            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch]">
               A systematic B2B authority building process that converts search queries into revenue-generating recommendations.
             </p>
           </div>

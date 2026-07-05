@@ -3,6 +3,8 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Eyebrow from '@/components/ui/Eyebrow';
+import { SplitReveal } from '@/components/motion';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -47,14 +49,13 @@ export default function TheProblem() {
     <section className="bg-white py-24 border-b border-gray-100" id="shift">
       <div className="max-w-7xl mx-auto px-6">
         <div className="max-w-3xl mb-16">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#55672E]"></span>
-            <span className="text-[10px] font-bold tracking-[0.12em] uppercase text-gray-500">The Shift</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-medium tracking-tight text-gray-900 mb-6 font-sans">
-            Buying now starts with a question typed into a machine.
-          </h2>
-          <p className="text-gray-500 font-medium text-[15px] leading-relaxed max-w-[50ch]">
+          <Eyebrow className="mb-5">The Shift</Eyebrow>
+          <SplitReveal
+            as="h2"
+            className="text-4xl sm:text-5xl font-medium tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
+            html="Buying now starts with a question typed into a machine."
+          />
+          <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[50ch]">
             Search results pages of ten blue links are fading. Conversational AIs formulate recommendations directly. If you aren't recommended there, your brand is invisible.
           </p>
         </div>
