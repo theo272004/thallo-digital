@@ -112,7 +112,7 @@ export default function Hero() {
         <HeroText />
 
         {/* Right Column - iPhone Visual Stack and Floating Cards */}
-        <div className="relative w-full max-w-[500px] h-[520px] mx-auto flex items-center justify-center">
+        <div className="relative w-full max-w-[700px] h-[520px] mx-auto flex items-center justify-center">
           {/* SVG Connector Lines */}
           <ConnectionLines step={step} />
 

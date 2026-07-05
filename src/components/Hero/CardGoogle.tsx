@@ -10,8 +10,8 @@ export default function CardGoogle({ step, parallaxStyle }: CardProps) {
     <div 
       className={`floating-card-wrapper transition-all duration-700 ease-out`}
       style={{
-        left: '10%',
-        top: '12%',
+        left: '0px',
+        top: '10%',
         opacity: step >= 3 ? 1 : 0,
         transform: step >= 3 ? 'scale(1)' : 'scale(0.9)',
         ...parallaxStyle

@@ -10,7 +10,7 @@ export default function CardChatGPT({ step, parallaxStyle }: CardProps) {
     <div 
       className={`floating-card-wrapper transition-all duration-700 ease-out`}
       style={{
-        left: '55%',
+        right: '0px',
         top: '8%',
         opacity: step >= 3 ? 1 : 0,
         transform: step >= 3 ? 'scale(1)' : 'scale(0.9)',

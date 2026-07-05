@@ -12,10 +12,12 @@ export default function HeroText() {
       </div>
 
       {/* Tagline */}
-      <h1 className="hero-tagline font-medium text-gray-900 mb-8 select-none flex flex-col" style={{ fontSize: 'clamp(2.8rem, 5vw, 4.2rem)' }}>
-        <span className="font-sans leading-none">Be the answer</span>
-        <span className="font-serif italic text-[#39471D] leading-none my-0.5">AI</span>
-        <span className="font-sans leading-none">recommends.</span>
+      <h1 className="hero-tagline font-medium text-gray-900 mb-8 select-none" style={{ fontSize: 'clamp(2.8rem, 5vw, 4.2rem)', lineHeight: '1.15' }}>
+        <span className="block font-sans">Be the answer</span>
+        <span className="block">
+          <span className="font-serif italic text-[#39471D] mr-3">AI</span>
+          <span className="font-sans">recommends.</span>
+        </span>
       </h1>
 
       {/* Lede Copywriting */}
