@@ -10,7 +10,7 @@ export default function CardPerplexity({ step, parallaxStyle }: CardProps) {
     <div 
       className={`floating-card-wrapper transition-all duration-700 ease-out`}
       style={{
-        left: '10px',
+        left: '-20px',
         top: '44%',
         opacity: step >= 5 ? 1 : 0,
         transform: step >= 5 ? 'scale(1)' : 'scale(0.9)',

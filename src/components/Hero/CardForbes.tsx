@@ -10,10 +10,10 @@ export default function CardForbes({ step, parallaxStyle }: CardProps) {
     <div 
       className={`floating-card-wrapper transition-all duration-700 ease-out`}
       style={{
-        right: '10px',
+        right: '-20px',
         top: '46%',
-        opacity: step >= 6 ? 1 : 0,
-        transform: step >= 6 ? 'scale(1)' : 'scale(0.9)',
+        opacity: step >= 5 ? 1 : 0,
+        transform: step >= 5 ? 'scale(1)' : 'scale(0.9)',
         ...parallaxStyle
       }}
     >

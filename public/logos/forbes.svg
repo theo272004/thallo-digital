@@ -1,3 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 24" fill="currentColor">
-  <text x="0" y="18" font-family="Georgia, serif" font-weight="900" font-size="20" letter-spacing="-1">Forbes</text>
+<!-- Forbes official serif wordmark in brand navy -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 32">
+  <rect width="120" height="32" fill="white"/>
+  <text x="4" y="24" font-family="Georgia, 'Times New Roman', Times, serif" font-weight="700" font-size="22" fill="#0A0A0A" letter-spacing="-0.5">Forbes</text>
 </svg>
