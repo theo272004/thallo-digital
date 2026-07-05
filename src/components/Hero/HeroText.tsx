@@ -1,4 +1,5 @@
 import React from 'react';
+// Rebuild trigger to resolve transient GitHub Pages OIDC issue
 
 export default function HeroText() {
   return (
