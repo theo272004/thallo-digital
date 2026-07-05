@@ -13,7 +13,7 @@ export default function HeroText() {
         style={{ fontSize: 'clamp(3.1rem, 5.2vw, 5rem)', lineHeight: '1.06' }}
         html={
           '<span class="block font-sans">Be the answer</span>' +
-          '<span class="block mt-1"><span class="font-serif italic text-[#39471D]">AI</span><span class="font-sans"> recommends.</span></span>'
+          '<span class="block mt-2"><span class="inline-block font-serif italic text-[#0c0c0c] bg-[#DFFF3B] px-3 py-0.5 rounded-[14px] mr-1 leading-tight">AI</span><span class="font-sans">recommends.</span></span>'
         }
       />
 

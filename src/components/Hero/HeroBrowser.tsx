@@ -125,8 +125,8 @@ export default function HeroBrowser({ scene }: HeroBrowserProps) {
 function Scene({ active, children }: { active: boolean; children: React.ReactNode }) {
   return (
     <div
-      className={`absolute inset-0 transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
-        active ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3 pointer-events-none'
+      className={`absolute inset-0 transition-all duration-[650ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        active ? 'opacity-100 translate-y-0 blur-0' : 'opacity-0 translate-y-2 blur-[1px] pointer-events-none'
       }`}
     >
       {children}
