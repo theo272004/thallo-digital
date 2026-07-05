@@ -82,40 +82,37 @@ export default function HowItWorks() {
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         
         {/* Left Column: Organic SVG Growth Stem */}
-        <div className="flex justify-center items-center h-[380px]">
-          <svg viewBox="0 0 200 400" className="w-full max-w-[220px] h-full" style={{ overflow: 'visible' }}>
+        <div className="flex justify-center items-center h-[460px]">
+          <svg viewBox="0 0 200 500" className="w-full max-w-[220px] h-full" style={{ overflow: 'visible' }}>
             <path 
               ref={stemRef}
               className="stem fill-none stroke-gray-200" 
               strokeWidth="2.5"
               strokeLinecap="round"
-              d="M 100,380 C 100,300 100,200 100,50 M 100,300 C 60,260 40,240 40,220 M 100,200 C 140,160 160,140 160,120 M 100,100 C 70,70 50,50 50,40"
+              d="M 100,470 C 100,350 100,200 100,30 M 100,370 C 65,330 40,300 30,260 M 100,250 C 135,210 160,180 170,140 M 100,130 C 70,100 50,75 40,50"
             />
             {/* Organic Leaves */}
-            <circle 
-              ref={leaf1Ref}
-              className="leaf fill-[#39471D] stroke-[#FFFFFF] stroke-[2]"
-              cx="40" 
-              cy="220" 
-              r="7" 
-              style={{ transformOrigin: '40px 220px' }}
-            />
-            <circle 
-              ref={leaf2Ref}
-              className="leaf fill-[#39471D] stroke-[#FFFFFF] stroke-[2]"
-              cx="160" 
-              cy="120" 
-              r="7" 
-              style={{ transformOrigin: '160px 120px' }}
-            />
-            <circle 
-              ref={leaf3Ref}
-              className="leaf fill-[#39471D] stroke-[#FFFFFF] stroke-[2]"
-              cx="50" 
-              cy="40" 
-              r="7" 
-              style={{ transformOrigin: '50px 40px' }}
-            />
+            <g ref={leaf1Ref} style={{ transformOrigin: '30px 260px' }} className="origin-center">
+              <path 
+                d="M 30,260 C 24,250 18,245 30,232 C 42,245 36,250 30,260 Z" 
+                className="leaf fill-[#39471D] stroke-[#FFFFFF] stroke-[1.5]"
+                transform="rotate(-25 30 260)"
+              />
+            </g>
+            <g ref={leaf2Ref} style={{ transformOrigin: '170px 140px' }} className="origin-center">
+              <path 
+                d="M 170,140 C 164,130 158,125 170,112 C 182,125 176,130 170,140 Z" 
+                className="leaf fill-[#39471D] stroke-[#FFFFFF] stroke-[1.5]"
+                transform="rotate(35 170 140)"
+              />
+            </g>
+            <g ref={leaf3Ref} style={{ transformOrigin: '40px 50px' }} className="origin-center">
+              <path 
+                d="M 40,50 C 34,40 28,35 40,22 C 52,35 46,40 40,50 Z" 
+                className="leaf fill-[#39471D] stroke-[#FFFFFF] stroke-[1.5]"
+                transform="rotate(-25 40 50)"
+              />
+            </g>
           </svg>
         </div>
 
