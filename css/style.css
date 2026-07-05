@@ -275,160 +275,47 @@ a {
 }
 
 /* ==========================================================================
-   AI CITATION PANEL (High fidelity mock)
+   HIGH FIDELITY DASHBOARD WRAPPERS
    ========================================================================== */
 .hero-visual {
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
+  width: 100%;
 }
 
-.citation-panel {
+.hero-image-wrapper {
   width: 100%;
   max-width: 520px;
   background-color: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: 8px;
   overflow: hidden;
-}
-
-.panel-header {
-  background-color: var(--color-light-bg);
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--color-border);
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
-.panel-header .dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.panel-header .dot.red { background-color: #E5E7EB; }
-.panel-header .dot.yellow { background-color: #E5E7EB; }
-.panel-header .dot.green { background-color: #E5E7EB; }
-
-.panel-title {
-  font-size: 0.7rem;
-  font-family: var(--font-sans);
-  color: var(--color-text-muted);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin: 0 auto;
-  transform: translateX(-15px);
-}
-
-.panel-body {
   padding: 1.5rem;
 }
 
-.search-input-mock {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.hero-ui-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Card UI Image Wrappers */
+.card-image-wrapper {
+  width: 100%;
+  background-color: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: 6px;
-  padding: 0.6rem 0.9rem;
-  background-color: var(--color-light-bg);
-  font-size: 0.8rem;
-  color: var(--color-text);
-  margin-bottom: 1.5rem;
+  overflow: hidden;
+  margin-top: 1.5rem;
+  margin-bottom: auto; /* Pushes price to the bottom */
+  padding: 1rem;
 }
 
-.search-icon {
-  width: 14px;
-  height: 14px;
-  color: var(--color-text-muted);
-}
-
-.ai-response {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.ai-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.ai-badge {
-  background-color: var(--color-primary);
-  color: #FFFFFF;
-  font-size: 0.65rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.2rem 0.5rem;
-  border-radius: 3px;
-}
-
-.ai-status {
-  font-size: 0.7rem;
-  color: var(--color-text-muted);
-}
-
-.ai-text {
-  font-size: 0.875rem;
-  line-height: 1.6;
-  color: var(--color-text);
-}
-
-.ai-text strong {
-  font-weight: 600;
-  color: var(--color-primary);
-}
-
-.citation-tag {
-  background-color: rgba(57, 71, 29, 0.08);
-  color: var(--color-primary);
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 0.05rem 0.3rem;
-  border-radius: 4px;
-  cursor: default;
-}
-
-.ai-sources {
-  border-top: 1px solid var(--color-border);
-  padding-top: 1.25rem;
-}
-
-.sources-title {
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--color-text-muted);
-  margin-bottom: 0.75rem;
-}
-
-.sources-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.source-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.75rem;
-  color: var(--color-primary);
-}
-
-.source-item:hover {
-  text-decoration: underline;
-}
-
-.source-index {
-  font-weight: 700;
+.card-ui-img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 /* ==========================================================================
