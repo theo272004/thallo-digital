@@ -164,10 +164,13 @@
   }
 }
 
-/* Refined lime "highlighter" behind the AI word — a marker sweep rather than a
-   solid sticker box, so it reads more editorial/premium. */
-.hero-ai-mark {
-  background: linear-gradient(transparent 58%, rgba(223, 255, 59, 0.9) 58%);
-  padding: 0 0.08em;
-  border-radius: 2px;
+@keyframes phoneAnswerIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
