@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@import "../styles/hero.css";
+
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #FFFFFF;
+}
