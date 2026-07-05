@@ -120,7 +120,7 @@ export default function Hero() {
           <FloatingCards step={step} />
 
           {/* Emergent Premium Phone Mockup */}
-          <div ref={phoneRef} className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[300px]">
+          <div ref={phoneRef} className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[300px] z-10">
             <HeroPhone query={query} step={step} answer={answer} />
           </div>
         </div>

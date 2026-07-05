@@ -12,8 +12,8 @@ export default function CardForbes({ step, parallaxStyle }: CardProps) {
       style={{
         right: '10px',
         top: '46%',
-        opacity: step >= 3 ? 1 : 0,
-        transform: step >= 3 ? 'scale(1)' : 'scale(0.9)',
+        opacity: step >= 6 ? 1 : 0,
+        transform: step >= 6 ? 'scale(1)' : 'scale(0.9)',
         ...parallaxStyle
       }}
     >

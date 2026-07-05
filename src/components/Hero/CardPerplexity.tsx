@@ -12,8 +12,8 @@ export default function CardPerplexity({ step, parallaxStyle }: CardProps) {
       style={{
         left: '10px',
         top: '44%',
-        opacity: step >= 3 ? 1 : 0,
-        transform: step >= 3 ? 'scale(1)' : 'scale(0.9)',
+        opacity: step >= 5 ? 1 : 0,
+        transform: step >= 5 ? 'scale(1)' : 'scale(0.9)',
         ...parallaxStyle
       }}
     >

@@ -12,8 +12,8 @@ export default function CardChatGPT({ step, parallaxStyle }: CardProps) {
       style={{
         right: '0px',
         top: '8%',
-        opacity: step >= 3 ? 1 : 0,
-        transform: step >= 3 ? 'scale(1)' : 'scale(0.9)',
+        opacity: step >= 4 ? 1 : 0,
+        transform: step >= 4 ? 'scale(1)' : 'scale(0.9)',
         ...parallaxStyle
       }}
     >
