@@ -89,10 +89,7 @@ export default function Hero() {
     const cardElements = Array.from(container.querySelectorAll('.floating-card-wrapper')) as HTMLElement[];
 
     // Initialize ScrollTrigger coordinates
-    initHeroAnimations(container, phoneEl, cardElements, (scrollStep) => {
-      // Allow scroll interaction to override step state
-      setStep((prev) => Math.max(prev, scrollStep));
-    });
+    initHeroAnimations(container, phoneEl, cardElements);
 
     // Start slow yoyo float animation
     playFloatingLoop(phoneEl);

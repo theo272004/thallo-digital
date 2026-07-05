@@ -1,13 +1,14 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export function initHeroAnimations(
   container: HTMLElement,
   phone: HTMLElement,
-  cards: HTMLElement[],
-  onScrollStep: (step: number) => void
+  cards: HTMLElement[]
 ) {
   // 1. Phone rising translation on scroll
   gsap.to(phone, {
@@ -35,19 +36,6 @@ export function initHeroAnimations(
           scrub: true,
         }
       });
-    }
-  });
-
-  // 3. ScrollTrigger to update simulation steps based on scroll progress
-  ScrollTrigger.create({
-    trigger: container,
-    start: 'top top',
-    end: 'bottom 40%',
-    scrub: true,
-    onUpdate: (self) => {
-      // Map progress (0 to 1) to step index (1 to 6)
-      const currentStep = Math.min(Math.floor(self.progress * 6) + 1, 6);
-      onScrollStep(currentStep);
     }
   });
 }
