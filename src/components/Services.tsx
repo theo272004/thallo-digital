@@ -50,7 +50,7 @@ export default function Services() {
 
   return (
     <section className="bg-white py-28 border-b border-gray-100" id="services">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-[1440px] mx-auto px-6">
         <div className="max-w-2xl mb-16">
           <Eyebrow className="mb-5">Services</Eyebrow>
           <SplitReveal
@@ -103,7 +103,7 @@ export default function Services() {
                 </ul>
               </div>
               <div className={`mt-8 pt-6 border-t ${svc.featured ? 'border-white/15' : 'border-gray-200/70'}`}>
-                <span className={`font-mono text-[12px] font-bold ${svc.featured ? 'text-[#DFFF3B]' : 'text-[#39471D]'}`}>
+                <span className={`block text-lg sm:text-xl font-bold tracking-tight ${svc.featured ? 'text-[#DFFF3B]' : 'text-[#39471D]'}`}>
                   {svc.price}
                 </span>
               </div>

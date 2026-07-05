@@ -81,7 +81,7 @@ export default function HowItWorks() {
 
   return (
     <section className="bg-white py-24 border-b border-gray-100" id="approach" ref={sectionRef}>
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         
         {/* Left Column: Organic SVG Growth Stem */}
         <div className="flex justify-center items-center h-[460px]">

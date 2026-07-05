@@ -1,23 +1,19 @@
 import React from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal, Magnetic, scrollToEl } from '@/components/motion';
 
 export default function HeroText() {
   return (
-    <div className="hero-copy flex flex-col justify-center pr-8" style={{ zIndex: 10 }}>
-      {/* Eyebrow */}
-      <Eyebrow className="mb-6">AI Visibility Agency</Eyebrow>
-
+    <div className="hero-copy flex flex-col justify-center pr-6" style={{ zIndex: 10 }}>
       {/* Tagline — masked line reveal on load (transform-only keeps LCP fast) */}
       <SplitReveal
         as="h1"
         scroll={false}
         fade={false}
         className="hero-tagline font-medium text-gray-900 mb-8 select-none"
-        style={{ fontSize: 'clamp(2.9rem, 4.8vw, 4.3rem)', lineHeight: '1.1' }}
+        style={{ fontSize: 'clamp(3.1rem, 5.2vw, 5rem)', lineHeight: '1.06' }}
         html={
           '<span class="block font-sans">Be the answer</span>' +
-          '<span class="block mt-2"><span class="inline-block font-serif italic text-black bg-[#DFFF3B] px-3 py-0.5 rounded-[10px] mr-3">AI</span><span class="font-sans">recommends.</span></span>'
+          '<span class="block mt-1"><span class="font-serif italic text-[#0c0c0c] hero-ai-mark">AI</span><span class="font-sans"> recommends.</span></span>'
         }
       />
 

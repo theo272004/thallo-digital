@@ -84,7 +84,7 @@ export default function ThalloAIPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      <div className="max-w-[1440px] mx-auto px-6 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           
           {/* Left Column: Form & Scan Console */}

@@ -45,7 +45,7 @@ export default function VisibilityCheck() {
 
   return (
     <section className="bg-white py-24 border-b border-gray-100" id="tool">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-[1440px] mx-auto px-6">
         <div className="bg-gray-50/50 border border-gray-100 rounded-[32px] p-8 sm:p-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Panel: Form */}
           <div>

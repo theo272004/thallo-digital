@@ -27,7 +27,7 @@ export default function Footer({ setView }: FooterProps) {
 
   return (
     <footer className="bg-white border-t border-gray-100 py-16" id="contact">
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+      <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
         <div className="md:col-span-1">
           <a href="/" onClick={handleLogoClick} className="inline-block mb-4">
             <img src="/thallo-digital/logo.png" alt="Thallo Digital" className="h-5 object-contain" />
@@ -68,7 +68,7 @@ export default function Footer({ setView }: FooterProps) {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 border-t border-gray-50 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-mono tracking-wider text-gray-400">
+      <div className="max-w-[1440px] mx-auto px-6 border-t border-gray-50 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-mono tracking-wider text-gray-400">
         <span>© 2026 THALLO DIGITAL. ALL RIGHTS RESERVED.</span>
         <span>LINKEDIN · X · HELLO@THALLO.CO</span>
       </div>

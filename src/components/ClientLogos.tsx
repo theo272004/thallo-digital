@@ -6,7 +6,7 @@ export default function ClientLogos() {
 
   return (
     <div className="border-b border-gray-100 bg-white py-12 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-[1440px] mx-auto px-6">
         <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-center uppercase text-gray-400 mb-6">
           Cited across the answers your buyers trust
         </p>

@@ -24,9 +24,6 @@ const spaceMono = Space_Mono({
 export const metadata: Metadata = {
   title: "Thallo · The AI Visibility Agency",
   description: "We make B2B brands the default citation and recommendation in conversational LLM search answers.",
-  icons: {
-    icon: "/isotipo.png"
-  }
 };
 
 export default function RootLayout({

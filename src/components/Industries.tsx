@@ -66,7 +66,7 @@ const INDUSTRIES = [
 export default function Industries() {
   return (
     <section className="bg-white py-28 border-b border-gray-100" id="industries">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-[1440px] mx-auto px-6">
         <div className="max-w-2xl mb-16">
           <Eyebrow className="mb-5">Industries</Eyebrow>
           <SplitReveal

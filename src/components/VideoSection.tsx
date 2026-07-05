@@ -7,7 +7,7 @@ export default function VideoSection() {
 
   return (
     <section className="bg-white py-16 border-b border-gray-100">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-[1440px] mx-auto px-6">
         <div 
           className="relative bg-gray-900 text-white rounded-3xl p-12 overflow-hidden flex items-center justify-between cursor-pointer group"
           onClick={() => setIsOpen(true)}

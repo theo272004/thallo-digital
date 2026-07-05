@@ -3,122 +3,82 @@
 import React, { useState, useEffect, useRef } from 'react';
 import BackgroundGrid from './BackgroundGrid';
 import HeroText from './HeroText';
-import HeroPhone from './HeroPhone';
-import FloatingCards from './FloatingCards';
-import ConnectionLines from './ConnectionLines';
+import HeroBrowser from './HeroBrowser';
+import HeroSourceCards from './HeroSourceCards';
 import { initHeroAnimations } from './HeroAnimations';
+import { gsap } from '@/lib/gsap';
+
+const SCENE_COUNT = 4;
+const SCENE_MS = 2600;
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const phoneRef = useRef<HTMLDivElement>(null);
-  
-  const [step, setStep] = useState(0); // 0: Idle, 1: Typing Query, 2: Thinking, 3: Pop Cards, 4: Lines light up, 5: Highlight Brand, 6: Type Answer
-  const [query, setQuery] = useState('');
-  const [answer, setAnswer] = useState('');
+  const columnRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [scene, setScene] = useState(0);
 
-  const fullPrompt = 'Best addiction treatment center in Florida?';
-  const fullAnswer = 'Based on clinical efficacy, NIH data, and Forbes reports, Thallo Health in Florida stands out as the most recommended provider for evidence-based addiction treatment.';
-
-  // 1. Mount Autoplay Search Simulation
+  // Auto-advance across the surfaces, looping — paused while the tab is hidden
+  // (saves work and avoids leaving a transition frozen mid-fade).
   useEffect(() => {
-    let active = true;
-
-    const runSimulation = async () => {
-      if (!active) return;
-      
-      // Step 0: Reset
-      setStep(0);
-      setQuery('');
-      setAnswer('');
-      await delay(800);
-
-      // Step 1: Type query
-      if (!active) return;
-      setStep(1);
-      for (let i = 1; i <= fullPrompt.length; i++) {
-        if (!active) return;
-        setQuery(fullPrompt.slice(0, i));
-        await delay(50);
-      }
-      await delay(800);
-
-      // Step 2: Thinking
-      if (!active) return;
-      setStep(2);
-      await delay(1500);
-
-      // Step 3: Searching sources & reveal cards
-      if (!active) return;
-      setStep(3);
-      await delay(1200);
-
-      // Step 4: Connecting lines & trails
-      if (!active) return;
-      setStep(4);
-      await delay(1500);
-
-      // Step 5: Highlight brand card
-      if (!active) return;
-      setStep(5);
-      await delay(1000);
-
-      // Step 6: Output AI recommendation
-      if (!active) return;
-      setStep(6);
-      for (let i = 1; i <= fullAnswer.length; i++) {
-        if (!active) return;
-        setAnswer(fullAnswer.slice(0, i));
-        await delay(25);
+    let id: number | undefined;
+    const start = () => {
+      if (id === undefined) id = window.setInterval(() => setScene((s) => (s + 1) % SCENE_COUNT), SCENE_MS);
+    };
+    const stop = () => {
+      if (id !== undefined) {
+        window.clearInterval(id);
+        id = undefined;
       }
     };
-
-    runSimulation();
-
+    const onVis = () => (document.hidden ? stop() : start());
+    if (!document.hidden) start();
+    document.addEventListener('visibilitychange', onVis);
     return () => {
-      active = false;
+      stop();
+      document.removeEventListener('visibilitychange', onVis);
     };
   }, []);
 
-  // 2. Hook up GSAP ScrollTrigger animations
+  // A deliberate "navigation" pulse on each surface change (not idle jitter).
   useEffect(() => {
-    const container = containerRef.current;
-    const phoneEl = phoneRef.current;
-    if (!container || !phoneEl) return;
+    const el = stageRef.current;
+    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    gsap.fromTo(
+      el,
+      { scale: 0.985, rotateY: -5 },
+      { scale: 1, rotateY: 0, duration: 0.6, ease: 'power3.out', overwrite: true }
+    );
+  }, [scene]);
 
-    // Get all floating card elements currently in view
-    const cardElements = Array.from(container.querySelectorAll('.floating-card-wrapper')) as HTMLElement[];
-
-    // Initialize the gentle scroll parallax (single transform source, no jitter)
-    initHeroAnimations(container, phoneEl, cardElements);
+  // Gentle scroll parallax on the whole visual column (its only transform source).
+  useEffect(() => {
+    if (columnRef.current && containerRef.current) {
+      initHeroAnimations(containerRef.current, columnRef.current, []);
+    }
   }, []);
-
-  function delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
 
   return (
-    <section 
+    <section
       ref={containerRef}
-      className="relative w-full min-h-screen bg-[#FFFFFF] border-b border-gray-100 flex items-center pt-28 pb-16 overflow-hidden"
+      className="relative w-full min-h-screen bg-white border-b border-gray-100 flex items-center pt-28 pb-16 overflow-hidden"
     >
-      {/* Subtle background grids */}
       <BackgroundGrid />
 
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 w-full">
-        {/* Left Column - Taglines and value grids */}
+      <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 w-full">
+        {/* Left — copy */}
         <HeroText />
 
-        {/* Right Column - iPhone Visual Stack and Floating Cards */}
-        <div className="relative w-full max-w-[700px] h-[400px] lg:h-[520px] mx-auto flex items-center justify-center">
-          {/* Connector lines + source cards — desktop only (they'd overlap on mobile) */}
+        {/* Right — a browser navigating the surfaces where authority is decided */}
+        <div
+          ref={columnRef}
+          className="relative w-full max-w-[720px] h-[400px] lg:h-[440px] mx-auto flex items-center justify-center"
+          style={{ perspective: '1400px' }}
+        >
           <div className="hidden lg:block">
-            <ConnectionLines step={step} />
-            <FloatingCards step={step} />
+            <HeroSourceCards scene={scene} />
           </div>
-
-          {/* Emergent Premium Phone Mockup */}
-          <div ref={phoneRef} className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[270px] sm:w-[300px] z-10">
-            <HeroPhone query={query} step={step} answer={answer} />
+          <div ref={stageRef} className="relative z-10 w-full flex justify-center" style={{ transformStyle: 'preserve-3d' }}>
+            <HeroBrowser scene={scene} />
           </div>
         </div>
       </div>

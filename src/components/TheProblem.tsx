@@ -47,7 +47,7 @@ export default function TheProblem() {
 
   return (
     <section className="bg-white py-24 border-b border-gray-100" id="shift">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-[1440px] mx-auto px-6">
         <div className="max-w-3xl mb-16">
           <Eyebrow className="mb-5">The Shift</Eyebrow>
           <SplitReveal

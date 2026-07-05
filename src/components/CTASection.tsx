@@ -5,7 +5,7 @@ import { SplitReveal, Magnetic } from '@/components/motion';
 export default function CTASection() {
   return (
     <section className="bg-white py-24 border-b border-gray-100" id="cta">
-      <div className="max-w-7xl mx-auto px-6 text-center">
+      <div className="max-w-[1440px] mx-auto px-6 text-center">
         <Eyebrow center className="mb-5 justify-center">Get Audited</Eyebrow>
         <SplitReveal
           as="h2"

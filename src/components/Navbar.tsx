@@ -42,7 +42,7 @@ export default function Navbar({ currentView, setView }: NavbarProps) {
           : 'bg-white/70 border-b border-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+      <div className="max-w-[1440px] mx-auto px-6 flex justify-between items-center">
         <a href="/" onClick={(e) => handleNavClick('home', e)} className="flex items-center gap-2 group">
           <img src="/thallo-digital/logo.png" alt="Thallo Digital" className="h-6 object-contain" />
         </a>
