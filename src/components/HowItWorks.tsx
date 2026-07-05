@@ -29,6 +29,12 @@ export default function HowItWorks() {
       strokeDashoffset: length
     });
 
+    // Initialize leaves to zero scale/opacity
+    gsap.set([leaf1Ref.current, leaf2Ref.current, leaf3Ref.current], {
+      scale: 0,
+      opacity: 0
+    });
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
@@ -88,24 +94,27 @@ export default function HowItWorks() {
             {/* Organic Leaves */}
             <circle 
               ref={leaf1Ref}
-              className="leaf opacity-0 scale-[0.2] transition-transform duration-300 origin-center fill-[#39471D] stroke-[#FFFFFF] stroke-[2]"
+              className="leaf fill-[#39471D] stroke-[#FFFFFF] stroke-[2]"
               cx="40" 
               cy="220" 
               r="7" 
+              style={{ transformOrigin: '40px 220px' }}
             />
             <circle 
               ref={leaf2Ref}
-              className="leaf opacity-0 scale-[0.2] transition-transform duration-300 origin-center fill-[#39471D] stroke-[#FFFFFF] stroke-[2]"
+              className="leaf fill-[#39471D] stroke-[#FFFFFF] stroke-[2]"
               cx="160" 
               cy="120" 
               r="7" 
+              style={{ transformOrigin: '160px 120px' }}
             />
             <circle 
               ref={leaf3Ref}
-              className="leaf opacity-0 scale-[0.2] transition-transform duration-300 origin-center fill-[#39471D] stroke-[#FFFFFF] stroke-[2]"
+              className="leaf fill-[#39471D] stroke-[#FFFFFF] stroke-[2]"
               cx="50" 
               cy="40" 
               r="7" 
+              style={{ transformOrigin: '50px 40px' }}
             />
           </svg>
         </div>
