@@ -19,7 +19,7 @@ export default function CardGoogle({ step, parallaxStyle }: CardProps) {
     >
       <div className="flex items-center gap-3 mb-3">
         <div className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center p-1.5 text-gray-800">
-          <img src="/logos/google.svg" alt="Google" className="w-full h-full object-contain" />
+          <img src="/thallo-digital/logos/google.svg" alt="Google" className="w-full h-full object-contain" />
         </div>
         <div>
           <h4 className="text-xs font-bold text-gray-900 leading-tight">Google</h4>

@@ -38,7 +38,7 @@ export default function Navbar({ currentView, setView }: NavbarProps) {
           onClick={(e) => handleNavClick('home', e)} 
           className="flex items-center gap-2 group"
         >
-          <img src="/logo.png" alt="Thallo Digital" className="h-6 object-contain" />
+          <img src="/thallo-digital/logo.png" alt="Thallo Digital" className="h-6 object-contain" />
         </a>
 
         {/* Desktop Menu Links */}

@@ -18,8 +18,8 @@ export default function CardForbes({ step, parallaxStyle }: CardProps) {
       }}
     >
       <div className="flex items-center gap-3 mb-3">
-        <div className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center p-1 flex-col text-gray-800">
-          <img src="/logos/forbes.svg" alt="Forbes" className="w-full h-full object-contain" />
+        <div className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center p-1.5 text-gray-800">
+          <img src="/thallo-digital/logos/forbes.svg" alt="Forbes" className="w-full h-full object-contain" />
         </div>
         <div>
           <h4 className="text-xs font-bold text-gray-900 leading-tight">Forbes</h4>

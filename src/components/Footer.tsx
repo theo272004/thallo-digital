@@ -30,7 +30,7 @@ export default function Footer({ setView }: FooterProps) {
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
         <div className="md:col-span-1">
           <a href="/" onClick={handleLogoClick} className="inline-block mb-4">
-            <img src="/logo.png" alt="Thallo Digital" className="h-5 object-contain" />
+            <img src="/thallo-digital/logo.png" alt="Thallo Digital" className="h-5 object-contain" />
           </a>
           <p className="text-[11px] text-gray-400 font-semibold leading-relaxed max-w-[28ch]">
             The AI visibility agency. We make B2B brands the default citation and recommendation in LLM search answers.

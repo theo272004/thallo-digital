@@ -115,7 +115,7 @@ export default function Hero() {
         <HeroText />
 
         {/* Right Column - iPhone Visual Stack and Floating Cards */}
-        <div className="relative flex justify-center items-center h-[520px]">
+        <div className="relative w-full max-w-[500px] h-[520px] mx-auto flex items-center justify-center">
           {/* SVG Connector Lines */}
           <ConnectionLines step={step} />
 
@@ -123,7 +123,7 @@ export default function Hero() {
           <FloatingCards step={step} />
 
           {/* Emergent Premium Phone Mockup */}
-          <div ref={phoneRef} className="w-full flex justify-center mt-auto">
+          <div ref={phoneRef} className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[300px]">
             <HeroPhone query={query} step={step} answer={answer} />
           </div>
         </div>
