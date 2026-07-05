@@ -1,17 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AISearchSimulator from './AISearchSimulator';
 
+const words = ['Google', 'ChatGPT', 'Perplexity', 'AI'];
+
 export default function Hero() {
+  const [wordIdx, setWordIdx] = useState(0);
+
+  useEffect(() => {
+    if (wordIdx < words.length - 1) {
+      const t = setTimeout(() => {
+        setWordIdx(wordIdx + 1);
+      }, 1000);
+      return () => clearTimeout(t);
+    }
+  }, [wordIdx]);
+
   return (
-    <section className="hero" id="top">
+    <section className="hero" id="top" style={{ padding: '120px 0' }}>
       <div className="wrap hero-grid">
-        <div className="hero-copy">
+        <div className="hero-copy" style={{ zIndex: 10 }}>
           <span className="eyebrow">AI Visibility Agency</span>
-          <h1>
-            Be the name <span className="g serif-i">AI recommends.</span>
+          <h1 className="hero-tagline" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <span>Be the answer</span>
+            <span className="rotating-word" style={{ color: 'var(--olive-deep)', fontStyle: 'italic', transition: 'all 0.4s ease' }}>
+              {words[wordIdx]}
+            </span>
+            <span>recommends.</span>
           </h1>
-          <p className="lede">
-            Your buyers ask ChatGPT, Perplexity, and Google before they ever ask you. Thallo makes sure the answer they get is your brand, built on authority that compounds.
+          <p className="lede" style={{ marginTop: '24px', marginBottom: '40px' }}>
+            Your buyers ask ChatGPT, Perplexity, and Google before they ever buy. Thallo makes sure the answer they get is your brand.
           </p>
           <div className="hero-ctas">
             <a href="#cta" className="btn" onClick={(e) => { e.preventDefault(); document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' }); }}>
@@ -21,7 +38,7 @@ export default function Hero() {
               See how it works
             </a>
           </div>
-          <p className="hero-note">
+          <p className="hero-note" style={{ marginTop: '48px' }}>
             Trusted by teams in fintech · health tech · professional B2B services
           </p>
         </div>
