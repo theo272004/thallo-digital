@@ -1,6 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="8" fill="#39471D"/>
-  <g transform="translate(4 4)" fill="#DFFF3B">
-    <path d="M12 2C7 6 4 10 4 15a8 8 0 0 0 16 0c0-5-3-9-8-13Zm0 4c3 3 5 6 5 9a5 5 0 0 1-5 5Z"/>
+  <g transform="translate(16 16.5) scale(0.4) rotate(36)" fill="#1a5c34">
+    <path d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" />
+    <path d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" transform="rotate(72)" />
+    <path d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" transform="rotate(144)" />
+    <path d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" transform="rotate(216)" />
+    <path d="M0,0 C-8,-20 -12,-32 0,-38 C12,-32 8,-20 0,0" transform="rotate(288)" />
   </g>
 </svg>
