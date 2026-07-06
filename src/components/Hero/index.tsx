@@ -9,20 +9,21 @@ import HeroSourceCards from './HeroSourceCards';
 import { initHeroAnimations } from './HeroAnimations';
 import { gsap } from '@/lib/gsap';
 
-type Phase = 'phone' | 'burst' | 'collapse' | 'browse';
+type Phase = 'phone' | 'burst' | 'collapse' | 'tabsIntro' | 'browse';
 
 const TAB_COUNT = 4;
-const PHONE_MS = 5000; // long enough for the phone's own type → think → answer beat
-const BURST_MS = 900; // the 4 source cards pop out around the phone
-const COLLAPSE_MS = 650; // cards fly into the browser's tabs; browser fades in under them
-const TAB_MS = 2600; // each browser tab stays active this long
+const PHONE_MS = 2800; // typing the query + a brief "checking sources" beat
+const BURST_MS = 1900; // the 4 source cards fly out, one by one, and hold
+const COLLAPSE_MS = 750; // cards fly back toward the phone
+const TABS_INTRO_MS = 950; // the browser's tabs reveal left to right
+const TAB_MS = 2400; // each browser tab stays active this long
 
 /**
- * A single looping sequence: the phone plays its query, the source cards
- * burst out around it, then fly into the matching tab of a browser window
- * (which fades in beneath them) — so the cards visually *become* the
- * navigation tabs. The browser then cycles Google → ChatGPT → Forbes →
- * Perplexity before the whole thing resets to the phone.
+ * A single looping sequence: the phone types a query, the four source cards
+ * fly out of it one by one (ChatGPT → Google → Perplexity → Forbes), hold,
+ * then collapse back toward the phone as the interface turns into a tabbed
+ * browser — its tabs revealing left to right — which then slides between
+ * each surface before the whole thing resets to the phone.
  */
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -30,6 +31,7 @@ export default function Hero() {
   const stageRef = useRef<HTMLDivElement>(null);
   const [phase, setPhase] = useState<Phase>('phone');
   const [tabIndex, setTabIndex] = useState(0);
+  const [revealedTabs, setRevealedTabs] = useState(0);
   const [paused, setPaused] = useState(false);
 
   // Pause the loop while the tab is hidden.
@@ -43,13 +45,21 @@ export default function Hero() {
   // Self-scheduling state machine — each phase queues the next.
   useEffect(() => {
     if (paused) return;
-    const delay = phase === 'phone' ? PHONE_MS : phase === 'burst' ? BURST_MS : phase === 'collapse' ? COLLAPSE_MS : TAB_MS;
+    const delay =
+      phase === 'phone' ? PHONE_MS :
+      phase === 'burst' ? BURST_MS :
+      phase === 'collapse' ? COLLAPSE_MS :
+      phase === 'tabsIntro' ? TABS_INTRO_MS :
+      TAB_MS;
 
     const id = window.setTimeout(() => {
       if (phase === 'phone') setPhase('burst');
       else if (phase === 'burst') setPhase('collapse');
       else if (phase === 'collapse') {
+        setRevealedTabs(0);
         setTabIndex(0);
+        setPhase('tabsIntro');
+      } else if (phase === 'tabsIntro') {
         setPhase('browse');
       } else {
         setTabIndex((i) => {
@@ -64,6 +74,16 @@ export default function Hero() {
     }, delay);
     return () => window.clearTimeout(id);
   }, [phase, tabIndex, paused]);
+
+  // Reveal the browser's tabs one by one once we enter `tabsIntro`.
+  useEffect(() => {
+    if (phase !== 'tabsIntro' || paused) return;
+    const ids: number[] = [];
+    for (let i = 1; i <= TAB_COUNT; i++) {
+      ids.push(window.setTimeout(() => setRevealedTabs(i), (i - 1) * 180));
+    }
+    return () => ids.forEach((id) => window.clearTimeout(id));
+  }, [phase, paused]);
 
   // A soft "navigation" glide whenever the active surface changes.
   useEffect(() => {
@@ -84,7 +104,7 @@ export default function Hero() {
   }, []);
 
   const phoneVisible = phase === 'phone' || phase === 'burst';
-  const browserVisible = phase === 'collapse' || phase === 'browse';
+  const browserVisible = phase === 'tabsIntro' || phase === 'browse';
   const cardsPhase = phase === 'burst' ? 'burst' : phase === 'collapse' ? 'collapse' : 'hidden';
   const fade = 'transition-[opacity,transform] duration-[550ms] ease-[cubic-bezier(0.22,1,0.36,1)]';
 
@@ -99,7 +119,7 @@ export default function Hero() {
         {/* Left — copy */}
         <HeroText />
 
-        {/* Right — the phone plays a query, its source cards burst out, then fly into a browser's tabs */}
+        {/* Right — the phone types a query, its source cards fly out, then collapse into a sliding tabbed browser */}
         <div
           ref={columnRef}
           className="relative w-full max-w-[720px] h-[420px] lg:h-[460px] mx-auto"
@@ -119,14 +139,13 @@ export default function Hero() {
               <HeroPhoneScene active={phoneVisible} />
             </div>
 
-            {/* Browser — always mounted (even invisible) so its tabs have real,
-                measurable positions for the source cards to fly into. */}
+            {/* Browser */}
             <div
               className={`absolute inset-0 flex items-center justify-center ${fade} ${
                 browserVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
               }`}
             >
-              <HeroBrowser activeIndex={tabIndex} />
+              <HeroBrowser activeIndex={tabIndex} revealedTabs={browserVisible ? revealedTabs : 0} />
             </div>
           </div>
         </div>

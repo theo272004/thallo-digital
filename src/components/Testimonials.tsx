@@ -57,7 +57,7 @@ export default function Testimonials() {
           <Eyebrow className="mb-5">Social Proof</Eyebrow>
           <SplitReveal
             as="h2"
-            className="text-4xl sm:text-5xl font-medium tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
+            className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
             html="Recommended by industry leaders."
           />
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch]">
@@ -69,11 +69,11 @@ export default function Testimonials() {
           {reviews.map((rev, idx) => (
             <div className="quote-card min-w-[280px] sm:min-w-[340px] p-8 bg-gray-50/50 border border-gray-100 rounded-3xl snap-start flex flex-col justify-between" key={idx}>
               <div>
-                <div className="text-[#39471D] text-xs mb-4">{rev.stars}</div>
+                <div className="text-[#758061] text-xs mb-4">{rev.stars}</div>
                 <p className="text-xs text-gray-500 italic leading-relaxed font-semibold mb-8">“{rev.quote}”</p>
               </div>
               <div className="flex items-center gap-3 mt-auto">
-                <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-800 font-bold flex items-center justify-center text-xs">
+                <div className="w-8 h-8 rounded-full bg-[#758061]/10 text-[#758061] font-bold flex items-center justify-center text-xs">
                   {rev.initials}
                 </div>
                 <div>

@@ -10,8 +10,8 @@ type Props = {
 
 /** Space Mono kicker with a short rule — the shared section label. */
 export default function Eyebrow({ children, center = false, tone = 'dark', className = '' }: Props) {
-  const line = tone === 'light' ? 'bg-[#DFFF3B]' : 'bg-[#55672E]';
-  const text = tone === 'light' ? 'text-[#DFFF3B]' : 'text-[#55672E]';
+  const line = tone === 'light' ? 'bg-white' : 'bg-[#697357]';
+  const text = tone === 'light' ? 'text-white' : 'text-[#697357]';
   return (
     <div className={`flex items-center gap-3 ${center ? 'justify-center' : ''} ${className}`}>
       <span className={`h-px w-7 ${line}`} />

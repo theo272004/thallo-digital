@@ -71,7 +71,7 @@ export default function Industries() {
           <Eyebrow className="mb-5">Industries</Eyebrow>
           <SplitReveal
             as="h2"
-            className="text-4xl sm:text-5xl font-medium tracking-tight text-gray-900 mb-6 font-sans leading-[1.05]"
+            className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 font-sans leading-[1.05]"
             html="Where trust decides the sale."
           />
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch]">
@@ -85,9 +85,9 @@ export default function Industries() {
             <div
               key={ind.title}
               data-reveal
-              className="group p-8 bg-white border border-gray-100 rounded-3xl transition-all duration-300 hover:bg-[#39471D] hover:-translate-y-1 hover:shadow-[0_24px_60px_-24px_rgba(57,71,29,0.5)]"
+              className="group p-8 bg-white border border-gray-100 rounded-3xl transition-all duration-300 hover:bg-[#758061] hover:-translate-y-1 hover:shadow-[0_24px_60px_-24px_rgba(57,71,29,0.5)]"
             >
-              <div className="w-10 h-10 flex items-center justify-center text-[#55672E] group-hover:text-[#DFFF3B] transition-colors mb-6">
+              <div className="w-10 h-10 flex items-center justify-center text-[#697357] group-hover:text-white transition-colors mb-6">
                 <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
                   {ind.icon}
                 </svg>

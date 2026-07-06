@@ -49,16 +49,16 @@ export default function Navbar({ currentView, setView }: NavbarProps) {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-7">
-          <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Services</a>
-          <a href="#shift" onClick={(e) => handleHomeAnchorClick('shift', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">The Shift</a>
-          <a href="#approach" onClick={(e) => handleHomeAnchorClick('approach', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Our Approach</a>
-          <a href="#industries" onClick={(e) => handleHomeAnchorClick('industries', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Industries</a>
-          <a href="#results" onClick={(e) => handleHomeAnchorClick('results', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Results</a>
-          <a href="#blog" onClick={(e) => handleHomeAnchorClick('blog', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Resources</a>
+          <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)} className="text-sm font-semibold text-gray-500 hover:text-[#758061] transition-colors">Services</a>
+          <a href="#shift" onClick={(e) => handleHomeAnchorClick('shift', e)} className="text-sm font-semibold text-gray-500 hover:text-[#758061] transition-colors">The Shift</a>
+          <a href="#approach" onClick={(e) => handleHomeAnchorClick('approach', e)} className="text-sm font-semibold text-gray-500 hover:text-[#758061] transition-colors">Our Approach</a>
+          <a href="#industries" onClick={(e) => handleHomeAnchorClick('industries', e)} className="text-sm font-semibold text-gray-500 hover:text-[#758061] transition-colors">Industries</a>
+          <a href="#results" onClick={(e) => handleHomeAnchorClick('results', e)} className="text-sm font-semibold text-gray-500 hover:text-[#758061] transition-colors">Results</a>
+          <a href="#blog" onClick={(e) => handleHomeAnchorClick('blog', e)} className="text-sm font-semibold text-gray-500 hover:text-[#758061] transition-colors">Resources</a>
           <a
             href="/thallo-ai"
             onClick={(e) => handleNavClick('ai-tool', e)}
-            className={`text-sm font-semibold transition-colors ${currentView === 'ai-tool' ? 'text-[#39471D] underline underline-offset-4' : 'text-gray-500 hover:text-[#39471D]'}`}
+            className={`text-sm font-semibold transition-colors ${currentView === 'ai-tool' ? 'text-[#758061] underline underline-offset-4' : 'text-gray-500 hover:text-[#758061]'}`}
           >
             Thallo AI
           </a>
@@ -70,7 +70,7 @@ export default function Navbar({ currentView, setView }: NavbarProps) {
             Check my visibility ↗
           </a>
           <Magnetic>
-            <a href="mailto:hello@thallo.co?subject=AI Visibility Audit Request" className="px-4 py-2 bg-[#39471D] border border-[#39471D] rounded-full text-sm font-semibold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all">
+            <a href="mailto:hello@thallo.co?subject=AI Visibility Audit Request" className="px-4 py-2 bg-[#758061] border border-[#758061] rounded-full text-sm font-semibold text-white hover:bg-[#697357] hover:border-[#697357] transition-all">
               Book an audit ↗
             </a>
           </Magnetic>
@@ -111,7 +111,7 @@ export default function Navbar({ currentView, setView }: NavbarProps) {
           </div>
           <div className="flex flex-col gap-4 mt-auto">
             <a href="#tool" onClick={(e) => handleHomeAnchorClick('tool', e)} className="w-full py-3.5 border border-gray-200 rounded-full text-center text-sm font-bold text-gray-800">Check my visibility ↗</a>
-            <a href="mailto:hello@thallo.co?subject=AI Visibility Audit Request" className="w-full py-3.5 bg-[#39471D] rounded-full text-center text-sm font-bold text-white">Book an audit ↗</a>
+            <a href="mailto:hello@thallo.co?subject=AI Visibility Audit Request" className="w-full py-3.5 bg-[#758061] rounded-full text-center text-sm font-bold text-white">Book an audit ↗</a>
           </div>
         </div>
       )}

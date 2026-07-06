@@ -72,10 +72,10 @@ export default function ThalloAIPage() {
       <div className="border-b border-gray-100 py-16 bg-gray-50/50">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <div className="flex items-center gap-2 mb-4 justify-center">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#55672E]"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#697357]"></span>
             <span className="text-[11px] font-bold tracking-[0.12em] uppercase text-gray-500">Thallo Visibility Engine</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-medium tracking-tight text-gray-900 mb-4 font-sans leading-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 mb-4 font-sans leading-tight">
             Run your free B2B AI visibility audit
           </h1>
           <p className="text-gray-500 font-medium text-xs leading-relaxed max-w-[45ch] mx-auto">
@@ -129,7 +129,7 @@ export default function ThalloAIPage() {
                 </div>
                 <button 
                   type="submit" 
-                  className="mt-4 px-6 py-3.5 bg-[#39471D] border border-[#39471D] rounded-full text-xs font-bold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all flex items-center justify-center gap-2"
+                  className="mt-4 px-6 py-3.5 bg-[#758061] border border-[#758061] rounded-full text-xs font-bold text-white hover:bg-[#697357] hover:border-[#697357] transition-all flex items-center justify-center gap-2"
                   disabled={isScanning}
                 >
                   {isScanning ? 'Auditing visibility...' : 'Start Audit Scan →'}
@@ -139,7 +139,7 @@ export default function ThalloAIPage() {
 
             {/* Live Console Output Logs */}
             {scanLogs.length > 0 && (
-              <div className="bg-gray-900 text-emerald-500 font-mono text-[11px] p-6 rounded-3xl shadow-inner border border-gray-800 flex flex-col gap-1.5">
+              <div className="bg-gray-900 text-[#8a9379] font-mono text-[11px] p-6 rounded-3xl shadow-inner border border-gray-800 flex flex-col gap-1.5">
                 <span className="text-gray-400 border-b border-gray-800 pb-2 mb-2 font-bold tracking-wider text-[11px] block">
                   CRAWLER CONSOLE LOG
                 </span>
@@ -148,7 +148,7 @@ export default function ThalloAIPage() {
                     <div key={idx} className="leading-relaxed">{log}</div>
                   ))}
                   {isScanning && (
-                    <div className="w-1.5 h-3 bg-emerald-500 animate-pulse inline-block mt-0.5"></div>
+                    <div className="w-1.5 h-3 bg-[#8a9379] animate-pulse inline-block mt-0.5"></div>
                   )}
                 </div>
               </div>
@@ -164,11 +164,11 @@ export default function ThalloAIPage() {
                 <div className="grid grid-cols-3 gap-4">
                   <div className="p-6 bg-white border border-gray-100 rounded-3xl text-center">
                     <span className="text-[11px] font-bold text-gray-400 tracking-wider uppercase block mb-1">Citations Rate</span>
-                    <span className="text-3xl font-bold text-[#39471D]">14%</span>
+                    <span className="text-3xl font-bold text-[#758061]">14%</span>
                   </div>
                   <div className="p-6 bg-white border border-gray-100 rounded-3xl text-center">
                     <span className="text-[11px] font-bold text-gray-400 tracking-wider uppercase block mb-1">Total Mentions</span>
-                    <span className="text-3xl font-bold text-[#39471D]">2/15</span>
+                    <span className="text-3xl font-bold text-[#758061]">2/15</span>
                   </div>
                   <div className="p-6 bg-white border border-gray-100 rounded-3xl text-center">
                     <span className="text-[11px] font-bold text-gray-400 tracking-wider uppercase block mb-1">Index Status</span>
@@ -187,7 +187,7 @@ export default function ThalloAIPage() {
                         <span>12%</span>
                       </div>
                       <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-[#39471D]" style={{ width: '12%' }}></div>
+                        <div className="h-full bg-[#758061]" style={{ width: '12%' }}></div>
                       </div>
                     </div>
 
@@ -207,7 +207,7 @@ export default function ThalloAIPage() {
                         <span>24%</span>
                       </div>
                       <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-[#39471D]" style={{ width: '24%' }}></div>
+                        <div className="h-full bg-[#758061]" style={{ width: '24%' }}></div>
                       </div>
                     </div>
                   </div>
@@ -220,19 +220,19 @@ export default function ThalloAIPage() {
                   <div className="flex gap-4 border-b border-gray-100 pb-3 mb-5 text-[11px] font-bold">
                     <button 
                       onClick={() => setActiveTab('high')}
-                      className={`pb-1 ${activeTab === 'high' ? 'text-[#39471D] border-b-2 border-[#39471D]' : 'text-gray-400'}`}
+                      className={`pb-1 ${activeTab === 'high' ? 'text-[#758061] border-b-2 border-[#758061]' : 'text-gray-400'}`}
                     >
                       High Priority (3)
                     </button>
                     <button 
                       onClick={() => setActiveTab('med')}
-                      className={`pb-1 ${activeTab === 'med' ? 'text-[#39471D] border-b-2 border-[#39471D]' : 'text-gray-400'}`}
+                      className={`pb-1 ${activeTab === 'med' ? 'text-[#758061] border-b-2 border-[#758061]' : 'text-gray-400'}`}
                     >
                       Medium Priority (2)
                     </button>
                     <button 
                       onClick={() => setActiveTab('low')}
-                      className={`pb-1 ${activeTab === 'low' ? 'text-[#39471D] border-b-2 border-[#39471D]' : 'text-gray-400'}`}
+                      className={`pb-1 ${activeTab === 'low' ? 'text-[#758061] border-b-2 border-[#758061]' : 'text-gray-400'}`}
                     >
                       Low Priority (1)
                     </button>
@@ -295,7 +295,7 @@ export default function ThalloAIPage() {
                     {chatLog.map((chat, idx) => (
                       <div 
                         key={idx} 
-                        className={`text-xs p-3 rounded-3xl max-w-[85%] font-medium ${chat.sender === 'user' ? 'bg-[#39471D] text-white self-end' : 'bg-white border border-gray-100 text-gray-800'}`}
+                        className={`text-xs p-3 rounded-3xl max-w-[85%] font-medium ${chat.sender === 'user' ? 'bg-[#758061] text-white self-end' : 'bg-white border border-gray-100 text-gray-800'}`}
                       >
                         {chat.text}
                       </div>
@@ -318,7 +318,7 @@ export default function ThalloAIPage() {
                     />
                     <button 
                       type="submit" 
-                      className="px-5 py-3 bg-[#39471D] border border-[#39471D] rounded-full text-xs font-bold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all"
+                      className="px-5 py-3 bg-[#758061] border border-[#758061] rounded-full text-xs font-bold text-white hover:bg-[#697357] hover:border-[#697357] transition-all"
                       disabled={isChatLoading}
                     >
                       Query

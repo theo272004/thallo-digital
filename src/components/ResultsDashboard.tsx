@@ -88,7 +88,7 @@ export default function ResultsDashboard() {
           <Eyebrow center className="mb-5 justify-center">Tracked Performance</Eyebrow>
           <SplitReveal
             as="h2"
-            className="text-4xl sm:text-5xl font-medium tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
+            className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
             html="Visualizing authority compounding."
           />
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch] mx-auto">
@@ -155,9 +155,9 @@ export default function ResultsDashboard() {
                   </div>
                   
                   <div className="flex flex-col items-center">
-                    <div ref={bar2Ref} className="w-8 bg-[#39471D] rounded-t-md" style={{ height: '0px' }}></div>
-                    <span className="text-xs font-bold text-[#39471D] mt-2">84%</span>
-                    <span className="text-[11px] text-[#39471D] font-bold mt-1">After Thallo</span>
+                    <div ref={bar2Ref} className="w-8 bg-[#758061] rounded-t-md" style={{ height: '0px' }}></div>
+                    <span className="text-xs font-bold text-[#758061] mt-2">84%</span>
+                    <span className="text-[11px] text-[#758061] font-bold mt-1">After Thallo</span>
                   </div>
                 </div>
               </div>
@@ -171,7 +171,7 @@ export default function ResultsDashboard() {
           className="absolute left-8 bottom-12 bg-white border border-gray-100 p-4 rounded-2xl shadow-lg z-20 flex flex-col gap-1.5"
           style={{ width: '150px' }}
         >
-          <span className="text-[18px] font-bold text-[#39471D] leading-none">+420%</span>
+          <span className="text-[18px] font-bold text-[#758061] leading-none">+420%</span>
           <span className="text-[11px] font-bold tracking-wider text-gray-400 uppercase">Citation Compounding</span>
         </div>
 

@@ -31,7 +31,7 @@ export default function BlogSection() {
           <Eyebrow className="mb-5">Insights</Eyebrow>
           <SplitReveal
             as="h2"
-            className="text-4xl sm:text-5xl font-medium tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
+            className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
             html="Inside the AI visibility playbook."
           />
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch]">
@@ -43,17 +43,17 @@ export default function BlogSection() {
           {posts.map((post, idx) => (
             <div data-reveal className="border border-gray-100 bg-white rounded-3xl overflow-hidden hover:shadow-md transition-shadow duration-300" key={idx}>
               <div className="p-6 bg-gray-50/50 border-b border-gray-50 flex items-center justify-between">
-                <span className="text-[11px] font-bold text-[#39471D] uppercase tracking-wider bg-emerald-50 px-2 py-0.5 rounded-full">
+                <span className="text-[11px] font-bold text-[#758061] uppercase tracking-wider bg-[#758061]/10 px-2 py-0.5 rounded-full">
                   {post.tag}
                 </span>
                 <span className="text-[11px] text-gray-400 font-bold">{post.date}</span>
               </div>
               <div className="p-8">
-                <h3 className="text-base font-bold text-gray-900 leading-snug mb-3 hover:text-[#39471D] transition-colors">
+                <h3 className="text-base font-bold text-gray-900 leading-snug mb-3 hover:text-[#758061] transition-colors">
                   <a href="#blog" onClick={(e) => e.preventDefault()}>{post.title}</a>
                 </h3>
                 <p className="text-xs text-gray-500 leading-relaxed font-semibold mb-6">{post.desc}</p>
-                <a href="#blog" onClick={(e) => e.preventDefault()} className="text-xs font-bold text-[#39471D] flex items-center gap-1">
+                <a href="#blog" onClick={(e) => e.preventDefault()} className="text-xs font-bold text-[#758061] flex items-center gap-1">
                   Read playbook ↗
                 </a>
               </div>

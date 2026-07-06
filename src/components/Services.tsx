@@ -55,7 +55,7 @@ export default function Services() {
           <Eyebrow className="mb-5">Services</Eyebrow>
           <SplitReveal
             as="h2"
-            className="text-4xl sm:text-5xl font-medium tracking-tight text-gray-900 mb-6 font-sans leading-[1.05]"
+            className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 font-sans leading-[1.05]"
             html="One engine, built to make you the reference."
           />
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch]">
@@ -70,17 +70,17 @@ export default function Services() {
               data-reveal
               className={`p-8 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
                 svc.featured
-                  ? 'bg-[#39471D] border border-[#39471D] shadow-[0_30px_70px_-30px_rgba(57,71,29,0.6)]'
-                  : 'bg-gray-50/60 border border-gray-100 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-30px_rgba(57,71,29,0.25)]'
+                  ? 'bg-[#758061] border border-[#758061] shadow-[0_30px_70px_-30px_rgba(57,71,29,0.6)]'
+                  : 'bg-gray-50/60 border border-gray-100 hover:border-[#697357]/40 hover:shadow-[0_24px_60px_-30px_rgba(57,71,29,0.25)]'
               }`}
             >
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <span className={`font-mono text-[11px] font-bold tracking-[0.18em] uppercase ${svc.featured ? 'text-[#DFFF3B]' : 'text-gray-400'}`}>
+                  <span className={`font-mono text-[11px] font-bold tracking-[0.18em] uppercase ${svc.featured ? 'text-white/70' : 'text-gray-400'}`}>
                     {svc.idx} / {svc.kicker}
                   </span>
                   {svc.featured && (
-                    <span className="font-mono text-[11px] font-bold tracking-widest uppercase text-[#39471D] bg-[#DFFF3B] px-2 py-1 rounded-full">
+                    <span className="font-mono text-[11px] font-bold tracking-widest uppercase text-[#758061] bg-white px-2 py-1 rounded-full">
                       Most chosen
                     </span>
                   )}
@@ -94,7 +94,7 @@ export default function Services() {
                 <ul className="flex flex-col gap-3">
                   {svc.items.map((item, i) => (
                     <li key={i} className={`flex items-start gap-2.5 text-sm font-medium ${svc.featured ? 'text-gray-100' : 'text-gray-700'}`}>
-                      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke={svc.featured ? '#DFFF3B' : '#55672E'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 flex-shrink-0">
+                      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke={svc.featured ? '#FFFFFF' : '#697357'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 flex-shrink-0">
                         <path d="M20 6 9 17l-5-5" />
                       </svg>
                       {item}
@@ -103,7 +103,7 @@ export default function Services() {
                 </ul>
               </div>
               <div className={`mt-8 pt-6 border-t ${svc.featured ? 'border-white/15' : 'border-gray-200/70'}`}>
-                <span className={`block text-lg sm:text-xl font-bold tracking-tight ${svc.featured ? 'text-[#DFFF3B]' : 'text-[#39471D]'}`}>
+                <span className={`block text-lg sm:text-xl font-bold tracking-tight ${svc.featured ? 'text-white' : 'text-[#758061]'}`}>
                   {svc.price}
                 </span>
               </div>

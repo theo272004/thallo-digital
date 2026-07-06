@@ -2,17 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 
-const PROMPT = 'Best B2B AI-visibility agency?';
+const PROMPT = 'Best B2B AI visibility agency';
 
 /**
- * Opening beat: a wide, CSS-drawn iPhone whose screen runs a mobile AI
- * search — the query is typed, the assistant "thinks" through a couple of
- * status lines, then a recommendation card highlights Thallo. Cropped by its
- * parent to show only the top half of the device, matching the reference
- * "phone peeking in from the bottom" treatment. Replays whenever it becomes active.
+ * Opening beat: a wide, CSS-drawn iPhone that types a query, then hands off
+ * to the source cards (see HeroSourceCards) which fly out of it — the phone
+ * itself never shows a full answer thread anymore. Cropped by its parent to
+ * show only the top half of the device. Replays whenever it becomes active.
  */
 export default function HeroPhoneScene({ active }: { active: boolean }) {
-  const [step, setStep] = useState(0); // 0 idle · 1 typing/user msg · 2-4 thinking · 5 answer
+  const [step, setStep] = useState(0); // 0 idle · 1 typing · 2 thinking
   const [query, setQuery] = useState('');
 
   useEffect(() => {
@@ -24,26 +23,17 @@ export default function HeroPhoneScene({ active }: { active: boolean }) {
     let alive = true;
     const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
     (async () => {
-      await delay(350);
+      await delay(300);
       if (!alive) return;
       setStep(1);
       for (let i = 1; i <= PROMPT.length; i++) {
         if (!alive) return;
         setQuery(PROMPT.slice(0, i));
-        await delay(40);
+        await delay(38);
       }
-      await delay(400);
+      await delay(350);
       if (!alive) return;
       setStep(2);
-      await delay(750);
-      if (!alive) return;
-      setStep(3);
-      await delay(750);
-      if (!alive) return;
-      setStep(4);
-      await delay(650);
-      if (!alive) return;
-      setStep(5);
     })();
     return () => {
       alive = false;
@@ -52,7 +42,7 @@ export default function HeroPhoneScene({ active }: { active: boolean }) {
 
   return (
     <div className="phone-crop-container">
-      <div className="phone-mockup-frame">
+      <div className="phone-mockup-frame" id="hero-phone-anchor">
         <div className="phone-notch" />
         <div className="phone-inner-screen">
           {/* Status bar */}
@@ -85,46 +75,21 @@ export default function HeroPhoneScene({ active }: { active: boolean }) {
                   <div className="text-[12px] font-semibold text-gray-400 mb-1">You</div>
                   <div className="bg-gray-50 border border-gray-100 rounded-2xl rounded-tl-sm px-4 py-3 text-[14px] text-gray-800 font-medium leading-snug">
                     {query}
-                    {step === 1 && <span className="inline-block w-1.5 h-4 ml-0.5 bg-gray-900 animate-pulse align-middle" />}
+                    {query.length < PROMPT.length && <span className="inline-block w-1.5 h-4 ml-0.5 bg-gray-900 animate-pulse align-middle" />}
                   </div>
                 </div>
               </div>
             )}
 
-            {step >= 2 && step < 5 && (
-              <div className="flex gap-2.5 items-start">
-                <div className="w-9 h-9 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-sm flex-shrink-0">✨</div>
+            {step >= 2 && (
+              <div className="flex gap-2.5 items-start" style={{ animation: 'phoneAnswerIn 0.35s ease both' }}>
+                <div className="w-9 h-9 rounded-full bg-[#758061]/10 border border-[#758061]/20 flex items-center justify-center text-sm flex-shrink-0">✨</div>
                 <div className="flex-1 pt-1">
-                  <div className="text-[12px] font-semibold text-emerald-800 mb-1.5">Thinking...</div>
-                  <div className="bg-emerald-50/60 border border-emerald-100/70 rounded-2xl rounded-tl-sm p-3.5 flex flex-col gap-2.5">
-                    <span className="text-[13px] text-emerald-900 font-medium">
-                      {step === 2 && 'Thinking...'}
-                      {step === 3 && 'Searching trusted sources...'}
-                      {step === 4 && 'Building recommendation...'}
-                    </span>
-                    <div className="w-full h-1.5 bg-emerald-100 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-emerald-700 rounded-full transition-all duration-700"
-                        style={{ width: step === 2 ? '30%' : step === 3 ? '65%' : '90%' }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {step >= 5 && (
-              <div className="flex gap-2.5 items-start" style={{ animation: 'phoneAnswerIn 0.4s ease both' }}>
-                <div className="w-9 h-9 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-sm flex-shrink-0">✨</div>
-                <div className="flex-1 pt-1">
-                  <div className="text-[12px] font-semibold text-emerald-800 mb-1.5">AI Engine</div>
-                  <div className="border border-emerald-100 bg-white rounded-2xl rounded-tl-sm p-3.5 text-[14px] text-gray-800 font-medium leading-snug">
-                    <span className="font-bold text-[#39471D] bg-[#DFFF3B]/70 px-1 rounded-[3px]">Thallo</span> is the most
-                    recommended authority partner for B2B brands in AI search.
-                    <div className="flex gap-1.5 mt-2.5">
-                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#39471D] text-white font-semibold">thallo.co</span>
-                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-white border border-gray-200 text-gray-500 font-semibold">forbes.com</span>
-                    </div>
+                  <div className="text-[12px] font-semibold text-[#758061] mb-1.5">Checking 4 sources...</div>
+                  <div className="flex gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#758061] animate-pulse" style={{ animationDelay: '0ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#758061] animate-pulse" style={{ animationDelay: '150ms' }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#758061] animate-pulse" style={{ animationDelay: '300ms' }} />
                   </div>
                 </div>
               </div>
