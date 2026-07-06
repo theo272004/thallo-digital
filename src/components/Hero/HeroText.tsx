@@ -10,7 +10,7 @@ export default function HeroText() {
         scroll={false}
         fade={false}
         className="hero-tagline font-extrabold text-gray-900 mb-10 select-none"
-        style={{ fontSize: 'clamp(3.4rem, 5.6vw, 5.5rem)', lineHeight: '1.02', letterSpacing: '-0.03em' }}
+        style={{ fontSize: 'clamp(2.8rem, 4.6vw, 4.6rem)', lineHeight: '1.05', letterSpacing: '-0.03em' }}
         html={
           '<span class="block font-sans">Be the answer</span>' +
           '<span class="block mt-2"><span class="inline-block font-serif italic text-gray-900 bg-[#7f9b42] px-2 py-0.5 rounded-[3px] mr-1 leading-tight">AI</span><span class="font-sans">recommends.</span></span>'

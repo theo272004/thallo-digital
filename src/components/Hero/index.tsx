@@ -12,7 +12,7 @@ import { gsap } from '@/lib/gsap';
 type Phase = 'phone' | 'burst' | 'collapse' | 'tabsIntro' | 'browse';
 
 const TAB_COUNT = 4;
-const PHONE_MS = 2800; // typing the query + a brief "checking sources" beat
+const PHONE_MS = 3400; // typing the query + loading + 4 source results appear
 const BURST_MS = 1900; // the 4 source cards fly out, one by one, and hold
 const COLLAPSE_MS = 750; // cards fly back toward the phone
 const TABS_INTRO_MS = 950; // the browser's tabs reveal left to right
