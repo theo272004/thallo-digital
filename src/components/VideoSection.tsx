@@ -16,7 +16,7 @@ export default function VideoSection() {
           <div className="absolute inset-0 bg-[#39471D] opacity-10 group-hover:opacity-20 transition-opacity"></div>
           
           <div className="relative z-10 max-w-xl">
-            <span className="text-[9px] font-mono tracking-widest text-[#55672E] font-bold block mb-2">CASE STUDY</span>
+            <span className="text-[11px] font-mono tracking-widest text-[#55672E] font-bold block mb-2">CASE STUDY</span>
             <h3 className="text-xl sm:text-2xl font-medium tracking-tight mb-2">
               How AI recommendations shape modern enterprise purchasing decisions.
             </h3>
@@ -46,7 +46,7 @@ export default function VideoSection() {
               </button>
               <div className="text-center font-mono text-gray-400 text-xs py-12">
                 <p className="mb-2 font-bold text-gray-700">Video Briefing Player</p>
-                <p className="max-w-[32ch] mx-auto text-[10px] leading-relaxed">
+                <p className="max-w-[32ch] mx-auto text-[11px] leading-relaxed">
                   Loom case-studies, video documentation and interactive demos embed here.
                 </p>
               </div>

@@ -43,10 +43,10 @@ export default function BlogSection() {
           {posts.map((post, idx) => (
             <div data-reveal className="border border-gray-100 bg-white rounded-3xl overflow-hidden hover:shadow-md transition-shadow duration-300" key={idx}>
               <div className="p-6 bg-gray-50/50 border-b border-gray-50 flex items-center justify-between">
-                <span className="text-[9px] font-bold text-[#39471D] uppercase tracking-wider bg-emerald-50 px-2 py-0.5 rounded-md">
+                <span className="text-[11px] font-bold text-[#39471D] uppercase tracking-wider bg-emerald-50 px-2 py-0.5 rounded-full">
                   {post.tag}
                 </span>
-                <span className="text-[10px] text-gray-400 font-bold">{post.date}</span>
+                <span className="text-[11px] text-gray-400 font-bold">{post.date}</span>
               </div>
               <div className="p-8">
                 <h3 className="text-base font-bold text-gray-900 leading-snug mb-3 hover:text-[#39471D] transition-colors">

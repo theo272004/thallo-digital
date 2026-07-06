@@ -67,13 +67,13 @@ export default function ThalloAIPage() {
   };
 
   return (
-    <div className="pt-24 min-h-screen bg-white">
+    <div className="pt-28 min-h-screen bg-white">
       {/* Hero Header Banner */}
       <div className="border-b border-gray-100 py-16 bg-gray-50/50">
         <div className="max-w-3xl mx-auto px-6 text-center">
           <div className="flex items-center gap-2 mb-4 justify-center">
             <span className="w-1.5 h-1.5 rounded-full bg-[#55672E]"></span>
-            <span className="text-[10px] font-bold tracking-[0.12em] uppercase text-gray-500">Thallo Visibility Engine</span>
+            <span className="text-[11px] font-bold tracking-[0.12em] uppercase text-gray-500">Thallo Visibility Engine</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-medium tracking-tight text-gray-900 mb-4 font-sans leading-tight">
             Run your free B2B AI visibility audit
@@ -93,43 +93,43 @@ export default function ThalloAIPage() {
               <h3 className="text-sm font-bold text-gray-900 mb-6 uppercase tracking-wider">Audit Parameters</h3>
               <form onSubmit={startScan} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-gray-900 uppercase tracking-wider">Brand Name</label>
+                  <label className="text-[11px] font-bold text-gray-900 uppercase tracking-wider">Brand Name</label>
                   <input 
                     type="text" 
                     placeholder="e.g. Ledgerly" 
                     value={brand} 
                     onChange={(e) => setBrand(e.target.value)} 
-                    className="px-4 py-3 border border-gray-200 rounded-[12px] bg-white text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-gray-400"
+                    className="px-4 py-3 border border-gray-200 rounded-full bg-white text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-gray-400"
                     required 
                     disabled={isScanning}
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-gray-900 uppercase tracking-wider">Category / Target Query</label>
+                  <label className="text-[11px] font-bold text-gray-900 uppercase tracking-wider">Category / Target Query</label>
                   <input 
                     type="text" 
                     placeholder="e.g. billing automation for SaaS" 
                     value={category} 
                     onChange={(e) => setCategory(e.target.value)} 
-                    className="px-4 py-3 border border-gray-200 rounded-[12px] bg-white text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-gray-400"
+                    className="px-4 py-3 border border-gray-200 rounded-full bg-white text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-gray-400"
                     required 
                     disabled={isScanning}
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-bold text-gray-900 uppercase tracking-wider">Website URL (Optional)</label>
+                  <label className="text-[11px] font-bold text-gray-900 uppercase tracking-wider">Website URL (Optional)</label>
                   <input 
                     type="url" 
                     placeholder="e.g. https://ledgerly.co" 
                     value={url} 
                     onChange={(e) => setUrl(e.target.value)} 
-                    className="px-4 py-3 border border-gray-200 rounded-[12px] bg-white text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-gray-400"
+                    className="px-4 py-3 border border-gray-200 rounded-full bg-white text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-gray-400"
                     disabled={isScanning}
                   />
                 </div>
                 <button 
                   type="submit" 
-                  className="mt-4 px-6 py-3.5 bg-[#39471D] border border-[#39471D] rounded-[16px] text-xs font-bold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all flex items-center justify-center gap-2"
+                  className="mt-4 px-6 py-3.5 bg-[#39471D] border border-[#39471D] rounded-full text-xs font-bold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all flex items-center justify-center gap-2"
                   disabled={isScanning}
                 >
                   {isScanning ? 'Auditing visibility...' : 'Start Audit Scan →'}
@@ -139,8 +139,8 @@ export default function ThalloAIPage() {
 
             {/* Live Console Output Logs */}
             {scanLogs.length > 0 && (
-              <div className="bg-gray-900 text-emerald-500 font-mono text-[10px] p-6 rounded-3xl shadow-inner border border-gray-800 flex flex-col gap-1.5">
-                <span className="text-gray-400 border-b border-gray-800 pb-2 mb-2 font-bold tracking-wider text-[9px] block">
+              <div className="bg-gray-900 text-emerald-500 font-mono text-[11px] p-6 rounded-3xl shadow-inner border border-gray-800 flex flex-col gap-1.5">
+                <span className="text-gray-400 border-b border-gray-800 pb-2 mb-2 font-bold tracking-wider text-[11px] block">
                   CRAWLER CONSOLE LOG
                 </span>
                 <div className="max-h-[160px] overflow-y-auto flex flex-col gap-1">
@@ -163,15 +163,15 @@ export default function ThalloAIPage() {
                 {/* Metric Summary Rows */}
                 <div className="grid grid-cols-3 gap-4">
                   <div className="p-6 bg-white border border-gray-100 rounded-3xl text-center">
-                    <span className="text-[9px] font-bold text-gray-400 tracking-wider uppercase block mb-1">Citations Rate</span>
+                    <span className="text-[11px] font-bold text-gray-400 tracking-wider uppercase block mb-1">Citations Rate</span>
                     <span className="text-3xl font-bold text-[#39471D]">14%</span>
                   </div>
                   <div className="p-6 bg-white border border-gray-100 rounded-3xl text-center">
-                    <span className="text-[9px] font-bold text-gray-400 tracking-wider uppercase block mb-1">Total Mentions</span>
+                    <span className="text-[11px] font-bold text-gray-400 tracking-wider uppercase block mb-1">Total Mentions</span>
                     <span className="text-3xl font-bold text-[#39471D]">2/15</span>
                   </div>
                   <div className="p-6 bg-white border border-gray-100 rounded-3xl text-center">
-                    <span className="text-[9px] font-bold text-gray-400 tracking-wider uppercase block mb-1">Index Status</span>
+                    <span className="text-[11px] font-bold text-gray-400 tracking-wider uppercase block mb-1">Index Status</span>
                     <span className="text-3xl font-bold text-rose-500">POOR</span>
                   </div>
                 </div>
@@ -244,14 +244,14 @@ export default function ThalloAIPage() {
                         <input type="checkbox" className="mt-1" />
                         <div>
                           <strong>Establish primary B2B co-citations in trade registries</strong>
-                          <p className="text-[10px] text-gray-400 font-medium mt-0.5">Publish research reports cited by scraping models.</p>
+                          <p className="text-[11px] text-gray-400 font-medium mt-0.5">Publish research reports cited by scraping models.</p>
                         </div>
                       </li>
                       <li className="flex gap-3 items-start">
                         <input type="checkbox" className="mt-1" />
                         <div>
                           <strong>Fix technical schema structures for crawler parsing</strong>
-                          <p className="text-[10px] text-gray-400 font-medium mt-0.5">Verify organization nodes to build crawler consensus.</p>
+                          <p className="text-[11px] text-gray-400 font-medium mt-0.5">Verify organization nodes to build crawler consensus.</p>
                         </div>
                       </li>
                     </ul>
@@ -263,7 +263,7 @@ export default function ThalloAIPage() {
                         <input type="checkbox" className="mt-1" />
                         <div>
                           <strong>Index expert authors on premium academic registries</strong>
-                          <p className="text-[10px] text-gray-400 font-medium mt-0.5">Validate writer authority values on Google Scholar.</p>
+                          <p className="text-[11px] text-gray-400 font-medium mt-0.5">Validate writer authority values on Google Scholar.</p>
                         </div>
                       </li>
                     </ul>
@@ -275,7 +275,7 @@ export default function ThalloAIPage() {
                         <input type="checkbox" className="mt-1" />
                         <div>
                           <strong>Deploy secondary reference backlinks on B2B forums</strong>
-                          <p className="text-[10px] text-gray-400 font-medium mt-0.5">Increase reference crawler crawl budgets.</p>
+                          <p className="text-[11px] text-gray-400 font-medium mt-0.5">Increase reference crawler crawl budgets.</p>
                         </div>
                       </li>
                     </ul>
@@ -288,20 +288,20 @@ export default function ThalloAIPage() {
                   
                   <div className="bg-gray-50 border border-gray-100 p-4 rounded-2xl flex flex-col gap-3 max-h-[200px] overflow-y-auto mb-4">
                     {chatLog.length === 0 && (
-                      <p className="text-[10px] text-gray-400 font-semibold text-center py-6">
+                      <p className="text-[11px] text-gray-400 font-semibold text-center py-6">
                         Type a category question in the box below to test recommendation outcomes.
                       </p>
                     )}
                     {chatLog.map((chat, idx) => (
                       <div 
                         key={idx} 
-                        className={`text-xs p-3 rounded-xl max-w-[85%] font-medium ${chat.sender === 'user' ? 'bg-[#39471D] text-white self-end' : 'bg-white border border-gray-100 text-gray-800'}`}
+                        className={`text-xs p-3 rounded-3xl max-w-[85%] font-medium ${chat.sender === 'user' ? 'bg-[#39471D] text-white self-end' : 'bg-white border border-gray-100 text-gray-800'}`}
                       >
                         {chat.text}
                       </div>
                     ))}
                     {isChatLoading && (
-                      <div className="bg-white border border-gray-100 text-xs p-3 rounded-xl max-w-[85%] font-medium self-start">
+                      <div className="bg-white border border-gray-100 text-xs p-3 rounded-3xl max-w-[85%] font-medium self-start">
                         Synthesizing recommendations...
                       </div>
                     )}
@@ -313,12 +313,12 @@ export default function ThalloAIPage() {
                       placeholder="e.g. Best addiction clinic in Florida?"
                       value={testQuery}
                       onChange={(e) => setTestQuery(e.target.value)}
-                      className="flex-1 px-4 py-3 border border-gray-200 rounded-[12px] bg-white text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-gray-400"
+                      className="flex-1 px-4 py-3 border border-gray-200 rounded-full bg-white text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-gray-400"
                       disabled={isChatLoading}
                     />
                     <button 
                       type="submit" 
-                      className="px-5 py-3 bg-[#39471D] border border-[#39471D] rounded-[12px] text-xs font-bold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all"
+                      className="px-5 py-3 bg-[#39471D] border border-[#39471D] rounded-full text-xs font-bold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all"
                       disabled={isChatLoading}
                     >
                       Query
@@ -333,7 +333,7 @@ export default function ThalloAIPage() {
                   <path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                 </svg>
                 <p className="text-xs font-bold text-gray-900 mb-2">Awaiting Scan parameters</p>
-                <p className="text-[10px] text-gray-400 font-semibold max-w-[36ch] leading-relaxed">
+                <p className="text-[11px] text-gray-400 font-semibold max-w-[36ch] leading-relaxed">
                   Detailed Share of Voice graphs, prioritized lists, and diagnostic chatbot controls will generate here after scan completion.
                 </p>
               </div>

@@ -105,7 +105,7 @@ export default function ResultsDashboard() {
               <div className="w-2.5 h-2.5 rounded-full bg-gray-200"></div>
               <div className="w-2.5 h-2.5 rounded-full bg-gray-200"></div>
               <div className="w-2.5 h-2.5 rounded-full bg-gray-200"></div>
-              <span className="text-[9px] font-bold tracking-wider text-gray-400 uppercase ml-4">
+              <span className="text-[11px] font-bold tracking-wider text-gray-400 uppercase ml-4">
                 Citations Analytics
               </span>
             </div>
@@ -114,9 +114,9 @@ export default function ResultsDashboard() {
             <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-12">
               {/* Line Chart */}
               <div>
-                <span className="text-[9px] font-bold text-gray-400 block tracking-widest mb-1">TOTAL CITATIONS</span>
+                <span className="text-[11px] font-bold text-gray-400 block tracking-widest mb-1">TOTAL CITATIONS</span>
                 <span className="text-2xl font-bold text-gray-900 block mb-2">+540%</span>
-                <p className="text-[10px] text-gray-400 font-medium leading-relaxed mb-6">
+                <p className="text-[11px] text-gray-400 font-medium leading-relaxed mb-6">
                   Compound Monthly Citation growth index across ChatGPT, Claude and Perplexity.
                 </p>
                 
@@ -141,8 +141,8 @@ export default function ResultsDashboard() {
               {/* Bar Chart */}
               <div className="flex flex-col justify-between">
                 <div>
-                  <span className="text-[9px] font-bold text-gray-400 block tracking-widest mb-1">RECOMMENDATION SHARE</span>
-                  <p className="text-[10px] text-gray-400 font-medium leading-relaxed">
+                  <span className="text-[11px] font-bold text-gray-400 block tracking-widest mb-1">RECOMMENDATION SHARE</span>
+                  <p className="text-[11px] text-gray-400 font-medium leading-relaxed">
                     Percentage of B2B query search answers citing your brand.
                   </p>
                 </div>
@@ -151,13 +151,13 @@ export default function ResultsDashboard() {
                   <div className="flex flex-col items-center">
                     <div ref={bar1Ref} className="w-8 bg-gray-200 rounded-t-md" style={{ height: '0px' }}></div>
                     <span className="text-xs font-bold text-gray-800 mt-2">12%</span>
-                    <span className="text-[9px] text-gray-400 font-medium mt-1">Before Thallo</span>
+                    <span className="text-[11px] text-gray-400 font-medium mt-1">Before Thallo</span>
                   </div>
                   
                   <div className="flex flex-col items-center">
                     <div ref={bar2Ref} className="w-8 bg-[#39471D] rounded-t-md" style={{ height: '0px' }}></div>
                     <span className="text-xs font-bold text-[#39471D] mt-2">84%</span>
-                    <span className="text-[9px] text-[#39471D] font-bold mt-1">After Thallo</span>
+                    <span className="text-[11px] text-[#39471D] font-bold mt-1">After Thallo</span>
                   </div>
                 </div>
               </div>
@@ -172,7 +172,7 @@ export default function ResultsDashboard() {
           style={{ width: '150px' }}
         >
           <span className="text-[18px] font-bold text-[#39471D] leading-none">+420%</span>
-          <span className="text-[8px] font-bold tracking-wider text-gray-400 uppercase">Citation Compounding</span>
+          <span className="text-[11px] font-bold tracking-wider text-gray-400 uppercase">Citation Compounding</span>
         </div>
 
         <div 
@@ -180,8 +180,8 @@ export default function ResultsDashboard() {
           className="absolute right-12 top-16 bg-white border border-gray-100 p-4 rounded-2xl shadow-lg z-20 flex flex-col gap-1.5"
           style={{ width: '160px' }}
         >
-          <span className="text-[10px] font-bold text-gray-800 leading-none">Ranked #1 in Perplexity</span>
-          <span className="text-[8px] text-gray-400 font-medium">Across target categories</span>
+          <span className="text-[11px] font-bold text-gray-800 leading-none">Ranked #1 in Perplexity</span>
+          <span className="text-[11px] text-gray-400 font-medium">Across target categories</span>
         </div>
       </div>
     </section>

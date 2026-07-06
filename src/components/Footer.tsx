@@ -38,7 +38,7 @@ export default function Footer({ setView }: FooterProps) {
         </div>
 
         <div>
-          <h4 className="text-[10px] font-bold text-gray-900 tracking-wider uppercase mb-4">Solutions</h4>
+          <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Solutions</h4>
           <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
             <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)} className="hover:text-[#39471D]">AI Visibility Audit</a>
             <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)} className="hover:text-[#39471D]">Authority Engine</a>
@@ -48,7 +48,7 @@ export default function Footer({ setView }: FooterProps) {
         </div>
 
         <div>
-          <h4 className="text-[10px] font-bold text-gray-900 tracking-wider uppercase mb-4">Industries</h4>
+          <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Industries</h4>
           <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
             <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">Fintech & Payments</a>
             <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">Health Tech & Care</a>
@@ -58,7 +58,7 @@ export default function Footer({ setView }: FooterProps) {
         </div>
 
         <div>
-          <h4 className="text-[10px] font-bold text-gray-900 tracking-wider uppercase mb-4">Company</h4>
+          <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Company</h4>
           <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
             <a href="/" onClick={handleLogoClick} className="hover:text-[#39471D]">About</a>
             <a href="/thallo-ai" onClick={(e) => handleNavClick('ai-tool', e)} className="hover:text-[#39471D]">Thallo AI</a>
@@ -68,7 +68,7 @@ export default function Footer({ setView }: FooterProps) {
         </div>
       </div>
 
-      <div className="max-w-[1440px] mx-auto px-6 border-t border-gray-50 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] font-mono tracking-wider text-gray-400">
+      <div className="max-w-[1440px] mx-auto px-6 border-t border-gray-50 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-mono tracking-wider text-gray-400">
         <span>© 2026 THALLO DIGITAL. ALL RIGHTS RESERVED.</span>
         <span>LINKEDIN · X · HELLO@THALLO.CO</span>
       </div>

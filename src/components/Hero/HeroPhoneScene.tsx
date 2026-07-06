@@ -5,14 +5,14 @@ import React, { useState, useEffect } from 'react';
 const PROMPT = 'Best B2B AI-visibility agency?';
 
 /**
- * Opening beat: a real iPhone (public/phone-frame.png) whose screen runs a
- * generic mobile search — the query is typed, it searches, then a "top answer"
- * recommends Thallo. Replays whenever it becomes active.
- * The screen overlay is positioned as a % of the frame image so it stays aligned
- * at any size.
+ * Opening beat: a wide, CSS-drawn iPhone whose screen runs a mobile AI
+ * search — the query is typed, the assistant "thinks" through a couple of
+ * status lines, then a recommendation card highlights Thallo. Cropped by its
+ * parent to show only the top half of the device, matching the reference
+ * "phone peeking in from the bottom" treatment. Replays whenever it becomes active.
  */
 export default function HeroPhoneScene({ active }: { active: boolean }) {
-  const [step, setStep] = useState(0); // 0 idle · 1 typing · 2 searching · 3 answer
+  const [step, setStep] = useState(0); // 0 idle · 1 typing/user msg · 2-4 thinking · 5 answer
   const [query, setQuery] = useState('');
 
   useEffect(() => {
@@ -24,20 +24,26 @@ export default function HeroPhoneScene({ active }: { active: boolean }) {
     let alive = true;
     const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
     (async () => {
-      await delay(400);
+      await delay(350);
       if (!alive) return;
       setStep(1);
       for (let i = 1; i <= PROMPT.length; i++) {
         if (!alive) return;
         setQuery(PROMPT.slice(0, i));
-        await delay(45);
+        await delay(40);
       }
-      await delay(450);
+      await delay(400);
       if (!alive) return;
       setStep(2);
-      await delay(950);
+      await delay(750);
       if (!alive) return;
       setStep(3);
+      await delay(750);
+      if (!alive) return;
+      setStep(4);
+      await delay(650);
+      if (!alive) return;
+      setStep(5);
     })();
     return () => {
       alive = false;
@@ -45,89 +51,85 @@ export default function HeroPhoneScene({ active }: { active: boolean }) {
   }, [active]);
 
   return (
-    <div className="relative w-[540px] max-w-full select-none">
-      <img
-        src="/thallo-digital/phone-frame.png"
-        alt="Phone showing an AI search result"
-        className="w-full block pointer-events-none"
-        draggable={false}
-      />
-
-      {/* Screen content — positioned to the frame's screen cutout */}
-      <div
-        className="absolute overflow-hidden bg-white flex flex-col text-left"
-        style={{ top: '11.7%', left: '32.7%', width: '34.6%', height: '76.8%', borderRadius: '18px' }}
-      >
-        {/* Status bar */}
-        <div className="flex items-center justify-between px-3 pt-2 pb-1 text-[8px] font-bold text-gray-900">
-          <span>9:41</span>
-          <div className="flex items-center gap-[3px]">
-            {/* signal */}
-            <svg width="11" height="8" viewBox="0 0 11 8" fill="currentColor">
-              <rect x="0" y="6" width="1.6" height="2" rx="0.4" />
-              <rect x="2.6" y="4.4" width="1.6" height="3.6" rx="0.4" />
-              <rect x="5.2" y="2.6" width="1.6" height="5.4" rx="0.4" />
-              <rect x="7.8" y="0.8" width="1.6" height="7.2" rx="0.4" />
-            </svg>
-            {/* wifi */}
-            <svg width="10" height="8" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.6" fill="none">
-              <path d="M5 12.5a11 11 0 0 1 14 0M1.5 9a16 16 0 0 1 21 0M8.5 16a6 6 0 0 1 7 0M12 20h.01" />
-            </svg>
-            {/* battery + charge */}
-            <div className="flex items-center">
-              <div className="w-[16px] h-[8px] rounded-[2px] border border-gray-900/60 p-[1px] flex items-center">
-                <div className="h-full w-[72%] bg-emerald-500 rounded-[1px]" />
-              </div>
-              <div className="w-[1px] h-[3px] bg-gray-900/60 rounded-r ml-[0.5px]" />
-              <svg width="6" height="9" viewBox="0 0 24 24" fill="#059669" className="ml-[1px]">
-                <path d="M13 2 4 14h6l-1 8 9-12h-6z" />
+    <div className="phone-crop-container">
+      <div className="phone-mockup-frame">
+        <div className="phone-notch" />
+        <div className="phone-inner-screen">
+          {/* Status bar */}
+          <div className="flex justify-between items-center text-[12px] font-bold text-gray-900 px-1 pt-1">
+            <span>9:41</span>
+            <div className="flex gap-1.5 items-center">
+              <svg viewBox="0 0 10 10" width="14" height="14" fill="currentColor">
+                <rect x="0" y="8" width="1.5" height="2" rx="0.5" />
+                <rect x="2.5" y="6" width="1.5" height="4" rx="0.5" />
+                <rect x="5" y="4" width="1.5" height="6" rx="0.5" />
+                <rect x="7.5" y="1" width="1.5" height="9" rx="0.5" />
               </svg>
-            </div>
-          </div>
-        </div>
-
-        {/* Generic search field */}
-        <div className="px-3 mt-2">
-          <div className="flex items-center gap-1.5 bg-gray-100 rounded-full px-2.5 py-1.5">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2.4">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m20 20-3.5-3.5" />
-            </svg>
-            <span className="text-[9px] text-gray-800 font-medium leading-none truncate">
-              {query || <span className="text-gray-400">Search</span>}
-              {step === 1 && <span className="inline-block w-[1.5px] h-2.5 ml-[1px] align-middle bg-gray-500 animate-pulse" />}
-            </span>
-          </div>
-        </div>
-
-        {/* Result */}
-        <div className="px-3 mt-3 flex-1">
-          {step === 2 && (
-            <div className="flex items-center gap-1.5 text-[8px] text-gray-400 font-semibold">
-              <span className="w-3 h-3 rounded-full border-[1.5px] border-emerald-500 border-t-transparent animate-spin inline-block" />
-              Searching the web…
-            </div>
-          )}
-          {step === 3 && (
-            <div style={{ animation: 'phoneAnswerIn 0.45s ease both' }}>
-              <div className="flex items-center gap-1 text-[7px] font-bold uppercase tracking-wider text-emerald-700 mb-1.5">
-                <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2z" />
-                </svg>
-                Top answer
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="2.5" fill="none">
+                <path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.1a6 6 0 0 1 6.95 0M12 20h.01" />
+              </svg>
+              <div className="w-6 h-3 border border-gray-900 rounded-[3px] p-0.5 flex items-center">
+                <div className="w-full h-full bg-gray-900 rounded-[1px]" />
               </div>
-              <div className="rounded-lg border border-gray-100 bg-[#f8faf5] p-2">
-                <p className="text-[9px] leading-relaxed text-gray-700">
-                  <span className="font-bold text-[#39471D] bg-[#DFFF3B]/70 px-0.5 rounded-[2px]">Thallo</span> is the most
-                  recommended authority partner for B2B brands in AI search.
-                </p>
-                <div className="flex gap-1 mt-1.5">
-                  <span className="text-[7px] px-1.5 py-0.5 rounded-full bg-[#39471D] text-white font-semibold">thallo.co</span>
-                  <span className="text-[7px] px-1.5 py-0.5 rounded-full bg-white border border-gray-200 text-gray-500 font-semibold">forbes.com</span>
+            </div>
+          </div>
+
+          {/* Conversation */}
+          <div className="flex-1 flex flex-col gap-4 pt-6 px-1">
+            {step >= 1 && (
+              <div className="flex gap-2.5 items-start">
+                <div className="w-9 h-9 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center flex-shrink-0">
+                  <span className="text-[13px] font-bold text-gray-500">U</span>
+                </div>
+                <div className="flex-1 pt-1">
+                  <div className="text-[12px] font-semibold text-gray-400 mb-1">You</div>
+                  <div className="bg-gray-50 border border-gray-100 rounded-2xl rounded-tl-sm px-4 py-3 text-[14px] text-gray-800 font-medium leading-snug">
+                    {query}
+                    {step === 1 && <span className="inline-block w-1.5 h-4 ml-0.5 bg-gray-900 animate-pulse align-middle" />}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+
+            {step >= 2 && step < 5 && (
+              <div className="flex gap-2.5 items-start">
+                <div className="w-9 h-9 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-sm flex-shrink-0">✨</div>
+                <div className="flex-1 pt-1">
+                  <div className="text-[12px] font-semibold text-emerald-800 mb-1.5">Thinking...</div>
+                  <div className="bg-emerald-50/60 border border-emerald-100/70 rounded-2xl rounded-tl-sm p-3.5 flex flex-col gap-2.5">
+                    <span className="text-[13px] text-emerald-900 font-medium">
+                      {step === 2 && 'Thinking...'}
+                      {step === 3 && 'Searching trusted sources...'}
+                      {step === 4 && 'Building recommendation...'}
+                    </span>
+                    <div className="w-full h-1.5 bg-emerald-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-emerald-700 rounded-full transition-all duration-700"
+                        style={{ width: step === 2 ? '30%' : step === 3 ? '65%' : '90%' }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {step >= 5 && (
+              <div className="flex gap-2.5 items-start" style={{ animation: 'phoneAnswerIn 0.4s ease both' }}>
+                <div className="w-9 h-9 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-sm flex-shrink-0">✨</div>
+                <div className="flex-1 pt-1">
+                  <div className="text-[12px] font-semibold text-emerald-800 mb-1.5">AI Engine</div>
+                  <div className="border border-emerald-100 bg-white rounded-2xl rounded-tl-sm p-3.5 text-[14px] text-gray-800 font-medium leading-snug">
+                    <span className="font-bold text-[#39471D] bg-[#DFFF3B]/70 px-1 rounded-[3px]">Thallo</span> is the most
+                    recommended authority partner for B2B brands in AI search.
+                    <div className="flex gap-1.5 mt-2.5">
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#39471D] text-white font-semibold">thallo.co</span>
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-white border border-gray-200 text-gray-500 font-semibold">forbes.com</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

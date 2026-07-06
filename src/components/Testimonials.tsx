@@ -78,7 +78,7 @@ export default function Testimonials() {
                 </div>
                 <div>
                   <div className="text-[11px] font-bold text-gray-900">{rev.name}</div>
-                  <div className="text-[9px] text-gray-400 font-bold">{rev.role}</div>
+                  <div className="text-[11px] text-gray-400 font-bold">{rev.role}</div>
                 </div>
               </div>
             </div>

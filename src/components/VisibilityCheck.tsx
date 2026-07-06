@@ -60,22 +60,22 @@ export default function VisibilityCheck() {
             </p>
             <form onSubmit={handleCheck} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold text-gray-900 uppercase tracking-wider">Company Brand Name</label>
+                <label className="text-[11px] font-bold text-gray-900 uppercase tracking-wider">Company Brand Name</label>
                 <input 
                   type="text" 
                   placeholder="e.g. Ledgerly" 
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
-                  className="px-4 py-3 border border-gray-200 rounded-[12px] bg-white text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-gray-400"
+                  className="px-4 py-3 border border-gray-200 rounded-full bg-white text-xs font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-gray-400"
                   required
                 />
               </div>
               <div className="flex flex-col gap-1.5">
-                <label className="text-[10px] font-bold text-gray-900 uppercase tracking-wider">Category / Industry</label>
+                <label className="text-[11px] font-bold text-gray-900 uppercase tracking-wider">Category / Industry</label>
                 <select 
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="px-4 py-3 border border-gray-200 rounded-[12px] bg-white text-xs font-medium text-gray-800 focus:outline-none focus:border-gray-400"
+                  className="px-4 py-3 border border-gray-200 rounded-full bg-white text-xs font-medium text-gray-800 focus:outline-none focus:border-gray-400"
                 >
                   <option value="Fintech">Fintech & Payments</option>
                   <option value="Health Tech">Health Tech & Recovery</option>
@@ -85,7 +85,7 @@ export default function VisibilityCheck() {
               </div>
               <button 
                 type="submit" 
-                className="mt-4 px-6 py-3.5 bg-[#39471D] border border-[#39471D] rounded-[16px] text-xs font-bold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all flex items-center justify-center gap-2"
+                className="mt-4 px-6 py-3.5 bg-[#39471D] border border-[#39471D] rounded-full text-xs font-bold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all flex items-center justify-center gap-2"
                 disabled={isLoading}
               >
                 {isLoading ? 'Scanning databases...' : 'Run Visibility Check →'}
@@ -104,9 +104,9 @@ export default function VisibilityCheck() {
               <div>
                 <div className="flex items-baseline gap-2 mb-2">
                   <span className="text-4xl font-bold text-[#39471D]">{result.score}%</span>
-                  <span className="text-[8px] font-bold tracking-wider text-gray-400 uppercase">VISIBILITY SCORE</span>
+                  <span className="text-[11px] font-bold tracking-wider text-gray-400 uppercase">VISIBILITY SCORE</span>
                 </div>
-                <p className="text-[10px] text-gray-400 font-medium mb-6">Recommendation rate across target prompts.</p>
+                <p className="text-[11px] text-gray-400 font-medium mb-6">Recommendation rate across target prompts.</p>
                 
                 <div className="flex flex-col gap-2.5 border-t border-b border-gray-50 py-4 mb-6 text-[11px] font-medium">
                   <div className="flex justify-between">

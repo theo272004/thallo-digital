@@ -13,7 +13,7 @@ export default function HeroText() {
         style={{ fontSize: 'clamp(3.1rem, 5.2vw, 5rem)', lineHeight: '1.06' }}
         html={
           '<span class="block font-sans">Be the answer</span>' +
-          '<span class="block mt-2"><span class="inline-block font-serif italic text-[#0c0c0c] bg-[#DFFF3B] px-3 py-0.5 rounded-[14px] mr-1 leading-tight">AI</span><span class="font-sans">recommends.</span></span>'
+          '<span class="block mt-2"><span class="inline-block font-serif italic text-[#39471D] bg-[#DFFF3B] px-3 py-0.5 rounded-full mr-1 leading-tight">AI</span><span class="font-sans">recommends.</span></span>'
         }
       />
 
@@ -32,7 +32,7 @@ export default function HeroText() {
               e.preventDefault();
               scrollToEl('#cta');
             }}
-            className="px-6 py-3.5 rounded-[16px] text-xs font-bold text-white bg-[#39471D] border border-[#39471D] hover:bg-[#55672E] hover:border-[#55672E] transition-all flex items-center gap-2 group shadow-sm shadow-[#39471D]/10"
+            className="px-6 py-3.5 rounded-full text-xs font-bold text-white bg-[#39471D] border border-[#39471D] hover:bg-[#55672E] hover:border-[#55672E] transition-all flex items-center gap-2 group shadow-sm shadow-[#39471D]/10"
           >
             Book an AI visibility audit
             <span className="text-[11px] group-hover:translate-x-0.5 transition-transform">↗</span>
@@ -44,10 +44,10 @@ export default function HeroText() {
             e.preventDefault();
             scrollToEl('#services');
           }}
-          className="px-6 py-3.5 rounded-[16px] text-xs font-bold text-gray-800 border border-gray-200 bg-white hover:border-gray-400 transition-all flex items-center gap-2"
+          className="px-6 py-3.5 rounded-full text-xs font-bold text-gray-800 border border-gray-200 bg-white hover:border-gray-400 transition-all flex items-center gap-2"
         >
           See how it works
-          <span className="text-[10px] text-gray-500">▷</span>
+          <span className="text-[11px] text-gray-500">▷</span>
         </a>
       </div>
 
@@ -61,8 +61,8 @@ export default function HeroText() {
               <circle cx="12" cy="12" r="2" />
             </svg>
           </div>
-          <h5 className="text-[10px] font-bold text-gray-900 tracking-wider uppercase mb-1.5">AI Search Visibility</h5>
-          <p className="text-[10px] text-gray-500 font-medium leading-relaxed">Show up in the answers that matter.</p>
+          <h5 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-1.5">AI Search Visibility</h5>
+          <p className="text-[11px] text-gray-500 font-medium leading-relaxed">Show up in the answers that matter.</p>
         </div>
 
         <div data-reveal>
@@ -71,8 +71,8 @@ export default function HeroText() {
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             </svg>
           </div>
-          <h5 className="text-[10px] font-bold text-gray-900 tracking-wider uppercase mb-1.5">Built on Authority</h5>
-          <p className="text-[10px] text-gray-500 font-medium leading-relaxed">Content, data and signals AI can trust.</p>
+          <h5 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-1.5">Built on Authority</h5>
+          <p className="text-[11px] text-gray-500 font-medium leading-relaxed">Content, data and signals AI can trust.</p>
         </div>
 
         <div data-reveal>
@@ -82,8 +82,8 @@ export default function HeroText() {
               <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3" />
             </svg>
           </div>
-          <h5 className="text-[10px] font-bold text-gray-900 tracking-wider uppercase mb-1.5">Measurable Impact</h5>
-          <p className="text-[10px] text-gray-500 font-medium leading-relaxed">From citations to pipeline and revenue.</p>
+          <h5 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-1.5">Measurable Impact</h5>
+          <p className="text-[11px] text-gray-500 font-medium leading-relaxed">From citations to pipeline and revenue.</p>
         </div>
       </div>
     </div>

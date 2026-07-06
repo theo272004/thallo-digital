@@ -9,15 +9,27 @@ import HeroSourceCards from './HeroSourceCards';
 import { initHeroAnimations } from './HeroAnimations';
 import { gsap } from '@/lib/gsap';
 
-// 0 = phone (animated query) · 1 Google · 2 ChatGPT · 3 Perplexity · 4 Dashboard
-const SCENE_COUNT = 5;
-const sceneDuration = (scene: number) => (scene === 0 ? 6200 : 2800);
+type Phase = 'phone' | 'burst' | 'collapse' | 'browse';
 
+const TAB_COUNT = 4;
+const PHONE_MS = 5000; // long enough for the phone's own type → think → answer beat
+const BURST_MS = 900; // the 4 source cards pop out around the phone
+const COLLAPSE_MS = 650; // cards fly into the browser's tabs; browser fades in under them
+const TAB_MS = 2600; // each browser tab stays active this long
+
+/**
+ * A single looping sequence: the phone plays its query, the source cards
+ * burst out around it, then fly into the matching tab of a browser window
+ * (which fades in beneath them) — so the cards visually *become* the
+ * navigation tabs. The browser then cycles Google → ChatGPT → Forbes →
+ * Perplexity before the whole thing resets to the phone.
+ */
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const columnRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
-  const [scene, setScene] = useState(0);
+  const [phase, setPhase] = useState<Phase>('phone');
+  const [tabIndex, setTabIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
   // Pause the loop while the tab is hidden.
@@ -28,14 +40,32 @@ export default function Hero() {
     return () => document.removeEventListener('visibilitychange', onVis);
   }, []);
 
-  // Self-scheduling advance — the phone beat lasts long enough to play out.
+  // Self-scheduling state machine — each phase queues the next.
   useEffect(() => {
     if (paused) return;
-    const id = window.setTimeout(() => setScene((s) => (s + 1) % SCENE_COUNT), sceneDuration(scene));
-    return () => window.clearTimeout(id);
-  }, [scene, paused]);
+    const delay = phase === 'phone' ? PHONE_MS : phase === 'burst' ? BURST_MS : phase === 'collapse' ? COLLAPSE_MS : TAB_MS;
 
-  // A soft "navigation" glide on each surface change (deliberate, not jittery).
+    const id = window.setTimeout(() => {
+      if (phase === 'phone') setPhase('burst');
+      else if (phase === 'burst') setPhase('collapse');
+      else if (phase === 'collapse') {
+        setTabIndex(0);
+        setPhase('browse');
+      } else {
+        setTabIndex((i) => {
+          const next = i + 1;
+          if (next >= TAB_COUNT) {
+            setPhase('phone');
+            return 0;
+          }
+          return next;
+        });
+      }
+    }, delay);
+    return () => window.clearTimeout(id);
+  }, [phase, tabIndex, paused]);
+
+  // A soft "navigation" glide whenever the active surface changes.
   useEffect(() => {
     const el = stageRef.current;
     if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -44,7 +74,7 @@ export default function Hero() {
       { scale: 0.99, rotateY: -4 },
       { scale: 1, rotateY: 0, duration: 0.8, ease: 'power2.out', overwrite: true }
     );
-  }, [scene]);
+  }, [phase, tabIndex]);
 
   // Gentle scroll parallax on the whole visual column (its only transform source).
   useEffect(() => {
@@ -53,13 +83,15 @@ export default function Hero() {
     }
   }, []);
 
-  const onPhone = scene === 0;
-  const fade = 'transition-all duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]';
+  const phoneVisible = phase === 'phone' || phase === 'burst';
+  const browserVisible = phase === 'collapse' || phase === 'browse';
+  const cardsPhase = phase === 'burst' ? 'burst' : phase === 'collapse' ? 'collapse' : 'hidden';
+  const fade = 'transition-[opacity,transform] duration-[550ms] ease-[cubic-bezier(0.22,1,0.36,1)]';
 
   return (
     <section
       ref={containerRef}
-      className="relative w-full min-h-screen bg-white border-b border-gray-100 flex items-center pt-28 pb-16 overflow-hidden"
+      className="relative w-full min-h-screen bg-white border-b border-gray-100 flex items-center pt-32 pb-16 overflow-hidden"
     >
       <BackgroundGrid />
 
@@ -67,33 +99,34 @@ export default function Hero() {
         {/* Left — copy */}
         <HeroText />
 
-        {/* Right — a query on the phone, then a browser navigating the surfaces */}
+        {/* Right — the phone plays a query, its source cards burst out, then fly into a browser's tabs */}
         <div
           ref={columnRef}
           className="relative w-full max-w-[720px] h-[420px] lg:h-[460px] mx-auto"
           style={{ perspective: '1400px' }}
         >
           <div className="hidden lg:block">
-            <HeroSourceCards scene={scene} />
+            <HeroSourceCards phase={cardsPhase} />
           </div>
 
           <div ref={stageRef} className="absolute inset-0 z-10" style={{ transformStyle: 'preserve-3d' }}>
-            {/* Phone (scene 0) */}
+            {/* Phone */}
             <div
               className={`absolute inset-0 flex items-center justify-center ${fade} ${
-                onPhone ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-95 blur-[2px] pointer-events-none'
+                phoneVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
               }`}
             >
-              <HeroPhoneScene active={onPhone} />
+              <HeroPhoneScene active={phoneVisible} />
             </div>
 
-            {/* Browser (scenes 1–4) */}
+            {/* Browser — always mounted (even invisible) so its tabs have real,
+                measurable positions for the source cards to fly into. */}
             <div
               className={`absolute inset-0 flex items-center justify-center ${fade} ${
-                onPhone ? 'opacity-0 scale-95 blur-[2px] pointer-events-none' : 'opacity-100 scale-100 blur-0'
+                browserVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
               }`}
             >
-              <HeroBrowser scene={onPhone ? 0 : scene - 1} />
+              <HeroBrowser activeIndex={tabIndex} />
             </div>
           </div>
         </div>

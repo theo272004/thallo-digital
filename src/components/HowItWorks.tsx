@@ -133,7 +133,7 @@ export default function HowItWorks() {
           </div>
 
           <div ref={step1Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
-            <div className="text-[10px] font-mono font-bold text-gray-400 mt-1">STEP 01</div>
+            <div className="text-[11px] font-mono font-bold text-gray-400 mt-1">STEP 01</div>
             <div>
               <h3 className="text-md font-bold text-gray-900 mb-2">Audit & Visibility Mapping</h3>
               <p className="text-xs text-gray-500 leading-relaxed font-semibold">
@@ -143,7 +143,7 @@ export default function HowItWorks() {
           </div>
 
           <div ref={step2Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
-            <div className="text-[10px] font-mono font-bold text-gray-400 mt-1">STEP 02</div>
+            <div className="text-[11px] font-mono font-bold text-gray-400 mt-1">STEP 02</div>
             <div>
               <h3 className="text-md font-bold text-gray-900 mb-2">Authority Infrastructure</h3>
               <p className="text-xs text-gray-500 leading-relaxed font-semibold">
@@ -153,7 +153,7 @@ export default function HowItWorks() {
           </div>
 
           <div ref={step3Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
-            <div className="text-[10px] font-mono font-bold text-gray-400 mt-1">STEP 03</div>
+            <div className="text-[11px] font-mono font-bold text-gray-400 mt-1">STEP 03</div>
             <div>
               <h3 className="text-md font-bold text-gray-900 mb-2">Expert Distribution & Seed</h3>
               <p className="text-xs text-gray-500 leading-relaxed font-semibold">
