@@ -12,11 +12,12 @@ import { gsap } from '@/lib/gsap';
 type Phase = 'phone' | 'burst' | 'collapse' | 'tabsIntro' | 'browse';
 
 const TAB_COUNT = 4;
-const PHONE_MS = 3400; // typing the query + loading + 4 source results appear
-const BURST_MS = 1900; // the 4 source cards fly out, one by one, and hold
-const COLLAPSE_MS = 750; // cards fly back toward the phone
-const TABS_INTRO_MS = 950; // the browser's tabs reveal left to right
-const TAB_MS = 2400; // each browser tab stays active this long
+const PHONE_MS = 3600; // typing the query + loading + 4 source results appear
+const BURST_MS = 2200; // the 4 source cards fly out, one by one, and hold
+const COLLAPSE_MS = 850; // cards fly back toward the phone
+const TABS_INTRO_MS = 1700; // window appears, then tabs reveal one by one
+const WINDOW_SETTLE_MS = 550; // gap between window appearing and first tab reveal
+const TAB_MS = 2600; // each browser tab stays active this long
 
 /**
  * A single looping sequence: the phone types a query, the four source cards
@@ -75,12 +76,12 @@ export default function Hero() {
     return () => window.clearTimeout(id);
   }, [phase, tabIndex, paused]);
 
-  // Reveal the browser's tabs one by one once we enter `tabsIntro`.
+  // Reveal the browser's tabs one by one once the window has settled.
   useEffect(() => {
     if (phase !== 'tabsIntro' || paused) return;
     const ids: number[] = [];
     for (let i = 1; i <= TAB_COUNT; i++) {
-      ids.push(window.setTimeout(() => setRevealedTabs(i), (i - 1) * 180));
+      ids.push(window.setTimeout(() => setRevealedTabs(i), WINDOW_SETTLE_MS + (i - 1) * 220));
     }
     return () => ids.forEach((id) => window.clearTimeout(id));
   }, [phase, paused]);

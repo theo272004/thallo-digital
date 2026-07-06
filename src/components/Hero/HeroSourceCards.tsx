@@ -40,8 +40,8 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
         tweens.push(
           gsap.fromTo(
             cardEl,
-            { x: phoneCenter.x - cx, y: phoneCenter.y - cy, scale: 0.3, opacity: 0 },
-            { x: 0, y: 0, scale: 1, opacity: 1, duration: 0.75, ease: 'power3.out', delay: i * 0.12 }
+            { x: phoneCenter.x - cx, y: phoneCenter.y - cy, scale: 0.25, opacity: 0 },
+            { x: 0, y: 0, scale: 1, opacity: 1, duration: 0.9, ease: 'power4.out', delay: i * 0.2 }
           )
         );
       });
@@ -56,11 +56,11 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
           gsap.to(cardEl, {
             x: phoneCenter.x - cx,
             y: phoneCenter.y - cy,
-            scale: 0.25,
+            scale: 0.2,
             opacity: 0,
-            duration: 0.5,
-            ease: 'power2.in',
-            delay: i * 0.06,
+            duration: 0.55,
+            ease: 'power3.in',
+            delay: i * 0.09,
           })
         );
       });

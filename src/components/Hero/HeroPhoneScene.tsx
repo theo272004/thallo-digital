@@ -41,7 +41,7 @@ export default function HeroPhoneScene({ active, burst = false }: { active: bool
       if (!alive) return;
       setStep(3);
       for (let i = 1; i <= RESULTS.length; i++) {
-        await delay(160);
+        await delay(220);
         if (!alive) return;
         setVisibleResults(i);
       }
@@ -111,11 +111,11 @@ export default function HeroPhoneScene({ active, burst = false }: { active: bool
             {step >= 3 && RESULTS.map((r, i) => (
               <div
                 key={r.key}
-                className="flex items-start gap-2 bg-gray-50 border border-gray-100 rounded-xl px-2.5 py-2 transition-all"
+                className="flex items-start gap-2 bg-gray-50 border border-gray-100 rounded-xl px-2.5 py-2"
                 style={{
                   opacity: i < visibleResults ? 1 : 0,
-                  transform: i < visibleResults ? 'translateY(0)' : 'translateY(6px)',
-                  transition: 'opacity 0.25s ease, transform 0.25s ease',
+                  transform: i < visibleResults ? 'translateY(0) scale(1)' : 'translateY(14px) scale(0.96)',
+                  transition: 'opacity 0.5s cubic-bezier(0.34,1.56,0.64,1), transform 0.5s cubic-bezier(0.34,1.56,0.64,1)',
                 }}
               >
                 <div className="w-5 h-5 rounded-md bg-white border border-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5 p-[3px]">
