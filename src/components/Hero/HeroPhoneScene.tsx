@@ -11,7 +11,7 @@ const RESULTS = [
   { key: 'forbes',  logo: '/thallo-digital/logos/forbes.svg',  name: 'Forbes', snippet: 'Winning the race for AI search — Thallo leads B2B.' },
 ];
 
-export default function HeroPhoneScene({ active }: { active: boolean }) {
+export default function HeroPhoneScene({ active, burst = false }: { active: boolean; burst?: boolean }) {
   const [step, setStep] = useState(0); // 0 idle · 1 typing · 2 loading · 3 results
   const [query, setQuery] = useState('');
   const [visibleResults, setVisibleResults] = useState(0);
@@ -92,8 +92,11 @@ export default function HeroPhoneScene({ active }: { active: boolean }) {
             )}
           </div>
 
-          {/* Results / loading area */}
-          <div className="flex-1 pt-2.5 px-0.5 flex flex-col gap-1.5 min-h-0 overflow-hidden">
+          {/* Results / loading area — fades out when cards burst from the phone */}
+          <div
+            className="flex-1 pt-2.5 px-0.5 flex flex-col gap-1.5 min-h-0 overflow-hidden transition-opacity duration-400"
+            style={{ opacity: burst ? 0 : 1 }}
+          >
             {step === 2 && (
               <div className="flex items-center gap-2 px-1 pt-2">
                 <div className="flex gap-1">

@@ -136,7 +136,7 @@ export default function Hero() {
                 phoneVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
               }`}
             >
-              <HeroPhoneScene active={phoneVisible} />
+              <HeroPhoneScene active={phoneVisible} burst={phase === 'burst'} />
             </div>
 
             {/* Browser */}

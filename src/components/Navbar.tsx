@@ -50,23 +50,18 @@ export default function Navbar({ currentView, setView }: NavbarProps) {
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-7">
           <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Services</a>
-          <a href="#shift" onClick={(e) => handleHomeAnchorClick('shift', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">The Shift</a>
           <a href="#approach" onClick={(e) => handleHomeAnchorClick('approach', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Our Approach</a>
-          <a href="#industries" onClick={(e) => handleHomeAnchorClick('industries', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Industries</a>
           <a href="#results" onClick={(e) => handleHomeAnchorClick('results', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Results</a>
           <a href="#blog" onClick={(e) => handleHomeAnchorClick('blog', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Resources</a>
-          <a
-            href="/thallo-ai"
-            onClick={(e) => handleNavClick('ai-tool', e)}
-            className={`text-sm font-semibold transition-colors ${currentView === 'ai-tool' ? 'text-[#39471D] underline underline-offset-4' : 'text-gray-500 hover:text-[#39471D]'}`}
-          >
-            Thallo AI
-          </a>
         </div>
 
         {/* Right CTA */}
         <div className="hidden md:flex items-center gap-3 shrink-0">
-          <a href="#tool" onClick={(e) => handleHomeAnchorClick('tool', e)} className="px-4 py-2 border border-gray-200 rounded-full text-sm font-semibold text-gray-800 hover:border-gray-400 hover:bg-gray-50 transition-all">
+          <a
+            href="/thallo-ai"
+            onClick={(e) => handleNavClick('ai-tool', e)}
+            className="px-4 py-2 border border-gray-200 rounded-full text-sm font-semibold text-gray-800 hover:border-gray-400 hover:bg-gray-50 transition-all"
+          >
             Check my visibility ↗
           </a>
           <Magnetic>
@@ -102,15 +97,13 @@ export default function Navbar({ currentView, setView }: NavbarProps) {
           </button>
           <div className="flex flex-col gap-6 mt-12 text-lg font-bold text-gray-800">
             <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)}>Services</a>
-            <a href="#shift" onClick={(e) => handleHomeAnchorClick('shift', e)}>The Shift</a>
+            <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)}>Services</a>
             <a href="#approach" onClick={(e) => handleHomeAnchorClick('approach', e)}>Our Approach</a>
-            <a href="#industries" onClick={(e) => handleHomeAnchorClick('industries', e)}>Industries</a>
             <a href="#results" onClick={(e) => handleHomeAnchorClick('results', e)}>Results</a>
             <a href="#blog" onClick={(e) => handleHomeAnchorClick('blog', e)}>Resources</a>
-            <a href="/thallo-ai" onClick={(e) => handleNavClick('ai-tool', e)}>Thallo AI</a>
           </div>
           <div className="flex flex-col gap-4 mt-auto">
-            <a href="#tool" onClick={(e) => handleHomeAnchorClick('tool', e)} className="w-full py-3.5 border border-gray-200 rounded-full text-center text-sm font-bold text-gray-800">Check my visibility ↗</a>
+            <a href="/thallo-ai" onClick={(e) => handleNavClick('ai-tool', e)} className="w-full py-3.5 border border-gray-200 rounded-full text-center text-sm font-bold text-gray-800">Check my visibility ↗</a>
             <a href="mailto:hello@thallo.co?subject=AI Visibility Audit Request" className="w-full py-3.5 bg-[#39471D] rounded-full text-center text-sm font-bold text-white">Book an audit ↗</a>
           </div>
         </div>
