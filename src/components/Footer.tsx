@@ -40,30 +40,30 @@ export default function Footer({ setView }: FooterProps) {
         <div>
           <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Solutions</h4>
           <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
-            <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)} className="hover:text-[#758061]">AI Visibility Audit</a>
-            <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)} className="hover:text-[#758061]">Authority Engine</a>
-            <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)} className="hover:text-[#758061]">Flagship Projects</a>
-            <a href="#tool" onClick={(e) => handleHomeAnchorClick('tool', e)} className="hover:text-[#758061]">Visibility Check</a>
+            <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)} className="hover:text-[#39471D]">AI Visibility Audit</a>
+            <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)} className="hover:text-[#39471D]">Authority Engine</a>
+            <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)} className="hover:text-[#39471D]">Flagship Projects</a>
+            <a href="#tool" onClick={(e) => handleHomeAnchorClick('tool', e)} className="hover:text-[#39471D]">Visibility Check</a>
           </div>
         </div>
 
         <div>
           <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Industries</h4>
           <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
-            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#758061]">Fintech & Payments</a>
-            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#758061]">Health Tech & Care</a>
-            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#758061]">SaaS & Enterprise</a>
-            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#758061]">Professional Services</a>
+            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">Fintech & Payments</a>
+            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">Health Tech & Care</a>
+            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">SaaS & Enterprise</a>
+            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">Professional Services</a>
           </div>
         </div>
 
         <div>
           <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Company</h4>
           <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
-            <a href="/" onClick={handleLogoClick} className="hover:text-[#758061]">About</a>
-            <a href="/thallo-ai" onClick={(e) => handleNavClick('ai-tool', e)} className="hover:text-[#758061]">Thallo AI</a>
-            <a href="#contact" onClick={(e) => handleHomeAnchorClick('contact', e)} className="hover:text-[#758061]">Contact</a>
-            <a href="#cta" onClick={(e) => handleHomeAnchorClick('cta', e)} className="hover:text-[#758061]">Book an audit</a>
+            <a href="/" onClick={handleLogoClick} className="hover:text-[#39471D]">About</a>
+            <a href="/thallo-ai" onClick={(e) => handleNavClick('ai-tool', e)} className="hover:text-[#39471D]">Thallo AI</a>
+            <a href="#contact" onClick={(e) => handleHomeAnchorClick('contact', e)} className="hover:text-[#39471D]">Contact</a>
+            <a href="#cta" onClick={(e) => handleHomeAnchorClick('cta', e)} className="hover:text-[#39471D]">Book an audit</a>
           </div>
         </div>
       </div>

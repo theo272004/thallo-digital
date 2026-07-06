@@ -69,11 +69,11 @@ export default function Testimonials() {
           {reviews.map((rev, idx) => (
             <div className="quote-card min-w-[280px] sm:min-w-[340px] p-8 bg-gray-50/50 border border-gray-100 rounded-3xl snap-start flex flex-col justify-between" key={idx}>
               <div>
-                <div className="text-[#758061] text-xs mb-4">{rev.stars}</div>
+                <div className="text-[#39471D] text-xs mb-4">{rev.stars}</div>
                 <p className="text-xs text-gray-500 italic leading-relaxed font-semibold mb-8">“{rev.quote}”</p>
               </div>
               <div className="flex items-center gap-3 mt-auto">
-                <div className="w-8 h-8 rounded-full bg-[#758061]/10 text-[#758061] font-bold flex items-center justify-center text-xs">
+                <div className="w-8 h-8 rounded-full bg-[#39471D]/10 text-[#39471D] font-bold flex items-center justify-center text-xs">
                   {rev.initials}
                 </div>
                 <div>

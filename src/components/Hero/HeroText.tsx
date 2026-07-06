@@ -13,7 +13,7 @@ export default function HeroText() {
         style={{ fontSize: 'clamp(3.4rem, 5.6vw, 5.5rem)', lineHeight: '1.02', letterSpacing: '-0.03em' }}
         html={
           '<span class="block font-sans">Be the answer</span>' +
-          '<span class="block mt-2"><span class="inline-block font-serif italic text-white bg-[#758061] px-3 py-0.5 rounded-full mr-1 leading-tight">AI</span><span class="font-sans">recommends.</span></span>'
+          '<span class="block mt-2"><span class="inline-block font-sans text-white bg-[#758061] px-2 py-0 rounded-[3px] mr-1 leading-tight">AI</span><span class="font-sans">recommends.</span></span>'
         }
       />
 
@@ -32,7 +32,7 @@ export default function HeroText() {
               e.preventDefault();
               scrollToEl('#cta');
             }}
-            className="px-6 py-3.5 rounded-full text-xs font-bold text-white bg-[#758061] border border-[#758061] hover:bg-[#697357] hover:border-[#697357] transition-all flex items-center gap-2 group shadow-sm shadow-[#758061]/10"
+            className="px-6 py-3.5 rounded-full text-xs font-bold text-white bg-[#39471D] border border-[#39471D] hover:bg-[#55672E] hover:border-[#55672E] transition-all flex items-center gap-2 group shadow-sm shadow-[#758061]/10"
           >
             Book an AI visibility audit
             <span className="text-[11px] group-hover:translate-x-0.5 transition-transform">↗</span>

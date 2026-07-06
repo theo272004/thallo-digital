@@ -85,7 +85,7 @@ export default function VisibilityCheck() {
               </div>
               <button 
                 type="submit" 
-                className="mt-4 px-6 py-3.5 bg-[#758061] border border-[#758061] rounded-full text-xs font-bold text-white hover:bg-[#697357] hover:border-[#697357] transition-all flex items-center justify-center gap-2"
+                className="mt-4 px-6 py-3.5 bg-[#39471D] border border-[#39471D] rounded-full text-xs font-bold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all flex items-center justify-center gap-2"
                 disabled={isLoading}
               >
                 {isLoading ? 'Scanning databases...' : 'Run Visibility Check →'}
@@ -97,13 +97,13 @@ export default function VisibilityCheck() {
           <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-md min-h-[300px] flex flex-col justify-center">
             {isLoading ? (
               <div className="text-center py-8">
-                <div className="w-5 h-5 rounded-full border-2 border-[#758061] border-t-transparent animate-spin mx-auto mb-4"></div>
+                <div className="w-5 h-5 rounded-full border-2 border-[#39471D] border-t-transparent animate-spin mx-auto mb-4"></div>
                 <span className="text-xs text-gray-500 font-bold">Crawling model response indexes...</span>
               </div>
             ) : result ? (
               <div>
                 <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-4xl font-bold text-[#758061]">{result.score}%</span>
+                  <span className="text-4xl font-bold text-[#39471D]">{result.score}%</span>
                   <span className="text-[11px] font-bold tracking-wider text-gray-400 uppercase">VISIBILITY SCORE</span>
                 </div>
                 <p className="text-[11px] text-gray-400 font-medium mb-6">Recommendation rate across target prompts.</p>
@@ -111,11 +111,11 @@ export default function VisibilityCheck() {
                 <div className="flex flex-col gap-2.5 border-t border-b border-gray-50 py-4 mb-6 text-[11px] font-medium">
                   <div className="flex justify-between">
                     <span className="text-gray-400">ChatGPT recommendation:</span>
-                    <span className={`font-bold ${result.chatGpt === 'Cited' ? 'text-[#758061]' : 'text-rose-500'}`}>{result.chatGpt}</span>
+                    <span className={`font-bold ${result.chatGpt === 'Cited' ? 'text-[#39471D]' : 'text-rose-500'}`}>{result.chatGpt}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Perplexity recommendation:</span>
-                    <span className={`font-bold ${result.perplexity === 'Mentioned' ? 'text-[#758061]' : 'text-rose-500'}`}>{result.perplexity}</span>
+                    <span className={`font-bold ${result.perplexity === 'Mentioned' ? 'text-[#39471D]' : 'text-rose-500'}`}>{result.perplexity}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Google AI Overview:</span>
@@ -128,7 +128,7 @@ export default function VisibilityCheck() {
                 <a 
                   href="#cta" 
                   onClick={(e) => { e.preventDefault(); document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' }); }}
-                  className="text-xs font-bold text-[#758061] underline"
+                  className="text-xs font-bold text-[#39471D] underline"
                 >
                   Book a full B2B visibility audit to fix this →
                 </a>

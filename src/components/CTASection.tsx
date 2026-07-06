@@ -18,7 +18,7 @@ export default function CTASection() {
         <Magnetic>
           <a
             href="mailto:hello@thallo.co?subject=AI Visibility Audit Request"
-            className="px-8 py-4 bg-[#758061] border border-[#758061] rounded-full text-xs font-bold text-white hover:bg-[#697357] hover:border-[#697357] transition-all inline-flex items-center gap-2 shadow-md shadow-[#758061]/10"
+            className="px-8 py-4 bg-[#39471D] border border-[#39471D] rounded-full text-xs font-bold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all inline-flex items-center gap-2 shadow-md shadow-[#39471D]/10"
           >
             Book your strategy audit ↗
           </a>

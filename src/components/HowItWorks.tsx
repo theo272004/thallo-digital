@@ -97,21 +97,21 @@ export default function HowItWorks() {
             <g ref={leaf1Ref} style={{ transformOrigin: '30px 260px' }} className="origin-center">
               <path 
                 d="M 30,260 C 24,250 18,245 30,232 C 42,245 36,250 30,260 Z" 
-                className="leaf fill-[#758061] stroke-[#FFFFFF] stroke-[1.5]"
+                className="leaf fill-[#39471D] stroke-[#FFFFFF] stroke-[1.5]"
                 transform="rotate(-25 30 260)"
               />
             </g>
             <g ref={leaf2Ref} style={{ transformOrigin: '170px 140px' }} className="origin-center">
               <path 
                 d="M 170,140 C 164,130 158,125 170,112 C 182,125 176,130 170,140 Z" 
-                className="leaf fill-[#758061] stroke-[#FFFFFF] stroke-[1.5]"
+                className="leaf fill-[#39471D] stroke-[#FFFFFF] stroke-[1.5]"
                 transform="rotate(35 170 140)"
               />
             </g>
             <g ref={leaf3Ref} style={{ transformOrigin: '40px 50px' }} className="origin-center">
               <path 
                 d="M 40,50 C 34,40 28,35 40,22 C 52,35 46,40 40,50 Z" 
-                className="leaf fill-[#758061] stroke-[#FFFFFF] stroke-[1.5]"
+                className="leaf fill-[#39471D] stroke-[#FFFFFF] stroke-[1.5]"
                 transform="rotate(-25 40 50)"
               />
             </g>
