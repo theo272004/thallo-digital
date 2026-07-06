@@ -9,22 +9,22 @@ import HeroSourceCards from './HeroSourceCards';
 import { initHeroAnimations } from './HeroAnimations';
 import { gsap } from '@/lib/gsap';
 
-type Phase = 'phone' | 'burst' | 'collapse' | 'tabsIntro' | 'browse';
+type Phase = 'phone' | 'burst' | 'gather' | 'browse';
 
 const TAB_COUNT = 4;
 const PHONE_MS = 3600; // typing the query + loading + 4 source results appear
-const BURST_MS = 2200; // the 4 source cards fly out, one by one, and hold
-const COLLAPSE_MS = 850; // cards fly back toward the phone
-const TABS_INTRO_MS = 1700; // window appears, then tabs reveal one by one
-const WINDOW_SETTLE_MS = 550; // gap between window appearing and first tab reveal
+const BURST_MS = 2000; // the 4 source cards fly out, one by one, and hold
+const GATHER_MS = 2100; // browser window is here (empty); cards fly INTO its tabs
+const GATHER_STAGGER = 240; // gap between each card flying into the window
+const CARD_FLIGHT_MS = 560; // how long a single card takes to reach its tab slot
 const TAB_MS = 2600; // each browser tab stays active this long
 
 /**
  * A single looping sequence: the phone types a query, the four source cards
  * fly out of it one by one (ChatGPT → Google → Perplexity → Forbes), hold,
- * then collapse back toward the phone as the interface turns into a tabbed
- * browser — its tabs revealing left to right — which then slides between
- * each surface before the whole thing resets to the phone.
+ * then fly INTO the browser window one by one — each card landing on its own
+ * tab, so you watch the cards become the tabs left to right — after which the
+ * browser slides between each surface before the whole thing resets.
  */
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -49,18 +49,16 @@ export default function Hero() {
     const delay =
       phase === 'phone' ? PHONE_MS :
       phase === 'burst' ? BURST_MS :
-      phase === 'collapse' ? COLLAPSE_MS :
-      phase === 'tabsIntro' ? TABS_INTRO_MS :
+      phase === 'gather' ? GATHER_MS :
       TAB_MS;
 
     const id = window.setTimeout(() => {
       if (phase === 'phone') setPhase('burst');
-      else if (phase === 'burst') setPhase('collapse');
-      else if (phase === 'collapse') {
+      else if (phase === 'burst') {
         setRevealedTabs(0);
         setTabIndex(0);
-        setPhase('tabsIntro');
-      } else if (phase === 'tabsIntro') {
+        setPhase('gather');
+      } else if (phase === 'gather') {
         setPhase('browse');
       } else {
         setTabIndex((i) => {
@@ -76,12 +74,15 @@ export default function Hero() {
     return () => window.clearTimeout(id);
   }, [phase, tabIndex, paused]);
 
-  // Reveal the browser's tabs one by one once the window has settled.
+  // As each source card flies into the window (during `gather`), reveal the
+  // matching tab right as the card lands — so the cards visibly *become* the
+  // browser's tabs, left to right.
   useEffect(() => {
-    if (phase !== 'tabsIntro' || paused) return;
+    if (phase !== 'gather' || paused) return;
     const ids: number[] = [];
     for (let i = 1; i <= TAB_COUNT; i++) {
-      ids.push(window.setTimeout(() => setRevealedTabs(i), WINDOW_SETTLE_MS + (i - 1) * 220));
+      const landsAt = (i - 1) * GATHER_STAGGER + CARD_FLIGHT_MS - 120;
+      ids.push(window.setTimeout(() => setRevealedTabs(i), landsAt));
     }
     return () => ids.forEach((id) => window.clearTimeout(id));
   }, [phase, paused]);
@@ -105,8 +106,8 @@ export default function Hero() {
   }, []);
 
   const phoneVisible = phase === 'phone' || phase === 'burst';
-  const browserVisible = phase === 'tabsIntro' || phase === 'browse';
-  const cardsPhase = phase === 'burst' ? 'burst' : phase === 'collapse' ? 'collapse' : 'hidden';
+  const browserVisible = phase === 'gather' || phase === 'browse';
+  const cardsPhase = phase === 'burst' ? 'burst' : phase === 'gather' ? 'gather' : 'hidden';
   const fade = 'transition-[opacity,transform] duration-[550ms] ease-[cubic-bezier(0.22,1,0.36,1)]';
 
   return (
@@ -120,7 +121,7 @@ export default function Hero() {
         {/* Left — copy */}
         <HeroText />
 
-        {/* Right — the phone types a query, its source cards fly out, then collapse into a sliding tabbed browser */}
+        {/* Right — the phone types a query, its source cards fly out, then fly into a sliding tabbed browser */}
         <div
           ref={columnRef}
           className="relative w-full max-w-[720px] h-[420px] lg:h-[460px] mx-auto"

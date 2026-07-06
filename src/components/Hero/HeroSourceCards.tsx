@@ -10,27 +10,32 @@ const CARDS = [
   { key: 'forbes', logo: '/thallo-digital/logos/forbes.svg', name: 'Forbes', tag: 'Featured', pos: 'bottom-0 -right-[6%]' },
 ];
 
-type CardsPhase = 'hidden' | 'burst' | 'collapse';
+type CardsPhase = 'hidden' | 'burst' | 'gather';
 
 /**
- * The four source cards — one per AI/search surface — fly out of the phone
- * one by one on `burst` (each animated from the phone's own position to its
- * floating spot, Apple-keynote style: soft shadow, small depth via scale,
- * confident easing), then collapse back toward the phone on `collapse`
- * before the interface becomes a tabbed browser.
+ * The four source cards — one per AI/search surface — fly OUT of the phone
+ * one by one on `burst` (each animated from the phone's screen to its floating
+ * spot, Apple-keynote style: soft shadow, small depth via scale, confident
+ * easing), then on `gather` each one flies INTO the browser window, landing on
+ * its own tab slot — so you literally watch the cards become the tabs.
  */
 export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   useLayoutEffect(() => {
     if (prefersReducedMotion()) return;
-    const phoneEl = document.getElementById('hero-phone-anchor');
-    if (!phoneEl) return;
-    const phoneRect = phoneEl.getBoundingClientRect();
-    const phoneCenter = { x: phoneRect.left + phoneRect.width / 2, y: phoneRect.top + phoneRect.height / 2 };
     const tweens: gsap.core.Tween[] = [];
 
     if (phase === 'burst') {
+      const phoneEl = document.getElementById('hero-phone-anchor');
+      if (!phoneEl) return;
+      const phoneRect = phoneEl.getBoundingClientRect();
+      // Emerge from the phone's screen (upper area, where the results sit) so it
+      // reads as the cards physically leaving the device.
+      const origin = {
+        x: phoneRect.left + phoneRect.width / 2,
+        y: phoneRect.top + phoneRect.height * 0.3,
+      };
       CARDS.forEach((c, i) => {
         const cardEl = cardRefs.current[c.key];
         if (!cardEl) return;
@@ -40,27 +45,32 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
         tweens.push(
           gsap.fromTo(
             cardEl,
-            { x: phoneCenter.x - cx, y: phoneCenter.y - cy, scale: 0.25, opacity: 0 },
-            { x: 0, y: 0, scale: 1, opacity: 1, duration: 0.9, ease: 'power4.out', delay: i * 0.2 }
+            { x: origin.x - cx, y: origin.y - cy, scale: 0.18, opacity: 0, rotateZ: (i % 2 ? 5 : -5) },
+            { x: 0, y: 0, scale: 1, opacity: 1, rotateZ: 0, duration: 0.95, ease: 'power4.out', delay: i * 0.24 }
           )
         );
       });
-    } else if (phase === 'collapse') {
+    } else if (phase === 'gather') {
       CARDS.forEach((c, i) => {
         const cardEl = cardRefs.current[c.key];
-        if (!cardEl) return;
-        const r = cardEl.getBoundingClientRect();
-        const cx = r.left + r.width / 2;
-        const cy = r.top + r.height / 2;
+        // Land on this card's own tab in the browser's tab strip.
+        const tabEl = document.getElementById(`hero-tab-${c.key}`);
+        if (!cardEl || !tabEl) return;
+        const cr = cardEl.getBoundingClientRect();
+        const tr = tabEl.getBoundingClientRect();
+        const cx = cr.left + cr.width / 2;
+        const cy = cr.top + cr.height / 2;
+        const tx = tr.left + tr.width / 2;
+        const ty = tr.top + tr.height / 2;
         tweens.push(
           gsap.to(cardEl, {
-            x: phoneCenter.x - cx,
-            y: phoneCenter.y - cy,
-            scale: 0.2,
+            x: tx - cx,
+            y: ty - cy,
+            scale: 0.14,
             opacity: 0,
-            duration: 0.55,
-            ease: 'power3.in',
-            delay: i * 0.09,
+            duration: 0.56,
+            ease: 'power2.in',
+            delay: i * 0.24,
           })
         );
       });
@@ -76,7 +86,7 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
     }
   }, [phase]);
 
-  const show = phase === 'burst' || phase === 'collapse';
+  const show = phase === 'burst' || phase === 'gather';
 
   return (
     <div className="absolute inset-0 pointer-events-none z-20">

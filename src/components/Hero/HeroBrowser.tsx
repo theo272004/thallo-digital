@@ -14,7 +14,7 @@ const TABS = [
 
 /**
  * A browser window with a real tab strip. Tabs reveal left-to-right as
- * `revealedTabs` grows (0→4) once the source cards collapse into it. The
+ * `revealedTabs` grows (0→4) as each source card flies into it. The
  * content pane is a horizontal track that slides between panels — no
  * cross-fades — so switching tabs always reads as a deliberate move, not a
  * jump cut.
