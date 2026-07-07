@@ -9,6 +9,9 @@ import HeroSourceCards from './HeroSourceCards';
 import { initHeroAnimations } from './HeroAnimations';
 import { gsap } from '@/lib/gsap';
 
+const LOGOS = ['Meridian', 'Northwind', 'Calderon & Co', 'Vireo Health', 'Ledgerly', 'Ashfield'];
+const TICKER = [...LOGOS, ...LOGOS, ...LOGOS];
+
 type Phase = 'phone' | 'burst' | 'gather' | 'browse';
 
 const TAB_COUNT = 4;
@@ -113,11 +116,11 @@ export default function Hero() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full min-h-screen bg-white border-b border-gray-100 flex items-center lg:items-stretch pt-32 pb-16 lg:pb-0 overflow-hidden"
+      className="relative w-full min-h-screen bg-white border-b border-gray-100 flex flex-col pt-24 overflow-hidden"
     >
       <BackgroundGrid />
 
-      <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-1 gap-12 items-center relative z-10 w-full lg:min-h-[calc(100vh-8rem)]">
+      <div className="flex-1 max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 w-full py-4 lg:py-8">
         {/* Left — copy */}
         <HeroText />
 
@@ -127,7 +130,7 @@ export default function Hero() {
           className="relative w-full max-w-[720px] h-[420px] lg:h-[540px] mx-auto lg:self-end"
           style={{ perspective: '1400px' }}
         >
-          <div className="hidden lg:block">
+          <div className="hidden lg:block absolute inset-0">
             <HeroSourceCards phase={cardsPhase} />
           </div>
 
@@ -149,6 +152,22 @@ export default function Hero() {
             >
               <HeroBrowser activeIndex={tabIndex} revealedTabs={browserVisible ? revealedTabs : 0} />
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Ticker — anchored at the bottom of the hero above the fold */}
+      <div className="relative z-10 w-full pb-8 pt-2">
+        <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-center uppercase text-gray-400 mb-5">
+          Cited across the answers your buyers trust
+        </p>
+        <div className="overflow-hidden flex">
+          <div className="flex gap-16 animate-marquee whitespace-nowrap">
+            {TICKER.map((name, i) => (
+              <span key={i} className="text-gray-400 text-sm font-bold tracking-wider">
+                {name}
+              </span>
+            ))}
           </div>
         </div>
       </div>

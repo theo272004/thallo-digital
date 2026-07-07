@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
-import ClientLogos from '@/components/ClientLogos';
 import TheProblem from '@/components/TheProblem';
 import Services from '@/components/Services';
 import HowItWorks from '@/components/HowItWorks';
@@ -33,7 +32,6 @@ export default function Home() {
         {view === 'home' ? (
           <>
             <Hero />
-            <ClientLogos />
             <TheProblem />
             <Services />
             <HowItWorks />
