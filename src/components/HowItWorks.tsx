@@ -195,11 +195,11 @@ export default function HowItWorks() {
         {/* ── Right: content — gap-20 fills the ~860px left column height ───── */}
         <div className="flex flex-col gap-20 lg:pt-[5.5rem]">
           <div>
-            <Eyebrow className="mb-5">Our Method</Eyebrow>
+            <Eyebrow className="mb-5">Our approach</Eyebrow>
             <SplitReveal
               as="h2"
               className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
-              html="How we build AI visibility."
+              html="Authority isn't one thing. It's a few, grown well."
             />
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch]">
               A systematic B2B authority building process that converts search
@@ -210,10 +210,10 @@ export default function HowItWorks() {
           <div ref={step1Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
             <div className="text-[11px] font-mono font-bold text-gray-400 mt-1 flex-shrink-0">STEP 01</div>
             <div>
-              <h3 className="text-base font-bold text-gray-900 mb-2">Audit & Visibility Mapping</h3>
+              <h3 className="text-base font-bold text-gray-900 mb-2">Expert content</h3>
               <p className="text-sm text-gray-500 leading-relaxed">
-                We audit your search presence across ChatGPT, Perplexity, and
-                Google AI Overview. We compile a prioritized action plan.
+                Deeply researched, original work built on real expertise and
+                your own data, the content people cite and return to.
               </p>
             </div>
           </div>
@@ -221,10 +221,10 @@ export default function HowItWorks() {
           <div ref={step2Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
             <div className="text-[11px] font-mono font-bold text-gray-400 mt-1 flex-shrink-0">STEP 02</div>
             <div>
-              <h3 className="text-base font-bold text-gray-900 mb-2">Authority Infrastructure</h3>
+              <h3 className="text-base font-bold text-gray-900 mb-2">Technical infrastructure</h3>
               <p className="text-sm text-gray-500 leading-relaxed">
-                We construct the content assets, research databases, and
-                technical schemas required for AI crawlers to catalog your brand.
+                A site search engines and AI can read, understand, and cite,
+                structured to answer the questions buyers actually ask.
               </p>
             </div>
           </div>
@@ -232,10 +232,10 @@ export default function HowItWorks() {
           <div ref={step3Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
             <div className="text-[11px] font-mono font-bold text-gray-400 mt-1 flex-shrink-0">STEP 03</div>
             <div>
-              <h3 className="text-base font-bold text-gray-900 mb-2">Expert Distribution & Seed</h3>
+              <h3 className="text-base font-bold text-gray-900 mb-2">Distribution</h3>
               <p className="text-sm text-gray-500 leading-relaxed">
-                We seed your insights across authority nodes. Conversational
-                models synthesize these nodes, citation by citation.
+                We carry the work to where buyers already research, so authority
+                is met in the places that shape opinion.
               </p>
             </div>
           </div>

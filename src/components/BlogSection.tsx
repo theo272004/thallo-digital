@@ -5,22 +5,22 @@ import { SplitReveal } from '@/components/motion';
 export default function BlogSection() {
   const posts = [
     {
-      tag: 'GEO Strategy',
-      date: 'June 18, 2026',
-      title: 'Generative Engine Optimization: How LLMs Synthesize Authority',
-      desc: 'An in-depth analysis of how ChatGPT, Claude, and Gemini scrape and process brand citations across clinical and technical hubs.'
+      tag: 'GEO',
+      date: 'June 2026 · 7 min',
+      title: 'What "share of answer" really measures',
+      desc: 'And why it matters more than rankings now.'
     },
     {
-      tag: 'B2B Research',
-      date: 'May 24, 2026',
-      title: 'The Rise of Zero-Click Searches: How Buyers Find Answers Today',
-      desc: 'Why ranking in Google’s top 10 is no longer sufficient when 69% of searches end without a user clicking a single link.'
+      tag: 'Content',
+      date: 'May 2026 · 5 min',
+      title: 'Original research beats AI\'s infinite content',
+      desc: 'The one asset machines can\'t fabricate.'
     },
     {
-      tag: 'Content Engineering',
-      date: 'April 09, 2026',
-      title: 'Building Authority Infrastructure: How to Seed Your B2B Brand',
-      desc: 'A checklist for technical SEO, schema architecture, and consensus PR that convert your company into a cited AI source.'
+      tag: 'Strategy',
+      date: 'May 2026 · 6 min',
+      title: 'Why authority compounds and ads don\'t',
+      desc: 'Renting attention vs. owning credibility.'
     }
   ];
 
@@ -28,11 +28,11 @@ export default function BlogSection() {
     <section className="bg-white py-24 min-h-[80vh] flex flex-col justify-center border-b border-gray-100" id="blog">
       <div className="max-w-[1440px] mx-auto px-6">
         <div className="max-w-3xl mb-16">
-          <Eyebrow className="mb-5">Insights</Eyebrow>
+          <Eyebrow className="mb-5">From the field</Eyebrow>
           <SplitReveal
             as="h2"
             className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
-            html="Inside the AI visibility playbook."
+            html="Notes on getting found, and trusted."
           />
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch]">
             Read our latest research and frameworks on GEO, B2B authority building, and content engineering.

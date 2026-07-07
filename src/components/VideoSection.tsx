@@ -20,9 +20,9 @@ export default function VideoSection() {
           ></div>
 
           <div className="relative z-10 max-w-xl">
-            <span className="text-[11px] font-mono tracking-widest text-white/60 font-bold block mb-2">CASE STUDY</span>
+            <span className="text-[11px] font-mono tracking-widest text-white/60 font-bold block mb-2">Case film · 2 min</span>
             <h3 className="text-xl sm:text-2xl font-bold tracking-tight mb-2">
-              How AI recommendations shape modern enterprise purchasing decisions.
+              How we made Northwind the cited authority in 90 days
             </h3>
             <p className="text-xs text-white/60 font-semibold">Click to watch our 3-minute executive briefing video.</p>
           </div>

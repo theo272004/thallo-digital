@@ -33,7 +33,7 @@ export default function Footer({ setView }: FooterProps) {
             <img src="/thallo-digital/logo.png" alt="Thallo Digital" className="h-5 object-contain" />
           </a>
           <p className="text-[11px] text-gray-400 font-semibold leading-relaxed max-w-[28ch]">
-            The AI visibility agency. We make B2B brands the default citation and recommendation in LLM search answers.
+            The AI visibility agency. We make our clients the name buyers and algorithms trust.
           </p>
         </div>
 
@@ -50,10 +50,10 @@ export default function Footer({ setView }: FooterProps) {
         <div>
           <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Industries</h4>
           <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
-            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">Fintech & Payments</a>
-            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">Health Tech & Care</a>
-            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">SaaS & Enterprise</a>
-            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">Professional Services</a>
+            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">Fintech</a>
+            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">Health tech</a>
+            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">Professional services</a>
+            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">Health & recovery</a>
           </div>
         </div>
 
@@ -61,7 +61,7 @@ export default function Footer({ setView }: FooterProps) {
           <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Company</h4>
           <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
             <a href="/" onClick={handleLogoClick} className="hover:text-[#39471D]">About</a>
-            <a href="/thallo-ai" onClick={(e) => handleNavClick('ai-tool', e)} className="hover:text-[#39471D]">Thallo AI</a>
+            <a href="/thallo-ai" onClick={(e) => handleNavClick('ai-tool', e)} className="hover:text-[#39471D]">Blog</a>
             <a href="#contact" onClick={(e) => handleHomeAnchorClick('contact', e)} className="hover:text-[#39471D]">Contact</a>
             <a href="#cta" onClick={(e) => handleHomeAnchorClick('cta', e)} className="hover:text-[#39471D]">Book an audit</a>
           </div>
@@ -69,8 +69,8 @@ export default function Footer({ setView }: FooterProps) {
       </div>
 
       <div className="max-w-[1440px] mx-auto px-6 border-t border-gray-50 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-mono tracking-wider text-gray-400">
-        <span>© 2026 THALLO DIGITAL. ALL RIGHTS RESERVED.</span>
-        <span>LINKEDIN · X · HELLO@THALLO.CO</span>
+        <span>© 2026 Thallo Digital. All rights reserved.</span>
+        <span>LinkedIn · X · hello@thallo.co</span>
       </div>
     </footer>
   );

@@ -27,7 +27,7 @@ export default function Services() {
         'Deeply researched original content',
         'Site built to be read & cited',
         'Distribution where buyers research',
-        'Monthly reporting on business outcomes',
+        'Monthly outcome reporting',
       ],
       price: 'From $2,500 / month · 6-month term',
       featured: true,
@@ -56,7 +56,7 @@ export default function Services() {
           <SplitReveal
             as="h2"
             className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 font-sans leading-[1.05]"
-            html="One engine, built to<br>make you the reference."
+            html="One engine. Built to<br>make you the reference."
           />
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch]">
             A low-risk way in, a compounding core program, and premium projects when you&rsquo;re ready to accelerate.

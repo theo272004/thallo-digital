@@ -9,25 +9,32 @@ export default function Testimonials() {
 
   const reviews = [
     {
-      initials: 'MC',
-      name: 'Mark Cleary',
-      role: 'VP of Growth, Meridian',
+      initials: 'DM',
+      name: 'Dana Mercer',
+      role: 'VP Marketing, Ledgerly',
       stars: '★★★★★',
-      quote: 'Before Thallo, Perplexity and ChatGPT kept recommending our competitors. Within 90 days, we became the default cited choice for enterprise queries. The ROI was clear immediately.'
+      quote: 'Within a quarter, we were the name coming up in ChatGPT for our category. Sales stopped having to explain who we were.'
     },
     {
-      initials: 'NH',
-      name: 'Natalie Horn',
-      role: 'CMO, Northwind FinTech',
+      initials: 'RK',
+      name: 'Raj Kapoor',
+      role: 'Founder, Vireo Health',
       stars: '★★★★★',
-      quote: 'Zero-click searches were killing our pipeline. Thallo built the research asset infrastructure that turned our brand into the authority B2B buyers find first.'
+      quote: 'They didn’t just publish more. They made the accurate version of our story the one the market and the AI actually find.'
     },
     {
-      initials: 'SL',
-      name: 'Sarah Ledger',
-      role: 'Founder, Ledgerly',
+      initials: 'EC',
+      name: 'Elena Castro',
+      role: 'CEO, Calderon & Co',
       stars: '★★★★★',
-      quote: 'They don’t sell standard B2B SEO. They build the distribution consensus and co-citations that dictate what AI tells buyers. Absolute game changer.'
+      quote: 'The audit alone paid for itself. We finally saw exactly where we were invisible and why competitors were winning.'
+    },
+    {
+      initials: 'TN',
+      name: 'Tom Nguyen',
+      role: 'Head of Growth, Northwind',
+      stars: '★★★★★',
+      quote: 'Authority that compounds is real. Every month our content works harder, and it’s not something a competitor can copy overnight.'
     }
   ];
 
@@ -54,11 +61,11 @@ export default function Testimonials() {
     <section className="bg-white py-24 min-h-[80vh] flex flex-col justify-center border-b border-gray-100" id="testimonials">
       <div className="max-w-[1440px] mx-auto px-6">
         <div className="max-w-3xl mb-16">
-          <Eyebrow className="mb-5">Social Proof</Eyebrow>
+          <Eyebrow className="mb-5">In their words</Eyebrow>
           <SplitReveal
             as="h2"
             className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
-            html="Recommended by industry leaders."
+            html="Teams that became the answer."
           />
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch]">
             Read how fast-growing fintechs, SaaS providers, and treatment centers use Thallo to establish visibility.

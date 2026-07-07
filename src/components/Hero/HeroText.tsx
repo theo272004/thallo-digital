@@ -12,15 +12,15 @@ export default function HeroText() {
         className="hero-tagline font-extrabold text-gray-900 mb-10 select-none"
         style={{ fontSize: 'clamp(2.8rem, 4.6vw, 4.6rem)', lineHeight: '1.05', letterSpacing: '-0.03em' }}
         html={
-          '<span class="block font-sans">Be the answer</span>' +
+          '<span class="block font-sans">Be the name</span>' +
           '<span class="block mt-2"><span class="inline-block font-serif italic text-gray-900 bg-[#7f9b42] px-2 py-0.5 rounded-xl mr-1 leading-tight">AI</span><span class="font-sans">recommends.</span></span>'
         }
       />
 
       {/* Lede */}
       <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[36ch] mb-12">
-        Your buyers ask AI before they ever ask you. Thallo builds the authority, infrastructure, and content that make
-        your company the <strong className="text-gray-900 font-bold">trusted answer</strong>.
+        Your buyers ask ChatGPT, Perplexity, and Google before they ever ask you. Thallo makes sure the answer they get
+        is your brand, built on <strong className="text-gray-900 font-bold">authority</strong> that compounds.
       </p>
 
       {/* CTAs */}

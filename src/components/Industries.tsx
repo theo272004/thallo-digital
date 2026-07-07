@@ -75,7 +75,7 @@ export default function Industries() {
             html="Where trust decides the sale."
           />
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch]">
-            We go deep in high-consideration categories — where buyers research hard and choose the provider they trust
+            We go deep in high-consideration categories, where buyers research hard and choose the provider they trust
             most.
           </p>
         </div>

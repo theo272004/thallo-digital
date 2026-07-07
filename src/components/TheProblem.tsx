@@ -56,7 +56,7 @@ export default function TheProblem() {
             html="Buying now starts with a question typed into a machine."
           />
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[50ch]">
-            Search results pages of ten blue links are fading. Conversational AIs formulate recommendations directly. If you aren't recommended there, your brand is invisible.
+            The brand it names first is the one that wins.
           </p>
         </div>
 
@@ -64,19 +64,19 @@ export default function TheProblem() {
           <div className="p-8 bg-gray-50/50 border border-gray-100 rounded-3xl">
             <div className="text-4xl sm:text-5xl font-serif text-[#39471D] mb-4 font-bold" ref={num1Ref}>0%</div>
             <p className="text-[11px] font-bold tracking-wider uppercase text-gray-900 mb-2">B2B AI evaluation</p>
-            <p className="text-xs text-gray-500 leading-relaxed font-medium">of B2B buyers used conversational engines during a recent purchase to audit vendor specifications.</p>
+            <p className="text-xs text-gray-500 leading-relaxed font-medium">of B2B buyers used AI during a recent purchase to evaluate vendors.</p>
           </div>
           
           <div className="p-8 bg-gray-50/50 border border-gray-100 rounded-3xl">
             <div className="text-4xl sm:text-5xl font-serif text-[#39471D] mb-4 font-bold" ref={num2Ref}>0%</div>
             <p className="text-[11px] font-bold tracking-wider uppercase text-gray-900 mb-2">Zero-Click Searches</p>
-            <p className="text-xs text-gray-500 leading-relaxed font-medium">of search queries now end directly within conversational responses without a single click to a vendor website.</p>
+            <p className="text-xs text-gray-500 leading-relaxed font-medium">of searches now end without a single click to a website.</p>
           </div>
           
           <div className="p-8 bg-gray-50/50 border border-gray-100 rounded-3xl">
             <div className="text-4xl sm:text-5xl font-serif text-[#39471D] mb-4 font-bold" ref={num3Ref}>0</div>
             <p className="text-[11px] font-bold tracking-wider uppercase text-gray-900 mb-2">Primary recommendation</p>
-            <p className="text-xs text-gray-500 leading-relaxed font-medium">answer. AI engines select and synthesize one consolidated recommendation rather than providing options.</p>
+            <p className="text-xs text-gray-500 leading-relaxed font-medium">answer. AI gives one recommendation, not a page of ten links.</p>
           </div>
         </div>
       </div>

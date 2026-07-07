@@ -49,14 +49,14 @@ export default function VisibilityCheck() {
         <div className="bg-gray-50/50 border border-gray-100 rounded-[32px] p-8 sm:p-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Panel: Form */}
           <div>
-            <Eyebrow className="mb-5">Interactive Diagnosis</Eyebrow>
+            <Eyebrow className="mb-5">Free demo</Eyebrow>
             <SplitReveal
               as="h2"
               className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
-              html="Check your AI visibility."
+              html="How visible are you to AI?"
             />
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch] mb-8">
-              Enter your B2B brand and category to estimate your current recommendation rate across ChatGPT, Claude, and Google AI Overview.
+              Enter your brand and category to see a sample of how an AI visibility check looks. Your real audit goes far deeper.
             </p>
             <form onSubmit={handleCheck} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
