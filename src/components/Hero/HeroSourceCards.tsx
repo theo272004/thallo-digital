@@ -48,8 +48,8 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
         tweens.push(
           gsap.fromTo(
             cardEl,
-            { x: origin.x - cx, y: origin.y - cy, scale: 0.42, opacity: 0, rotateZ: (i % 2 ? 3 : -3) },
-            { x: 0, y: 0, scale: 1, opacity: 1, rotateZ: 0, duration: 1.2, ease: 'power2.out', delay: i * 0.32 }
+            { x: origin.x - cx, y: origin.y - cy, scale: 0.4, opacity: 0, rotateZ: (i % 2 ? 3 : -3) },
+            { x: 0, y: 0, scale: 1, opacity: 1, rotateZ: 0, duration: 1.3, ease: 'power2.out', delay: i * 0.34 }
           )
         );
       });
@@ -65,16 +65,26 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
         const cy = cr.top + cr.height / 2;
         const tx = tr.left + tr.width / 2;
         const ty = tr.top + tr.height / 2;
+        const d = i * 0.3; // stagger — keep in sync with GATHER_STAGGER (300ms)
+        // 1) Glide to the tab and shrink to roughly the tab's footprint (156×73 →
+        //    ~0.46 ≈ 72×34), staying fully opaque so you watch it travel and
+        //    resize — the card is literally turning into a tab.
         tweens.push(
           gsap.to(cardEl, {
             x: tx - cx,
             y: ty - cy,
-            scale: 0.12,
-            opacity: 0,
-            duration: 0.7,
+            scale: 0.46,
+            rotateZ: 0,
+            duration: 1.0, // keep in sync with CARD_FLIGHT_MS (1000ms)
             ease: 'power2.inOut',
-            delay: i * 0.3,
+            delay: d,
           })
+        );
+        // 2) Only in the last third of the flight does it dissolve — right as it
+        //    overlaps the tab and the real tab blooms in underneath, so the
+        //    hand-off reads as one continuous morph, not a card that vanishes.
+        tweens.push(
+          gsap.to(cardEl, { opacity: 0, duration: 0.34, ease: 'power1.in', delay: d + 0.66 })
         );
       });
     }

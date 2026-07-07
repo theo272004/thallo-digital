@@ -16,10 +16,10 @@ type Phase = 'phone' | 'burst' | 'gather' | 'browse';
 
 const TAB_COUNT = 4;
 const PHONE_MS = 3600; // typing the query + loading + 4 source results appear
-const BURST_MS = 2500; // the 4 source cards glide out, one by one, and hold
-const GATHER_MS = 2200; // browser window is here (empty); cards fly INTO its tabs
+const BURST_MS = 2600; // the 4 source cards glide out, one by one, and hold
+const GATHER_MS = 2500; // browser window is here; cards morph INTO its tabs
 const GATHER_STAGGER = 300; // gap between each card flying into the window
-const CARD_FLIGHT_MS = 700; // how long a single card takes to reach its tab slot
+const CARD_FLIGHT_MS = 1000; // how long a single card takes to reach + dissolve into its tab
 const TAB_MS = 2600; // each browser tab stays active this long
 
 /**
@@ -84,7 +84,9 @@ export default function Hero() {
     if (phase !== 'gather' || paused) return;
     const ids: number[] = [];
     for (let i = 1; i <= TAB_COUNT; i++) {
-      const landsAt = (i - 1) * GATHER_STAGGER + CARD_FLIGHT_MS - 120;
+      // Reveal each tab right as its card begins dissolving (~68% through the
+      // flight), so the tab blooms in underneath while the card fades out.
+      const landsAt = (i - 1) * GATHER_STAGGER + CARD_FLIGHT_MS * 0.68;
       ids.push(window.setTimeout(() => setRevealedTabs(i), landsAt));
     }
     return () => ids.forEach((id) => window.clearTimeout(id));
@@ -111,7 +113,7 @@ export default function Hero() {
   const phoneVisible = phase === 'phone' || phase === 'burst';
   const browserVisible = phase === 'gather' || phase === 'browse';
   const cardsPhase = phase === 'burst' ? 'burst' : phase === 'gather' ? 'gather' : 'hidden';
-  const fade = 'transition-[opacity,transform] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]';
+  const fade = 'transition-[opacity,transform] duration-[850ms] ease-[cubic-bezier(0.22,1,0.36,1)]';
 
   return (
     <section
@@ -135,19 +137,21 @@ export default function Hero() {
           </div>
 
           <div ref={stageRef} className="absolute inset-0 z-10" style={{ transformStyle: 'preserve-3d' }}>
-            {/* Phone */}
+            {/* Phone — recedes gently (small scale + slight upward drift) as it
+                hands off to the browser, instead of snapping away */}
             <div
               className={`absolute inset-0 flex items-center justify-center ${fade} ${
-                phoneVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-90 pointer-events-none'
+                phoneVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-[0.96] -translate-y-3 pointer-events-none'
               }`}
             >
               <HeroPhoneScene active={phoneVisible} burst={phase === 'burst'} />
             </div>
 
-            {/* Browser */}
+            {/* Browser — raised on desktop (pb pushes the centered window up so it
+                sits in the middle of the space, not the bottom third) */}
             <div
-              className={`absolute inset-0 flex items-center justify-center ${fade} ${
-                browserVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
+              className={`absolute inset-0 flex items-center justify-center lg:pb-[120px] ${fade} ${
+                browserVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-[0.97] pointer-events-none'
               }`}
             >
               <HeroBrowser activeIndex={tabIndex} revealedTabs={browserVisible ? revealedTabs : 0} />
