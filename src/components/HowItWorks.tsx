@@ -32,6 +32,7 @@ export default function HowItWorks() {
   const step1Ref = useRef<HTMLDivElement>(null);
   const step2Ref = useRef<HTMLDivElement>(null);
   const step3Ref = useRef<HTMLDivElement>(null);
+  const step4Ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!sectionRef.current || !stemRef.current) return;
@@ -85,7 +86,7 @@ export default function HowItWorks() {
     tl.to(florFinRef.current, { scale: 1, opacity: 1, ease: 'power2.out', duration: 1.2 }, 8.8);
 
     // ── Step highlights (non-scrubbed, one-way) ────────────────────────────
-    [step1Ref, step2Ref, step3Ref].forEach((ref) => {
+    [step1Ref, step2Ref, step3Ref, step4Ref].forEach((ref) => {
       if (!ref.current) return;
       ScrollTrigger.create({
         trigger: ref.current,
@@ -107,7 +108,7 @@ export default function HowItWorks() {
       <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[38%_1fr] gap-16 items-start">
 
         {/* ── Left: Illustrator SVG, flush with the section border ──────────── */}
-        <div className="relative hidden lg:block" style={{ height: '860px' }}>
+        <div className="relative hidden lg:block" style={{ height: '1000px' }}>
           <svg
             viewBox="0 0 205.56 764.83"
             xmlns="http://www.w3.org/2000/svg"
@@ -236,6 +237,17 @@ export default function HowItWorks() {
               <p className="text-sm text-gray-500 leading-relaxed">
                 We carry the work to where buyers already research, so authority
                 is met in the places that shape opinion.
+              </p>
+            </div>
+          </div>
+
+          <div ref={step4Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
+            <div className="text-[11px] font-mono font-bold text-gray-400 mt-1 flex-shrink-0">STEP 04</div>
+            <div>
+              <h3 className="text-base font-bold text-gray-900 mb-2">Coherence</h3>
+              <p className="text-sm text-gray-500 leading-relaxed">
+                One narrative, one standard of quality, repeated across every
+                channel and every month until it becomes reputation.
               </p>
             </div>
           </div>

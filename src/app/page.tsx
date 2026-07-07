@@ -15,6 +15,7 @@ import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
 import ThalloAIPage from '@/components/ThalloAIPage';
 import Industries from '@/components/Industries';
+import About from '@/components/About';
 import { useRevealBatch } from '@/components/motion';
 
 export default function Home() {
@@ -41,6 +42,7 @@ export default function Home() {
             <VideoSection />
             <VisibilityCheck />
             <BlogSection />
+            <About />
             <CTASection />
           </>
         ) : (
