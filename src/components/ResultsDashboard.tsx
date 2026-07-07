@@ -82,7 +82,7 @@ export default function ResultsDashboard() {
   }, []);
 
   return (
-    <section className="bg-gray-50/50 py-24 border-b border-gray-100 relative overflow-hidden" id="results" ref={containerRef}>
+    <section className="bg-gray-50/50 py-24 min-h-[80vh] flex flex-col justify-center border-b border-gray-100 relative overflow-hidden" id="results" ref={containerRef}>
       <div className="max-w-[1440px] mx-auto px-6">
         <div className="max-w-3xl mb-16 mx-auto text-center">
           <Eyebrow center className="mb-5 justify-center">Tracked Performance</Eyebrow>
