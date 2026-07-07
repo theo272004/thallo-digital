@@ -12,115 +12,171 @@ if (typeof window !== 'undefined') {
 
 const INK = '#39471D';
 
-// Organic almond-shaped leaf — base at (0,0), tip at (0,−h)
-// wL/wR for subtle asymmetry, feels hand-drawn
+// Almond-shaped leaf: base at (0,0), tip at (0,−h), slight asymmetry
 function leafD(wL: number, wR: number, h: number): string {
-  return [
-    `M 0,0`,
-    `C ${-wL},${-h * 0.28} ${-wL * 0.65},${-h * 0.72} 0,${-h}`,
-    `C ${wR * 0.65},${-h * 0.72} ${wR},${-h * 0.28} 0,0 Z`,
-  ].join(' ');
+  return (
+    `M 0,0 C ${-wL},${-h * 0.24} ${-wL * 0.6},${-h * 0.74} 0,${-h} ` +
+    `C ${wR * 0.6},${-h * 0.74} ${wR},${-h * 0.24} 0,0 Z`
+  );
 }
 
-// Simple 5-petal Scandinavian flower — all centered at (0,0)
-function Petals({ r }: { r: number }) {
+// Minimal botanical flower: n oval petals arranged around origin + solid center
+function Petals({ r, n = 5 }: { r: number; n?: number }) {
+  const step = 360 / n;
   return (
     <>
-      {[0, 72, 144, 216, 288].map((a) => (
+      {Array.from({ length: n }, (_, i) => (
         <ellipse
-          key={a}
+          key={i}
           cx={0}
-          cy={-r * 0.9}
-          rx={r * 0.3}
-          ry={r * 0.46}
+          cy={-r * 0.78}
+          rx={r * 0.26}
+          ry={r * 0.44}
           fill={INK}
-          transform={`rotate(${a})`}
-          style={{ transformBox: 'fill-box' }}
+          transform={`rotate(${i * step})`}
         />
       ))}
-      <circle r={r * 0.38} fill={INK} />
+      <circle r={r * 0.3} fill={INK} />
     </>
   );
 }
 
-// Each leaf: outer <g> holds SVG positioning, inner <g> is GSAP target
-const LEAVES: { x: number; y: number; rot: number; wL: number; wR: number; h: number }[] = [
-  { x: 110, y: 152, rot: -132, wL: 15, wR: 11, h: 52 },
-  { x: 126, y: 238, rot:  -48, wL: 11, wR: 15, h: 36 },
-  { x: 130, y: 326, rot: -146, wL: 20, wR: 14, h: 66 },
-  { x: 104, y: 418, rot:  -40, wL: 13, wR: 17, h: 44 },
-  { x: 102, y: 506, rot: -152, wL: 18, wR: 13, h: 58 },
-  { x: 128, y: 604, rot:  -38, wL: 22, wR: 16, h: 72 },
-  { x: 112, y: 694, rot: -142, wL: 12, wR:  9, h: 40 },
+// ── Stem ──────────────────────────────────────────────────────────────────────
+// One long organic vine — subtle drift, not repetitive S-curves.
+// Starts at y=0 (top border), terminates at terminal flower (y=800).
+const STEM =
+  'M 115,0 ' +
+  'C 113,42 104,88 98,152 ' +
+  'C 92,216 84,234 82,262 ' +
+  'C 80,290 72,308 70,328 ' +
+  'C 68,348 76,368 90,392 ' +
+  'C 104,416 126,428 130,460 ' +
+  'C 134,492 118,510 110,528 ' +
+  'C 102,546 86,560 82,582 ' +
+  'C 78,604 78,622 82,644 ' +
+  'C 86,666 118,682 126,706 ' +
+  'C 134,730 122,756 115,780';
+
+// ── Secondary branches — short organic paths from stem to leaf attachment ─────
+const BRANCHES = [
+  'M 98,152 C 86,150 74,148 62,145',           // 1 · left
+  'M 82,252 C 94,248 108,244 120,240',          // 2 · right
+  'M 70,318 C 57,314 42,310 28,305',            // 3 · left  (large leaf)
+  'M 93,398 C 106,394 120,390 136,385',         // 4 · right
+  'M 110,524 C 97,520 83,516 70,512',           // 5 · left
+  'M 83,579 C 96,575 111,570 126,565',          // 6 · right
+  'M 126,706 C 137,702 150,697 162,692',        // 7 · right (small leaf)
 ];
 
-// Stem: single S-curved path — starts above the fold, ends near bottom of section
-const STEM =
-  'M 118,-30 ' +
-  'C 116,48 104,96 110,160 ' +
-  'C 116,224 134,266 129,332 ' +
-  'C 124,398 100,436 105,504 ' +
-  'C 110,572 132,614 126,682 ' +
-  'C 120,750 103,794 108,862 ' +
-  'C 113,910 111,940 112,960';
+// ── Leaf definitions ──────────────────────────────────────────────────────────
+// x,y = branch endpoint (leaf attachment). rot = rotation. wL/wR/h = shape.
+const LEAVES = [
+  { x:  62, y: 145, rot: -150, wL: 10, wR:  8, h: 40 }, // 1 narrow
+  { x: 120, y: 240, rot:  -36, wL: 12, wR: 16, h: 44 }, // 2 medium
+  { x:  28, y: 305, rot: -146, wL: 22, wR: 15, h: 70 }, // 3 LARGE
+  { x: 136, y: 385, rot:  -34, wL: 14, wR: 18, h: 52 }, // 4 medium
+  { x:  70, y: 512, rot: -150, wL: 17, wR: 12, h: 56 }, // 5 medium
+  { x: 126, y: 565, rot:  -40, wL: 12, wR: 15, h: 42 }, // 6 small
+  { x: 162, y: 692, rot:  -28, wL:  8, wR: 11, h: 30 }, // 7 tiny
+];
+
+// ── Flowers ───────────────────────────────────────────────────────────────────
+const FLOWERS = [
+  { x:  82, y: 642, r:  8, n: 4 },  // mid · 4-petal small bloom
+  { x: 115, y: 780, r: 13, n: 5 },  // terminal · 5-petal, final full-stop
+];
+
+// ── Timeline positions (0–10 units → scroll progress) ────────────────────────
+// Terminal flower (index 1) blooms at 8.2–9.8 so it lands while Step 03 is read
+const ANIM = {
+  stem:     { at: 0,   dur: 10 },
+  branches: [
+    { at: 0.5, dur: 0.55 },
+    { at: 1.4, dur: 0.55 },
+    { at: 2.5, dur: 0.60 },
+    { at: 3.7, dur: 0.55 },
+    { at: 5.0, dur: 0.55 },
+    { at: 5.8, dur: 0.55 },
+    { at: 7.2, dur: 0.55 },
+  ],
+  leaves: [
+    { at: 0.7, dur: 1.1 },
+    { at: 1.6, dur: 1.1 },
+    { at: 2.7, dur: 1.4 },  // large leaf, slower
+    { at: 4.0, dur: 1.1 },
+    { at: 5.2, dur: 1.2 },
+    { at: 6.0, dur: 1.0 },
+    { at: 7.5, dur: 0.9 },
+  ],
+  flowers: [
+    { at: 6.4, dur: 1.4 },  // mid bloom
+    { at: 8.2, dur: 1.8 },  // TERMINAL — synced with Step 03 becoming active
+  ],
+};
 
 export default function HowItWorks() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const stemRef    = useRef<SVGPathElement>(null);
-  const leafInners = useRef<(SVGGElement | null)[]>([]);
-  const flower1    = useRef<SVGGElement>(null);
-  const flower2    = useRef<SVGGElement>(null);
-  const step1Ref   = useRef<HTMLDivElement>(null);
-  const step2Ref   = useRef<HTMLDivElement>(null);
-  const step3Ref   = useRef<HTMLDivElement>(null);
+  const sectionRef  = useRef<HTMLDivElement>(null);
+  const stemRef     = useRef<SVGPathElement>(null);
+  const branchRefs  = useRef<(SVGPathElement | null)[]>([]);
+  const leafInners  = useRef<(SVGGElement | null)[]>([]);
+  const flowerInners = useRef<(SVGGElement | null)[]>([]);
+  const step1Ref    = useRef<HTMLDivElement>(null);
+  const step2Ref    = useRef<HTMLDivElement>(null);
+  const step3Ref    = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const stem = stemRef.current;
     if (!stem || !sectionRef.current) return;
 
-    // ── Initial states ──────────────────────────────────────────────
-    const len = stem.getTotalLength();
-    gsap.set(stem, { strokeDasharray: len, strokeDashoffset: len });
+    // Stem
+    const stemLen = stem.getTotalLength();
+    gsap.set(stem, { strokeDasharray: stemLen, strokeDashoffset: stemLen });
 
+    // Branches
+    branchRefs.current.forEach((el) => {
+      if (!el) return;
+      const len = el.getTotalLength();
+      gsap.set(el, { strokeDasharray: len, strokeDashoffset: len });
+    });
+
+    // Leaves — scale from attachment point (local 0,0)
     leafInners.current.forEach((el) => {
-      if (el) gsap.set(el, { scale: 0, opacity: 0, transformOrigin: '0px 0px' });
-    });
-    [flower1.current, flower2.current].forEach((el) => {
-      if (el) gsap.set(el, { scale: 0, opacity: 0, transformOrigin: '0px 0px' });
+      if (el) gsap.set(el, { scale: 0, opacity: 0, transformOrigin: '0 0' });
     });
 
-    // ── Main scrub timeline ──────────────────────────────────────────
-    // Total duration = 10 arbitrary units; ScrollTrigger maps to scroll progress.
+    // Flowers — scale from center
+    flowerInners.current.forEach((el) => {
+      if (el) gsap.set(el, { scale: 0, opacity: 0, transformOrigin: '0 0' });
+    });
+
+    // Main scrubbed timeline
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
-        start: 'top 8%',
-        end: 'bottom 92%',
-        scrub: 1.8,
+        start: 'top 6%',
+        end: 'bottom 94%',
+        scrub: 2.0,
       },
     });
 
-    // Stem draws across the full range
-    tl.to(stem, { strokeDashoffset: 0, duration: 10, ease: 'none' }, 0);
+    tl.to(stem, { strokeDashoffset: 0, ease: 'none', duration: ANIM.stem.dur }, ANIM.stem.at);
 
-    // Leaves appear one by one — each timed so it blooms just after the
-    // stem's drawing front reaches its attachment point.
-    const leafStarts = [0.9, 1.9, 3.0, 4.0, 5.0, 6.0, 7.0];
-    leafInners.current.forEach((el, i) => {
-      if (!el) return;
-      tl.to(
-        el,
-        { scale: 1, opacity: 1, duration: 1.3, ease: 'power2.out' },
-        leafStarts[i],
-      );
+    ANIM.branches.forEach(({ at, dur }, i) => {
+      const el = branchRefs.current[i];
+      if (el) tl.to(el, { strokeDashoffset: 0, ease: 'none', duration: dur }, at);
     });
 
-    // Flower 1 — mid section
-    tl.to(flower1.current, { scale: 1, opacity: 1, duration: 1.6, ease: 'power2.out' }, 7.2);
-    // Flower 2 — blooms last, the visual full-stop of the animation
-    tl.to(flower2.current, { scale: 1, opacity: 1, duration: 2.0, ease: 'power2.out' }, 8.5);
+    ANIM.leaves.forEach(({ at, dur }, i) => {
+      const el = leafInners.current[i];
+      if (el) tl.to(el, { scale: 1, opacity: 1, duration: dur, ease: 'power2.out' }, at);
+    });
 
-    // ── Step highlight (separate triggers, not scrubbed) ────────────
+    ANIM.flowers.forEach(({ at, dur }, i) => {
+      const el = flowerInners.current[i];
+      if (el) tl.to(el, { scale: 1, opacity: 1, duration: dur, ease: 'power2.out' }, at);
+    });
+
+    // Step highlights (separate, non-scrubbed triggers)
     [step1Ref, step2Ref, step3Ref].forEach((ref) => {
       if (!ref.current) return;
       ScrollTrigger.create({
@@ -136,60 +192,66 @@ export default function HowItWorks() {
 
   return (
     <section
-      className="bg-white border-b border-gray-100 relative overflow-visible"
-      style={{ minHeight: '85vh', paddingTop: '6rem', paddingBottom: '6rem' }}
+      className="bg-white border-b border-gray-100"
+      style={{ paddingTop: '5.5rem', paddingBottom: '5.5rem' }}
       id="approach"
       ref={sectionRef}
     >
       <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[38%_1fr] gap-16 items-start">
 
-        {/* ── Left: botanical illustration ─────────────────────────── */}
+        {/* ── Left: botanical illustration ─────────────────────────────── */}
         <div className="relative hidden lg:block" style={{ height: '820px' }}>
           <svg
-            viewBox="0 0 240 960"
+            viewBox="0 0 240 820"
             className="absolute inset-0 w-full h-full"
             fill="none"
             aria-hidden="true"
             style={{ overflow: 'visible' }}
           >
-            {/* ── Stem ── */}
+            {/* Main stem */}
             <path
               ref={stemRef}
               d={STEM}
               stroke={INK}
-              strokeWidth="1.6"
+              strokeWidth="1.5"
               strokeLinecap="round"
               fill="none"
             />
 
-            {/* ── Leaves ── */}
+            {/* Secondary branches */}
+            {BRANCHES.map((d, i) => (
+              <path
+                key={i}
+                ref={(el) => { branchRefs.current[i] = el; }}
+                d={d}
+                stroke={INK}
+                strokeWidth="1.0"
+                strokeLinecap="round"
+                fill="none"
+              />
+            ))}
+
+            {/* Leaves — outer <g> positions, inner <g> is GSAP target */}
             {LEAVES.map((l, i) => (
               <g key={i} transform={`translate(${l.x},${l.y}) rotate(${l.rot})`}>
-                {/* Outer g holds position — GSAP must not touch it.
-                    Inner g is the scale/opacity animation target. */}
                 <g ref={(el) => { leafInners.current[i] = el; }}>
                   <path d={leafD(l.wL, l.wR, l.h)} fill={INK} />
                 </g>
               </g>
             ))}
 
-            {/* ── Flower 1 — upper pair of buds ── */}
-            <g transform="translate(127,760)">
-              <g ref={flower1}>
-                <Petals r={10} />
+            {/* Flowers */}
+            {FLOWERS.map((f, i) => (
+              <g key={i} transform={`translate(${f.x},${f.y})`}>
+                <g ref={(el) => { flowerInners.current[i] = el; }}>
+                  <Petals r={f.r} n={f.n} />
+                </g>
               </g>
-            </g>
-
-            {/* ── Flower 2 — terminal bloom, last to appear ── */}
-            <g transform="translate(111,878)">
-              <g ref={flower2}>
-                <Petals r={13} />
-              </g>
-            </g>
+            ))}
           </svg>
         </div>
 
-        {/* ── Right: steps ─────────────────────────────────────────── */}
+        {/* ── Right: steps ──────────────────────────────────────────────── */}
         <div className="flex flex-col gap-12 pt-2 lg:pt-8">
           <div>
             <Eyebrow className="mb-5">Our Method</Eyebrow>
