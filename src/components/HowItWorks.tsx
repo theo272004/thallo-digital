@@ -10,117 +10,188 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+const INK = '#39471D';
+
+// Organic almond-shaped leaf — base at (0,0), tip at (0,−h)
+// wL/wR for subtle asymmetry, feels hand-drawn
+function leafD(wL: number, wR: number, h: number): string {
+  return [
+    `M 0,0`,
+    `C ${-wL},${-h * 0.28} ${-wL * 0.65},${-h * 0.72} 0,${-h}`,
+    `C ${wR * 0.65},${-h * 0.72} ${wR},${-h * 0.28} 0,0 Z`,
+  ].join(' ');
+}
+
+// Simple 5-petal Scandinavian flower — all centered at (0,0)
+function Petals({ r }: { r: number }) {
+  return (
+    <>
+      {[0, 72, 144, 216, 288].map((a) => (
+        <ellipse
+          key={a}
+          cx={0}
+          cy={-r * 0.9}
+          rx={r * 0.3}
+          ry={r * 0.46}
+          fill={INK}
+          transform={`rotate(${a})`}
+          style={{ transformBox: 'fill-box' }}
+        />
+      ))}
+      <circle r={r * 0.38} fill={INK} />
+    </>
+  );
+}
+
+// Each leaf: outer <g> holds SVG positioning, inner <g> is GSAP target
+const LEAVES: { x: number; y: number; rot: number; wL: number; wR: number; h: number }[] = [
+  { x: 110, y: 152, rot: -132, wL: 15, wR: 11, h: 52 },
+  { x: 126, y: 238, rot:  -48, wL: 11, wR: 15, h: 36 },
+  { x: 130, y: 326, rot: -146, wL: 20, wR: 14, h: 66 },
+  { x: 104, y: 418, rot:  -40, wL: 13, wR: 17, h: 44 },
+  { x: 102, y: 506, rot: -152, wL: 18, wR: 13, h: 58 },
+  { x: 128, y: 604, rot:  -38, wL: 22, wR: 16, h: 72 },
+  { x: 112, y: 694, rot: -142, wL: 12, wR:  9, h: 40 },
+];
+
+// Stem: single S-curved path — starts above the fold, ends near bottom of section
+const STEM =
+  'M 118,-30 ' +
+  'C 116,48 104,96 110,160 ' +
+  'C 116,224 134,266 129,332 ' +
+  'C 124,398 100,436 105,504 ' +
+  'C 110,572 132,614 126,682 ' +
+  'C 120,750 103,794 108,862 ' +
+  'C 113,910 111,940 112,960';
+
 export default function HowItWorks() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const stemRef = useRef<SVGPathElement>(null);
-  const leaf1Ref = useRef<SVGCircleElement>(null);
-  const leaf2Ref = useRef<SVGCircleElement>(null);
-  const leaf3Ref = useRef<SVGCircleElement>(null);
-
-  const step1Ref = useRef<HTMLDivElement>(null);
-  const step2Ref = useRef<HTMLDivElement>(null);
-  const step3Ref = useRef<HTMLDivElement>(null);
+  const stemRef    = useRef<SVGPathElement>(null);
+  const leafInners = useRef<(SVGGElement | null)[]>([]);
+  const flower1    = useRef<SVGGElement>(null);
+  const flower2    = useRef<SVGGElement>(null);
+  const step1Ref   = useRef<HTMLDivElement>(null);
+  const step2Ref   = useRef<HTMLDivElement>(null);
+  const step3Ref   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const stem = stemRef.current;
-    if (!stem) return;
+    if (!stem || !sectionRef.current) return;
 
-    const length = stem.getTotalLength();
-    gsap.set(stem, {
-      strokeDasharray: length,
-      strokeDashoffset: length
+    // ── Initial states ──────────────────────────────────────────────
+    const len = stem.getTotalLength();
+    gsap.set(stem, { strokeDasharray: len, strokeDashoffset: len });
+
+    leafInners.current.forEach((el) => {
+      if (el) gsap.set(el, { scale: 0, opacity: 0, transformOrigin: '0px 0px' });
+    });
+    [flower1.current, flower2.current].forEach((el) => {
+      if (el) gsap.set(el, { scale: 0, opacity: 0, transformOrigin: '0px 0px' });
     });
 
-    // Initialize leaves to zero scale/opacity
-    gsap.set([leaf1Ref.current, leaf2Ref.current, leaf3Ref.current], {
-      scale: 0,
-      opacity: 0
-    });
-
+    // ── Main scrub timeline ──────────────────────────────────────────
+    // Total duration = 10 arbitrary units; ScrollTrigger maps to scroll progress.
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
-        start: 'top 60%',
-        end: 'bottom 90%',
-        scrub: 0.8
-      }
+        start: 'top 8%',
+        end: 'bottom 92%',
+        scrub: 1.8,
+      },
     });
 
-    tl.to(stem, {
-      strokeDashoffset: 0,
-      ease: 'none'
+    // Stem draws across the full range
+    tl.to(stem, { strokeDashoffset: 0, duration: 10, ease: 'none' }, 0);
+
+    // Leaves appear one by one — each timed so it blooms just after the
+    // stem's drawing front reaches its attachment point.
+    const leafStarts = [0.9, 1.9, 3.0, 4.0, 5.0, 6.0, 7.0];
+    leafInners.current.forEach((el, i) => {
+      if (!el) return;
+      tl.to(
+        el,
+        { scale: 1, opacity: 1, duration: 1.3, ease: 'power2.out' },
+        leafStarts[i],
+      );
     });
 
-    // Populate leaf nodes on step elements scroll
-    const leafConfigs = [
-      { trigger: step1Ref, leaf: leaf1Ref },
-      { trigger: step2Ref, leaf: leaf2Ref },
-      { trigger: step3Ref, leaf: leaf3Ref }
-    ];
+    // Flower 1 — mid section
+    tl.to(flower1.current, { scale: 1, opacity: 1, duration: 1.6, ease: 'power2.out' }, 7.2);
+    // Flower 2 — blooms last, the visual full-stop of the animation
+    tl.to(flower2.current, { scale: 1, opacity: 1, duration: 2.0, ease: 'power2.out' }, 8.5);
 
-    leafConfigs.forEach((cfg) => {
-      if (cfg.leaf.current && cfg.trigger.current) {
-        ScrollTrigger.create({
-          trigger: cfg.trigger.current,
-          start: 'top 75%',
-          end: 'bottom 75%',
-          onEnter: () => {
-            gsap.to(cfg.leaf.current, { scale: 1, opacity: 1, duration: 0.45, ease: 'power3.out' });
-            cfg.trigger.current?.classList.add('opacity-100');
-            cfg.trigger.current?.classList.remove('opacity-40');
-          },
-          onLeaveBack: () => {
-            gsap.to(cfg.leaf.current, { scale: 0.2, opacity: 0, duration: 0.3 });
-            cfg.trigger.current?.classList.remove('opacity-100');
-            cfg.trigger.current?.classList.add('opacity-40');
-          }
-        });
-      }
+    // ── Step highlight (separate triggers, not scrubbed) ────────────
+    [step1Ref, step2Ref, step3Ref].forEach((ref) => {
+      if (!ref.current) return;
+      ScrollTrigger.create({
+        trigger: ref.current,
+        start: 'top 75%',
+        onEnter:     () => { ref.current?.classList.add('opacity-100'); ref.current?.classList.remove('opacity-40'); },
+        onLeaveBack: () => { ref.current?.classList.remove('opacity-100'); ref.current?.classList.add('opacity-40'); },
+      });
     });
+
+    return () => ScrollTrigger.getAll().forEach((t) => t.kill());
   }, []);
 
   return (
-    <section className="bg-white py-24 min-h-[80vh] flex flex-col justify-center border-b border-gray-100" id="approach" ref={sectionRef}>
-      <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-        
-        {/* Left Column: Organic SVG Growth Stem */}
-        <div className="flex justify-center items-center h-[460px]">
-          <svg viewBox="0 0 200 500" className="w-full max-w-[220px] h-full" style={{ overflow: 'visible' }}>
-            <path 
+    <section
+      className="bg-white border-b border-gray-100 relative overflow-visible"
+      style={{ minHeight: '85vh', paddingTop: '6rem', paddingBottom: '6rem' }}
+      id="approach"
+      ref={sectionRef}
+    >
+      <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[38%_1fr] gap-16 items-start">
+
+        {/* ── Left: botanical illustration ─────────────────────────── */}
+        <div className="relative hidden lg:block" style={{ height: '820px' }}>
+          <svg
+            viewBox="0 0 240 960"
+            className="absolute inset-0 w-full h-full"
+            fill="none"
+            aria-hidden="true"
+            style={{ overflow: 'visible' }}
+          >
+            {/* ── Stem ── */}
+            <path
               ref={stemRef}
-              className="stem fill-none stroke-gray-200" 
-              strokeWidth="2.5"
+              d={STEM}
+              stroke={INK}
+              strokeWidth="1.6"
               strokeLinecap="round"
-              d="M 100,470 C 100,350 100,200 100,30 M 100,370 C 65,330 40,300 30,260 M 100,250 C 135,210 160,180 170,140 M 100,130 C 70,100 50,75 40,50"
+              fill="none"
             />
-            {/* Organic Leaves */}
-            <g ref={leaf1Ref} style={{ transformOrigin: '30px 260px' }} className="origin-center">
-              <path 
-                d="M 30,260 C 24,250 18,245 30,232 C 42,245 36,250 30,260 Z" 
-                className="leaf fill-[#39471D] stroke-[#FFFFFF] stroke-[1.5]"
-                transform="rotate(-25 30 260)"
-              />
+
+            {/* ── Leaves ── */}
+            {LEAVES.map((l, i) => (
+              <g key={i} transform={`translate(${l.x},${l.y}) rotate(${l.rot})`}>
+                {/* Outer g holds position — GSAP must not touch it.
+                    Inner g is the scale/opacity animation target. */}
+                <g ref={(el) => { leafInners.current[i] = el; }}>
+                  <path d={leafD(l.wL, l.wR, l.h)} fill={INK} />
+                </g>
+              </g>
+            ))}
+
+            {/* ── Flower 1 — upper pair of buds ── */}
+            <g transform="translate(127,760)">
+              <g ref={flower1}>
+                <Petals r={10} />
+              </g>
             </g>
-            <g ref={leaf2Ref} style={{ transformOrigin: '170px 140px' }} className="origin-center">
-              <path 
-                d="M 170,140 C 164,130 158,125 170,112 C 182,125 176,130 170,140 Z" 
-                className="leaf fill-[#39471D] stroke-[#FFFFFF] stroke-[1.5]"
-                transform="rotate(35 170 140)"
-              />
-            </g>
-            <g ref={leaf3Ref} style={{ transformOrigin: '40px 50px' }} className="origin-center">
-              <path 
-                d="M 40,50 C 34,40 28,35 40,22 C 52,35 46,40 40,50 Z" 
-                className="leaf fill-[#39471D] stroke-[#FFFFFF] stroke-[1.5]"
-                transform="rotate(-25 40 50)"
-              />
+
+            {/* ── Flower 2 — terminal bloom, last to appear ── */}
+            <g transform="translate(111,878)">
+              <g ref={flower2}>
+                <Petals r={13} />
+              </g>
             </g>
           </svg>
         </div>
 
-        {/* Right Column: Steps Stepper */}
-        <div className="flex flex-col gap-10">
-          <div className="mb-6">
+        {/* ── Right: steps ─────────────────────────────────────────── */}
+        <div className="flex flex-col gap-12 pt-2 lg:pt-8">
+          <div>
             <Eyebrow className="mb-5">Our Method</Eyebrow>
             <SplitReveal
               as="h2"
@@ -128,36 +199,40 @@ export default function HowItWorks() {
               html="How we build AI visibility."
             />
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch]">
-              A systematic B2B authority building process that converts search queries into revenue-generating recommendations.
+              A systematic B2B authority building process that converts search
+              queries into revenue-generating recommendations.
             </p>
           </div>
 
           <div ref={step1Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
-            <div className="text-[11px] font-mono font-bold text-gray-400 mt-1">STEP 01</div>
+            <div className="text-[11px] font-mono font-bold text-gray-400 mt-1 flex-shrink-0">STEP 01</div>
             <div>
-              <h3 className="text-md font-bold text-gray-900 mb-2">Audit & Visibility Mapping</h3>
-              <p className="text-xs text-gray-500 leading-relaxed font-semibold">
-                We audit your search presence across ChatGPT, Perplexity, and Google AI Overview. We compile a prioritized action plan.
+              <h3 className="text-base font-bold text-gray-900 mb-2">Audit & Visibility Mapping</h3>
+              <p className="text-sm text-gray-500 leading-relaxed">
+                We audit your search presence across ChatGPT, Perplexity, and
+                Google AI Overview. We compile a prioritized action plan.
               </p>
             </div>
           </div>
 
           <div ref={step2Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
-            <div className="text-[11px] font-mono font-bold text-gray-400 mt-1">STEP 02</div>
+            <div className="text-[11px] font-mono font-bold text-gray-400 mt-1 flex-shrink-0">STEP 02</div>
             <div>
-              <h3 className="text-md font-bold text-gray-900 mb-2">Authority Infrastructure</h3>
-              <p className="text-xs text-gray-500 leading-relaxed font-semibold">
-                We construct the content assets, research databases, and technical schemas required for AI crawlers to catalog your brand.
+              <h3 className="text-base font-bold text-gray-900 mb-2">Authority Infrastructure</h3>
+              <p className="text-sm text-gray-500 leading-relaxed">
+                We construct the content assets, research databases, and
+                technical schemas required for AI crawlers to catalog your brand.
               </p>
             </div>
           </div>
 
           <div ref={step3Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
-            <div className="text-[11px] font-mono font-bold text-gray-400 mt-1">STEP 03</div>
+            <div className="text-[11px] font-mono font-bold text-gray-400 mt-1 flex-shrink-0">STEP 03</div>
             <div>
-              <h3 className="text-md font-bold text-gray-900 mb-2">Expert Distribution & Seed</h3>
-              <p className="text-xs text-gray-500 leading-relaxed font-semibold">
-                We seed your insights across authority nodes. Conversational models synthesize these nodes, citation by citation.
+              <h3 className="text-base font-bold text-gray-900 mb-2">Expert Distribution & Seed</h3>
+              <p className="text-sm text-gray-500 leading-relaxed">
+                We seed your insights across authority nodes. Conversational
+                models synthesize these nodes, citation by citation.
               </p>
             </div>
           </div>
