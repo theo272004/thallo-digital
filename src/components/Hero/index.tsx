@@ -13,10 +13,10 @@ type Phase = 'phone' | 'burst' | 'gather' | 'browse';
 
 const TAB_COUNT = 4;
 const PHONE_MS = 3600; // typing the query + loading + 4 source results appear
-const BURST_MS = 2000; // the 4 source cards fly out, one by one, and hold
-const GATHER_MS = 2100; // browser window is here (empty); cards fly INTO its tabs
-const GATHER_STAGGER = 240; // gap between each card flying into the window
-const CARD_FLIGHT_MS = 560; // how long a single card takes to reach its tab slot
+const BURST_MS = 2500; // the 4 source cards glide out, one by one, and hold
+const GATHER_MS = 2200; // browser window is here (empty); cards fly INTO its tabs
+const GATHER_STAGGER = 300; // gap between each card flying into the window
+const CARD_FLIGHT_MS = 700; // how long a single card takes to reach its tab slot
 const TAB_MS = 2600; // each browser tab stays active this long
 
 /**
@@ -108,7 +108,7 @@ export default function Hero() {
   const phoneVisible = phase === 'phone' || phase === 'burst';
   const browserVisible = phase === 'gather' || phase === 'browse';
   const cardsPhase = phase === 'burst' ? 'burst' : phase === 'gather' ? 'gather' : 'hidden';
-  const fade = 'transition-[opacity,transform] duration-[550ms] ease-[cubic-bezier(0.22,1,0.36,1)]';
+  const fade = 'transition-[opacity,transform] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]';
 
   return (
     <section

@@ -42,11 +42,14 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
         const r = cardEl.getBoundingClientRect();
         const cx = r.left + r.width / 2;
         const cy = r.top + r.height / 2;
+        // Emerge gradually: start bigger + partly-there, ease out gently over a
+        // longer beat with a clear stagger, so you watch each card grow and glide
+        // out of the phone rather than pop.
         tweens.push(
           gsap.fromTo(
             cardEl,
-            { x: origin.x - cx, y: origin.y - cy, scale: 0.18, opacity: 0, rotateZ: (i % 2 ? 5 : -5) },
-            { x: 0, y: 0, scale: 1, opacity: 1, rotateZ: 0, duration: 0.95, ease: 'power4.out', delay: i * 0.24 }
+            { x: origin.x - cx, y: origin.y - cy, scale: 0.42, opacity: 0, rotateZ: (i % 2 ? 3 : -3) },
+            { x: 0, y: 0, scale: 1, opacity: 1, rotateZ: 0, duration: 1.2, ease: 'power2.out', delay: i * 0.32 }
           )
         );
       });
@@ -66,11 +69,11 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
           gsap.to(cardEl, {
             x: tx - cx,
             y: ty - cy,
-            scale: 0.14,
+            scale: 0.12,
             opacity: 0,
-            duration: 0.56,
-            ease: 'power2.in',
-            delay: i * 0.24,
+            duration: 0.7,
+            ease: 'power2.inOut',
+            delay: i * 0.3,
           })
         );
       });
