@@ -45,45 +45,58 @@ export default function HowItWorks() {
       gsap.set(el, { strokeDasharray: len, strokeDashoffset: len });
     });
 
-    // Init fill elements — scale from their own visual center
-    [hoja1Ref, hoja2Ref, flor3Ref, hoja4Ref, hoja5Ref, florFinRef].forEach((r) => {
-      if (r.current) gsap.set(r.current, { scale: 0, opacity: 0, transformOrigin: '50% 50%' });
+    // Init fill elements — each scales in from the exact point where it meets
+    // the stem/branch (measured base, not the visual center), so it germinates
+    // outward instead of ballooning open in place.
+    const blooms = [
+      { ref: hoja1Ref,   origin: '0% 45%' },   // leaf unfurls right, off the stem
+      { ref: hoja2Ref,   origin: '99% 0%' },   // leaf unfurls down-left from its base
+      { ref: flor3Ref,   origin: '0% 0%'  },   // flower opens down-right from the branch tip
+      { ref: hoja4Ref,   origin: '4% 1%'  },   // leaf unfurls downward from its base
+      { ref: hoja5Ref,   origin: '100% 7%' },  // leaf unfurls down-left off the stem
+      { ref: florFinRef, origin: '22% 0%' },   // terminal flower opens from the tip
+    ];
+    blooms.forEach(({ ref, origin }) => {
+      if (ref.current) gsap.set(ref.current, { scale: 0, opacity: 0, transformOrigin: origin });
     });
 
     // ── Main scrubbed timeline ─────────────────────────────────────────────
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
-        start: 'top 5%',
-        end: 'bottom 95%',
-        scrub: 2.2,
+        start: 'top 80%',
+        end: 'bottom 65%',
+        scrub: 1,
       },
     });
 
-    // Stem draws continuously from 0→10
+    // Stem draws continuously, linear, across the whole timeline (0→10).
+    // Every branch + bloom below is pinned to the *measured* moment the stem
+    // actually reaches that anchor (length-fraction ×10): first the stem passes,
+    // then the branch draws out, then the leaf/flower germinates — never before.
     tl.to(stemRef.current, { strokeDashoffset: 0, ease: 'none', duration: 10 }, 0);
 
-    // Hoja 1 — stem's first branch, top-right (~17% into vine)
-    tl.to(bRama1Ref.current,  { strokeDashoffset: 0, ease: 'none',    duration: 0.5 }, 1.4);
-    tl.to(hoja1Ref.current,   { scale: 1, opacity: 1, ease: 'power2.out', duration: 1.1 }, 1.6);
+    // Hoja 1 — stem reaches the anchor (y≈126) at ~1.75
+    tl.to(bRama1Ref.current, { strokeDashoffset: 0, ease: 'none',        duration: 0.45 }, 1.9);
+    tl.to(hoja1Ref.current,  { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.9  }, 2.2);
 
-    // Hoja 2 — left leaf, upper-middle (~32% into vine)
-    tl.to(bRama2Ref.current,  { strokeDashoffset: 0, ease: 'none',    duration: 0.5 }, 2.8);
-    tl.to(hoja2Ref.current,   { scale: 1, opacity: 1, ease: 'power2.out', duration: 1.2 }, 3.0);
+    // Hoja 2 — stem reaches (y≈255) at ~3.6
+    tl.to(bRama2Ref.current, { strokeDashoffset: 0, ease: 'none',        duration: 0.45 }, 3.75);
+    tl.to(hoja2Ref.current,  { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.9  }, 4.05);
 
-    // Flor 3 — small flower cluster, right-middle (~43%)
-    tl.to(bRama3Ref.current,  { strokeDashoffset: 0, ease: 'none',    duration: 0.5 }, 3.8);
-    tl.to(flor3Ref.current,   { scale: 1, opacity: 1, ease: 'power2.out', duration: 1.2 }, 4.0);
+    // Flor 3 — stem reaches (y≈286) at ~4.03
+    tl.to(bRama3Ref.current, { strokeDashoffset: 0, ease: 'none',           duration: 0.45 }, 4.35);
+    tl.to(flor3Ref.current,  { scale: 1, opacity: 1, ease: 'back.out(1.6)', duration: 0.9  }, 4.65);
 
-    // Hoja 4 — right leaf, lower-middle (~59%)
-    tl.to(bRama4Ref.current,  { strokeDashoffset: 0, ease: 'none',    duration: 0.5 }, 5.4);
-    tl.to(hoja4Ref.current,   { scale: 1, opacity: 1, ease: 'power2.out', duration: 1.3 }, 5.7);
+    // Hoja 4 — stem reaches (y≈415) at ~5.83
+    tl.to(bRama4Ref.current, { strokeDashoffset: 0, ease: 'none',        duration: 0.45 }, 5.98);
+    tl.to(hoja4Ref.current,  { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.9  }, 6.28);
 
-    // Hoja 5 — left leaf, lower (~74%) — attaches directly to stem, no branch
-    tl.to(hoja5Ref.current,   { scale: 1, opacity: 1, ease: 'power2.out', duration: 1.3 }, 7.0);
+    // Hoja 5 — attaches straight to the stem; stem reaches (y≈559) at ~7.9
+    tl.to(hoja5Ref.current,  { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.9 }, 8.0);
 
-    // Flor ultima — terminal flower (~91%), blooms as Step 03 is finished
-    tl.to(florFinRef.current, { scale: 1, opacity: 1, ease: 'power2.out', duration: 1.2 }, 8.8);
+    // Flor final — terminal bloom at the stem tip; stem reaches (y≈702) at ~9.93
+    tl.to(florFinRef.current, { scale: 1, opacity: 1, ease: 'back.out(1.6)', duration: 1.0 }, 9.98);
 
     // ── Step highlights (non-scrubbed, one-way) ────────────────────────────
     [step1Ref, step2Ref, step3Ref, step4Ref].forEach((ref) => {
