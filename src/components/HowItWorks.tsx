@@ -12,150 +12,142 @@ if (typeof window !== 'undefined') {
 
 const INK = '#39471D';
 
-// Almond-shaped leaf: base at (0,0), tip at (0,−h), slight asymmetry
+// Leaf: almond silhouette, base at (0,0), tip at (0,−h)
 function leafD(wL: number, wR: number, h: number): string {
   return (
-    `M 0,0 C ${-wL},${-h * 0.24} ${-wL * 0.6},${-h * 0.74} 0,${-h} ` +
-    `C ${wR * 0.6},${-h * 0.74} ${wR},${-h * 0.24} 0,0 Z`
+    `M 0,0 C ${-wL},${-h * 0.22} ${-wL * 0.58},${-h * 0.76} 0,${-h} ` +
+    `C ${wR * 0.58},${-h * 0.76} ${wR},${-h * 0.22} 0,0 Z`
   );
 }
 
-// Minimal botanical flower: n oval petals arranged around origin + solid center
-function Petals({ r, n = 5 }: { r: number; n?: number }) {
+// Botanical flower: rounded teardrop petals around (0,0) + center circle
+function BotanicalFlower({ r, n = 5 }: { r: number; n?: number }) {
   const step = 360 / n;
+  // Wide teardrop petal — feels hand-drawn not geometric
+  const petal =
+    `M 0,${r * 0.08} ` +
+    `C ${-r * 0.40},-${r * 0.04} ${-r * 0.38},-${r * 0.84} 0,-${r * 1.0} ` +
+    `C ${r * 0.38},-${r * 0.84} ${r * 0.40},-${r * 0.04} 0,${r * 0.08} Z`;
   return (
     <>
       {Array.from({ length: n }, (_, i) => (
-        <ellipse
+        <path
           key={i}
-          cx={0}
-          cy={-r * 0.78}
-          rx={r * 0.26}
-          ry={r * 0.44}
+          d={petal}
           fill={INK}
           transform={`rotate(${i * step})`}
         />
       ))}
-      <circle r={r * 0.3} fill={INK} />
+      <circle r={r * 0.24} fill={INK} />
     </>
   );
 }
 
 // ── Stem ──────────────────────────────────────────────────────────────────────
-// One long organic vine — subtle drift, not repetitive S-curves.
-// Starts at y=0 (top border), terminates at terminal flower (y=800).
+// Organic vine from y=0 (section border) to y=618 (terminal flower).
+// Gentle lateral drift — no mechanical S-curves.
 const STEM =
-  'M 115,0 ' +
-  'C 113,42 104,88 98,152 ' +
-  'C 92,216 84,234 82,262 ' +
-  'C 80,290 72,308 70,328 ' +
-  'C 68,348 76,368 90,392 ' +
-  'C 104,416 126,428 130,460 ' +
-  'C 134,492 118,510 110,528 ' +
-  'C 102,546 86,560 82,582 ' +
-  'C 78,604 78,622 82,644 ' +
-  'C 86,666 118,682 126,706 ' +
-  'C 134,730 122,756 115,780';
+  'M 138,0 ' +
+  'C 134,28 126,62 118,88 ' +
+  'C 110,114 108,138 110,165 ' +
+  'C 112,192 108,240 100,285 ' +  // breathing gap — vine flows, no branch
+  'C 96,306 98,336 100,365 ' +
+  'C 102,394 112,420 116,448 ' +
+  'C 116,470 112,492 108,512 ' +
+  'C 104,534 108,560 116,586 ' +
+  'C 120,600 126,612 130,618';
 
-// ── Secondary branches — short organic paths from stem to leaf attachment ─────
+// ── Secondary branches — subtle cubic-bezier curves ───────────────────────────
+// Each starts exactly at a stem segment endpoint for a clean joint.
 const BRANCHES = [
-  'M 98,152 C 86,150 74,148 62,145',           // 1 · left
-  'M 82,252 C 94,248 108,244 120,240',          // 2 · right
-  'M 70,318 C 57,314 42,310 28,305',            // 3 · left  (large leaf)
-  'M 93,398 C 106,394 120,390 136,385',         // 4 · right
-  'M 110,524 C 97,520 83,516 70,512',           // 5 · left
-  'M 83,579 C 96,575 111,570 126,565',          // 6 · right
-  'M 126,706 C 137,702 150,697 162,692',        // 7 · right (small leaf)
+  'M 118,88 C 104,82 86,77 68,72',           // 1 · left
+  'M 110,165 C 124,160 148,155 168,150',      // 2 · right
+  'M 100,285 C 80,278 56,271 30,264',         // 3 · left  (large leaf)
+  'M 100,365 C 118,358 148,353 172,348',      // 4 · right
+  'M 108,512 C 90,506 72,501 55,496',         // 5 · left
+  'M 116,586 C 134,580 160,574 184,568',      // 6 · right (large, lower cluster)
 ];
 
-// ── Leaf definitions ──────────────────────────────────────────────────────────
-// x,y = branch endpoint (leaf attachment). rot = rotation. wL/wR/h = shape.
+// ── Leaves ────────────────────────────────────────────────────────────────────
+// x,y = branch endpoint. rot = natural branch direction. wL/wR/h = shape.
+// Every leaf is individually rotated to follow its branch — no mirrored copies.
 const LEAVES = [
-  { x:  62, y: 145, rot: -150, wL: 10, wR:  8, h: 40 }, // 1 narrow
-  { x: 120, y: 240, rot:  -36, wL: 12, wR: 16, h: 44 }, // 2 medium
-  { x:  28, y: 305, rot: -146, wL: 22, wR: 15, h: 70 }, // 3 LARGE
-  { x: 136, y: 385, rot:  -34, wL: 14, wR: 18, h: 52 }, // 4 medium
-  { x:  70, y: 512, rot: -150, wL: 17, wR: 12, h: 56 }, // 5 medium
-  { x: 126, y: 565, rot:  -40, wL: 12, wR: 15, h: 42 }, // 6 small
-  { x: 162, y: 692, rot:  -28, wL:  8, wR: 11, h: 30 }, // 7 tiny
+  { x:  68, y:  72, rot: -130, wL: 13, wR: 10, h: 48 }, // 1 small, left
+  { x: 168, y: 150, rot:  -44, wL: 15, wR: 20, h: 56 }, // 2 medium, right
+  { x:  30, y: 264, rot: -132, wL: 28, wR: 18, h: 86 }, // 3 LARGE, left  ← signature
+  { x: 172, y: 348, rot:  -38, wL: 18, wR: 24, h: 66 }, // 4 medium-large, right
+  { x:  55, y: 496, rot: -136, wL: 20, wR: 14, h: 60 }, // 5 medium, left
+  { x: 184, y: 568, rot:  -42, wL: 22, wR: 28, h: 74 }, // 6 LARGE, right ← lower cluster
 ];
 
 // ── Flowers ───────────────────────────────────────────────────────────────────
 const FLOWERS = [
-  { x:  82, y: 642, r:  8, n: 4 },  // mid · 4-petal small bloom
-  { x: 115, y: 780, r: 13, n: 5 },  // terminal · 5-petal, final full-stop
+  { x: 116, y: 448, r: 11, n: 4 }, // mid  · 4-petal, delicate — appears mid-section
+  { x: 130, y: 618, r: 17, n: 5 }, // term · 5-petal, generous — blooms with Step 03
 ];
 
-// ── Timeline positions (0–10 units → scroll progress) ────────────────────────
-// Terminal flower (index 1) blooms at 8.2–9.8 so it lands while Step 03 is read
+// ── Animation timeline (0→10 scroll-mapped units) ─────────────────────────────
 const ANIM = {
-  stem:     { at: 0,   dur: 10 },
+  stem: { at: 0, dur: 10 },
   branches: [
-    { at: 0.5, dur: 0.55 },
-    { at: 1.4, dur: 0.55 },
-    { at: 2.5, dur: 0.60 },
-    { at: 3.7, dur: 0.55 },
-    { at: 5.0, dur: 0.55 },
-    { at: 5.8, dur: 0.55 },
-    { at: 7.2, dur: 0.55 },
+    { at: 0.5, dur: 0.5  }, // 1
+    { at: 1.5, dur: 0.5  }, // 2
+    { at: 2.8, dur: 0.65 }, // 3 · longer branch
+    { at: 4.3, dur: 0.5  }, // 4
+    { at: 6.8, dur: 0.5  }, // 5
+    { at: 7.6, dur: 0.55 }, // 6 · lower cluster
   ],
   leaves: [
-    { at: 0.7, dur: 1.1 },
-    { at: 1.6, dur: 1.1 },
-    { at: 2.7, dur: 1.4 },  // large leaf, slower
-    { at: 4.0, dur: 1.1 },
-    { at: 5.2, dur: 1.2 },
-    { at: 6.0, dur: 1.0 },
-    { at: 7.5, dur: 0.9 },
+    { at: 0.7, dur: 1.0 }, // 1
+    { at: 1.7, dur: 1.1 }, // 2
+    { at: 3.1, dur: 1.5 }, // 3 LARGE — unhurried bloom
+    { at: 4.6, dur: 1.2 }, // 4
+    { at: 7.1, dur: 1.1 }, // 5
+    { at: 7.9, dur: 1.3 }, // 6 LARGE
   ],
   flowers: [
-    { at: 6.4, dur: 1.4 },  // mid bloom
-    { at: 8.2, dur: 1.8 },  // TERMINAL — synced with Step 03 becoming active
+    { at: 5.6, dur: 1.4 }, // mid
+    { at: 8.8, dur: 1.2 }, // terminal — final moment, synced with Step 03
   ],
 };
 
 export default function HowItWorks() {
-  const sectionRef  = useRef<HTMLDivElement>(null);
-  const stemRef     = useRef<SVGPathElement>(null);
-  const branchRefs  = useRef<(SVGPathElement | null)[]>([]);
-  const leafInners  = useRef<(SVGGElement | null)[]>([]);
+  const sectionRef   = useRef<HTMLDivElement>(null);
+  const stemRef      = useRef<SVGPathElement>(null);
+  const branchRefs   = useRef<(SVGPathElement | null)[]>([]);
+  const leafInners   = useRef<(SVGGElement | null)[]>([]);
   const flowerInners = useRef<(SVGGElement | null)[]>([]);
-  const step1Ref    = useRef<HTMLDivElement>(null);
-  const step2Ref    = useRef<HTMLDivElement>(null);
-  const step3Ref    = useRef<HTMLDivElement>(null);
+  const step1Ref     = useRef<HTMLDivElement>(null);
+  const step2Ref     = useRef<HTMLDivElement>(null);
+  const step3Ref     = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const stem = stemRef.current;
     if (!stem || !sectionRef.current) return;
 
-    // Stem
     const stemLen = stem.getTotalLength();
     gsap.set(stem, { strokeDasharray: stemLen, strokeDashoffset: stemLen });
 
-    // Branches
     branchRefs.current.forEach((el) => {
       if (!el) return;
       const len = el.getTotalLength();
       gsap.set(el, { strokeDasharray: len, strokeDashoffset: len });
     });
 
-    // Leaves — scale from attachment point (local 0,0)
     leafInners.current.forEach((el) => {
       if (el) gsap.set(el, { scale: 0, opacity: 0, transformOrigin: '0 0' });
     });
 
-    // Flowers — scale from center
     flowerInners.current.forEach((el) => {
       if (el) gsap.set(el, { scale: 0, opacity: 0, transformOrigin: '0 0' });
     });
 
-    // Main scrubbed timeline
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
-        start: 'top 6%',
-        end: 'bottom 94%',
-        scrub: 2.0,
+        start: 'top 5%',
+        end: 'bottom 95%',
+        scrub: 2.2,
       },
     });
 
@@ -176,13 +168,13 @@ export default function HowItWorks() {
       if (el) tl.to(el, { scale: 1, opacity: 1, duration: dur, ease: 'power2.out' }, at);
     });
 
-    // Step highlights (separate, non-scrubbed triggers)
+    // Step highlights (non-scrubbed, one-way fade-in)
     [step1Ref, step2Ref, step3Ref].forEach((ref) => {
       if (!ref.current) return;
       ScrollTrigger.create({
         trigger: ref.current,
-        start: 'top 75%',
-        onEnter:     () => { ref.current?.classList.add('opacity-100'); ref.current?.classList.remove('opacity-40'); },
+        start: 'top 78%',
+        onEnter:     () => { ref.current?.classList.add('opacity-100');    ref.current?.classList.remove('opacity-40'); },
         onLeaveBack: () => { ref.current?.classList.remove('opacity-100'); ref.current?.classList.add('opacity-40'); },
       });
     });
@@ -192,23 +184,22 @@ export default function HowItWorks() {
 
   return (
     <section
-      className="bg-white border-b border-gray-100"
-      style={{ paddingTop: '5.5rem', paddingBottom: '5.5rem' }}
+      className="bg-white border-b border-gray-100 pt-[5.5rem] lg:pt-0 pb-[5.5rem]"
       id="approach"
       ref={sectionRef}
     >
       <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[38%_1fr] gap-16 items-start">
 
-        {/* ── Left: botanical illustration ─────────────────────────────── */}
-        <div className="relative hidden lg:block" style={{ height: '820px' }}>
+        {/* ── Left: botanical — starts flush with the section border ──────── */}
+        <div className="relative hidden lg:block" style={{ height: '640px' }}>
           <svg
-            viewBox="0 0 240 820"
+            viewBox="0 0 280 640"
             className="absolute inset-0 w-full h-full"
             fill="none"
             aria-hidden="true"
             style={{ overflow: 'visible' }}
           >
-            {/* Main stem */}
+            {/* Stem */}
             <path
               ref={stemRef}
               d={STEM}
@@ -231,7 +222,7 @@ export default function HowItWorks() {
               />
             ))}
 
-            {/* Leaves — outer <g> positions, inner <g> is GSAP target */}
+            {/* Leaves: outer <g> = position+angle, inner <g> = GSAP scale target */}
             {LEAVES.map((l, i) => (
               <g key={i} transform={`translate(${l.x},${l.y}) rotate(${l.rot})`}>
                 <g ref={(el) => { leafInners.current[i] = el; }}>
@@ -244,15 +235,15 @@ export default function HowItWorks() {
             {FLOWERS.map((f, i) => (
               <g key={i} transform={`translate(${f.x},${f.y})`}>
                 <g ref={(el) => { flowerInners.current[i] = el; }}>
-                  <Petals r={f.r} n={f.n} />
+                  <BotanicalFlower r={f.r} n={f.n} />
                 </g>
               </g>
             ))}
           </svg>
         </div>
 
-        {/* ── Right: steps ──────────────────────────────────────────────── */}
-        <div className="flex flex-col gap-12 pt-2 lg:pt-8">
+        {/* ── Right: content — own top padding mirrors removed section padding */}
+        <div className="flex flex-col gap-12 lg:pt-[5.5rem]">
           <div>
             <Eyebrow className="mb-5">Our Method</Eyebrow>
             <SplitReveal
