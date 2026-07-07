@@ -113,18 +113,18 @@ export default function Hero() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full min-h-screen bg-white border-b border-gray-100 flex items-center pt-32 pb-16 overflow-hidden"
+      className="relative w-full min-h-screen bg-white border-b border-gray-100 flex items-center lg:items-stretch pt-32 pb-16 lg:pb-0 overflow-hidden"
     >
       <BackgroundGrid />
 
-      <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 w-full">
+      <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 lg:grid-rows-1 gap-12 items-center relative z-10 w-full lg:min-h-[calc(100vh-8rem)]">
         {/* Left — copy */}
         <HeroText />
 
         {/* Right — the phone types a query, its source cards fly out, then fly into a sliding tabbed browser */}
         <div
           ref={columnRef}
-          className="relative w-full max-w-[720px] h-[420px] lg:h-[460px] mx-auto"
+          className="relative w-full max-w-[720px] h-[420px] lg:h-[540px] mx-auto lg:self-end"
           style={{ perspective: '1400px' }}
         >
           <div className="hidden lg:block">
