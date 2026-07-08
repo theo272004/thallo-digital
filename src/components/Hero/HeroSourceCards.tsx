@@ -49,12 +49,20 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
         // exactly where the row sits, at the row's elongated size, then shrinks
         // and glides to its floating spot — so the row visibly *becomes* the
         // compact card, one continuous shape the whole way.
+        //
+        // IMPORTANT: the start offset aligns EDGES (left/top), not centers.
+        // Width/height are also tweening, and GSAP anchors an element at its
+        // left edge — center math computed against the natural size made the
+        // card spawn ~half-a-row to the right and "swing back", a visible
+        // dart in the wrong direction. Edge-aligned starts + equal easing on
+        // x and width keep both card edges moving monotonically toward the
+        // final spot: it just shrinks *toward where it's going*.
         const rowEl = document.getElementById(`hero-result-${c.key}`);
         const row = rowEl ? rowEl.getBoundingClientRect() : null;
         const from = row
           ? {
-              x: row.left + row.width / 2 - cx,
-              y: row.top + row.height / 2 - cy,
+              x: row.left - r.left,
+              y: row.top - r.top,
               width: row.width,
               height: row.height,
             }
@@ -150,7 +158,7 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
           ref={(el) => {
             cardRefs.current[c.key] = el;
           }}
-          className={`src-card absolute ${c.pos} w-[140px] 2xl:w-[156px] overflow-hidden bg-white rounded-2xl border border-gray-100 p-3 flex items-center gap-2.5 ${
+          className={`src-card absolute ${c.pos} w-[156px] overflow-hidden bg-white rounded-2xl border border-gray-100 p-3 flex items-center gap-2.5 ${
             show ? 'opacity-100 shadow-[0_24px_50px_-24px_rgba(30,34,20,0.35)]' : 'opacity-0 shadow-none'
           }`}
         >
@@ -158,8 +166,8 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
             <img src={c.logo} alt={c.name} className="w-full h-full object-contain" />
           </div>
           <div className="min-w-0">
-            <div className="text-[11px] font-bold text-gray-900 leading-tight whitespace-nowrap">{c.name}</div>
-            <div className="text-[11px] font-semibold text-[#758061] whitespace-nowrap">{c.tag}</div>
+            <div className="text-[11px] font-bold text-gray-900 leading-tight">{c.name}</div>
+            <div className="text-[11px] font-semibold text-[#758061]">{c.tag}</div>
           </div>
         </div>
       ))}
