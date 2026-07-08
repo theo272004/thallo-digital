@@ -18,16 +18,22 @@ const PLATFORMS = [
 
 const MONTHS = ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
 
-// Even x-spacing across viewBox 0 0 400 160
-const DATA_PTS: [number, number][] = [
-  [10,  140],
-  [75,  124],
-  [140, 100],
-  [205, 80],
-  [270, 56],
-  [335, 30],
-  [395, 13],
-];
+// Chart geometry — margins keep first/last month away from the SVG edge
+const CW = 400;   // viewBox width
+const CH = 170;   // viewBox height (includes 22px label row at bottom)
+const ML = 30;    // left margin
+const MR = 30;    // right margin
+const MT = 14;    // top of chart area
+const CHART_BOTTOM = 148; // bottom of chart area (labels sit below this)
+const STEP = (CW - ML - MR) / 6;  // 56.67
+
+// X positions aligned perfectly to month labels
+const XS: number[] = Array.from({ length: 7 }, (_, i) => ML + i * STEP);
+
+// Y values — smooth progressive rise Dec→Jun (higher = more mentions = lower SVG y)
+const YS: number[] = [130, 115, 98, 78, 56, 33, 16];
+
+const DATA_PTS: [number, number][] = XS.map((x, i) => [x, YS[i]]);
 
 const SPARKLINE: [number, number][] = [
   [0,35],[20,30],[40,27],[60,22],[80,17],[100,13],[120,8],
@@ -135,16 +141,21 @@ export default function ResultsDashboard() {
                     Increase in AI platform mentions over 6 months
                   </p>
 
-                  {/* SVG chart */}
-                  <svg viewBox="0 0 400 160" className="w-full" style={{ height: '130px', display: 'block' }}>
-                    {/* Horizontal grid lines */}
-                    {[20, 60, 100, 140].map(y => (
-                      <line key={y} x1="0" y1={y} x2="400" y2={y} stroke="#f0f0ee" strokeWidth="1" />
+                  {/* SVG chart — labels live inside the SVG for pixel-perfect alignment */}
+                  <svg
+                    viewBox={`0 0 ${CW} ${CH}`}
+                    className="w-full"
+                    style={{ height: '150px', display: 'block', overflow: 'visible' }}
+                  >
+                    {/* Horizontal grid lines — span only the chart area */}
+                    {[25, 65, 105, CHART_BOTTOM].map(y => (
+                      <line key={y} x1={ML} y1={y} x2={CW - MR} y2={y}
+                        stroke="#e8e8e5" strokeWidth="1" />
                     ))}
-                    {/* Vertical month guide lines */}
-                    {DATA_PTS.map(([x], i) => (
-                      <line key={i} x1={x} y1="10" x2={x} y2="152"
-                        stroke="#f0f0ee" strokeWidth="1" strokeDasharray="3 4" />
+                    {/* Vertical month lines — one per month, spanning full chart height */}
+                    {XS.map((x, i) => (
+                      <line key={i} x1={x} y1={MT} x2={x} y2={CHART_BOTTOM}
+                        stroke="#e8e8e5" strokeWidth="1" />
                     ))}
                     {/* Smooth line */}
                     <path
@@ -156,18 +167,26 @@ export default function ResultsDashboard() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     />
-                    {/* Data points */}
+                    {/* Data points — one per month, open circles */}
                     {DATA_PTS.map(([x, y], i) => (
                       <circle key={i} cx={x} cy={y} r="4" fill="white" stroke="#39471D" strokeWidth="2" />
                     ))}
-                  </svg>
-
-                  {/* Month labels — aligned to data point x positions */}
-                  <div className="flex justify-between mt-2">
-                    {MONTHS.map(m => (
-                      <span key={m} className="text-[10px] font-bold text-gray-400">{m}</span>
+                    {/* Month labels — centred under each data point's x */}
+                    {XS.map((x, i) => (
+                      <text
+                        key={i}
+                        x={x}
+                        y={CH - 4}
+                        textAnchor="middle"
+                        fontSize="9"
+                        fontWeight="700"
+                        fill="#9ca3af"
+                        fontFamily="ui-monospace, monospace"
+                      >
+                        {MONTHS[i]}
+                      </text>
                     ))}
-                  </div>
+                  </svg>
                 </div>
 
                 {/* ── Right panel: bars + average position ──────────── */}
