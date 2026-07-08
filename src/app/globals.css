@@ -5,6 +5,22 @@
   --font-sans: var(--font-sans);
   --font-serif: var(--font-serif);
   --font-mono: var(--font-mono);
+  --animate-marquee: marquee 32s linear infinite;
+}
+
+/* The ticker renders its logo list 3× and slides one third of its width, so
+   the loop is seamless. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-33.3333%); }
+}
+
+/* No layout may ever produce sideways panning — decorative elements that hang
+   off-canvas (hero cards, tickers) get clipped instead of widening the page.
+   `clip` (not `hidden`) so body doesn't become a scroll container, which would
+   break position: sticky and smooth scrolling. */
+html, body {
+  overflow-x: clip;
 }
 
 body {

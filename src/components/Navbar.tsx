@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Magnetic, scrollToEl } from '@/components/motion';
 
 interface NavbarProps {
@@ -11,9 +11,20 @@ interface NavbarProps {
 export default function Navbar({ currentView, setView }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  // Hide the bar while scrolling down; bring it back the moment you scroll up.
+  const [hidden, setHidden] = useState(false);
+  const lastY = useRef(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 20);
+      const delta = y - lastY.current;
+      if (y < 80) setHidden(false); // never hide near the top
+      else if (delta > 6) setHidden(true); // scrolling down
+      else if (delta < -6) setHidden(false); // scrolling up
+      lastY.current = y;
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
@@ -35,7 +46,11 @@ export default function Navbar({ currentView, setView }: NavbarProps) {
   };
 
   return (
-    <nav className="fixed top-3 sm:top-5 inset-x-3 sm:inset-x-6 z-50">
+    <nav
+      className={`fixed top-3 sm:top-5 inset-x-3 sm:inset-x-6 z-50 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        hidden && !mobileMenuOpen ? '-translate-y-[150%]' : 'translate-y-0'
+      }`}
+    >
       <div
         className={`max-w-[1440px] mx-auto rounded-full flex justify-between items-center px-4 sm:px-6 py-2.5 transition-all duration-300 ${
           scrolled
@@ -96,7 +111,6 @@ export default function Navbar({ currentView, setView }: NavbarProps) {
             ✕
           </button>
           <div className="flex flex-col gap-6 mt-12 text-lg font-bold text-gray-800">
-            <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)}>Services</a>
             <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)}>Services</a>
             <a href="#approach" onClick={(e) => handleHomeAnchorClick('approach', e)}>Our Approach</a>
             <a href="#results" onClick={(e) => handleHomeAnchorClick('results', e)}>Results</a>
