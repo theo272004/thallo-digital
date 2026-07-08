@@ -28,10 +28,11 @@ export default function Testimonials() {
   return (
     <section className="bg-white py-28 border-b border-gray-100" id="testimonials">
       <div className="max-w-[1440px] mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
+        {/* ── Single row: image (40%) + three cards side-by-side (60%) ─ */}
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 items-stretch">
 
-          {/* ── Featured card — dark, image-backed ────────────────────── */}
-          <div className="relative overflow-hidden rounded-[28px] bg-[#1a1f10] min-h-[480px]">
+          {/* Featured card — fixed at 40% on desktop */}
+          <div className="relative overflow-hidden rounded-[28px] bg-[#1a1f10] min-h-[380px] lg:min-h-0 lg:w-[40%] lg:flex-shrink-0">
             <img
               src="/thallo-digital/shift.jpg"
               alt="Northwind case study"
@@ -68,19 +69,19 @@ export default function Testimonials() {
             </button>
           </div>
 
-          {/* ── Three editorial article cards ─────────────────────────── */}
-          <div className="flex flex-col gap-5">
+          {/* Three editorial cards — horizontal row, equal widths */}
+          <div className="flex flex-col sm:flex-row gap-6 flex-1">
             {ARTICLES.map((a) => (
               <div
                 key={a.title}
-                className="flex-1 border border-gray-100 rounded-3xl p-8 bg-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.06)] transition-shadow duration-300 flex flex-col justify-between"
+                className="flex-1 border border-gray-100 rounded-3xl p-7 bg-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.06)] transition-shadow duration-300 flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#39471D] bg-[#39471D]/10 px-2.5 py-1 rounded-full">
+                  <div className="flex items-center justify-between mb-5 gap-2 flex-wrap">
+                    <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#39471D] bg-[#39471D]/10 px-2.5 py-1 rounded-full whitespace-nowrap">
                       {a.badge}
                     </span>
-                    <span className="text-[11px] text-gray-400 font-medium">
+                    <span className="text-[11px] text-gray-400 font-medium whitespace-nowrap">
                       {a.date} · {a.read}
                     </span>
                   </div>
