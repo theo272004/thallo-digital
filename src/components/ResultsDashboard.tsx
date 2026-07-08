@@ -1,6 +1,9 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+import {
+  LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer,
+} from 'recharts';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Eyebrow from '@/components/ui/Eyebrow';
@@ -8,6 +11,18 @@ import { SplitReveal } from '@/components/motion';
 
 if (typeof window !== 'undefined') { gsap.registerPlugin(ScrollTrigger); }
 
+// ── Chart data — 7 equal columns, one per month ──────────────────────────────
+const CHART_DATA = [
+  { month: 'Dec', value: 18 },
+  { month: 'Jan', value: 30 },
+  { month: 'Feb', value: 46 },
+  { month: 'Mar', value: 60 },
+  { month: 'Apr', value: 72 },
+  { month: 'May', value: 84 },
+  { month: 'Jun', value: 94 },
+];
+
+// ── Platform bars ─────────────────────────────────────────────────────────────
 const PLATFORMS = [
   { name: 'ChatGPT',    count: 1240, pct: 100, color: '#39471D' },
   { name: 'Perplexity', count: 960,  pct: 77,  color: '#4d5e26' },
@@ -16,31 +31,11 @@ const PLATFORMS = [
   { name: 'Gemini',     count: 430,  pct: 35,  color: '#809a3e' },
 ];
 
-const MONTHS = ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-
-// Chart geometry — margins keep first/last month away from the SVG edge
-const CW = 400;   // viewBox width
-const CH = 170;   // viewBox height (includes 22px label row at bottom)
-const ML = 30;    // left margin
-const MR = 30;    // right margin
-const MT = 14;    // top of chart area
-const CHART_BOTTOM = 148; // bottom of chart area (labels sit below this)
-const STEP = (CW - ML - MR) / 6;  // 56.67
-
-// X positions aligned perfectly to month labels
-const XS: number[] = Array.from({ length: 7 }, (_, i) => ML + i * STEP);
-
-// Y values — smooth progressive rise Dec→Jun (higher = more mentions = lower SVG y)
-const YS: number[] = [130, 115, 98, 78, 56, 33, 16];
-
-const DATA_PTS: [number, number][] = XS.map((x, i) => [x, YS[i]]);
-
+// ── Sparkline (average position) ──────────────────────────────────────────────
 const SPARKLINE: [number, number][] = [
   [0,35],[20,30],[40,27],[60,22],[80,17],[100,13],[120,8],
 ];
-
-// Smooth cubic bezier through points (each segment uses midpoint as control x)
-function smoothPath(pts: [number, number][]): string {
+function sparkPath(pts: [number, number][]): string {
   let d = `M ${pts[0][0]},${pts[0][1]}`;
   for (let i = 1; i < pts.length; i++) {
     const [x0, y0] = pts[i - 1];
@@ -53,24 +48,11 @@ function smoothPath(pts: [number, number][]): string {
 
 export default function ResultsDashboard() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const lineRef      = useRef<SVGPathElement>(null);
   const barRefs      = useRef<(HTMLDivElement | null)[]>([]);
   const floatRef     = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Line draw on scroll
-    const line = lineRef.current;
-    if (line) {
-      const len = line.getTotalLength();
-      gsap.set(line, { strokeDasharray: len, strokeDashoffset: len });
-      gsap.to(line, {
-        strokeDashoffset: 0,
-        ease: 'power2.out',
-        scrollTrigger: { trigger: containerRef.current, start: 'top 75%', end: 'top 20%', scrub: 1.2 },
-      });
-    }
-
-    // Horizontal bars widen on enter
+    // Horizontal bars widen on scroll-enter
     PLATFORMS.forEach((p, i) => {
       const el = barRefs.current[i];
       if (!el) return;
@@ -130,66 +112,70 @@ export default function ResultsDashboard() {
               {/* Two-column body */}
               <div className="grid grid-cols-1 md:grid-cols-[55%_45%] md:divide-x divide-gray-50">
 
-                {/* ── Left panel: line chart ─────────────────────────── */}
+                {/* ── Left panel: Recharts line chart ───────────────────── */}
                 <div className="p-7 lg:p-9">
                   <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-1">
                     AI Visibility Growth
                   </p>
                   <p className="text-[11px] text-gray-400 font-medium leading-none mb-1">Mentions</p>
                   <p className="text-[38px] font-bold text-[#39471D] leading-none mb-1">+540%</p>
-                  <p className="text-[11px] text-gray-400 font-medium mb-6 leading-relaxed">
+                  <p className="text-[11px] text-gray-400 font-medium mb-5 leading-relaxed">
                     Increase in AI platform mentions over 6 months
                   </p>
 
-                  {/* SVG chart — labels live inside the SVG for pixel-perfect alignment */}
-                  <svg
-                    viewBox={`0 0 ${CW} ${CH}`}
-                    className="w-full"
-                    style={{ height: '150px', display: 'block', overflow: 'visible' }}
-                  >
-                    {/* Horizontal grid lines — span only the chart area */}
-                    {[25, 65, 105, CHART_BOTTOM].map(y => (
-                      <line key={y} x1={ML} y1={y} x2={CW - MR} y2={y}
-                        stroke="#e8e8e5" strokeWidth="1" />
-                    ))}
-                    {/* Vertical month lines — one per month, spanning full chart height */}
-                    {XS.map((x, i) => (
-                      <line key={i} x1={x} y1={MT} x2={x} y2={CHART_BOTTOM}
-                        stroke="#e8e8e5" strokeWidth="1" />
-                    ))}
-                    {/* Smooth line */}
-                    <path
-                      ref={lineRef}
-                      d={smoothPath(DATA_PTS)}
-                      fill="none"
-                      stroke="#39471D"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    {/* Data points — one per month, open circles */}
-                    {DATA_PTS.map(([x, y], i) => (
-                      <circle key={i} cx={x} cy={y} r="4" fill="white" stroke="#39471D" strokeWidth="2" />
-                    ))}
-                    {/* Month labels — centred under each data point's x */}
-                    {XS.map((x, i) => (
-                      <text
-                        key={i}
-                        x={x}
-                        y={CH - 4}
-                        textAnchor="middle"
-                        fontSize="9"
-                        fontWeight="700"
-                        fill="#9ca3af"
-                        fontFamily="ui-monospace, monospace"
+                  {/* Real chart — coordinate-based, not hand-drawn */}
+                  <div style={{ height: '148px' }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={CHART_DATA}
+                        margin={{ top: 8, right: 8, left: 8, bottom: 0 }}
                       >
-                        {MONTHS[i]}
-                      </text>
-                    ))}
-                  </svg>
+                        {/* 5 horizontal lines + 7 vertical lines */}
+                        <CartesianGrid
+                          stroke="#e8e8e5"
+                          strokeWidth={1}
+                          strokeDasharray=""
+                          vertical={true}
+                          horizontal={true}
+                        />
+                        {/* X axis — month labels centred under each column */}
+                        <XAxis
+                          dataKey="month"
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{
+                            fontSize: 9,
+                            fontWeight: 700,
+                            fill: '#9ca3af',
+                            fontFamily: 'ui-monospace, monospace',
+                          }}
+                          dy={6}
+                        />
+                        {/* Y axis — hidden but controls 5 horizontal grid lines */}
+                        <YAxis
+                          hide
+                          domain={[0, 100]}
+                          ticks={[0, 25, 50, 75, 100]}
+                        />
+                        {/* The line itself */}
+                        <Line
+                          type="monotone"
+                          dataKey="value"
+                          stroke="#39471D"
+                          strokeWidth={2.5}
+                          strokeLinecap="round"
+                          dot={{ fill: 'white', stroke: '#39471D', strokeWidth: 2, r: 4 }}
+                          activeDot={{ r: 5, fill: '#39471D', stroke: 'white', strokeWidth: 2 }}
+                          isAnimationActive={true}
+                          animationDuration={1200}
+                          animationEasing="ease-out"
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
 
-                {/* ── Right panel: bars + average position ──────────── */}
+                {/* ── Right panel: platform bars + average position ──────── */}
                 <div className="p-7 lg:p-9 flex flex-col">
                   <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-5">
                     Top AI Platforms
@@ -228,8 +214,8 @@ export default function ResultsDashboard() {
                         </span>
                       </div>
                       <svg viewBox="0 0 120 44" className="w-20 h-7 flex-shrink-0">
-                        <polyline
-                          points={SPARKLINE.map(([x, y]) => `${x},${y}`).join(' ')}
+                        <path
+                          d={sparkPath(SPARKLINE)}
                           fill="none"
                           stroke="#39471D"
                           strokeWidth="1.8"
