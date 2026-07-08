@@ -9,22 +9,50 @@ import { SplitReveal } from '@/components/motion';
 if (typeof window !== 'undefined') { gsap.registerPlugin(ScrollTrigger); }
 
 const PLATFORMS = [
-  { name: 'ChatGPT',    count: 1240, pct: 100 },
-  { name: 'Perplexity', count: 960,  pct: 77  },
-  { name: 'Google AI',  count: 810,  pct: 65  },
-  { name: 'Claude',     count: 560,  pct: 45  },
-  { name: 'Gemini',     count: 430,  pct: 35  },
+  { name: 'ChatGPT',    count: 1240, pct: 100, color: '#39471D' },
+  { name: 'Perplexity', count: 960,  pct: 77,  color: '#4d5e26' },
+  { name: 'Google AI',  count: 810,  pct: 65,  color: '#5e722e' },
+  { name: 'Claude',     count: 560,  pct: 45,  color: '#6f8636' },
+  { name: 'Gemini',     count: 430,  pct: 35,  color: '#809a3e' },
 ];
 
-const SPARKLINE = [[0,35],[20,30],[40,28],[60,22],[80,18],[100,15],[120,8]];
-const LINE_PTS   = [[10,148],[90,140],[170,115],[250,75],[330,42],[390,10]];
+const MONTHS = ['Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+
+// Even x-spacing across viewBox 0 0 400 160
+const DATA_PTS: [number, number][] = [
+  [10,  140],
+  [75,  124],
+  [140, 100],
+  [205, 80],
+  [270, 56],
+  [335, 30],
+  [395, 13],
+];
+
+const SPARKLINE: [number, number][] = [
+  [0,35],[20,30],[40,27],[60,22],[80,17],[100,13],[120,8],
+];
+
+// Smooth cubic bezier through points (each segment uses midpoint as control x)
+function smoothPath(pts: [number, number][]): string {
+  let d = `M ${pts[0][0]},${pts[0][1]}`;
+  for (let i = 1; i < pts.length; i++) {
+    const [x0, y0] = pts[i - 1];
+    const [x1, y1] = pts[i];
+    const cx = (x0 + x1) / 2;
+    d += ` C ${cx},${y0} ${cx},${y1} ${x1},${y1}`;
+  }
+  return d;
+}
 
 export default function ResultsDashboard() {
   const containerRef = useRef<HTMLDivElement>(null);
   const lineRef      = useRef<SVGPathElement>(null);
   const barRefs      = useRef<(HTMLDivElement | null)[]>([]);
+  const floatRef     = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Line draw on scroll
     const line = lineRef.current;
     if (line) {
       const len = line.getTotalLength();
@@ -32,28 +60,34 @@ export default function ResultsDashboard() {
       gsap.to(line, {
         strokeDashoffset: 0,
         ease: 'power2.out',
-        scrollTrigger: { trigger: containerRef.current, start: 'top 75%', end: 'top 25%', scrub: 1.2 },
+        scrollTrigger: { trigger: containerRef.current, start: 'top 75%', end: 'top 20%', scrub: 1.2 },
       });
     }
 
+    // Horizontal bars widen on enter
     PLATFORMS.forEach((p, i) => {
       const el = barRefs.current[i];
       if (!el) return;
       gsap.fromTo(el,
         { width: '0%' },
-        {
-          width: `${p.pct}%`,
-          duration: 1.2,
-          ease: 'power2.out',
-          delay: i * 0.12,
-          scrollTrigger: { trigger: containerRef.current, start: 'top 72%', once: true },
-        }
+        { width: `${p.pct}%`, duration: 1.2, ease: 'power2.out', delay: i * 0.1,
+          scrollTrigger: { trigger: containerRef.current, start: 'top 72%', once: true } }
       );
+    });
+
+    // Floating card gentle parallax
+    gsap.to(floatRef.current, {
+      y: -18, ease: 'none',
+      scrollTrigger: { trigger: containerRef.current, start: 'top bottom', end: 'bottom top', scrub: 0.6 },
     });
   }, []);
 
   return (
-    <section className="bg-gray-50/50 py-28 border-b border-gray-100" id="results" ref={containerRef}>
+    <section
+      className="bg-gray-50/50 py-28 pb-36 border-b border-gray-100"
+      id="results"
+      ref={containerRef}
+    >
       <div className="max-w-[1440px] mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-[28%_1fr] gap-16 items-start">
 
@@ -66,107 +100,145 @@ export default function ResultsDashboard() {
               html="Visualizing authority compounding."
             />
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[30ch]">
-              We track the signals that matter across leading AI platforms—so you can see your visibility grow, not just feel it.
+              We track the signals that matter across leading AI platforms—so you can see your visibility
+              grow, not just feel it.
             </p>
           </div>
 
-          {/* ── Right: dashboard card ───────────────────────────────────── */}
-          <div className="bg-white border border-gray-100 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.05)] overflow-hidden">
+          {/* ── Right: dashboard + floating card ───────────────────────── */}
+          <div className="relative">
 
-            {/* Chrome bar */}
-            <div className="border-b border-gray-50 px-6 py-4 flex items-center gap-2 bg-gray-50/40">
-              <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
-              <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
-              <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
-              <span className="text-[11px] font-bold tracking-wider text-gray-400 uppercase ml-4">
-                Citations Analytics · Q2 2026
-              </span>
-            </div>
+            {/* Dashboard card */}
+            <div className="bg-white border border-gray-100 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.05)]">
 
-            {/* Two-column content */}
-            <div className="grid grid-cols-1 md:grid-cols-2 md:divide-x divide-gray-50">
-
-              {/* Line chart */}
-              <div className="p-8 lg:p-10">
-                <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-4">AI Visibility Growth</p>
-                <p className="text-[10px] text-gray-400 font-medium mb-1">Mentions</p>
-                <p className="text-4xl font-bold text-[#39471D] leading-none mb-1">+540%</p>
-                <p className="text-[11px] text-gray-400 font-medium mb-8 leading-relaxed">
-                  Increase in AI platform mentions over 6 months
-                </p>
-
-                <svg viewBox="0 0 400 160" className="w-full" style={{ height: '130px' }}>
-                  {[20, 80, 140].map(y => (
-                    <line key={y} x1="0" y1={y} x2="400" y2={y} stroke="#f3f4f6" strokeWidth="1" />
-                  ))}
-                  <path
-                    ref={lineRef}
-                    d="M 10,148 C 80,142 120,130 170,108 S 260,72 300,48 S 360,24 390,10"
-                    fill="none"
-                    stroke="#39471D"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                  />
-                  {LINE_PTS.map(([x, y], i) => (
-                    <circle key={i} cx={x} cy={y} r="3.5" fill="#39471D" />
-                  ))}
-                </svg>
-
-                <div className="flex justify-between mt-2">
-                  {['Dec','Jan','Feb','Mar','Apr','May','Jun'].map(m => (
-                    <span key={m} className="text-[9px] font-bold text-gray-400">{m}</span>
-                  ))}
-                </div>
+              {/* Chrome bar */}
+              <div className="border-b border-gray-50 px-6 py-4 flex items-center gap-2 bg-gray-50/40 rounded-t-3xl">
+                <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
+                <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
+                <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
+                <span className="text-[11px] font-bold tracking-wider text-gray-400 uppercase ml-4">
+                  Citations Analytics · Q2 2026
+                </span>
               </div>
 
-              {/* Horizontal bars + sparkline */}
-              <div className="p-8 lg:p-10 flex flex-col">
-                <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-6">Top AI Platforms</p>
+              {/* Two-column body */}
+              <div className="grid grid-cols-1 md:grid-cols-[55%_45%] md:divide-x divide-gray-50">
 
-                <div className="flex flex-col gap-4 flex-1">
-                  {PLATFORMS.map((p, i) => (
-                    <div key={p.name} className="flex items-center gap-3">
-                      <span className="text-[12px] font-medium text-gray-600 w-[76px] flex-shrink-0">{p.name}</span>
-                      <div className="flex-1 bg-gray-100 rounded-full h-[7px] overflow-hidden">
-                        <div
-                          ref={(el) => { barRefs.current[i] = el; }}
-                          className="h-full bg-[#39471D] rounded-full"
-                          style={{ width: '0%' }}
-                        />
-                      </div>
-                      <span className="text-[11px] font-bold text-gray-600 w-10 text-right tabular-nums">
-                        {p.count.toLocaleString()}
-                      </span>
-                    </div>
-                  ))}
+                {/* ── Left panel: line chart ─────────────────────────── */}
+                <div className="p-7 lg:p-9">
+                  <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-1">
+                    AI Visibility Growth
+                  </p>
+                  <p className="text-[11px] text-gray-400 font-medium leading-none mb-1">Mentions</p>
+                  <p className="text-[38px] font-bold text-[#39471D] leading-none mb-1">+540%</p>
+                  <p className="text-[11px] text-gray-400 font-medium mb-6 leading-relaxed">
+                    Increase in AI platform mentions over 6 months
+                  </p>
+
+                  {/* SVG chart */}
+                  <svg viewBox="0 0 400 160" className="w-full" style={{ height: '130px', display: 'block' }}>
+                    {/* Horizontal grid lines */}
+                    {[20, 60, 100, 140].map(y => (
+                      <line key={y} x1="0" y1={y} x2="400" y2={y} stroke="#f0f0ee" strokeWidth="1" />
+                    ))}
+                    {/* Vertical month guide lines */}
+                    {DATA_PTS.map(([x], i) => (
+                      <line key={i} x1={x} y1="10" x2={x} y2="152"
+                        stroke="#f0f0ee" strokeWidth="1" strokeDasharray="3 4" />
+                    ))}
+                    {/* Smooth line */}
+                    <path
+                      ref={lineRef}
+                      d={smoothPath(DATA_PTS)}
+                      fill="none"
+                      stroke="#39471D"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    {/* Data points */}
+                    {DATA_PTS.map(([x, y], i) => (
+                      <circle key={i} cx={x} cy={y} r="4" fill="white" stroke="#39471D" strokeWidth="2" />
+                    ))}
+                  </svg>
+
+                  {/* Month labels — aligned to data point x positions */}
+                  <div className="flex justify-between mt-2">
+                    {MONTHS.map(m => (
+                      <span key={m} className="text-[10px] font-bold text-gray-400">{m}</span>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-gray-50">
-                  <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-3">Average Position</p>
-                  <div className="flex items-end justify-between">
-                    <div>
-                      <span className="text-4xl font-bold text-gray-900">2.3</span>
-                      <span className="text-sm font-medium text-gray-400 ml-2">vs. 8.7 industry avg.</span>
+                {/* ── Right panel: bars + average position ──────────── */}
+                <div className="p-7 lg:p-9 flex flex-col">
+                  <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-5">
+                    Top AI Platforms
+                  </p>
+
+                  <div className="flex flex-col gap-4 flex-1">
+                    {PLATFORMS.map((p, i) => (
+                      <div key={p.name} className="flex items-center gap-3">
+                        <span className="text-[12px] font-medium text-gray-600 w-[76px] flex-shrink-0">
+                          {p.name}
+                        </span>
+                        <div className="flex-1 bg-gray-100 rounded-full h-[7px] overflow-hidden">
+                          <div
+                            ref={(el) => { barRefs.current[i] = el; }}
+                            className="h-full rounded-full"
+                            style={{ width: '0%', backgroundColor: p.color }}
+                          />
+                        </div>
+                        <span className="text-[11px] font-bold text-gray-700 w-10 text-right tabular-nums">
+                          {p.count.toLocaleString()}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Divider + Average Position */}
+                  <div className="mt-6 pt-5 border-t border-gray-100">
+                    <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-2">
+                      Average Position
+                    </p>
+                    <div className="flex items-end justify-between gap-4">
+                      <div>
+                        <span className="text-[36px] font-bold text-gray-900 leading-none">2.3</span>
+                        <span className="text-[12px] font-medium text-gray-400 ml-2 block mt-0.5">
+                          vs. 8.7 industry avg.
+                        </span>
+                      </div>
+                      <svg viewBox="0 0 120 44" className="w-20 h-7 flex-shrink-0">
+                        <polyline
+                          points={SPARKLINE.map(([x, y]) => `${x},${y}`).join(' ')}
+                          fill="none"
+                          stroke="#39471D"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        {SPARKLINE.map(([x, y], i) => (
+                          <circle key={i} cx={x} cy={y} r="2.5" fill="white" stroke="#39471D" strokeWidth="1.5" />
+                        ))}
+                      </svg>
                     </div>
-                    <svg viewBox="0 0 120 44" className="w-24 h-8">
-                      <polyline
-                        points={SPARKLINE.map(([x,y]) => `${x},${y}`).join(' ')}
-                        fill="none"
-                        stroke="#39471D"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      {SPARKLINE.map(([x, y], i) => (
-                        <circle key={i} cx={x} cy={y} r="2.5" fill="white" stroke="#39471D" strokeWidth="1.8" />
-                      ))}
-                    </svg>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
+            {/* Floating card — peeks out below-left of dashboard */}
+            <div
+              ref={floatRef}
+              className="absolute -left-3 -bottom-8 bg-white border border-gray-100 px-5 py-4 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] z-20 flex flex-col gap-1 pointer-events-none"
+            >
+              <span className="text-[22px] font-bold text-[#39471D] leading-none">+420%</span>
+              <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-gray-400">
+                Platform growth
+              </span>
+            </div>
+
+          </div>
         </div>
       </div>
     </section>
