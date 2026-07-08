@@ -61,11 +61,14 @@ export default function HowItWorks() {
     });
 
     // ── Main scrubbed timeline ─────────────────────────────────────────────
+    // Ends at 'bottom 78%' so the WHOLE drawing — terminal flower included —
+    // completes while the section is still comfortably in view, instead of
+    // demanding extra scroll past it to see the tip finish.
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
         start: 'top 80%',
-        end: 'bottom 65%',
+        end: 'bottom 78%',
         scrub: 1,
       },
     });
@@ -95,19 +98,11 @@ export default function HowItWorks() {
     // Hoja 5 — attaches straight to the stem; stem reaches (y≈559) at ~7.9
     tl.to(hoja5Ref.current,  { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.9 }, 8.0);
 
-    // Flor final — the terminal bloom is NOT scrubbed: tying it to scroll meant
-    // it often froze half-open when the reader stopped at the section's end.
-    // Instead it plays fully, once, the moment the stem tip comes into reach.
-    ScrollTrigger.create({
-      trigger: sectionRef.current,
-      start: 'bottom 70%',
-      once: true,
-      onEnter: () => {
-        if (florFinRef.current) {
-          gsap.to(florFinRef.current, { scale: 1, opacity: 1, ease: 'back.out(1.6)', duration: 0.9 });
-        }
-      },
-    });
+    // Flor final — scrubbed like every leaf so it grows (and un-grows) with
+    // the scroll. It opens over the stem's last stretch and finishes exactly
+    // when the stem completes (at 10.0), so nothing is left hanging past the
+    // end of the timeline.
+    tl.to(florFinRef.current, { scale: 1, opacity: 1, ease: 'back.out(1.6)', duration: 0.7 }, 9.3);
 
     // ── Step highlights (non-scrubbed, one-way) ────────────────────────────
     [step1Ref, step2Ref, step3Ref, step4Ref].forEach((ref) => {

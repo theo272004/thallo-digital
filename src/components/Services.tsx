@@ -80,7 +80,7 @@ export default function Services() {
                   src="/thallo-digital/isotipo.png"
                   alt=""
                   aria-hidden="true"
-                  className="absolute -top-14 -right-14 w-56 rotate-[18deg] opacity-[0.09] pointer-events-none select-none"
+                  className="absolute -top-16 -right-16 w-72 rotate-[18deg] opacity-[0.09] pointer-events-none select-none"
                   style={{ filter: 'brightness(0) invert(1)' }}
                 />
               )}
