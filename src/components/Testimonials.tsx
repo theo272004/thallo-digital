@@ -1,26 +1,28 @@
 import React from 'react';
+import Eyebrow from '@/components/ui/Eyebrow';
+import { SplitReveal } from '@/components/motion';
 
 const ARTICLES = [
   {
-    badge: 'Results',
+    badge: 'GEO',
+    date:  'June 2026',
+    read:  '7 min',
+    title: 'What "share of answer" really measures',
+    desc:  'And why it matters more than rankings now.',
+  },
+  {
+    badge: 'Content',
     date:  'May 2026',
     read:  '5 min',
-    title: 'Mid-market AI adoption playbook',
-    desc:  'Why distribution wins before differentiation.',
+    title: "Original research beats AI's infinite content",
+    desc:  "The one asset machines can't fabricate.",
   },
   {
     badge: 'Strategy',
-    date:  'Apr 2026',
-    read:  '4 min',
-    title: 'High-intent content that ranks in AI',
-    desc:  'Structure, sources, and semantic lift.',
-  },
-  {
-    badge: 'Growth',
-    date:  'Mar 2026',
+    date:  'May 2026',
     read:  '6 min',
-    title: 'From rankings to recommendations',
-    desc:  'The shift beyond traditional search.',
+    title: "Why authority compounds and ads don't",
+    desc:  'Renting attention vs. owning credibility.',
   },
 ];
 
@@ -28,6 +30,15 @@ export default function Testimonials() {
   return (
     <section className="bg-white py-28 border-b border-gray-100" id="testimonials">
       <div className="max-w-[1440px] mx-auto px-6">
+
+        <div className="max-w-2xl mb-14">
+          <Eyebrow className="mb-5">From the field</Eyebrow>
+          <SplitReveal
+            as="h2"
+            className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans"
+            html="Notes on getting found,<br>and trusted."
+          />
+        </div>
         {/* ── Single row: image (40%) + three cards side-by-side (60%) ─ */}
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 items-stretch">
 
