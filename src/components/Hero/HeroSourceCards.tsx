@@ -25,8 +25,12 @@ type CardsPhase = 'hidden' | 'burst' | 'gather';
 export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
+  // NOTE: this choreography runs regardless of prefers-reduced-motion. Many
+  // Windows laptops ship with "animation effects" off, which silently skipped
+  // the whole sequence: rows faded into nothing and the cards popped in all at
+  // once. The hero demo is core content, not decoration — decorative motion
+  // elsewhere (parallax, glides) still honors the OS setting.
   useLayoutEffect(() => {
-    if (prefersReducedMotion()) return;
     const tweens: gsap.core.Tween[] = [];
 
     if (phase === 'burst') {
@@ -161,8 +165,4 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
       ))}
     </div>
   );
-}
-
-function prefersReducedMotion() {
-  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
