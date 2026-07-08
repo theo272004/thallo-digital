@@ -65,7 +65,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
 
       {/* Viewport — hidden until the first tab appears, then fades in */}
       <div
-        className="relative h-[280px] bg-white overflow-hidden"
+        className="relative h-[240px] xl:h-[280px] bg-white overflow-hidden"
         style={{ opacity: revealedTabs > 0 ? 1 : 0, transition: 'opacity 0.45s ease' }}
       >
         <div

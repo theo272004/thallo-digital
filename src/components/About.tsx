@@ -4,7 +4,7 @@ import { SplitReveal } from '@/components/motion';
 
 export default function About() {
   return (
-    <section className="bg-white py-28 min-h-[80vh] flex flex-col justify-center border-b border-gray-100" id="about">
+    <section className="bg-white py-16 xl:py-28 min-h-[80vh] flex flex-col justify-center border-b border-gray-100" id="about">
       <div className="max-w-[1440px] mx-auto px-6">
         <div className="max-w-3xl mx-auto text-center">
           <Eyebrow center className="mb-5 justify-center">About Thallo</Eyebrow>

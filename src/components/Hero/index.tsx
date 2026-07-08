@@ -129,7 +129,7 @@ export default function Hero() {
         {/* Right — the phone types a query, its source cards fly out, then fly into a sliding tabbed browser */}
         <div
           ref={columnRef}
-          className="relative w-full max-w-[720px] h-[420px] lg:h-[540px] mx-auto lg:self-end"
+          className="relative w-full max-w-[720px] h-[420px] lg:h-[min(540px,64vh)] mx-auto lg:self-end"
           style={{ perspective: '1400px' }}
         >
           <div className="hidden lg:block absolute inset-0">

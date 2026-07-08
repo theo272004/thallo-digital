@@ -23,6 +23,18 @@ html, body {
   overflow-x: clip;
 }
 
+/* Laptop density — typical laptops render at ~1280-1536 CSS px wide with only
+   ~600-720px of visible height (Windows scaling), so the 16px rem scale built
+   for large desktops feels oversized and sections overflow the fold. Between
+   lg and xl every rem-based size (type, spacing, gaps) runs ~12% tighter;
+   full-size desktops (≥1536px) keep the original scale. Tailwind breakpoints
+   resolve against the initial font-size, so they don't shift. */
+@media (min-width: 1024px) and (max-width: 1535.98px) {
+  html {
+    font-size: 14px;
+  }
+}
+
 body {
   font-family: var(--font-sans);
   background-color: #FFFFFF;

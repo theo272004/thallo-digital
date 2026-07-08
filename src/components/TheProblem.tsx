@@ -52,7 +52,7 @@ export default function TheProblem() {
         <div className="grid grid-cols-1 lg:grid-cols-[2.2fr_1fr] gap-5 lg:gap-6 items-stretch">
 
           {/* ── Feature card — dark, image-backed, copy on top ─────────── */}
-          <div className="relative overflow-hidden rounded-[28px] bg-[#171a10] min-h-[420px] sm:min-h-[480px] lg:min-h-[540px]">
+          <div className="relative overflow-hidden rounded-[28px] bg-[#171a10] min-h-[420px] sm:min-h-[480px] lg:min-h-[min(540px,68vh)]">
             {/* Image slot — drop the section photo here when it's ready:
                 <img
                   src="/thallo-digital/shift.jpg"
