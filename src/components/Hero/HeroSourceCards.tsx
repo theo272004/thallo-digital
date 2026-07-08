@@ -4,10 +4,10 @@ import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { gsap } from '@/lib/gsap';
 
 const CARDS = [
-  { key: 'chatgpt', logo: '/thallo-digital/logos/chatgpt.svg', name: 'ChatGPT', tag: 'Recommends you', pos: 'top-0 -left-[7%]' },
-  { key: 'google', logo: '/thallo-digital/logos/google.svg', name: 'Google', tag: 'AI Overview', pos: 'top-[14%] -right-[7%]' },
-  { key: 'perplexity', logo: '/thallo-digital/logos/perplexity.png', name: 'Perplexity', tag: 'Cited ✓', pos: 'bottom-[14%] -left-[7%]' },
-  { key: 'forbes', logo: '/thallo-digital/logos/forbes.svg', name: 'Forbes', tag: 'Featured', pos: 'bottom-0 -right-[6%]' },
+  { key: 'chatgpt', logo: '/thallo-digital/logos/chatgpt.svg', name: 'ChatGPT', tag: 'Recommends you', pos: 'top-0 -left-[3%]' },
+  { key: 'google', logo: '/thallo-digital/logos/google.svg', name: 'Google', tag: 'AI Overview', pos: 'top-[14%] -right-[3%]' },
+  { key: 'perplexity', logo: '/thallo-digital/logos/perplexity.png', name: 'Perplexity', tag: 'Cited ✓', pos: 'bottom-[14%] -left-[3%]' },
+  { key: 'forbes', logo: '/thallo-digital/logos/forbes.svg', name: 'Forbes', tag: 'Featured', pos: 'bottom-0 -right-[3%]' },
 ];
 
 type CardsPhase = 'hidden' | 'burst' | 'gather';
@@ -109,7 +109,7 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
           ref={(el) => {
             cardRefs.current[c.key] = el;
           }}
-          className={`src-card absolute ${c.pos} w-[156px] bg-white rounded-2xl border border-gray-100 p-3 flex items-center gap-2.5 ${
+          className={`src-card absolute ${c.pos} w-[140px] 2xl:w-[156px] bg-white rounded-2xl border border-gray-100 p-3 flex items-center gap-2.5 ${
             show ? 'opacity-100 shadow-[0_24px_50px_-24px_rgba(30,34,20,0.35)]' : 'opacity-0 shadow-none'
           }`}
         >

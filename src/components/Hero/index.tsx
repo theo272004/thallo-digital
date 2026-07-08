@@ -129,7 +129,7 @@ export default function Hero() {
         {/* Right — the phone types a query, its source cards fly out, then fly into a sliding tabbed browser */}
         <div
           ref={columnRef}
-          className="relative w-full max-w-[720px] h-[420px] lg:h-[min(540px,64vh)] mx-auto lg:self-end"
+          className="relative w-full max-w-[720px] h-[420px] lg:h-[min(460px,58vh)] 2xl:h-[min(540px,64vh)] mx-auto lg:self-end lg:mb-4"
           style={{ perspective: '1400px' }}
         >
           <div className="hidden lg:block absolute inset-0">
@@ -150,7 +150,7 @@ export default function Hero() {
             {/* Browser — raised on desktop (pb pushes the centered window up so it
                 sits in the middle of the space, not the bottom third) */}
             <div
-              className={`absolute inset-0 flex items-center justify-center lg:pb-[120px] ${fade} ${
+              className={`absolute inset-0 flex items-center justify-center 2xl:pb-[120px] ${fade} ${
                 browserVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-[0.97] pointer-events-none'
               }`}
             >

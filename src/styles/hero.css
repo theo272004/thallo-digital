@@ -73,7 +73,15 @@
   overflow: hidden;
 }
 
+/* Laptop: keep the phone narrower so it doesn't dominate the hero or crowd
+   the ticker below; only full desktops get the widest device. */
 @media (min-width: 1024px) {
+  .phone-mockup-frame {
+    max-width: 360px;
+  }
+}
+
+@media (min-width: 1536px) {
   .phone-mockup-frame {
     max-width: 425px;
   }

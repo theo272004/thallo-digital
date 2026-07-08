@@ -22,7 +22,7 @@ const TABS = [
 export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserProps) {
   return (
     <div
-      className="hero-browser relative w-full max-w-[540px] rounded-[18px] bg-white border border-gray-200/80 overflow-hidden"
+      className="hero-browser relative w-full max-w-[480px] 2xl:max-w-[540px] rounded-[18px] bg-white border border-gray-200/80 overflow-hidden"
       style={{ boxShadow: '0 40px 90px -40px rgba(28,32,15,0.45)' }}
     >
       {/* Top chrome */}
@@ -65,7 +65,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
 
       {/* Viewport — hidden until the first tab appears, then fades in */}
       <div
-        className="relative h-[240px] xl:h-[280px] bg-white overflow-hidden"
+        className="relative h-[240px] 2xl:h-[280px] bg-white overflow-hidden"
         style={{ opacity: revealedTabs > 0 ? 1 : 0, transition: 'opacity 0.45s ease' }}
       >
         <div

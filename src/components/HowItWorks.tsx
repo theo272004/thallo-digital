@@ -121,7 +121,7 @@ export default function HowItWorks() {
       <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[38%_1fr] gap-16 items-start">
 
         {/* ── Left: Illustrator SVG, flush with the section border ──────────── */}
-        <div className="relative hidden lg:block h-[860px] xl:h-[1000px]">
+        <div className="relative hidden lg:block h-[860px] 2xl:h-[1000px]">
           <svg
             viewBox="0 0 205.56 764.83"
             xmlns="http://www.w3.org/2000/svg"
@@ -207,7 +207,7 @@ export default function HowItWorks() {
         </div>
 
         {/* ── Right: content — gap-20 fills the ~860px left column height ───── */}
-        <div className="flex flex-col gap-14 xl:gap-20 lg:pt-[5.5rem]">
+        <div className="flex flex-col gap-14 2xl:gap-20 lg:pt-[5.5rem]">
           <div>
             <Eyebrow className="mb-5">Our approach</Eyebrow>
             <SplitReveal
