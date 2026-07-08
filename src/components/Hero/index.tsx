@@ -17,9 +17,9 @@ type Phase = 'phone' | 'burst' | 'gather' | 'browse';
 const TAB_COUNT = 4;
 const PHONE_MS = 3600; // typing the query + loading + 4 source results appear
 const BURST_MS = 2600; // the 4 source cards glide out, one by one, and hold
-const GATHER_MS = 2500; // browser window is here; cards morph INTO its tabs
+const GATHER_MS = 2200; // browser window is here; cards morph INTO its tabs
 const GATHER_STAGGER = 300; // gap between each card flying into the window
-const CARD_FLIGHT_MS = 1000; // how long a single card takes to reach + dissolve into its tab
+const CARD_FLIGHT_MS = 900; // how long a single card takes to reach + dissolve into its tab
 const TAB_MS = 2600; // each browser tab stays active this long
 
 /**
@@ -92,10 +92,13 @@ export default function Hero() {
     return () => ids.forEach((id) => window.clearTimeout(id));
   }, [phase, paused]);
 
-  // A soft "navigation" glide whenever the active surface changes.
+  // A soft "navigation" glide when the browser switches tabs — ONLY while
+  // browsing. During burst/gather the stage must stay perfectly still: any 3D
+  // transform here would skew the measured positions the cards fly from/to,
+  // making them land visibly off their tabs.
   useEffect(() => {
     const el = stageRef.current;
-    if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!el || phase !== 'browse' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     gsap.fromTo(
       el,
       { scale: 0.99, rotateY: -4 },
@@ -148,10 +151,12 @@ export default function Hero() {
             </div>
 
             {/* Browser — raised on desktop (pb pushes the centered window up so it
-                sits in the middle of the space, not the bottom third) */}
+                sits in the middle of the space, not the bottom third). It enters
+                with a pure fade — no scale — so its tabs are at their exact final
+                position from the first frame and the cards land dead-on. */}
             <div
               className={`absolute inset-0 flex items-center justify-center 2xl:pb-[120px] ${fade} ${
-                browserVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-[0.97] pointer-events-none'
+                browserVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
               }`}
             >
               <HeroBrowser activeIndex={tabIndex} revealedTabs={browserVisible ? revealedTabs : 0} />

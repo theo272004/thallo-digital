@@ -3,13 +3,14 @@
 import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { gsap } from '@/lib/gsap';
 
-// Positions stay fully inside the visual column so no card is ever clipped by
-// the viewport edge on laptop-width screens.
+// Resting spots hug the column edges — a 2% overshoot keeps them clear of the
+// phone and browser (which sit centered) without ever reaching the viewport
+// edge on laptop-width screens (the column sits 24px in from it).
 const CARDS = [
-  { key: 'chatgpt', logo: '/thallo-digital/logos/chatgpt.svg', name: 'ChatGPT', tag: 'Recommends you', pos: 'top-0 left-0' },
-  { key: 'google', logo: '/thallo-digital/logos/google.svg', name: 'Google', tag: 'AI Overview', pos: 'top-[14%] right-0' },
-  { key: 'perplexity', logo: '/thallo-digital/logos/perplexity.png', name: 'Perplexity', tag: 'Cited ✓', pos: 'bottom-[14%] left-0' },
-  { key: 'forbes', logo: '/thallo-digital/logos/forbes.svg', name: 'Forbes', tag: 'Featured', pos: 'bottom-0 right-0' },
+  { key: 'chatgpt', logo: '/thallo-digital/logos/chatgpt.svg', name: 'ChatGPT', tag: 'Recommends you', pos: 'top-0 -left-[2%]' },
+  { key: 'google', logo: '/thallo-digital/logos/google.svg', name: 'Google', tag: 'AI Overview', pos: 'top-[14%] -right-[2%]' },
+  { key: 'perplexity', logo: '/thallo-digital/logos/perplexity.png', name: 'Perplexity', tag: 'Cited ✓', pos: 'bottom-[14%] -left-[2%]' },
+  { key: 'forbes', logo: '/thallo-digital/logos/forbes.svg', name: 'Forbes', tag: 'Featured', pos: 'bottom-0 -right-[2%]' },
 ];
 
 type CardsPhase = 'hidden' | 'burst' | 'gather';
@@ -88,23 +89,30 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
         // Land on this card's own tab in the browser's tab strip.
         const tabEl = document.getElementById(`hero-tab-${c.key}`);
         if (!cardEl || !tabEl) return;
+        // The card rests untransformed at gather start, so its base center is
+        // stable — measure it once now.
         const cr = cardEl.getBoundingClientRect();
-        const tr = tabEl.getBoundingClientRect();
         const cx = cr.left + cr.width / 2;
         const cy = cr.top + cr.height / 2;
-        const tx = tr.left + tr.width / 2;
-        const ty = tr.top + tr.height / 2;
         const d = i * 0.3; // stagger — keep in sync with GATHER_STAGGER (300ms)
-        // 1) Glide to the tab and shrink to roughly the tab's footprint (156×73 →
-        //    ~0.46 ≈ 72×34), staying fully opaque so you watch it travel and
-        //    resize — the card is literally turning into a tab.
+        // 1) Glide to the tab and shrink to roughly the tab's footprint,
+        //    staying fully opaque so you watch it travel and resize — the card
+        //    is literally turning into a tab. The target is FUNCTION-BASED:
+        //    GSAP resolves it at take-off (after the delay), so each card aims
+        //    at the tab's true position in that exact moment.
         tweens.push(
           gsap.to(cardEl, {
-            x: tx - cx,
-            y: ty - cy,
+            x: () => {
+              const tr = tabEl.getBoundingClientRect();
+              return tr.left + tr.width / 2 - cx;
+            },
+            y: () => {
+              const tr = tabEl.getBoundingClientRect();
+              return tr.top + tr.height / 2 - cy;
+            },
             scale: 0.46,
             rotateZ: 0,
-            duration: 1.0, // keep in sync with CARD_FLIGHT_MS (1000ms)
+            duration: 0.9, // keep in sync with CARD_FLIGHT_MS (900ms)
             ease: 'power2.inOut',
             delay: d,
           })
@@ -113,7 +121,7 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
         //    overlaps the tab and the real tab blooms in underneath, so the
         //    hand-off reads as one continuous morph, not a card that vanishes.
         tweens.push(
-          gsap.to(cardEl, { opacity: 0, duration: 0.34, ease: 'power1.in', delay: d + 0.66 })
+          gsap.to(cardEl, { opacity: 0, duration: 0.3, ease: 'power1.in', delay: d + 0.6 })
         );
       });
     }

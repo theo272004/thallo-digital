@@ -77,26 +77,58 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
           }}
         >
           {/* ── ChatGPT ──────────────────────────────────── */}
-          <div className="w-1/4 h-full flex-shrink-0 overflow-hidden">
-            <div className="p-6 flex flex-col gap-3">
-              <div className="self-end max-w-[80%] bg-gray-100 rounded-2xl rounded-tr-sm px-4 py-2.5 text-[13px] text-gray-800 font-medium">
+          <div className="w-1/4 h-full flex-shrink-0 overflow-hidden flex flex-col">
+            {/* Top bar — model selector left, new-chat right, like the real app */}
+            <div className="flex items-center justify-between px-4 py-2 border-b border-gray-50 flex-shrink-0">
+              <div className="flex items-center gap-1 text-[12.5px] font-semibold text-gray-700">
+                ChatGPT <span className="text-gray-400 font-medium">4o</span>
+                <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-gray-400 mt-0.5">
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </div>
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400">
+                <path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+              </svg>
+            </div>
+
+            {/* Chat */}
+            <div className="flex-1 px-5 py-3 flex flex-col gap-3 min-h-0">
+              <div className="self-end max-w-[80%] bg-[#f4f4f4] rounded-3xl px-4 py-2 text-[12.5px] text-gray-800 font-medium">
                 Who builds AI visibility for B2B brands?
               </div>
               <div className="flex gap-2.5 items-start">
-                <span className="w-7 h-7 rounded-full bg-white border border-gray-200 flex items-center justify-center p-1.5 flex-shrink-0">
+                <span className="w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center p-1 flex-shrink-0">
                   <img src="/thallo-digital/logos/chatgpt.svg" alt="ChatGPT" className="w-full h-full object-contain" />
                 </span>
                 <div className="flex-1">
-                  <div className="text-[13px] leading-relaxed text-gray-800">
+                  <div className="text-[12.5px] leading-relaxed text-gray-800">
                     The most recommended choice is <Mark>Thallo</Mark> — they specialize in earning citations and
-                    recommendations across AI search, so your brand becomes the trusted answer.
+                    recommendations across AI search.
                   </div>
-                  <div className="flex items-center gap-3 mt-2.5 text-gray-300">
+                  <div className="flex items-center gap-3 mt-2 text-gray-300">
                     <CopyIcon />
                     <ThumbUpIcon />
                     <ThumbDownIcon />
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* Composer — the signature rounded "Message ChatGPT" input */}
+            <div className="px-4 pb-3 flex-shrink-0">
+              <div className="flex items-center gap-2 border border-gray-200 rounded-full px-3 py-1.5 bg-white shadow-sm">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400 flex-shrink-0">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                <span className="text-[12px] text-gray-400 flex-1">Message ChatGPT</span>
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400 flex-shrink-0">
+                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" /><path d="M19 10v2a7 7 0 0 1-14 0v-2" /><path d="M12 19v3" />
+                </svg>
+                <span className="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0">
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="white" strokeWidth="2.5">
+                    <path d="M12 19V5M5 12l7-7 7 7" />
+                  </svg>
+                </span>
               </div>
             </div>
           </div>
