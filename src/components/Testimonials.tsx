@@ -1,6 +1,4 @@
 import React from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
-import { SplitReveal } from '@/components/motion';
 
 const ARTICLES = [
   {
@@ -31,53 +29,26 @@ export default function Testimonials() {
     <section className="bg-white py-28 border-b border-gray-100" id="testimonials">
       <div className="max-w-[1440px] mx-auto px-6">
 
-        <div className="max-w-2xl mb-14">
-          <Eyebrow className="mb-5">From the field</Eyebrow>
-          <SplitReveal
-            as="h2"
-            className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans"
-            html="Notes on getting found,<br>and trusted."
-          />
-        </div>
         {/* ── Single row: image (40%) + three cards side-by-side (60%) ─ */}
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 items-stretch">
 
-          {/* Featured card — fixed at 40% on desktop */}
+          {/* Featured card — heading lives inside the image */}
           <div className="relative overflow-hidden rounded-[28px] bg-[#1a1f10] min-h-[380px] lg:min-h-0 lg:w-[40%] lg:flex-shrink-0">
             <img
               src="/thallo-digital/shift.jpg"
-              alt="Northwind case study"
+              alt=""
               className="absolute inset-0 w-full h-full object-cover opacity-60"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-            <div className="relative z-10 h-full flex flex-col justify-between p-8 sm:p-10">
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/50">
-                Featured · 2 min
+            <div className="relative z-10 h-full flex flex-col justify-end p-8 sm:p-10">
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/50 mb-4">
+                From the field
               </span>
-              <div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-5">
-                  How we made Northwind the cited authority in 90&nbsp;days.
-                </h3>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-white/60 hover:text-white transition-colors duration-200"
-                >
-                  Read the case study →
-                </a>
-              </div>
+              <h2 className="text-2xl sm:text-[2rem] font-bold text-white leading-tight">
+                Notes on getting found,<br />and trusted.
+              </h2>
             </div>
-
-            {/* Play button */}
-            <button
-              className="absolute bottom-8 right-8 w-12 h-12 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/25 transition-colors duration-200"
-              aria-label="Play video"
-            >
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="white">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-            </button>
           </div>
 
           {/* Three editorial cards — horizontal row, equal widths */}
