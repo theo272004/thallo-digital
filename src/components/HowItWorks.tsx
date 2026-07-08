@@ -68,15 +68,18 @@ export default function HowItWorks() {
       scrollTrigger: {
         trigger: sectionRef.current,
         start: 'top 80%',
-        end: 'bottom 78%',
+        end: 'bottom 66%',
         scrub: 1,
       },
     });
 
-    // Stem draws continuously, linear, across the whole timeline (0→10).
-    // Every branch + bloom below is pinned to the *measured* moment the stem
-    // actually reaches that anchor (length-fraction ×10): first the stem passes,
-    // then the branch draws out, then the leaf/flower germinates — never before.
+    // Stem draws continuously, linear, over the first 10 units. The terminal
+    // flower's anchor is measured to sit at ~99% of the stem's length, so a
+    // "progressive" bloom that overlaps the stem would always show petals with
+    // no stem beneath them. Instead the stem fully completes first, THEN the
+    // flower blooms as a final flourish over units 10→11.2 — with the timeline
+    // ending later ('bottom 66%') there's enough scroll room for that last
+    // beat to read as its own progressive open, never a flower in mid-air.
     tl.to(stemRef.current, { strokeDashoffset: 0, ease: 'none', duration: 10 }, 0);
 
     // Hoja 1 — stem reaches the anchor (y≈126) at ~1.75
@@ -98,11 +101,10 @@ export default function HowItWorks() {
     // Hoja 5 — attaches straight to the stem; stem reaches (y≈559) at ~7.9
     tl.to(hoja5Ref.current,  { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.9 }, 8.0);
 
-    // Flor final — scrubbed like every leaf so it grows (and un-grows) with
-    // the scroll, but it must NOT open before the stem physically reaches its
-    // anchor: the stem hits the tip (y≈702) at ~9.93, so the bloom starts
-    // there — never a flower floating in mid-air ahead of the stem.
-    tl.to(florFinRef.current, { scale: 1, opacity: 1, ease: 'back.out(1.6)', duration: 0.8 }, 9.93);
+    // Flor final — opens only after the stem is 100% drawn (unit 10), so the
+    // stem has physically reached the tip beneath it. Scrubbed, so it opens as
+    // you scroll down and closes as you scroll back up.
+    tl.to(florFinRef.current, { scale: 1, opacity: 1, ease: 'back.out(1.6)', duration: 1.2 }, 10);
 
     // ── Step highlights (non-scrubbed, one-way) ────────────────────────────
     [step1Ref, step2Ref, step3Ref, step4Ref].forEach((ref) => {
