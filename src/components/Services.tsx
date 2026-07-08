@@ -68,13 +68,23 @@ export default function Services() {
             <div
               key={svc.idx}
               data-reveal
-              className={`p-8 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
+              className={`relative overflow-hidden p-8 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
                 svc.featured
                   ? 'bg-[#39471D] border border-[#39471D] shadow-[0_30px_70px_-30px_rgba(57,71,29,0.6)]'
                   : 'bg-gray-50/60 border border-gray-100 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-30px_rgba(57,71,29,0.25)]'
               }`}
             >
-              <div>
+              {/* Isotipo watermark — tone-on-tone, bleeding off the top-right corner */}
+              {svc.featured && (
+                <img
+                  src="/thallo-digital/isotipo.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="absolute -top-14 -right-14 w-56 rotate-[18deg] opacity-[0.09] pointer-events-none select-none"
+                  style={{ filter: 'brightness(0) invert(1)' }}
+                />
+              )}
+              <div className="relative">
                 <div className="flex items-center justify-between mb-6">
                   <span className={`font-mono text-[11px] font-bold tracking-[0.18em] uppercase ${svc.featured ? 'text-white/70' : 'text-gray-400'}`}>
                     {svc.idx} / {svc.kicker}
@@ -102,7 +112,7 @@ export default function Services() {
                   ))}
                 </ul>
               </div>
-              <div className={`mt-8 pt-6 border-t ${svc.featured ? 'border-white/15' : 'border-gray-200/70'}`}>
+              <div className={`relative mt-8 pt-6 border-t ${svc.featured ? 'border-white/15' : 'border-gray-200/70'}`}>
                 <span className={`block text-lg sm:text-xl font-bold tracking-tight ${svc.featured ? 'text-[#DFFF3B]' : 'text-[#39471D]'}`}>
                   {svc.price}
                 </span>
