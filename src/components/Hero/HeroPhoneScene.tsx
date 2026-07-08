@@ -92,11 +92,9 @@ export default function HeroPhoneScene({ active, burst = false }: { active: bool
             )}
           </div>
 
-          {/* Results / loading area — fades out when cards burst from the phone */}
-          <div
-            className="flex-1 pt-2.5 px-0.5 flex flex-col gap-1.5 min-h-0 overflow-hidden transition-opacity duration-400"
-            style={{ opacity: burst ? 0 : 1 }}
-          >
+          {/* Results / loading area — each row lifts out one by one on burst,
+              in sync with its floating card taking over outside the phone */}
+          <div className="flex-1 pt-2.5 px-0.5 flex flex-col gap-1.5 min-h-0 overflow-hidden">
             {step === 2 && (
               <div className="flex items-center gap-2 px-1 pt-2">
                 <div className="flex gap-1">
@@ -111,12 +109,24 @@ export default function HeroPhoneScene({ active, burst = false }: { active: bool
             {step >= 3 && RESULTS.map((r, i) => (
               <div
                 key={r.key}
+                id={`hero-result-${r.key}`}
                 className="flex items-start gap-2 bg-gray-50 border border-gray-100 rounded-xl px-2.5 py-2"
-                style={{
-                  opacity: i < visibleResults ? 1 : 0,
-                  transform: i < visibleResults ? 'translateY(0) scale(1)' : 'translateY(14px) scale(0.96)',
-                  transition: 'opacity 0.5s cubic-bezier(0.34,1.56,0.64,1), transform 0.5s cubic-bezier(0.34,1.56,0.64,1)',
-                }}
+                style={
+                  burst
+                    ? {
+                        // Lift out in the same order (and rhythm) as the floating
+                        // cards emerge, so each row reads as *becoming* its card.
+                        opacity: 0,
+                        transform: 'translateY(-8px) scale(0.97)',
+                        transition: 'opacity 0.3s ease, transform 0.3s ease',
+                        transitionDelay: `${i * 340}ms`,
+                      }
+                    : {
+                        opacity: i < visibleResults ? 1 : 0,
+                        transform: i < visibleResults ? 'translateY(0) scale(1)' : 'translateY(14px) scale(0.96)',
+                        transition: 'opacity 0.5s cubic-bezier(0.34,1.56,0.64,1), transform 0.5s cubic-bezier(0.34,1.56,0.64,1)',
+                      }
+                }
               >
                 <div className="w-5 h-5 rounded-md bg-white border border-gray-100 flex items-center justify-center flex-shrink-0 mt-0.5 p-[3px]">
                   <img src={r.logo} alt={r.name} className="w-full h-full object-contain" />

@@ -95,8 +95,19 @@ export default function HowItWorks() {
     // Hoja 5 — attaches straight to the stem; stem reaches (y≈559) at ~7.9
     tl.to(hoja5Ref.current,  { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.9 }, 8.0);
 
-    // Flor final — terminal bloom at the stem tip; stem reaches (y≈702) at ~9.93
-    tl.to(florFinRef.current, { scale: 1, opacity: 1, ease: 'back.out(1.6)', duration: 1.0 }, 9.98);
+    // Flor final — the terminal bloom is NOT scrubbed: tying it to scroll meant
+    // it often froze half-open when the reader stopped at the section's end.
+    // Instead it plays fully, once, the moment the stem tip comes into reach.
+    ScrollTrigger.create({
+      trigger: sectionRef.current,
+      start: 'bottom 70%',
+      once: true,
+      onEnter: () => {
+        if (florFinRef.current) {
+          gsap.to(florFinRef.current, { scale: 1, opacity: 1, ease: 'back.out(1.6)', duration: 0.9 });
+        }
+      },
+    });
 
     // ── Step highlights (non-scrubbed, one-way) ────────────────────────────
     [step1Ref, step2Ref, step3Ref, step4Ref].forEach((ref) => {

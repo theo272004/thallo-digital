@@ -3,11 +3,13 @@
 import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { gsap } from '@/lib/gsap';
 
+// Positions stay fully inside the visual column so no card is ever clipped by
+// the viewport edge on laptop-width screens.
 const CARDS = [
-  { key: 'chatgpt', logo: '/thallo-digital/logos/chatgpt.svg', name: 'ChatGPT', tag: 'Recommends you', pos: 'top-0 -left-[3%]' },
-  { key: 'google', logo: '/thallo-digital/logos/google.svg', name: 'Google', tag: 'AI Overview', pos: 'top-[14%] -right-[3%]' },
-  { key: 'perplexity', logo: '/thallo-digital/logos/perplexity.png', name: 'Perplexity', tag: 'Cited ✓', pos: 'bottom-[14%] -left-[3%]' },
-  { key: 'forbes', logo: '/thallo-digital/logos/forbes.svg', name: 'Forbes', tag: 'Featured', pos: 'bottom-0 -right-[3%]' },
+  { key: 'chatgpt', logo: '/thallo-digital/logos/chatgpt.svg', name: 'ChatGPT', tag: 'Recommends you', pos: 'top-0 left-0' },
+  { key: 'google', logo: '/thallo-digital/logos/google.svg', name: 'Google', tag: 'AI Overview', pos: 'top-[14%] right-0' },
+  { key: 'perplexity', logo: '/thallo-digital/logos/perplexity.png', name: 'Perplexity', tag: 'Cited ✓', pos: 'bottom-[14%] left-0' },
+  { key: 'forbes', logo: '/thallo-digital/logos/forbes.svg', name: 'Forbes', tag: 'Featured', pos: 'bottom-0 right-0' },
 ];
 
 type CardsPhase = 'hidden' | 'burst' | 'gather';
@@ -30,27 +32,54 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
       const phoneEl = document.getElementById('hero-phone-anchor');
       if (!phoneEl) return;
       const phoneRect = phoneEl.getBoundingClientRect();
-      // Emerge from the phone's screen (upper area, where the results sit) so it
-      // reads as the cards physically leaving the device.
-      const origin = {
-        x: phoneRect.left + phoneRect.width / 2,
-        y: phoneRect.top + phoneRect.height * 0.3,
-      };
       CARDS.forEach((c, i) => {
         const cardEl = cardRefs.current[c.key];
         if (!cardEl) return;
-        const r = cardEl.getBoundingClientRect();
+        const r = cardEl.getBoundingClientRect(); // natural (final) size & spot
         const cx = r.left + r.width / 2;
         const cy = r.top + r.height / 2;
-        // Emerge gradually: start bigger + partly-there, ease out gently over a
-        // longer beat with a clear stagger, so you watch each card grow and glide
-        // out of the phone rather than pop.
+        const d = i * 0.34; // matches the row lift-out delay in HeroPhoneScene
+
+        // Morph FROM the matching result row inside the phone: the card starts
+        // exactly where the row sits, at the row's elongated size, then shrinks
+        // and glides to its floating spot — so the row visibly *becomes* the
+        // compact card, one continuous shape the whole way.
+        const rowEl = document.getElementById(`hero-result-${c.key}`);
+        const row = rowEl ? rowEl.getBoundingClientRect() : null;
+        const from = row
+          ? {
+              x: row.left + row.width / 2 - cx,
+              y: row.top + row.height / 2 - cy,
+              width: row.width,
+              height: row.height,
+            }
+          : {
+              x: phoneRect.left + phoneRect.width / 2 - cx,
+              y: phoneRect.top + phoneRect.height * 0.3 - cy,
+              scale: 0.4,
+            };
+
         tweens.push(
           gsap.fromTo(
             cardEl,
-            { x: origin.x - cx, y: origin.y - cy, scale: 0.4, opacity: 0, rotateZ: (i % 2 ? 3 : -3) },
-            { x: 0, y: 0, scale: 1, opacity: 1, rotateZ: 0, duration: 1.3, ease: 'power2.out', delay: i * 0.34 }
+            { ...from },
+            {
+              x: 0,
+              y: 0,
+              width: r.width,
+              height: r.height,
+              scale: 1,
+              duration: 1.2,
+              ease: 'power3.inOut',
+              delay: d,
+              clearProps: 'width,height',
+            }
           )
+        );
+        // Fade in fast at the start of the flight — the card takes over right
+        // as its row lifts out, so the hand-off reads as one continuous shape.
+        tweens.push(
+          gsap.fromTo(cardEl, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: 'power1.out', delay: d })
         );
       });
     } else if (phase === 'gather') {
@@ -94,7 +123,7 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
   useEffect(() => {
     if (phase === 'hidden') {
       Object.values(cardRefs.current).forEach((el) => {
-        if (el) gsap.set(el, { clearProps: 'x,y,scale,opacity' });
+        if (el) gsap.set(el, { clearProps: 'x,y,scale,opacity,width,height' });
       });
     }
   }, [phase]);
@@ -109,7 +138,7 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
           ref={(el) => {
             cardRefs.current[c.key] = el;
           }}
-          className={`src-card absolute ${c.pos} w-[140px] 2xl:w-[156px] bg-white rounded-2xl border border-gray-100 p-3 flex items-center gap-2.5 ${
+          className={`src-card absolute ${c.pos} w-[140px] 2xl:w-[156px] overflow-hidden bg-white rounded-2xl border border-gray-100 p-3 flex items-center gap-2.5 ${
             show ? 'opacity-100 shadow-[0_24px_50px_-24px_rgba(30,34,20,0.35)]' : 'opacity-0 shadow-none'
           }`}
         >
@@ -117,8 +146,8 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
             <img src={c.logo} alt={c.name} className="w-full h-full object-contain" />
           </div>
           <div className="min-w-0">
-            <div className="text-[11px] font-bold text-gray-900 leading-tight">{c.name}</div>
-            <div className="text-[11px] font-semibold text-[#758061]">{c.tag}</div>
+            <div className="text-[11px] font-bold text-gray-900 leading-tight whitespace-nowrap">{c.name}</div>
+            <div className="text-[11px] font-semibold text-[#758061] whitespace-nowrap">{c.tag}</div>
           </div>
         </div>
       ))}

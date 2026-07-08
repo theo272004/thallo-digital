@@ -53,14 +53,12 @@ export default function TheProblem() {
 
           {/* ── Feature card — dark, image-backed, copy on top ─────────── */}
           <div className="relative overflow-hidden rounded-[28px] bg-[#171a10] min-h-[420px] sm:min-h-[480px] lg:min-h-[min(540px,68vh)]">
-            {/* Image slot — drop the section photo here when it's ready:
-                <img
-                  src="/thallo-digital/shift.jpg"
-                  alt=""
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
-                The scrim below keeps the copy readable on top of it. */}
-            <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_75%_30%,#3a4227_0%,#23281a_45%,#14170e_100%)]" />
+            {/* Section photo — the scrim below keeps the copy readable on top */}
+            <img
+              src="/thallo-digital/shift.jpg"
+              alt="Laptop with an analytics dashboard on a desk beside a sketchbook"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
 
             {/* Readability scrim — darker toward the text corner */}
             <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/25 to-transparent" />
