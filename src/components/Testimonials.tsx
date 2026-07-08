@@ -1,95 +1,103 @@
-'use client';
+import React from 'react';
 
-import React, { useEffect, useRef } from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
-import { SplitReveal } from '@/components/motion';
+const ARTICLES = [
+  {
+    badge: 'Results',
+    date:  'May 2026',
+    read:  '5 min',
+    title: 'Mid-market AI adoption playbook',
+    desc:  'Why distribution wins before differentiation.',
+  },
+  {
+    badge: 'Strategy',
+    date:  'Apr 2026',
+    read:  '4 min',
+    title: 'High-intent content that ranks in AI',
+    desc:  'Structure, sources, and semantic lift.',
+  },
+  {
+    badge: 'Growth',
+    date:  'Mar 2026',
+    read:  '6 min',
+    title: 'From rankings to recommendations',
+    desc:  'The shift beyond traditional search.',
+  },
+];
 
 export default function Testimonials() {
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  const reviews = [
-    {
-      initials: 'DM',
-      name: 'Dana Mercer',
-      role: 'VP Marketing, Ledgerly',
-      stars: '★★★★★',
-      quote: 'Within a quarter, we were the name coming up in ChatGPT for our category. Sales stopped having to explain who we were.'
-    },
-    {
-      initials: 'RK',
-      name: 'Raj Kapoor',
-      role: 'Founder, Vireo Health',
-      stars: '★★★★★',
-      quote: 'They didn’t just publish more. They made the accurate version of our story the one the market and the AI actually find.'
-    },
-    {
-      initials: 'EC',
-      name: 'Elena Castro',
-      role: 'CEO, Calderon & Co',
-      stars: '★★★★★',
-      quote: 'The audit alone paid for itself. We finally saw exactly where we were invisible and why competitors were winning.'
-    },
-    {
-      initials: 'TN',
-      name: 'Tom Nguyen',
-      role: 'Head of Growth, Northwind',
-      stars: '★★★★★',
-      quote: 'Authority that compounds is real. Every month our content works harder, and it’s not something a competitor can copy overnight.'
-    }
-  ];
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-
-    const interval = setInterval(() => {
-      const firstChild = track.querySelector('.quote-card') as HTMLElement;
-      if (!firstChild) return;
-      
-      const cardWidth = firstChild.offsetWidth + 20; 
-      if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 10) {
-        track.scrollTo({ left: 0, behavior: 'smooth' });
-      } else {
-        track.scrollBy({ left: cardWidth, behavior: 'smooth' });
-      }
-    }, 4500);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <section className="bg-white py-16 2xl:py-24 min-h-[80vh] flex flex-col justify-center border-b border-gray-100" id="testimonials">
+    <section className="bg-white py-28 border-b border-gray-100" id="testimonials">
       <div className="max-w-[1440px] mx-auto px-6">
-        <div className="max-w-3xl mb-16">
-          <Eyebrow className="mb-5">In their words</Eyebrow>
-          <SplitReveal
-            as="h2"
-            className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
-            html="Teams that became the answer."
-          />
-          <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch]">
-            Read how fast-growing fintechs, SaaS providers, and treatment centers use Thallo to establish visibility.
-          </p>
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
 
-        <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-none snap-x snap-mandatory" ref={trackRef}>
-          {reviews.map((rev, idx) => (
-            <div className="quote-card min-w-[280px] sm:min-w-[340px] p-8 bg-gray-50/50 border border-gray-100 rounded-3xl snap-start flex flex-col justify-between" key={idx}>
+          {/* ── Featured card — dark, image-backed ────────────────────── */}
+          <div className="relative overflow-hidden rounded-[28px] bg-[#1a1f10] min-h-[480px]">
+            <img
+              src="/thallo-digital/shift.jpg"
+              alt="Northwind case study"
+              className="absolute inset-0 w-full h-full object-cover opacity-60"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+
+            <div className="relative z-10 h-full flex flex-col justify-between p-8 sm:p-10">
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/50">
+                Featured · 2 min
+              </span>
               <div>
-                <div className="text-[#39471D] text-xs mb-4">{rev.stars}</div>
-                <p className="text-xs text-gray-500 italic leading-relaxed font-semibold mb-8">“{rev.quote}”</p>
-              </div>
-              <div className="flex items-center gap-3 mt-auto">
-                <div className="w-8 h-8 rounded-full bg-[#39471D]/10 text-[#39471D] font-bold flex items-center justify-center text-xs">
-                  {rev.initials}
-                </div>
-                <div>
-                  <div className="text-[11px] font-bold text-gray-900">{rev.name}</div>
-                  <div className="text-[11px] text-gray-400 font-bold">{rev.role}</div>
-                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-white leading-tight mb-5">
+                  How we made Northwind the cited authority in 90&nbsp;days.
+                </h3>
+                <a
+                  href="#"
+                  onClick={(e) => e.preventDefault()}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-white/60 hover:text-white transition-colors duration-200"
+                >
+                  Read the case study →
+                </a>
               </div>
             </div>
-          ))}
+
+            {/* Play button */}
+            <button
+              className="absolute bottom-8 right-8 w-12 h-12 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center hover:bg-white/25 transition-colors duration-200"
+              aria-label="Play video"
+            >
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="white">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </button>
+          </div>
+
+          {/* ── Three editorial article cards ─────────────────────────── */}
+          <div className="flex flex-col gap-5">
+            {ARTICLES.map((a) => (
+              <div
+                key={a.title}
+                className="flex-1 border border-gray-100 rounded-3xl p-8 bg-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.06)] transition-shadow duration-300 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-5">
+                    <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#39471D] bg-[#39471D]/10 px-2.5 py-1 rounded-full">
+                      {a.badge}
+                    </span>
+                    <span className="text-[11px] text-gray-400 font-medium">
+                      {a.date} · {a.read}
+                    </span>
+                  </div>
+                  <h3 className="text-base font-bold text-gray-900 leading-snug mb-2">{a.title}</h3>
+                  <p className="text-sm text-gray-500 font-medium leading-relaxed">{a.desc}</p>
+                </div>
+                <a
+                  href="#"
+                  onClick={(e) => e.preventDefault()}
+                  className="mt-6 inline-flex items-center gap-1.5 text-xs font-bold text-[#39471D]"
+                >
+                  Read →
+                </a>
+              </div>
+            ))}
+          </div>
+
         </div>
       </div>
     </section>

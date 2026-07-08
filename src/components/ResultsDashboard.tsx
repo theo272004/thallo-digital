@@ -6,20 +6,25 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
+if (typeof window !== 'undefined') { gsap.registerPlugin(ScrollTrigger); }
+
+const PLATFORMS = [
+  { name: 'ChatGPT',    count: 1240, pct: 100 },
+  { name: 'Perplexity', count: 960,  pct: 77  },
+  { name: 'Google AI',  count: 810,  pct: 65  },
+  { name: 'Claude',     count: 560,  pct: 45  },
+  { name: 'Gemini',     count: 430,  pct: 35  },
+];
+
+const SPARKLINE = [[0,35],[20,30],[40,28],[60,22],[80,18],[100,15],[120,8]];
+const LINE_PTS   = [[10,148],[90,140],[170,115],[250,75],[330,42],[390,10]];
 
 export default function ResultsDashboard() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const lineRef = useRef<SVGPathElement>(null);
-  const bar1Ref = useRef<HTMLDivElement>(null);
-  const bar2Ref = useRef<HTMLDivElement>(null);
-  const floatCard1Ref = useRef<HTMLDivElement>(null);
-  const floatCard2Ref = useRef<HTMLDivElement>(null);
+  const lineRef      = useRef<SVGPathElement>(null);
+  const barRefs      = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    // 1. Line path drawing animation
     const line = lineRef.current;
     if (line) {
       const len = line.getTotalLength();
@@ -27,165 +32,141 @@ export default function ResultsDashboard() {
       gsap.to(line, {
         strokeDashoffset: 0,
         ease: 'power2.out',
-        scrollTrigger: {
-          trigger: line,
-          start: 'top 80%',
-          end: 'bottom 60%',
-          scrub: 1
-        }
+        scrollTrigger: { trigger: containerRef.current, start: 'top 75%', end: 'top 25%', scrub: 1.2 },
       });
     }
 
-    // 2. Bar heights growing animation — the track is 160px tall with 16px of
-    // bottom padding, so the tallest bar tops out at 122px and never invades
-    // the "Recommendation share" copy above it.
-    gsap.to(bar1Ref.current, {
-      height: '24px',
-      duration: 1.2,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: bar1Ref.current,
-        start: 'top 85%'
-      }
-    });
-
-    gsap.to(bar2Ref.current, {
-      height: '122px',
-      duration: 1.2,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: bar2Ref.current,
-        start: 'top 85%'
-      }
-    });
-
-    // 3. Gentle parallax on the floating info cards — small travel so they
-    // always hover just off the dashboard's corners.
-    gsap.to(floatCard1Ref.current, {
-      y: -40,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 0.6
-      }
-    });
-
-    gsap.to(floatCard2Ref.current, {
-      y: -50,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 0.8
-      }
+    PLATFORMS.forEach((p, i) => {
+      const el = barRefs.current[i];
+      if (!el) return;
+      gsap.fromTo(el,
+        { width: '0%' },
+        {
+          width: `${p.pct}%`,
+          duration: 1.2,
+          ease: 'power2.out',
+          delay: i * 0.12,
+          scrollTrigger: { trigger: containerRef.current, start: 'top 72%', once: true },
+        }
+      );
     });
   }, []);
 
   return (
-    <section className="bg-gray-50/50 py-16 2xl:py-24 min-h-[80vh] flex flex-col justify-center border-b border-gray-100 relative overflow-hidden" id="results" ref={containerRef}>
+    <section className="bg-gray-50/50 py-28 border-b border-gray-100" id="results" ref={containerRef}>
       <div className="max-w-[1440px] mx-auto px-6">
-        <div className="max-w-3xl mb-16 mx-auto text-center">
-          <Eyebrow center className="mb-5 justify-center">Tracked Performance</Eyebrow>
-          <SplitReveal
-            as="h2"
-            className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
-            html="Visualizing authority compounding."
-          />
-          <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch] mx-auto">
-            We build visibility that conversational engines and AI recommend models parse, map, and cite consistently.
-          </p>
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-[28%_1fr] gap-16 items-start">
 
-        {/* Dashboard Mockup Panel */}
-        <div className="relative max-w-4xl mx-auto z-10">
-          <div className="bg-white border border-gray-100 rounded-3xl shadow-[0_30px_80px_rgba(0,0,0,0.06)] overflow-hidden">
-            
-            {/* Header controls bar */}
+          {/* ── Left: copy ─────────────────────────────────────────────── */}
+          <div className="lg:pt-10">
+            <Eyebrow className="mb-5">Track Authority</Eyebrow>
+            <SplitReveal
+              as="h2"
+              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
+              html="Visualizing authority compounding."
+            />
+            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[30ch]">
+              We track the signals that matter across leading AI platforms—so you can see your visibility grow, not just feel it.
+            </p>
+          </div>
+
+          {/* ── Right: dashboard card ───────────────────────────────────── */}
+          <div className="bg-white border border-gray-100 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.05)] overflow-hidden">
+
+            {/* Chrome bar */}
             <div className="border-b border-gray-50 px-6 py-4 flex items-center gap-2 bg-gray-50/40">
-              <div className="w-2.5 h-2.5 rounded-full bg-gray-200"></div>
-              <div className="w-2.5 h-2.5 rounded-full bg-gray-200"></div>
-              <div className="w-2.5 h-2.5 rounded-full bg-gray-200"></div>
+              <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
+              <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
+              <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
               <span className="text-[11px] font-bold tracking-wider text-gray-400 uppercase ml-4">
-                Citations Analytics
+                Citations Analytics · Q2 2026
               </span>
             </div>
 
-            {/* Screen layout */}
-            <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-12">
-              {/* Line Chart */}
-              <div>
-                <span className="text-[11px] font-bold text-gray-400 block tracking-widest mb-1">TOTAL CITATIONS</span>
-                <span className="text-2xl font-bold text-gray-900 block mb-2">+540%</span>
-                <p className="text-[11px] text-gray-400 font-medium leading-relaxed mb-6">
-                  Compound Monthly Citation growth index across ChatGPT, Claude and Perplexity.
+            {/* Two-column content */}
+            <div className="grid grid-cols-1 md:grid-cols-2 md:divide-x divide-gray-50">
+
+              {/* Line chart */}
+              <div className="p-8 lg:p-10">
+                <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-4">AI Visibility Growth</p>
+                <p className="text-[10px] text-gray-400 font-medium mb-1">Mentions</p>
+                <p className="text-4xl font-bold text-[#39471D] leading-none mb-1">+540%</p>
+                <p className="text-[11px] text-gray-400 font-medium mb-8 leading-relaxed">
+                  Increase in AI platform mentions over 6 months
                 </p>
-                
-                <svg viewBox="0 0 400 200" className="w-full h-[150px] overflow-visible">
-                  <line x1="0" y1="20" x2="400" y2="20" stroke="#f3f4f6" strokeWidth="1" />
-                  <line x1="0" y1="90" x2="400" y2="90" stroke="#f3f4f6" strokeWidth="1" />
-                  <line x1="0" y1="160" x2="400" y2="160" stroke="#f3f4f6" strokeWidth="1" />
-                  <path 
+
+                <svg viewBox="0 0 400 160" className="w-full" style={{ height: '130px' }}>
+                  {[20, 80, 140].map(y => (
+                    <line key={y} x1="0" y1={y} x2="400" y2={y} stroke="#f3f4f6" strokeWidth="1" />
+                  ))}
+                  <path
                     ref={lineRef}
-                    d="M 10,160 Q 90,150 170,110 T 310,60 T 390,20" 
-                    fill="none" 
-                    stroke="var(--olive-light)" 
+                    d="M 10,148 C 80,142 120,130 170,108 S 260,72 300,48 S 360,24 390,10"
+                    fill="none"
+                    stroke="#39471D"
                     strokeWidth="2.5"
                     strokeLinecap="round"
                   />
-                  <text x="10" y="190" fill="#9ca3af" fontSize="9" fontWeight="700">Month 1</text>
-                  <text x="200" y="190" fill="#9ca3af" fontSize="9" fontWeight="700">Month 6</text>
-                  <text x="350" y="190" fill="#9ca3af" fontSize="9" fontWeight="700">Month 12</text>
+                  {LINE_PTS.map(([x, y], i) => (
+                    <circle key={i} cx={x} cy={y} r="3.5" fill="#39471D" />
+                  ))}
                 </svg>
+
+                <div className="flex justify-between mt-2">
+                  {['Dec','Jan','Feb','Mar','Apr','May','Jun'].map(m => (
+                    <span key={m} className="text-[9px] font-bold text-gray-400">{m}</span>
+                  ))}
+                </div>
               </div>
 
-              {/* Bar Chart */}
-              <div className="flex flex-col justify-between">
-                <div>
-                  <span className="text-[11px] font-bold text-gray-400 block tracking-widest mb-1">RECOMMENDATION SHARE</span>
-                  <p className="text-[11px] text-gray-400 font-medium leading-relaxed">
-                    Percentage of B2B query search answers citing your brand.
-                  </p>
+              {/* Horizontal bars + sparkline */}
+              <div className="p-8 lg:p-10 flex flex-col">
+                <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-6">Top AI Platforms</p>
+
+                <div className="flex flex-col gap-4 flex-1">
+                  {PLATFORMS.map((p, i) => (
+                    <div key={p.name} className="flex items-center gap-3">
+                      <span className="text-[12px] font-medium text-gray-600 w-[76px] flex-shrink-0">{p.name}</span>
+                      <div className="flex-1 bg-gray-100 rounded-full h-[7px] overflow-hidden">
+                        <div
+                          ref={(el) => { barRefs.current[i] = el; }}
+                          className="h-full bg-[#39471D] rounded-full"
+                          style={{ width: '0%' }}
+                        />
+                      </div>
+                      <span className="text-[11px] font-bold text-gray-600 w-10 text-right tabular-nums">
+                        {p.count.toLocaleString()}
+                      </span>
+                    </div>
+                  ))}
                 </div>
 
-                <div className="flex justify-around items-end h-[160px] pb-4 mt-8 border-b border-gray-100">
-                  <div className="flex flex-col items-center">
-                    <div ref={bar1Ref} className="w-8 bg-gray-200 rounded-t-md" style={{ height: '0px' }}></div>
-                    <span className="text-xs font-bold text-gray-800 mt-2">12%</span>
-                    <span className="text-[11px] text-gray-400 font-medium mt-1">Before Thallo</span>
-                  </div>
-                  
-                  <div className="flex flex-col items-center">
-                    <div ref={bar2Ref} className="w-8 bg-[#39471D] rounded-t-md" style={{ height: '0px' }}></div>
-                    <span className="text-xs font-bold text-[#39471D] mt-2">84%</span>
-                    <span className="text-[11px] text-[#39471D] font-bold mt-1">After Thallo</span>
+                <div className="mt-8 pt-6 border-t border-gray-50">
+                  <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-3">Average Position</p>
+                  <div className="flex items-end justify-between">
+                    <div>
+                      <span className="text-4xl font-bold text-gray-900">2.3</span>
+                      <span className="text-sm font-medium text-gray-400 ml-2">vs. 8.7 industry avg.</span>
+                    </div>
+                    <svg viewBox="0 0 120 44" className="w-24 h-8">
+                      <polyline
+                        points={SPARKLINE.map(([x,y]) => `${x},${y}`).join(' ')}
+                        fill="none"
+                        stroke="#39471D"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      {SPARKLINE.map(([x, y], i) => (
+                        <circle key={i} cx={x} cy={y} r="2.5" fill="white" stroke="#39471D" strokeWidth="1.8" />
+                      ))}
+                    </svg>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Floating cards — anchored to the dashboard's corners so they read
-              as part of it, instead of drifting at the far edges of the section */}
-          <div
-            ref={floatCard1Ref}
-            className="absolute -left-4 md:-left-10 -bottom-8 bg-white border border-gray-100 p-4 rounded-2xl shadow-lg z-20 flex flex-col gap-1.5"
-            style={{ width: '150px' }}
-          >
-            <span className="text-[18px] font-bold text-[#39471D] leading-none">+420%</span>
-            <span className="text-[11px] font-bold tracking-wider text-gray-400 uppercase">Citation Compounding</span>
-          </div>
-
-          <div
-            ref={floatCard2Ref}
-            className="absolute -right-4 md:-right-10 -top-6 bg-white border border-gray-100 p-4 rounded-2xl shadow-lg z-20 flex flex-col gap-1.5"
-            style={{ width: '160px' }}
-          >
-            <span className="text-[11px] font-bold text-gray-800 leading-none">Ranked #1 in Perplexity</span>
-            <span className="text-[11px] text-gray-400 font-medium">Across target categories</span>
-          </div>
         </div>
       </div>
     </section>
