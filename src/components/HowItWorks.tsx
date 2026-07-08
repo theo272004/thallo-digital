@@ -99,10 +99,10 @@ export default function HowItWorks() {
     tl.to(hoja5Ref.current,  { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.9 }, 8.0);
 
     // Flor final — scrubbed like every leaf so it grows (and un-grows) with
-    // the scroll. It opens over the stem's last stretch and finishes exactly
-    // when the stem completes (at 10.0), so nothing is left hanging past the
-    // end of the timeline.
-    tl.to(florFinRef.current, { scale: 1, opacity: 1, ease: 'back.out(1.6)', duration: 0.7 }, 9.3);
+    // the scroll, but it must NOT open before the stem physically reaches its
+    // anchor: the stem hits the tip (y≈702) at ~9.93, so the bloom starts
+    // there — never a flower floating in mid-air ahead of the stem.
+    tl.to(florFinRef.current, { scale: 1, opacity: 1, ease: 'back.out(1.6)', duration: 0.8 }, 9.93);
 
     // ── Step highlights (non-scrubbed, one-way) ────────────────────────────
     [step1Ref, step2Ref, step3Ref, step4Ref].forEach((ref) => {

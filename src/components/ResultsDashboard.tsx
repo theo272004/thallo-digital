@@ -36,9 +36,11 @@ export default function ResultsDashboard() {
       });
     }
 
-    // 2. Bar heights growing animation
+    // 2. Bar heights growing animation — the track is 160px tall with 16px of
+    // bottom padding, so the tallest bar tops out at 122px and never invades
+    // the "Recommendation share" copy above it.
     gsap.to(bar1Ref.current, {
-      height: '35px',
+      height: '24px',
       duration: 1.2,
       ease: 'power3.out',
       scrollTrigger: {
@@ -48,7 +50,7 @@ export default function ResultsDashboard() {
     });
 
     gsap.to(bar2Ref.current, {
-      height: '185px',
+      height: '122px',
       duration: 1.2,
       ease: 'power3.out',
       scrollTrigger: {
@@ -57,9 +59,10 @@ export default function ResultsDashboard() {
       }
     });
 
-    // 3. Parallax scroll effect for floating info cards
+    // 3. Gentle parallax on the floating info cards — small travel so they
+    // always hover just off the dashboard's corners.
     gsap.to(floatCard1Ref.current, {
-      y: -60,
+      y: -40,
       ease: 'none',
       scrollTrigger: {
         trigger: containerRef.current,
@@ -70,7 +73,7 @@ export default function ResultsDashboard() {
     });
 
     gsap.to(floatCard2Ref.current, {
-      y: -90,
+      y: -50,
       ease: 'none',
       scrollTrigger: {
         trigger: containerRef.current,
@@ -163,25 +166,26 @@ export default function ResultsDashboard() {
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Floating Parallax cards overlays */}
-        <div 
-          ref={floatCard1Ref}
-          className="absolute left-8 bottom-12 bg-white border border-gray-100 p-4 rounded-2xl shadow-lg z-20 flex flex-col gap-1.5"
-          style={{ width: '150px' }}
-        >
-          <span className="text-[18px] font-bold text-[#39471D] leading-none">+420%</span>
-          <span className="text-[11px] font-bold tracking-wider text-gray-400 uppercase">Citation Compounding</span>
-        </div>
+          {/* Floating cards — anchored to the dashboard's corners so they read
+              as part of it, instead of drifting at the far edges of the section */}
+          <div
+            ref={floatCard1Ref}
+            className="absolute -left-4 md:-left-10 -bottom-8 bg-white border border-gray-100 p-4 rounded-2xl shadow-lg z-20 flex flex-col gap-1.5"
+            style={{ width: '150px' }}
+          >
+            <span className="text-[18px] font-bold text-[#39471D] leading-none">+420%</span>
+            <span className="text-[11px] font-bold tracking-wider text-gray-400 uppercase">Citation Compounding</span>
+          </div>
 
-        <div 
-          ref={floatCard2Ref}
-          className="absolute right-12 top-16 bg-white border border-gray-100 p-4 rounded-2xl shadow-lg z-20 flex flex-col gap-1.5"
-          style={{ width: '160px' }}
-        >
-          <span className="text-[11px] font-bold text-gray-800 leading-none">Ranked #1 in Perplexity</span>
-          <span className="text-[11px] text-gray-400 font-medium">Across target categories</span>
+          <div
+            ref={floatCard2Ref}
+            className="absolute -right-4 md:-right-10 -top-6 bg-white border border-gray-100 p-4 rounded-2xl shadow-lg z-20 flex flex-col gap-1.5"
+            style={{ width: '160px' }}
+          >
+            <span className="text-[11px] font-bold text-gray-800 leading-none">Ranked #1 in Perplexity</span>
+            <span className="text-[11px] text-gray-400 font-medium">Across target categories</span>
+          </div>
         </div>
       </div>
     </section>

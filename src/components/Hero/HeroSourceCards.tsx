@@ -59,10 +59,18 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
         // final spot: it just shrinks *toward where it's going*.
         const rowEl = document.getElementById(`hero-result-${c.key}`);
         const row = rowEl ? rowEl.getBoundingClientRect() : null;
+        // Cards on the right/bottom are CSS-anchored by `right`/`bottom`, so
+        // when the from-state applies the row's larger width/height their
+        // layout origin shifts (the anchored edge stays pinned and the free
+        // edge grows the "wrong" way). Compensate by the size delta, or those
+        // cards spawn offset toward the opposite side and visibly swing back —
+        // exactly the dart we already fixed for the left-anchored ones.
+        const anchoredRight = c.pos.includes('right');
+        const anchoredBottom = c.pos.includes('bottom');
         const from = row
           ? {
-              x: row.left - r.left,
-              y: row.top - r.top,
+              x: row.left - r.left + (anchoredRight ? row.width - r.width : 0),
+              y: row.top - r.top + (anchoredBottom ? row.height - r.height : 0),
               width: row.width,
               height: row.height,
             }
