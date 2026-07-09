@@ -31,7 +31,7 @@ export default function About() {
           src="/thallo-digital/pc-cafe.png"
           alt=""
           aria-hidden="true"
-          className="relative w-full h-auto block pointer-events-none select-none"
+          className="relative w-[90%] mx-auto h-auto block pointer-events-none select-none"
           style={{ zIndex: 20 }}
         />
 
