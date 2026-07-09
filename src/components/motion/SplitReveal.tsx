@@ -40,6 +40,12 @@ export function SplitReveal({ as: Tag = 'h2', html, scroll = true, fade = true, 
             ease: EASE.quint,
             stagger: 0.12,
             scrollTrigger: scroll ? { trigger: el, start: 'top 85%', once: true } : undefined,
+            // Once the entrance finishes, revert the split so the resting heading
+            // is the original element again. The line masks use overflow:clip
+            // sized to the (tight) line-height, which otherwise permanently clips
+            // glyph descenders (g, y, p, j). Reverting removes the masks so
+            // descenders render fully — across every heading on the page.
+            onComplete: () => self.revert(),
           }),
       });
     },

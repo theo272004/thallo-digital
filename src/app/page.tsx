@@ -9,7 +9,6 @@ import HowItWorks from '@/components/HowItWorks';
 import ResultsDashboard from '@/components/ResultsDashboard';
 import Testimonials from '@/components/Testimonials';
 import VideoSection from '@/components/VideoSection';
-import VisibilityCheck from '@/components/VisibilityCheck';
 import BlogSection from '@/components/BlogSection';
 import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
@@ -33,16 +32,15 @@ export default function Home() {
         {view === 'home' ? (
           <>
             <Hero />
+            <About />
             <TheProblem />
-            <Services />
             <HowItWorks />
             <Industries />
             <ResultsDashboard />
             <Testimonials />
+            <Services />
             <VideoSection />
-            <VisibilityCheck />
             <BlogSection />
-            <About />
             <CTASection />
           </>
         ) : (

@@ -62,16 +62,6 @@ export default function TheProblem() {
               recommendations directly. The brand it names first is the one that wins.
             </p>
           </div>
-
-          {/* Play button — bottom-right */}
-          <button
-            className="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 w-12 h-12 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 flex items-center justify-center hover:bg-white/25 transition-colors duration-200"
-            aria-label="Play video"
-          >
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="white">
-              <path d="M8 5v14l11-7z" />
-            </svg>
-          </button>
         </div>
 
         {/* ── Stat cards — three equal columns below the image ─────── */}

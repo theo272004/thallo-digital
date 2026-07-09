@@ -61,14 +61,15 @@ export default function HowItWorks() {
     });
 
     // ── Main scrubbed timeline ─────────────────────────────────────────────
-    // Ends at 'bottom 78%' so the WHOLE drawing — terminal flower included —
-    // completes while the section is still comfortably in view, instead of
-    // demanding extra scroll past it to see the tip finish.
+    // Ends at 'bottom 90%' so the WHOLE drawing — terminal flower included —
+    // finishes right as Step 04 comes into view, while the tip is still clearly
+    // on-screen. 'bottom 66%' demanded ~400px of extra scroll past Step 04 to
+    // see the flower finish, which read as the animation freezing half-done.
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
         start: 'top 80%',
-        end: 'bottom 66%',
+        end: 'bottom 90%',
         scrub: 1,
       },
     });

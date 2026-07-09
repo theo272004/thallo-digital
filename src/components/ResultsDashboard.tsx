@@ -109,12 +109,18 @@ export default function ResultsDashboard() {
                     Increase in AI platform mentions over 6 months
                   </p>
 
-                  {/* Real chart — coordinate-based, not hand-drawn */}
-                  <div style={{ height: '148px' }}>
+                  {/* Real chart — coordinate-based, not hand-drawn.
+                      accessibilityLayer + outline resets kill the black focus/
+                      tap box Recharts otherwise draws around the plot on tap. */}
+                  <div
+                    className="[&_*]:outline-none [&_.recharts-surface]:outline-none focus:outline-none select-none"
+                    style={{ height: '148px', WebkitTapHighlightColor: 'transparent' }}
+                  >
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart
                         data={CHART_DATA}
                         margin={{ top: 8, right: 8, left: 8, bottom: 0 }}
+                        accessibilityLayer={false}
                       >
                         {/* 5 horizontal lines + 7 vertical lines */}
                         <CartesianGrid
