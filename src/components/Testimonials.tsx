@@ -41,10 +41,16 @@ export default function Testimonials() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-            <div className="relative z-10 h-full flex flex-col justify-end p-8 sm:p-10">
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/50 mb-4">
+            {/* Eyebrow — top-left */}
+            <div className="absolute top-8 sm:top-10 left-8 sm:left-10 z-10 flex items-center gap-2.5">
+              <span className="w-5 h-px bg-white/40 flex-shrink-0" />
+              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/50">
                 From the field
               </span>
+            </div>
+
+            {/* Heading — bottom-left */}
+            <div className="absolute bottom-8 sm:bottom-10 left-8 sm:left-10 right-8 sm:right-10 z-10">
               <h2 className="text-2xl sm:text-[2rem] font-bold text-white leading-tight">
                 Notes on getting found,<br />and trusted.
               </h2>

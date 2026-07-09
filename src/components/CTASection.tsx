@@ -8,16 +8,21 @@ export default function CTASection() {
       <div className="max-w-[1440px] mx-auto px-6 w-full">
         <div className="relative overflow-hidden rounded-[28px] bg-[#39471D] px-12 py-20 sm:px-20 sm:py-28">
 
-          {/* Isotipo — brand watermark, partial bleed off right edge */}
+          {/* Isotipo — watermark bleeding off upper-right corner */}
           <img
             src="/thallo-digital/isotipo.png"
             alt=""
             aria-hidden="true"
-            className="absolute -right-8 sm:-right-14 top-1/2 -translate-y-1/2 w-[300px] sm:w-[420px] opacity-[0.09] pointer-events-none select-none"
-            style={{ filter: 'brightness(0) invert(1)' }}
+            className="absolute w-[280px] sm:w-[300px] opacity-[0.09] pointer-events-none select-none"
+            style={{
+              top: '-8%',
+              right: '-8%',
+              filter: 'brightness(0) invert(1)',
+              zIndex: 0,
+            }}
           />
 
-          <div className="relative max-w-xl">
+          <div className="relative z-[2] max-w-xl">
             <Eyebrow tone="light" className="mb-6">Ready?</Eyebrow>
             <SplitReveal
               as="h2"
