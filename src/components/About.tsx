@@ -4,35 +4,48 @@ import { SplitReveal } from '@/components/motion';
 
 export default function About() {
   return (
-    <section className="relative bg-white border-b border-gray-100" id="about">
+    <section
+      className="relative z-10 bg-white py-28 sm:py-36 border-b border-gray-100"
+      id="about"
+      style={{ overflow: 'visible' }}
+    >
+      {/* Full composition photo — absolutely positioned, bleeds above (laptop) and below (phone+coffee).
+          z-index 0 keeps it behind the text. Section z-index 10 ensures bleeding parts
+          aren't clipped by neighboring Hero (above) or TheProblem (below). */}
+      {/* min-width ensures image is always tall enough (2:1 ratio) so phone+coffee
+          land near the section bottom, not the top. Centered so overflow is
+          distributed equally. body overflow-x: clip prevents scrollbar. */}
+      <img
+        src="/thallo-digital/pc-cafe.png"
+        alt=""
+        aria-hidden="true"
+        className="absolute pointer-events-none select-none"
+        style={{
+          width: '100%',
+          minWidth: '1100px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          top: '-15%',
+          zIndex: 0,
+        }}
+      />
 
-      {/* Full composition photo — sets the section height naturally */}
-      <div className="relative w-full">
-        <img
-          src="/thallo-digital/pc-cafe.png"
-          alt=""
-          aria-hidden="true"
-          className="w-full h-auto block pointer-events-none select-none"
-        />
-
-        {/* Text — absolutely centered over the photo composition */}
-        <div className="absolute inset-0 flex items-center justify-center px-6">
-          <div className="max-w-3xl text-center">
-            <Eyebrow center className="mb-5 justify-center">About Thallo</Eyebrow>
-            <SplitReveal
-              as="h2"
-              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
-              html="Premium authority, without the premium agency price."
-            />
-            <p className="text-gray-500 font-medium text-base sm:text-lg leading-relaxed">
-              Thallo builds authority for companies in high-consideration industries. We combine strong fundamentals with
-              strategies tuned to how buyers research and decide today, so our clients stay the trusted answer no matter how
-              the channels change. A senior team, deliberately small, focused on doing a few things exceptionally well.
-            </p>
-          </div>
+      {/* Text content — standard container, renders above the photo */}
+      <div className="relative max-w-[1440px] mx-auto px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <Eyebrow center className="mb-5 justify-center">About Thallo</Eyebrow>
+          <SplitReveal
+            as="h2"
+            className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
+            html="Premium authority, without the premium agency price."
+          />
+          <p className="text-gray-500 font-medium text-base sm:text-lg leading-relaxed">
+            Thallo builds authority for companies in high-consideration industries. We combine strong fundamentals with
+            strategies tuned to how buyers research and decide today, so our clients stay the trusted answer no matter how
+            the channels change. A senior team, deliberately small, focused on doing a few things exceptionally well.
+          </p>
         </div>
       </div>
-
     </section>
   );
 }
