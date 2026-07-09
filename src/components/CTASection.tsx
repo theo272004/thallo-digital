@@ -15,7 +15,7 @@ export default function CTASection() {
             aria-hidden="true"
             className="absolute w-[500px] sm:w-[580px] opacity-[0.09] pointer-events-none select-none"
             style={{
-              top: '-22%',
+              top: '-42%',
               right: '-10%',
               filter: 'brightness(0) invert(1)',
               zIndex: 0,
