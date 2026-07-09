@@ -26,22 +26,22 @@ export default function HeroPhoneScene({ active, burst = false }: { active: bool
     let alive = true;
     const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
     (async () => {
-      await delay(300);
+      await delay(200);
       if (!alive) return;
       setStep(1);
       for (let i = 1; i <= PROMPT.length; i++) {
         if (!alive) return;
         setQuery(PROMPT.slice(0, i));
-        await delay(40);
+        await delay(22);
       }
-      await delay(300);
+      await delay(180);
       if (!alive) return;
       setStep(2);
-      await delay(550);
+      await delay(350);
       if (!alive) return;
       setStep(3);
       for (let i = 1; i <= RESULTS.length; i++) {
-        await delay(220);
+        await delay(130);
         if (!alive) return;
         setVisibleResults(i);
       }
@@ -118,8 +118,8 @@ export default function HeroPhoneScene({ active, burst = false }: { active: bool
                         // cards emerge, so each row reads as *becoming* its card.
                         opacity: 0,
                         transform: 'translateY(-8px) scale(0.97)',
-                        transition: 'opacity 0.3s ease, transform 0.3s ease',
-                        transitionDelay: `${i * 340}ms`,
+                        transition: 'opacity 0.28s ease, transform 0.28s ease',
+                        transitionDelay: `${i * 260}ms`,
                       }
                     : {
                         opacity: i < visibleResults ? 1 : 0,

@@ -44,7 +44,7 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
         const r = cardEl.getBoundingClientRect(); // natural (final) size & spot
         const cx = r.left + r.width / 2;
         const cy = r.top + r.height / 2;
-        const d = i * 0.34; // matches the row lift-out delay in HeroPhoneScene
+        const d = i * 0.26; // matches the row lift-out delay in HeroPhoneScene (260ms)
 
         // Morph FROM the matching result row inside the phone: the card starts
         // exactly where the row sits, at the row's elongated size, then shrinks
@@ -91,7 +91,7 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
               width: r.width,
               height: r.height,
               scale: 1,
-              duration: 1.2,
+              duration: 0.85,
               ease: 'power3.inOut',
               delay: d,
               clearProps: 'width,height',
@@ -101,7 +101,7 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
         // Fade in fast at the start of the flight — the card takes over right
         // as its row lifts out, so the hand-off reads as one continuous shape.
         tweens.push(
-          gsap.fromTo(cardEl, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: 'power1.out', delay: d })
+          gsap.fromTo(cardEl, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power1.out', delay: d })
         );
       });
     } else if (phase === 'gather') {
@@ -115,7 +115,7 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
         const cr = cardEl.getBoundingClientRect();
         const cx = cr.left + cr.width / 2;
         const cy = cr.top + cr.height / 2;
-        const d = i * 0.3; // stagger — keep in sync with GATHER_STAGGER (300ms)
+        const d = i * 0.24; // stagger — keep in sync with GATHER_STAGGER (240ms)
         // 1) Glide to the tab and shrink to roughly the tab's footprint,
         //    staying fully opaque so you watch it travel and resize — the card
         //    is literally turning into a tab. The target is FUNCTION-BASED:
@@ -133,7 +133,7 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
             },
             scale: 0.46,
             rotateZ: 0,
-            duration: 0.9, // keep in sync with CARD_FLIGHT_MS (900ms)
+            duration: 0.7, // keep in sync with CARD_FLIGHT_MS (700ms)
             ease: 'power2.inOut',
             delay: d,
           })
@@ -142,7 +142,7 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
         //    overlaps the tab and the real tab blooms in underneath, so the
         //    hand-off reads as one continuous morph, not a card that vanishes.
         tweens.push(
-          gsap.to(cardEl, { opacity: 0, duration: 0.3, ease: 'power1.in', delay: d + 0.6 })
+          gsap.to(cardEl, { opacity: 0, duration: 0.24, ease: 'power1.in', delay: d + 0.46 })
         );
       });
     }
