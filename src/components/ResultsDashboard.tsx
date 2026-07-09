@@ -31,20 +31,6 @@ const PLATFORMS = [
   { name: 'Gemini',     count: 430,  pct: 35,  color: '#809a3e' },
 ];
 
-// ── Sparkline (average position) ──────────────────────────────────────────────
-const SPARKLINE: [number, number][] = [
-  [0,35],[20,30],[40,27],[60,22],[80,17],[100,13],[120,8],
-];
-function sparkPath(pts: [number, number][]): string {
-  let d = `M ${pts[0][0]},${pts[0][1]}`;
-  for (let i = 1; i < pts.length; i++) {
-    const [x0, y0] = pts[i - 1];
-    const [x1, y1] = pts[i];
-    const cx = (x0 + x1) / 2;
-    d += ` C ${cx},${y0} ${cx},${y1} ${x1},${y1}`;
-  }
-  return d;
-}
 
 export default function ResultsDashboard() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -206,26 +192,11 @@ export default function ResultsDashboard() {
                     <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-2">
                       Average Position
                     </p>
-                    <div className="flex items-end justify-between gap-4">
-                      <div>
-                        <span className="text-[36px] font-bold text-gray-900 leading-none">2.3</span>
-                        <span className="text-[12px] font-medium text-gray-400 ml-2 block mt-0.5">
-                          vs. 8.7 industry avg.
-                        </span>
-                      </div>
-                      <svg viewBox="0 0 120 44" className="w-20 h-7 flex-shrink-0">
-                        <path
-                          d={sparkPath(SPARKLINE)}
-                          fill="none"
-                          stroke="#39471D"
-                          strokeWidth="1.8"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        {SPARKLINE.map(([x, y], i) => (
-                          <circle key={i} cx={x} cy={y} r="2.5" fill="white" stroke="#39471D" strokeWidth="1.5" />
-                        ))}
-                      </svg>
+                    <div>
+                      <span className="text-[36px] font-bold text-gray-900 leading-none">2.3</span>
+                      <span className="text-[12px] font-medium text-gray-400 block mt-0.5">
+                        vs. 8.7 industry avg.
+                      </span>
                     </div>
                   </div>
                 </div>

@@ -10,7 +10,7 @@ export default function VideoSection() {
       <div className="max-w-[1440px] mx-auto px-6">
         <div
           className="relative text-white rounded-[32px] p-12 overflow-hidden flex items-center justify-between cursor-pointer group"
-          style={{ background: 'linear-gradient(135deg, #2f3327 0%, #4c5440 55%, #758061 100%)' }}
+          style={{ background: 'linear-gradient(135deg, #252d12 0%, #39471D 55%, #4d5e26 100%)' }}
           onClick={() => setIsOpen(true)}
         >
           {/* Soft radial highlight for depth */}
