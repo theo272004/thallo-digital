@@ -59,20 +59,8 @@ export default function VideoSection() {
             style={{ maxHeight: isOpen ? '600px' : '0px' }}
           >
             <div className="px-12 pb-12">
-              <div className="w-full aspect-video rounded-2xl overflow-hidden bg-black/40 flex items-center justify-center">
-                {/* Placeholder — swap src for real Loom/YouTube embed URL */}
-                <iframe
-                  className="w-full h-full"
-                  src={isOpen ? 'about:blank' : undefined}
-                  title="Case film"
-                  allow="autoplay; fullscreen"
-                  allowFullScreen
-                />
-                {/* Remove this overlay once a real src is wired */}
-                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                  <p className="text-white/50 text-xs font-mono">Video embed · paste Loom or YouTube src here</p>
-                </div>
-              </div>
+              {/* aspect-video placeholder — swap the div for an <iframe src="…"> when the video URL is ready */}
+              <div className="w-full aspect-video rounded-2xl overflow-hidden bg-black/50" />
             </div>
           </div>
 
