@@ -13,7 +13,7 @@ export default function CTASection() {
             src="/thallo-digital/isotipo.png"
             alt=""
             aria-hidden="true"
-            className="absolute -right-10 -top-12 w-[280px] sm:w-[360px] opacity-[0.09] pointer-events-none select-none"
+            className="absolute -right-8 sm:-right-14 top-1/2 -translate-y-1/2 w-[300px] sm:w-[420px] opacity-[0.09] pointer-events-none select-none"
             style={{ filter: 'brightness(0) invert(1)' }}
           />
 
