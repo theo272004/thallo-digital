@@ -90,7 +90,7 @@ export default function Services() {
                     {svc.idx} / {svc.kicker}
                   </span>
                   {svc.featured && (
-                    <span className="font-mono text-[11px] font-bold tracking-widest uppercase text-[#39471D] bg-[#DFFF3B] px-2 py-1 rounded-full">
+                    <span className="font-mono text-[11px] font-bold tracking-widest uppercase text-[#39471D] bg-[#CBD0AC] px-2 py-1 rounded-full">
                       Most chosen
                     </span>
                   )}
@@ -104,7 +104,7 @@ export default function Services() {
                 <ul className="flex flex-col gap-3">
                   {svc.items.map((item, i) => (
                     <li key={i} className={`flex items-start gap-2.5 text-sm font-medium ${svc.featured ? 'text-gray-100' : 'text-gray-700'}`}>
-                      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke={svc.featured ? '#DFFF3B' : '#55672E'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 flex-shrink-0">
+                      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke={svc.featured ? '#CBD0AC' : '#55672E'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 flex-shrink-0">
                         <path d="M20 6 9 17l-5-5" />
                       </svg>
                       {item}
@@ -113,7 +113,7 @@ export default function Services() {
                 </ul>
               </div>
               <div className={`relative mt-8 pt-6 border-t ${svc.featured ? 'border-white/15' : 'border-gray-200/70'}`}>
-                <span className={`block text-lg sm:text-xl font-bold tracking-tight ${svc.featured ? 'text-[#DFFF3B]' : 'text-[#39471D]'}`}>
+                <span className={`block text-lg sm:text-xl font-bold tracking-tight ${svc.featured ? 'text-[#CBD0AC]' : 'text-[#39471D]'}`}>
                   {svc.price}
                 </span>
               </div>

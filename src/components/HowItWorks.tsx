@@ -93,7 +93,7 @@ export default function HowItWorks() {
 
     // Flor 3 — stem reaches (y≈286) at ~4.03
     tl.to(bRama3Ref.current, { strokeDashoffset: 0, ease: 'none',           duration: 0.45 }, 4.35);
-    tl.to(flor3Ref.current,  { scale: 1, opacity: 1, ease: 'back.out(1.6)', duration: 0.9  }, 4.65);
+    tl.to(flor3Ref.current,  { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.9  }, 4.65);
 
     // Hoja 4 — stem reaches (y≈415) at ~5.83
     tl.to(bRama4Ref.current, { strokeDashoffset: 0, ease: 'none',        duration: 0.45 }, 5.98);
@@ -105,7 +105,7 @@ export default function HowItWorks() {
     // Flor final — opens only after the stem is 100% drawn (unit 10), so the
     // stem has physically reached the tip beneath it. Scrubbed, so it opens as
     // you scroll down and closes as you scroll back up.
-    tl.to(florFinRef.current, { scale: 1, opacity: 1, ease: 'back.out(1.6)', duration: 1.2 }, 10);
+    tl.to(florFinRef.current, { scale: 1, opacity: 1, ease: 'power3.out', duration: 1.2 }, 10);
 
     // ── Step highlights (non-scrubbed, one-way) ────────────────────────────
     [step1Ref, step2Ref, step3Ref, step4Ref].forEach((ref) => {

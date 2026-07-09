@@ -38,8 +38,8 @@ export default function Home() {
             <Industries />
             <ResultsDashboard />
             <Testimonials />
-            <Services />
             <VideoSection />
+            <Services />
             <BlogSection />
             <CTASection />
           </>

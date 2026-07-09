@@ -17,10 +17,10 @@ type Phase = 'phone' | 'burst' | 'gather' | 'browse';
 const TAB_COUNT = 4;
 const PHONE_MS = 3600; // typing the query + loading + 4 source results appear
 const BURST_MS = 2600; // the 4 source cards glide out, one by one, and hold
-const GATHER_MS = 2200; // browser window is here; cards morph INTO its tabs
+const GATHER_MS = 2100; // browser window is here; cards morph INTO its tabs (just covers the morph, so tab-switching starts sooner)
 const GATHER_STAGGER = 300; // gap between each card flying into the window
 const CARD_FLIGHT_MS = 900; // how long a single card takes to reach + dissolve into its tab
-const TAB_MS = 2600; // each browser tab stays active this long
+const TAB_MS = 1900; // each browser tab stays active this long (snappier switching)
 
 /**
  * A single looping sequence: the phone types a query, the four source cards
