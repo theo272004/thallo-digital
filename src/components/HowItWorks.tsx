@@ -15,10 +15,10 @@ export default function HowItWorks() {
 
   // ── Stroke refs (drawn via strokeDashoffset) ───────────────────────────────
   const stemRef    = useRef<SVGPathElement>(null);
-  const bRama1Ref  = useRef<SVGPathElement>(null); // branch → Hoja 1
-  const bRama2Ref  = useRef<SVGPathElement>(null); // branch → Hoja 2
-  const bRama3Ref  = useRef<SVGPathElement>(null); // branch → Flor 3
-  const bRama4Ref  = useRef<SVGPathElement>(null); // branch → Hoja 4
+  const bRama1Ref  = useRef<SVGPathElement>(null);
+  const bRama2Ref  = useRef<SVGPathElement>(null);
+  const bRama3Ref  = useRef<SVGPathElement>(null);
+  const bRama4Ref  = useRef<SVGPathElement>(null);
 
   // ── Fill refs (scaled in, grow from element center) ────────────────────────
   const hoja1Ref      = useRef<SVGGElement>(null);
@@ -34,6 +34,13 @@ export default function HowItWorks() {
   const step3Ref = useRef<HTMLDivElement>(null);
   const step4Ref = useRef<HTMLDivElement>(null);
 
+  // ── Circle + line refs ─────────────────────────────────────────────────────
+  const circle1Ref = useRef<HTMLDivElement>(null);
+  const circle2Ref = useRef<HTMLDivElement>(null);
+  const circle3Ref = useRef<HTMLDivElement>(null);
+  const circle4Ref = useRef<HTMLDivElement>(null);
+  const lineRef    = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (!sectionRef.current || !stemRef.current) return;
 
@@ -45,26 +52,20 @@ export default function HowItWorks() {
       gsap.set(el, { strokeDasharray: len, strokeDashoffset: len });
     });
 
-    // Init fill elements — each scales in from the exact point where it meets
-    // the stem/branch (measured base, not the visual center), so it germinates
-    // outward instead of ballooning open in place.
+    // Init fill elements
     const blooms = [
-      { ref: hoja1Ref,   origin: '0% 45%' },   // leaf unfurls right, off the stem
-      { ref: hoja2Ref,   origin: '99% 0%' },   // leaf unfurls down-left from its base
-      { ref: flor3Ref,   origin: '0% 0%'  },   // flower opens down-right from the branch tip
-      { ref: hoja4Ref,   origin: '4% 1%'  },   // leaf unfurls downward from its base
-      { ref: hoja5Ref,   origin: '100% 7%' },  // leaf unfurls down-left off the stem
-      { ref: florFinRef, origin: '22% 0%' },   // terminal flower opens from the tip
+      { ref: hoja1Ref,   origin: '0% 45%' },
+      { ref: hoja2Ref,   origin: '99% 0%' },
+      { ref: flor3Ref,   origin: '0% 0%'  },
+      { ref: hoja4Ref,   origin: '4% 1%'  },
+      { ref: hoja5Ref,   origin: '100% 7%' },
+      { ref: florFinRef, origin: '22% 0%' },
     ];
     blooms.forEach(({ ref, origin }) => {
       if (ref.current) gsap.set(ref.current, { scale: 0, opacity: 0, transformOrigin: origin });
     });
 
     // ── Main scrubbed timeline ─────────────────────────────────────────────
-    // Ends at 'bottom 90%' so the WHOLE drawing — terminal flower included —
-    // finishes right as Step 04 comes into view, while the tip is still clearly
-    // on-screen. 'bottom 66%' demanded ~400px of extra scroll past Step 04 to
-    // see the flower finish, which read as the animation freezing half-done.
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: sectionRef.current,
@@ -74,38 +75,31 @@ export default function HowItWorks() {
       },
     });
 
-    // Stem draws continuously, linear, over the first 10 units. The terminal
-    // flower's anchor is measured to sit at ~99% of the stem's length, so a
-    // "progressive" bloom that overlaps the stem would always show petals with
-    // no stem beneath them. Instead the stem fully completes first, THEN the
-    // flower blooms as a final flourish over units 10→11.2 — with the timeline
-    // ending later ('bottom 66%') there's enough scroll room for that last
-    // beat to read as its own progressive open, never a flower in mid-air.
     tl.to(stemRef.current, { strokeDashoffset: 0, ease: 'none', duration: 10 }, 0);
 
-    // Hoja 1 — stem reaches the anchor (y≈126) at ~1.75
     tl.to(bRama1Ref.current, { strokeDashoffset: 0, ease: 'none',        duration: 0.45 }, 1.9);
     tl.to(hoja1Ref.current,  { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.9  }, 2.2);
 
-    // Hoja 2 — stem reaches (y≈255) at ~3.6
     tl.to(bRama2Ref.current, { strokeDashoffset: 0, ease: 'none',        duration: 0.45 }, 3.75);
     tl.to(hoja2Ref.current,  { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.9  }, 4.05);
 
-    // Flor 3 — stem reaches (y≈286) at ~4.03
     tl.to(bRama3Ref.current, { strokeDashoffset: 0, ease: 'none',           duration: 0.45 }, 4.35);
     tl.to(flor3Ref.current,  { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.9  }, 4.65);
 
-    // Hoja 4 — stem reaches (y≈415) at ~5.83
     tl.to(bRama4Ref.current, { strokeDashoffset: 0, ease: 'none',        duration: 0.45 }, 5.98);
     tl.to(hoja4Ref.current,  { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.9  }, 6.28);
 
-    // Hoja 5 — attaches straight to the stem; stem reaches (y≈559) at ~7.9
     tl.to(hoja5Ref.current,  { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.9 }, 8.0);
 
-    // Flor final — opens only after the stem is 100% drawn (unit 10), so the
-    // stem has physically reached the tip beneath it. Scrubbed, so it opens as
-    // you scroll down and closes as you scroll back up.
     tl.to(florFinRef.current, { scale: 1, opacity: 1, ease: 'power3.out', duration: 1.2 }, 10);
+
+    // ── Circle indicators — synced with plant blooms ───────────────────────
+    // Line grows from circle 1 appearance through circle 4 appearance
+    tl.to(lineRef.current,    { scaleY: 1, ease: 'none', duration: 4.08 }, 2.2);
+    tl.to(circle1Ref.current, { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.6 }, 2.2);
+    tl.to(circle2Ref.current, { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.6 }, 4.05);
+    tl.to(circle3Ref.current, { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.6 }, 4.65);
+    tl.to(circle4Ref.current, { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.6 }, 6.28);
 
     // ── Step highlights (non-scrubbed, one-way) ────────────────────────────
     [step1Ref, step2Ref, step3Ref, step4Ref].forEach((ref) => {
@@ -215,7 +209,7 @@ export default function HowItWorks() {
           </svg>
         </div>
 
-        {/* ── Right: content — gap-20 fills the ~860px left column height ───── */}
+        {/* ── Right: content ────────────────────────────────────────────────── */}
         <div className="flex flex-col gap-14 2xl:gap-20 lg:pt-[5.5rem]">
           <div>
             <Eyebrow className="mb-5">Our approach</Eyebrow>
@@ -230,48 +224,90 @@ export default function HowItWorks() {
             </p>
           </div>
 
-          <div ref={step1Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
-            <div className="text-[11px] font-mono font-bold text-gray-400 mt-1 flex-shrink-0">STEP 01</div>
-            <div>
-              <h3 className="text-base font-bold text-gray-900 mb-2">Expert content</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">
-                Deeply researched, original work built on real expertise and
-                your own data, the content people cite and return to.
-              </p>
-            </div>
-          </div>
+          {/* Steps with circle indicators + connecting line */}
+          <div className="relative flex flex-col gap-14 2xl:gap-20">
 
-          <div ref={step2Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
-            <div className="text-[11px] font-mono font-bold text-gray-400 mt-1 flex-shrink-0">STEP 02</div>
-            <div>
-              <h3 className="text-base font-bold text-gray-900 mb-2">Technical infrastructure</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">
-                A site search engines and AI can read, understand, and cite,
-                structured to answer the questions buyers actually ask.
-              </p>
-            </div>
-          </div>
+            {/* Vertical line — grows from circle 1 to circle 4, animated by GSAP */}
+            <div
+              ref={lineRef}
+              className="absolute w-px bg-[#E6E6E1] pointer-events-none hidden lg:block"
+              style={{
+                left: '23px',
+                top: '23px',
+                bottom: '23px',
+                transform: 'scaleY(0)',
+                transformOrigin: 'top',
+              }}
+            />
 
-          <div ref={step3Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
-            <div className="text-[11px] font-mono font-bold text-gray-400 mt-1 flex-shrink-0">STEP 03</div>
-            <div>
-              <h3 className="text-base font-bold text-gray-900 mb-2">Distribution</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">
-                We carry the work to where buyers already research, so authority
-                is met in the places that shape opinion.
-              </p>
+            <div ref={step1Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
+              <div
+                ref={circle1Ref}
+                className="w-[46px] h-[46px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
+                style={{ backgroundColor: '#E7ECD9', transform: 'scale(0)', opacity: 0 }}
+              >
+                <span className="text-sm font-semibold" style={{ color: '#39471D' }}>01</span>
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-gray-900 mb-2">Expert content</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  Deeply researched, original work built on real expertise and
+                  your own data, the content people cite and return to.
+                </p>
+              </div>
             </div>
-          </div>
 
-          <div ref={step4Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
-            <div className="text-[11px] font-mono font-bold text-gray-400 mt-1 flex-shrink-0">STEP 04</div>
-            <div>
-              <h3 className="text-base font-bold text-gray-900 mb-2">Coherence</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">
-                One narrative, one standard of quality, repeated across every
-                channel and every month until it becomes reputation.
-              </p>
+            <div ref={step2Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
+              <div
+                ref={circle2Ref}
+                className="w-[46px] h-[46px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
+                style={{ backgroundColor: '#E7ECD9', transform: 'scale(0)', opacity: 0 }}
+              >
+                <span className="text-sm font-semibold" style={{ color: '#39471D' }}>02</span>
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-gray-900 mb-2">Technical infrastructure</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  A site search engines and AI can read, understand, and cite,
+                  structured to answer the questions buyers actually ask.
+                </p>
+              </div>
             </div>
+
+            <div ref={step3Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
+              <div
+                ref={circle3Ref}
+                className="w-[46px] h-[46px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
+                style={{ backgroundColor: '#E7ECD9', transform: 'scale(0)', opacity: 0 }}
+              >
+                <span className="text-sm font-semibold" style={{ color: '#39471D' }}>03</span>
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-gray-900 mb-2">Distribution</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  We carry the work to where buyers already research, so authority
+                  is met in the places that shape opinion.
+                </p>
+              </div>
+            </div>
+
+            <div ref={step4Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
+              <div
+                ref={circle4Ref}
+                className="w-[46px] h-[46px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
+                style={{ backgroundColor: '#E7ECD9', transform: 'scale(0)', opacity: 0 }}
+              >
+                <span className="text-sm font-semibold" style={{ color: '#39471D' }}>04</span>
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-gray-900 mb-2">Coherence</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">
+                  One narrative, one standard of quality, repeated across every
+                  channel and every month until it becomes reputation.
+                </p>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
