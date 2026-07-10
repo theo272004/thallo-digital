@@ -34,8 +34,8 @@ export default function About() {
         src="/thallo-digital/pc-cafe.png"
         alt=""
         aria-hidden="true"
-        className="absolute w-[65%] pointer-events-none select-none"
-        style={{ zIndex: 20, top: '50%', left: '55%', transform: 'translate(-50%, -50%)' }}
+        className="absolute w-[68%] pointer-events-none select-none"
+        style={{ zIndex: 20, top: '50%', left: '60%', transform: 'translate(-50%, -50%)' }}
         style={{ zIndex: 20 }}
       />
 
