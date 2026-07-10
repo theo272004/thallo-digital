@@ -33,6 +33,14 @@ html, body {
   html {
     font-size: 13.5px;
   }
+
+  /* On laptops the 1440px containers fill edge-to-edge (no visual breathing
+     room). Cap them at 90 vw so there's always ~5% air on each side.
+     mx-auto keeps them centered. Does NOT affect section backgrounds which
+     are on the outer <section> elements, not the inner container divs. */
+  .max-w-\[1440px\] {
+    max-width: 90vw;
+  }
 }
 
 body {
