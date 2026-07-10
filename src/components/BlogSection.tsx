@@ -41,16 +41,13 @@ const REVIEWS = [
     role: 'Co-Founder, Arcline Medical',
     initials: 'JW',
   },
-  {
-    quote: 'Skeptical going in, convinced coming out. Revenue from inbound increased 40% in the first six months.',
-    name: 'Sofia Brennan',
-    role: 'Director of Marketing, Fenwick Capital',
-    initials: 'SB',
-  },
 ];
 
-// Alternating up / down per card position
-const Y_OFFSETS = [-18, 18, -18, 18, -18, 18, -18];
+// Each card floats through one full cycle in FLOAT_S seconds.
+// Cards are phase-shifted evenly so they form a continuous wave.
+const FLOAT_S    = 5;    // seconds per up→down→up cycle
+const FLOAT_PX   = 14;   // amplitude in px
+const N          = REVIEWS.length; // 6 — even, so the seam of the duplicate track stays in phase
 
 export default function BlogSection() {
   const track = [...REVIEWS, ...REVIEWS];
@@ -62,8 +59,12 @@ export default function BlogSection() {
           from { transform: translateX(0); }
           to   { transform: translateX(-50%); }
         }
+        @keyframes card-float {
+          0%, 100% { transform: translateY(-${FLOAT_PX}px); }
+          50%       { transform: translateY(${FLOAT_PX}px); }
+        }
         .review-track {
-          animation: review-scroll 42s linear infinite;
+          animation: review-scroll 44s linear infinite;
           will-change: transform;
         }
       `}</style>
@@ -79,7 +80,7 @@ export default function BlogSection() {
         </div>
       </div>
 
-      {/* Full-width carousel — no max-width so cards bleed to screen edges */}
+      {/* Full-width carousel */}
       <div className="relative overflow-hidden px-6">
         {/* Left fade */}
         <div
@@ -92,40 +93,47 @@ export default function BlogSection() {
           style={{ background: 'linear-gradient(to left, #f9fafb, transparent)' }}
         />
 
-        {/* Scrolling track — py-6 gives room for Y offsets */}
-        <div className="review-track flex gap-5 py-6 w-max">
-          {track.map((r, i) => (
-            <div
-              key={i}
-              className="w-[300px] flex-shrink-0 bg-white border border-gray-100 rounded-3xl p-8 flex flex-col gap-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
-              style={{ transform: `translateY(${Y_OFFSETS[i % REVIEWS.length]}px)` }}
-            >
-              {/* Stars */}
-              <div className="flex gap-0.5">
-                {Array.from({ length: 5 }).map((_, s) => (
-                  <svg key={s} viewBox="0 0 16 16" width="13" height="13" fill="#39471D">
-                    <path d="M8 1l1.854 3.757L14 5.528l-3 2.924.708 4.128L8 10.5l-3.708 2.08L5 8.452 2 5.528l4.146-.771L8 1z" />
-                  </svg>
-                ))}
-              </div>
-
-              {/* Quote */}
-              <p className="text-sm text-gray-700 font-medium leading-relaxed flex-1">
-                &ldquo;{r.quote}&rdquo;
-              </p>
-
-              {/* Author */}
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-[#39471D]/10 flex items-center justify-center flex-shrink-0">
-                  <span className="text-[10px] font-bold text-[#39471D]">{r.initials}</span>
+        {/* Scrolling track — py-5 gives room for the float amplitude */}
+        <div className="review-track flex gap-5 py-5 w-max items-center">
+          {track.map((r, i) => {
+            // Distribute phase evenly across N cards; negative delay = pre-run the animation
+            const delay = -((i % N) * FLOAT_S / N).toFixed(3);
+            return (
+              <div
+                key={i}
+                className="w-[300px] flex-shrink-0 bg-white border border-gray-100 rounded-3xl p-8 flex flex-col gap-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
+                style={{
+                  animation: `card-float ${FLOAT_S}s ease-in-out infinite`,
+                  animationDelay: `${delay}s`,
+                }}
+              >
+                {/* Stars */}
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }).map((_, s) => (
+                    <svg key={s} viewBox="0 0 16 16" width="13" height="13" fill="#39471D">
+                      <path d="M8 1l1.854 3.757L14 5.528l-3 2.924.708 4.128L8 10.5l-3.708 2.08L5 8.452 2 5.528l4.146-.771L8 1z" />
+                    </svg>
+                  ))}
                 </div>
-                <div>
-                  <p className="text-[12px] font-bold text-gray-900 leading-none">{r.name}</p>
-                  <p className="text-[11px] text-gray-400 font-medium mt-0.5">{r.role}</p>
+
+                {/* Quote */}
+                <p className="text-sm text-gray-700 font-medium leading-relaxed flex-1">
+                  &ldquo;{r.quote}&rdquo;
+                </p>
+
+                {/* Author */}
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#39471D]/10 flex items-center justify-center flex-shrink-0">
+                    <span className="text-[10px] font-bold text-[#39471D]">{r.initials}</span>
+                  </div>
+                  <div>
+                    <p className="text-[12px] font-bold text-gray-900 leading-none">{r.name}</p>
+                    <p className="text-[11px] text-gray-400 font-medium mt-0.5">{r.role}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
