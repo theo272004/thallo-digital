@@ -6,20 +6,15 @@ export default function CTASection() {
   return (
     <section className="bg-white py-28 border-b border-gray-100" id="cta">
       <div className="max-w-[1440px] mx-auto px-6 w-full">
-        <div className="relative overflow-hidden rounded-[28px] bg-[#39471D] px-12 py-20 sm:px-20 sm:py-28">
+        <div className="relative overflow-hidden rounded-[28px] px-12 py-20 sm:px-20 sm:py-28">
 
-          {/* Isotipo — watermark bleeding off upper-right corner */}
+          {/* Background photo — no effects */}
           <img
-            src="/thallo-digital/isotipo.png"
+            src="/thallo-digital/cta-bg.png"
             alt=""
             aria-hidden="true"
-            className="absolute w-[500px] sm:w-[580px] opacity-[0.09] pointer-events-none select-none"
-            style={{
-              top: '-42%',
-              right: '-10%',
-              filter: 'brightness(0) invert(1)',
-              zIndex: 0,
-            }}
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+            style={{ zIndex: 0 }}
           />
 
           <div className="relative z-[2] max-w-xl">
