@@ -56,11 +56,13 @@ export default function VideoSection() {
           {/* Inline video — expands downward on play click */}
           <div
             className="transition-all duration-500 ease-in-out overflow-hidden"
-            style={{ maxHeight: isOpen ? '600px' : '0px' }}
+            style={{ maxHeight: isOpen ? '600px' : '0px', touchAction: 'pan-y' }}
           >
             <div className="px-12 pb-12">
-              {/* aspect-video placeholder — swap the div for an <iframe src="…"> when the video URL is ready */}
-              <div className="w-full aspect-video rounded-2xl overflow-hidden bg-black/50" />
+              {/* Fixed height so content never overflows the 600px max-height container —
+                  aspect-video at 1440px = 810px which triggers an iOS scroll trap.
+                  Swap this div for <iframe src="…"> when the video URL is ready. */}
+              <div className="w-full h-[400px] rounded-2xl bg-black/50" />
             </div>
           </div>
 
