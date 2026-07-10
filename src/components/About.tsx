@@ -67,7 +67,7 @@ export default function About() {
         style={{
           zIndex: 20,
           top: '50%',
-          left: '56.6%',
+          left: '55.2%',
           width: 'max(72%, 1368px)',
           maxWidth: 'none', // override Tailwind Preflight's img{max-width:100%} so width can exceed 100%
           transform: 'translate(-50%, -50%)',
