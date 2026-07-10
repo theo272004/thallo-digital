@@ -42,19 +42,6 @@ html, body {
     max-width: 90vw;
   }
 
-  /* Section min-heights: the vw/vh values don't scale with font-size, so
-     each tall section occupies almost the full viewport on a small laptop.
-     Bring them down so more than one section fits in the visible area. */
-  .min-h-screen {
-    min-height: 80vh;
-  }
-  .min-h-\[80vh\] {
-    min-height: 60vh;
-  }
-  /* About section: 45vw ≈ 648px on a 1440px screen — too tall for a laptop */
-  .xl\:min-h-\[45vw\] {
-    min-height: 32vw;
-  }
 }
 
 body {
