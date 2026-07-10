@@ -27,8 +27,9 @@ const Check = () => (
 );
 
 export default function Industries() {
-  const [hovered, setHovered] = useState<number | null>(null);
-  const active = hovered ?? 0; // default: first card always green
+  // First card is green by default; the green then STICKS to the last card the mouse
+  // passed over — it no longer snaps back to the first card when the mouse leaves.
+  const [active, setActive] = useState(0);
 
   const cardCls = (i: number) =>
     'group relative p-8 pt-16 pb-12 border rounded-3xl transition-all duration-300 ' +
@@ -48,8 +49,7 @@ export default function Industries() {
     `${active === i ? fpUp : fp} ${extra}`;
 
   const bind = (i: number) => ({
-    onMouseEnter: () => setHovered(i),
-    onMouseLeave: () => setHovered(null),
+    onMouseEnter: () => setActive(i),
   });
 
   return (
