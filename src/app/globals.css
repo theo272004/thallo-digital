@@ -30,16 +30,30 @@ html, body {
    full-size desktops (≥1536px) keep the original scale. Tailwind breakpoints
    resolve against the initial font-size, so they don't shift. */
 @media (min-width: 1024px) and (max-width: 1535.98px) {
+  /* Shrink the rem baseline so all text, padding and gap values scale down
+     proportionally. Desktop (≥ 1536px) keeps the original 16px scale. */
   html {
-    font-size: 13.5px;
+    font-size: 13px;
   }
 
-  /* On laptops the 1440px containers fill edge-to-edge (no visual breathing
-     room). Cap them at 90 vw so there's always ~5% air on each side.
-     mx-auto keeps them centered. Does NOT affect section backgrounds which
-     are on the outer <section> elements, not the inner container divs. */
+  /* Content containers: give them ~5% breathing room on each side so the
+     page never fills edge-to-edge on a 1440px laptop. */
   .max-w-\[1440px\] {
     max-width: 90vw;
+  }
+
+  /* Section min-heights: the vw/vh values don't scale with font-size, so
+     each tall section occupies almost the full viewport on a small laptop.
+     Bring them down so more than one section fits in the visible area. */
+  .min-h-screen {
+    min-height: 80vh;
+  }
+  .min-h-\[80vh\] {
+    min-height: 60vh;
+  }
+  /* About section: 45vw ≈ 648px on a 1440px screen — too tall for a laptop */
+  .xl\:min-h-\[45vw\] {
+    min-height: 32vw;
   }
 }
 
