@@ -1,7 +1,6 @@
 import React from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
-import IndustryCarousel from '@/components/ui/IndustryCarousel';
 
 export default function About() {
   return (
@@ -16,7 +15,6 @@ export default function About() {
       <div className="xl:absolute xl:inset-0 flex items-center justify-center px-6" style={{ zIndex: 10 }}>
         <div className="max-w-3xl text-center">
           <Eyebrow center className="mb-5 justify-center">About Thallo</Eyebrow>
-          <IndustryCarousel />
           <SplitReveal
             as="h2"
             className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
