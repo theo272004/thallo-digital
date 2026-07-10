@@ -10,7 +10,7 @@ export default function HeroText() {
         scroll={false}
         fade={false}
         className="hero-tagline font-extrabold text-gray-900 mb-8 2xl:mb-10 select-none"
-        style={{ fontSize: 'clamp(2.6rem, 4.2vw, 4.6rem)', lineHeight: '1.05', letterSpacing: '-0.03em' }}
+        style={{ fontSize: 'clamp(2.6rem, 4.2vw, 4.6rem)', lineHeight: '1.12', letterSpacing: '-0.03em' }}
         html={
           '<span class="block font-sans">Be the name</span>' +
           '<span class="block mt-2"><span class="font-serif italic text-[#39471D]">AI</span><span class="font-sans pl-4">recommends.</span></span>'
