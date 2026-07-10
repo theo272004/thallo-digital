@@ -43,13 +43,34 @@ export default function About() {
         </div>
       </div>
 
-      {/* Photo — only shown at xl+ where the composition has room to breathe */}
+      {/* Photo — only shown at xl+ where the composition has room to breathe.
+
+         Responsive width: the laptop and phone sit at the left/right edges of this
+         single composite image with empty space in the middle where the text lives.
+         The text block has a FIXED width (max-w-3xl), but the image scales with the
+         viewport — so on narrower screens (e.g. a 13" MacBook at ~1440px) the devices
+         creep inward and cover the text. Growing the image pushes the devices back out
+         toward the screen edges, reopening the gap for the text.
+
+         width = max(72%, calc(2074px - 36vw)) behaves like this:
+           • ≥ 1920px (large desktop): resolves to 72% — unchanged from the original.
+           • 1920px → 1280px: grows smoothly from 72% up to ~126% so the text stays clear.
+         REFERENCE POINTS to tune (linear between these two anchors):
+           • 1440px → ~108%   • 1920px → 72% (crossover to the 72% baseline)
+         To make it bigger/smaller at 1440 without touching desktop, adjust 2074px & 36vw. */}
       <img
         src="/thallo-digital/pc-cafe.png"
         alt=""
         aria-hidden="true"
-        className="hidden xl:block absolute w-[72%] pointer-events-none select-none"
-        style={{ zIndex: 20, top: '50%', left: '55.2%', transform: 'translate(-50%, -50%)' }}
+        className="hidden xl:block absolute pointer-events-none select-none"
+        style={{
+          zIndex: 20,
+          top: '50%',
+          left: '55.2%',
+          width: 'max(72%, calc(2074px - 36vw))',
+          maxWidth: 'none', // override Tailwind Preflight's img{max-width:100%} so width can exceed 100%
+          transform: 'translate(-50%, -50%)',
+        }}
       />
 
     </section>
