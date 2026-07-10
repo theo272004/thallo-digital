@@ -10,6 +10,14 @@ const fp =
   'group-hover:-translate-y-[6px] group-hover:scale-[1.03] ' +
   'group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.10)] group-hover:opacity-100';
 
+// Same but already in elevated state (for the always-green featured card)
+const fpFeatured =
+  'absolute z-20 bg-white border border-[#ececec] rounded-[16px] ' +
+  'shadow-[0_8px_24px_rgba(0,0,0,0.10)] pointer-events-none ' +
+  'opacity-100 -translate-y-[6px] scale-[1.03] transition-all duration-300 ease-out ' +
+  'group-hover:-translate-y-[6px] group-hover:scale-[1.03] ' +
+  'group-hover:shadow-[0_8px_24px_rgba(0,0,0,0.10)] group-hover:opacity-100';
+
 // Olive checkmark circle
 const Check = () => (
   <div className="w-5 h-5 rounded-full bg-[#39471D] flex items-center justify-center flex-shrink-0">
@@ -38,13 +46,13 @@ export default function Industries() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
 
-          {/* ── 1: Specialized software ───────────────────────────────────── */}
+          {/* ── 1: Specialized software — always green ────────────────────── */}
           <div
             data-reveal
-            className="group relative p-8 pt-16 pb-12 bg-white border border-gray-100 rounded-3xl transition-all duration-300 hover:bg-[#39471D] hover:-translate-y-1 hover:shadow-[0_24px_60px_-24px_rgba(57,71,29,0.5)]"
+            className="group relative p-8 pt-16 pb-12 bg-[#39471D] -translate-y-1 shadow-[0_24px_60px_-24px_rgba(57,71,29,0.5)] border border-transparent rounded-3xl transition-all duration-300 hover:bg-[#39471D] hover:-translate-y-1 hover:shadow-[0_24px_60px_-24px_rgba(57,71,29,0.5)]"
           >
             {/* Float: AI Overview — top-right, bleeds outside */}
-            <div className={`${fp} -top-4 -right-4 w-[152px] p-3`}>
+            <div className={`${fpFeatured} -top-4 -right-4 w-[152px] p-3`}>
               <p className="text-[9px] font-bold tracking-[0.15em] uppercase text-gray-400 mb-2">AI Overview</p>
               <div className="h-[5px] rounded-full bg-[#39471D] mb-1.5" />
               <div className="h-[5px] rounded-full bg-[#CBD0AC] mb-1.5 w-3/4" />
@@ -52,7 +60,7 @@ export default function Industries() {
             </div>
 
             {/* Float: Cited confirmation — bottom-right */}
-            <div className={`${fp} -bottom-4 right-5 px-3 py-2.5 flex items-center gap-2`}>
+            <div className={`${fpFeatured} -bottom-4 right-5 px-3 py-2.5 flex items-center gap-2`}>
               <Check />
               <div>
                 <p className="text-[10px] font-bold text-gray-900 leading-none">Thallo</p>
@@ -60,10 +68,10 @@ export default function Industries() {
               </div>
             </div>
 
-            <h3 className="text-xl font-semibold text-gray-900 group-hover:text-white transition-colors mb-2.5">
+            <h3 className="text-xl font-semibold text-white transition-colors mb-2.5">
               Specialized software
             </h3>
-            <p className="text-sm text-gray-500 group-hover:text-[#CBD0AC] leading-relaxed font-medium transition-colors">
+            <p className="text-sm text-[#CBD0AC] leading-relaxed font-medium transition-colors">
               Category-defining SaaS where the winner is the name buyers already trust.
             </p>
           </div>
