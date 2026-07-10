@@ -52,12 +52,12 @@ export default function About() {
          creep inward and cover the text. Growing the image pushes the devices back out
          toward the screen edges, reopening the gap for the text.
 
-         width = max(72%, 1382px) behaves like this:
+         width = max(72%, 1368px) behaves like this:
            • ≥ 1920px (large desktop): resolves to 72% — unchanged from the original.
-           • < 1920px: locks to a fixed 1382px, which as a % of the viewport grows from
-             72% (@1920px) to ~96% (@1440px) to ~108% (@1280px) so the text stays clear.
-         REFERENCE POINTS: 1440px → ~96%   1920px → 72% (crossover to the 72% baseline).
-         To make it bigger/smaller at 1440 without touching desktop, adjust the 1382px.
+           • < 1920px: locks to a fixed 1368px, which as a % of the viewport grows from
+             ~71% (@1920px) to ~95% (@1440px) to ~107% (@1280px) so the text stays clear.
+         REFERENCE POINTS: 1440px → ~95%   1920px → 72% (crossover to the 72% baseline).
+         To make it bigger/smaller at 1440 without touching desktop, adjust the 1368px.
          The 56.6% left shifts the whole composition slightly to the right. */}
       <img
         src="/thallo-digital/pc-cafe.png"
@@ -68,7 +68,7 @@ export default function About() {
           zIndex: 20,
           top: '50%',
           left: '56.6%',
-          width: 'max(72%, 1382px)',
+          width: 'max(72%, 1368px)',
           maxWidth: 'none', // override Tailwind Preflight's img{max-width:100%} so width can exceed 100%
           transform: 'translate(-50%, -50%)',
         }}
