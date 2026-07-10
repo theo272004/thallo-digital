@@ -7,13 +7,12 @@ export default function About() {
     /* minHeight: 45vw keeps section height fixed regardless of photo size
        (matches what the section was when photo was 90% wide at 2:1 ratio) */
     <section
-      className="relative bg-white border-b border-gray-100"
+      className="relative bg-white border-b border-gray-100 py-24 xl:py-0 xl:min-h-[45vw]"
       id="about"
-      style={{ minHeight: '45vw' }}
     >
 
-      {/* Text — centered in section */}
-      <div className="absolute inset-0 flex items-center justify-center px-6" style={{ zIndex: 10 }}>
+      {/* Text — normal flow on small screens, absolute-centered on xl+ */}
+      <div className="xl:absolute xl:inset-0 flex items-center justify-center px-6" style={{ zIndex: 10 }}>
         <div className="max-w-3xl text-center">
           <Eyebrow center className="mb-5 justify-center">About Thallo</Eyebrow>
           <SplitReveal
@@ -29,12 +28,12 @@ export default function About() {
         </div>
       </div>
 
-      {/* Photo — absolutely centered so resizing it never changes section height */}
+      {/* Photo — only shown at xl+ where the composition has room to breathe */}
       <img
         src="/thallo-digital/pc-cafe.png"
         alt=""
         aria-hidden="true"
-        className="absolute w-[72%] pointer-events-none select-none"
+        className="hidden xl:block absolute w-[72%] pointer-events-none select-none"
         style={{ zIndex: 20, top: '50%', left: '55.2%', transform: 'translate(-50%, -50%)' }}
       />
 
