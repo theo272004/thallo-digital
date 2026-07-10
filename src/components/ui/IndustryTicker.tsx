@@ -57,7 +57,7 @@ const track = [...ITEMS, ...ITEMS];
 
 export default function IndustryTicker() {
   return (
-    <div className="flex justify-center my-10">
+    <div className="flex justify-center">
       <style>{`
         @keyframes industry-ticker {
           from { transform: translateX(0); }
@@ -81,7 +81,7 @@ export default function IndustryTicker() {
 
       <div
         style={{
-          width: '700px',
+          width: '420px',
           maxWidth: '100%',
           height: '52px',
           background: '#ffffff',
