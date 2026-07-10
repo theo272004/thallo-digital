@@ -1,6 +1,7 @@
 import React from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
+import IndustryTicker from '@/components/ui/IndustryTicker';
 
 export default function About() {
   return (
@@ -25,6 +26,9 @@ export default function About() {
             strategies tuned to how buyers research and decide today, so our clients stay the trusted answer no matter how
             the channels change. A senior team, deliberately small, focused on doing a few things exceptionally well.
           </p>
+          <div className="mt-8">
+            <IndustryTicker />
+          </div>
         </div>
       </div>
 
