@@ -37,9 +37,9 @@ export default function Testimonials() {
             <img
               src="/thallo-digital/notebook-desk.png"
               alt=""
-              className="absolute inset-0 w-full h-full object-cover opacity-60"
+              className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-black/40" />
 
             {/* Eyebrow — top-left */}
             <div className="absolute top-8 sm:top-10 left-8 sm:left-10 z-10 flex items-center gap-2.5">
