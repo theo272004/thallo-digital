@@ -36,7 +36,6 @@ export default function About() {
         aria-hidden="true"
         className="absolute w-[68%] pointer-events-none select-none"
         style={{ zIndex: 20, top: '50%', left: '60%', transform: 'translate(-50%, -50%)' }}
-        style={{ zIndex: 20 }}
       />
 
     </section>
