@@ -44,6 +44,16 @@ export default function HowItWorks() {
   useEffect(() => {
     if (!sectionRef.current || !stemRef.current) return;
 
+    // Measure circle 1→4 centers and set line height precisely so it stops at circle 04
+    if (circle1Ref.current && circle4Ref.current && lineRef.current) {
+      const c1 = circle1Ref.current.getBoundingClientRect();
+      const c4 = circle4Ref.current.getBoundingClientRect();
+      const parent = lineRef.current.parentElement!.getBoundingClientRect();
+      const topOffset  = (c1.top - parent.top) + c1.height / 2;
+      const lineHeight = (c4.top + c4.height / 2) - (c1.top + c1.height / 2);
+      gsap.set(lineRef.current, { top: topOffset, height: lineHeight, bottom: 'auto' });
+    }
+
     // Init stroke paths
     [stemRef, bRama1Ref, bRama2Ref, bRama3Ref, bRama4Ref].forEach((r) => {
       const el = r.current;
@@ -227,14 +237,13 @@ export default function HowItWorks() {
           {/* Steps with circle indicators + connecting line */}
           <div className="relative flex flex-col gap-14 2xl:gap-20">
 
-            {/* Vertical line — grows from circle 1 to circle 4, animated by GSAP */}
+            {/* Vertical line — height set by useEffect to exactly span circle 1→4 centers */}
             <div
               ref={lineRef}
               className="absolute w-px bg-[#E6E6E1] pointer-events-none hidden lg:block"
               style={{
-                left: '23px',
-                top: '23px',
-                bottom: '23px',
+                left: '16px',
+                top: '16px',
                 transform: 'scaleY(0)',
                 transformOrigin: 'top',
               }}
@@ -243,10 +252,10 @@ export default function HowItWorks() {
             <div ref={step1Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
               <div
                 ref={circle1Ref}
-                className="w-[46px] h-[46px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
+                className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
                 style={{ backgroundColor: '#E7ECD9', transform: 'scale(0)', opacity: 0 }}
               >
-                <span className="text-sm font-semibold" style={{ color: '#39471D' }}>01</span>
+                <span className="text-[11px] font-semibold" style={{ color: '#39471D' }}>01</span>
               </div>
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Expert content</h3>
@@ -260,10 +269,10 @@ export default function HowItWorks() {
             <div ref={step2Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
               <div
                 ref={circle2Ref}
-                className="w-[46px] h-[46px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
+                className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
                 style={{ backgroundColor: '#E7ECD9', transform: 'scale(0)', opacity: 0 }}
               >
-                <span className="text-sm font-semibold" style={{ color: '#39471D' }}>02</span>
+                <span className="text-[11px] font-semibold" style={{ color: '#39471D' }}>02</span>
               </div>
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Technical infrastructure</h3>
@@ -277,10 +286,10 @@ export default function HowItWorks() {
             <div ref={step3Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
               <div
                 ref={circle3Ref}
-                className="w-[46px] h-[46px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
+                className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
                 style={{ backgroundColor: '#E7ECD9', transform: 'scale(0)', opacity: 0 }}
               >
-                <span className="text-sm font-semibold" style={{ color: '#39471D' }}>03</span>
+                <span className="text-[11px] font-semibold" style={{ color: '#39471D' }}>03</span>
               </div>
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Distribution</h3>
@@ -294,10 +303,10 @@ export default function HowItWorks() {
             <div ref={step4Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
               <div
                 ref={circle4Ref}
-                className="w-[46px] h-[46px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
+                className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
                 style={{ backgroundColor: '#E7ECD9', transform: 'scale(0)', opacity: 0 }}
               >
-                <span className="text-sm font-semibold" style={{ color: '#39471D' }}>04</span>
+                <span className="text-[11px] font-semibold" style={{ color: '#39471D' }}>04</span>
               </div>
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Coherence</h3>
