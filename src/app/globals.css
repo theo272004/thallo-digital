@@ -23,8 +23,12 @@ html, body {
   overflow-x: clip;
 }
 
-/* Shared container + image overrides for all laptop-range viewports */
+/* Base laptop range: Windows laptops (ZenBook etc.) get reduced font.
+   This applies to everything in range; Mac retina overrides it below. */
 @media (min-width: 1024px) and (max-width: 1699.98px) {
+  html {
+    font-size: 13px;
+  }
   .max-w-\[1440px\] {
     max-width: 90vw;
   }
@@ -33,19 +37,17 @@ html, body {
   }
 }
 
-/* MacBook (Retina, DPR ≥ 2): ~1280px CSS at 200% scaling.
-   15.5px keeps text comfortable on the crisp retina display. */
-@media (min-width: 1024px) and (max-width: 1699.98px) and (min-resolution: 192dpi) {
+/* MacBook Retina override — webkit prefix for Safari + standard for Firefox.
+   Both rules target the same property so whichever matches wins.
+   DPR ≥ 2 = MacBook Air/Pro retina display. */
+@media (min-width: 1024px) and (max-width: 1699.98px) and (-webkit-min-device-pixel-ratio: 2) {
   html {
     font-size: 16.5px;
   }
 }
-
-/* Windows laptops (DPR < 2): ZenBook/etc. at 125–150% scaling.
-   13px makes content visibly smaller without feeling cramped. */
-@media (min-width: 1024px) and (max-width: 1699.98px) and (max-resolution: 191dpi) {
+@media (min-width: 1024px) and (max-width: 1699.98px) and (min-resolution: 2dppx) {
   html {
-    font-size: 13px;
+    font-size: 16.5px;
   }
 }
 
