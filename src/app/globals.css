@@ -23,34 +23,29 @@ html, body {
   overflow-x: clip;
 }
 
-/* Retina laptops — MacBook Air/Pro 13–14" run at ~1280px CSS (native ÷ 200%).
-   13.5px is a gentle reduction without making text feel tiny. */
+/* Shared container + image overrides for all laptop-range viewports */
 @media (min-width: 1024px) and (max-width: 1699.98px) {
-  html {
-    font-size: 15.5px;
-  }
-
-  /* Content containers: ~5% air on each side. */
   .max-w-\[1440px\] {
     max-width: 90vw;
   }
-
-  /* About image: cap so the composition doesn't fill edge-to-edge on laptop. */
   .about-pc-image {
     width: 78vw !important;
   }
 }
 
-/* Windows laptops at low DPI scaling — e.g. ZenBook 13" 1920×1080 at 100%
-   scaling resolves to 1920px CSS, landing outside the block above and seeing
-   full desktop 16px. This block brings it down just one notch. */
-@media (min-width: 1700px) and (max-width: 1919.98px) {
+/* MacBook (Retina, DPR ≥ 2): ~1280px CSS at 200% scaling.
+   15.5px keeps text comfortable on the crisp retina display. */
+@media (min-width: 1024px) and (max-width: 1699.98px) and (min-resolution: 192dpi) {
+  html {
+    font-size: 15.5px;
+  }
+}
+
+/* Windows laptops (DPR < 2): ZenBook/etc. at 125–150% scaling.
+   13px makes content visibly smaller without feeling cramped. */
+@media (min-width: 1024px) and (max-width: 1699.98px) and (max-resolution: 191dpi) {
   html {
     font-size: 13px;
-  }
-
-  .max-w-\[1440px\] {
-    max-width: 92vw;
   }
 }
 
