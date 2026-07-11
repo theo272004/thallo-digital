@@ -42,12 +42,12 @@ html, body {
    DPR ≥ 2 = MacBook Air/Pro retina display. */
 @media (min-width: 1024px) and (max-width: 1699.98px) and (-webkit-min-device-pixel-ratio: 2) {
   html {
-    font-size: 16.5px;
+    font-size: 17.5px;
   }
 }
 @media (min-width: 1024px) and (max-width: 1699.98px) and (min-resolution: 2dppx) {
   html {
-    font-size: 16.5px;
+    font-size: 17.5px;
   }
 }
 
