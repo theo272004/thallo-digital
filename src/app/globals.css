@@ -27,7 +27,7 @@ html, body {
    13.5px is a gentle reduction without making text feel tiny. */
 @media (min-width: 1024px) and (max-width: 1699.98px) {
   html {
-    font-size: 14.5px;
+    font-size: 15.5px;
   }
 
   /* Content containers: ~5% air on each side. */
@@ -46,7 +46,7 @@ html, body {
    full desktop 16px. This block brings it down just one notch. */
 @media (min-width: 1700px) and (max-width: 1919.98px) {
   html {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .max-w-\[1440px\] {
