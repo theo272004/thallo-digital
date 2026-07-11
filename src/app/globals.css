@@ -23,25 +23,34 @@ html, body {
   overflow-x: clip;
 }
 
-/* Laptop density — covers 1024–1700px CSS px (e.g. 1920×1080 at 100–125%
-   Windows scaling, or high-DPI laptops at 150–200% scaling). Full desktops
-   ≥ 1700px keep the original 16px scale. font-size on html scales every
-   rem-based value (text, padding, gap) without touching px/vw/vh values. */
+/* Retina laptops — MacBook Air/Pro 13–14" run at ~1280px CSS (native ÷ 200%).
+   13.5px is a gentle reduction without making text feel tiny. */
 @media (min-width: 1024px) and (max-width: 1699.98px) {
   html {
-    font-size: 12px;
+    font-size: 13.5px;
   }
 
-  /* Content containers: ~5% air on each side so page never fills edge-to-edge. */
+  /* Content containers: ~5% air on each side. */
   .max-w-\[1440px\] {
     max-width: 90vw;
   }
 
-  /* About section composite image: the formula max(72%, 1368px) yields ~89% of
-     a 1536px laptop viewport, making the devices look oversized. Cap at 68vw so
-     the composition stays proportional without touching the desktop scale. */
+  /* About image: cap so the composition doesn't fill edge-to-edge on laptop. */
   .about-pc-image {
     width: 78vw !important;
+  }
+}
+
+/* Windows laptops at low DPI scaling — e.g. ZenBook 13" 1920×1080 at 100%
+   scaling resolves to 1920px CSS, landing outside the block above and seeing
+   full desktop 16px. This block brings it down just one notch. */
+@media (min-width: 1700px) and (max-width: 1919.98px) {
+  html {
+    font-size: 15px;
+  }
+
+  .max-w-\[1440px\] {
+    max-width: 92vw;
   }
 }
 
