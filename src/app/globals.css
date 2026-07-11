@@ -36,6 +36,13 @@ html, body {
   .max-w-\[1440px\] {
     max-width: 90vw;
   }
+
+  /* About section composite image: the formula max(72%, 1368px) yields ~89% of
+     a 1536px laptop viewport, making the devices look oversized. Cap at 68vw so
+     the composition stays proportional without touching the desktop scale. */
+  .about-pc-image {
+    width: 68vw !important;
+  }
 }
 
 body {

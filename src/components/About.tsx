@@ -63,7 +63,7 @@ export default function About() {
         src="/thallo-digital/pc-cafe.png"
         alt=""
         aria-hidden="true"
-        className="hidden xl:block absolute pointer-events-none select-none"
+        className="hidden xl:block absolute pointer-events-none select-none about-pc-image"
         style={{
           zIndex: 20,
           top: '50%',
