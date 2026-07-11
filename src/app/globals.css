@@ -41,7 +41,7 @@ html, body {
      a 1536px laptop viewport, making the devices look oversized. Cap at 68vw so
      the composition stays proportional without touching the desktop scale. */
   .about-pc-image {
-    width: 68vw !important;
+    width: 71vw !important;
   }
 }
 
