@@ -37,7 +37,7 @@ html, body {
    15.5px keeps text comfortable on the crisp retina display. */
 @media (min-width: 1024px) and (max-width: 1699.98px) and (min-resolution: 192dpi) {
   html {
-    font-size: 15.5px;
+    font-size: 16.5px;
   }
 }
 

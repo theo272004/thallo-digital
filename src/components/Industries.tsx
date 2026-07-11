@@ -91,7 +91,7 @@ export default function Industries() {
 
           {/* ── 1: Fintech ───────────────────────────────────────────────── */}
           <div data-reveal className={cardCls(1)} {...bind(1)}>
-            <div className={panelCls(1, '-top-4 left-1/2 -translate-x-1/2 w-[148px] p-3')}>
+            <div className={panelCls(1, '-top-8 left-1/2 -translate-x-1/2 w-[148px] p-3')}>
               <p className="text-[9px] font-bold tracking-[0.15em] uppercase text-gray-400 mb-2">Buyer shortlist</p>
               <div className="flex items-center gap-2 mb-1.5">
                 <span className="w-[18px] h-[18px] rounded-full bg-[#39471D] text-white text-[8px] font-bold flex items-center justify-center flex-shrink-0">1</span>
