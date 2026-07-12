@@ -23,31 +23,15 @@ html, body {
   overflow-x: clip;
 }
 
-/* Base laptop range: Windows laptops (ZenBook etc.) get reduced font.
-   This applies to everything in range; Mac retina overrides it below. */
+/* Laptop range: only container width and About image are adjusted.
+   No font-size change — both Mac and Windows laptops keep the 16px default
+   (same as desktop, which looks correct on both). */
 @media (min-width: 1024px) and (max-width: 1699.98px) {
-  html {
-    font-size: 13px;
-  }
   .max-w-\[1440px\] {
     max-width: 90vw;
   }
   .about-pc-image {
     width: 78vw !important;
-  }
-}
-
-/* MacBook Retina override — webkit prefix for Safari + standard for Firefox.
-   Both rules target the same property so whichever matches wins.
-   DPR ≥ 2 = MacBook Air/Pro retina display. */
-@media (min-width: 1024px) and (max-width: 1699.98px) and (-webkit-min-device-pixel-ratio: 2) {
-  html {
-    font-size: 17.5px;
-  }
-}
-@media (min-width: 1024px) and (max-width: 1699.98px) and (min-resolution: 2dppx) {
-  html {
-    font-size: 17.5px;
   }
 }
 
