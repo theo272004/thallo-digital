@@ -35,7 +35,7 @@ export default function Industries() {
     'group relative p-8 pt-16 pb-12 border rounded-3xl transition-all duration-300 ' +
     (active === i
       ? 'bg-[#39471D] -translate-y-1 shadow-[0_24px_60px_-24px_rgba(57,71,29,0.5)] border-transparent'
-      : 'bg-white border-gray-100');
+      : 'bg-white border-[#e8e8e3] shadow-[0_2px_8px_rgba(0,0,0,0.06),0_1px_2px_rgba(0,0,0,0.04)]');
 
   const h3Cls = (i: number) =>
     'text-xl font-semibold transition-colors duration-300 mb-2.5 ' +
@@ -53,7 +53,7 @@ export default function Industries() {
   });
 
   return (
-    <section className="bg-white py-16 2xl:py-28 min-h-[80vh] flex flex-col justify-center border-b border-gray-100" id="industries">
+    <section className="bg-[#F4F5F0] py-16 2xl:py-28 min-h-[80vh] flex flex-col justify-center border-b border-gray-100" id="industries">
       <div className="max-w-[1440px] mx-auto px-6">
         <div className="max-w-2xl mb-20">
           <Eyebrow className="mb-5">Industries</Eyebrow>
