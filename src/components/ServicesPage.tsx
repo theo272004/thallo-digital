@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
-import { SplitReveal } from '@/components/motion';
 
 // ─── Data ───────────────────────────────────────────────────────────────────
 
@@ -118,11 +117,9 @@ export default function ServicesPage() {
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="max-w-2xl">
             <Eyebrow className="mb-5">Services</Eyebrow>
-            <SplitReveal
-              as="h1"
-              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
-              html="One engine to make you<br>the answer."
-            />
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans">
+              One engine to make you<br />the answer.
+            </h1>
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch]">
               Everything we do builds toward one outcome: making you the name buyers and AI trust.
             </p>
@@ -137,8 +134,7 @@ export default function ServicesPage() {
             {SERVICES.map((svc) => (
               <div
                 key={svc.idx}
-                data-reveal
-                className={`relative overflow-hidden p-8 rounded-3xl flex flex-col transition-all duration-300 hover:-translate-y-1 ${
+                               className={`relative overflow-hidden p-8 rounded-3xl flex flex-col transition-all duration-300 hover:-translate-y-1 ${
                   svc.featured
                     ? 'bg-[#39471D] border border-[#39471D] shadow-[0_30px_70px_-30px_rgba(57,71,29,0.6)]'
                     : 'bg-gray-50/60 border border-gray-100 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-30px_rgba(57,71,29,0.25)]'
@@ -208,11 +204,9 @@ export default function ServicesPage() {
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="max-w-2xl mb-16">
             <Eyebrow className="mb-5">How an engagement runs</Eyebrow>
-            <SplitReveal
-              as="h2"
-              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
-              html="What working together<br>looks like."
-            />
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans">
+              What working together looks like.
+            </h2>
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[48ch]">
               A clear arc from first look to compounding results — no hidden phases, no surprises.
             </p>
@@ -222,8 +216,7 @@ export default function ServicesPage() {
             {PROCESS.map((step) => (
               <div
                 key={step.idx}
-                data-reveal
-                className="p-8 rounded-3xl bg-gray-50/60 border border-gray-100 flex flex-col gap-4"
+                               className="p-8 rounded-3xl bg-gray-50/60 border border-gray-100 flex flex-col gap-4"
               >
                 <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#E7ECD9' }}>
                   <span className="text-[11px] font-semibold" style={{ color: '#39471D' }}>{step.idx}</span>
@@ -244,11 +237,9 @@ export default function ServicesPage() {
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="max-w-2xl mb-14">
             <Eyebrow className="mb-5">Compare</Eyebrow>
-            <SplitReveal
-              as="h2"
-              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans"
-              html="What's in each."
-            />
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans">
+              What's in each.
+            </h2>
           </div>
 
           <div className="overflow-x-auto rounded-[20px] border border-gray-100 shadow-[0_2px_20px_-8px_rgba(57,71,29,0.08)]">
@@ -289,11 +280,9 @@ export default function ServicesPage() {
             />
             <div className="relative z-[2] max-w-xl">
               <Eyebrow tone="light" className="mb-6">Ready?</Eyebrow>
-              <SplitReveal
-                as="h2"
-                className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-8 font-sans"
-                html="Start with a clear look at where you <em>stand.</em>"
-              />
+              <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-8 font-sans">
+                Start with a clear look at where you stand.
+              </h2>
               <p className="text-[#CBD0AC] font-medium text-base sm:text-lg leading-relaxed max-w-[44ch] mb-8">
                 Book an AI visibility audit. Clear, fixed scope, and a roadmap you keep either way.
               </p>
@@ -313,11 +302,9 @@ export default function ServicesPage() {
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="max-w-2xl mb-14">
             <Eyebrow className="mb-5">Questions</Eyebrow>
-            <SplitReveal
-              as="h2"
-              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans"
-              html="The honest answers."
-            />
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans">
+              The honest answers.
+            </h2>
           </div>
 
           <div className="max-w-3xl">
