@@ -13,6 +13,7 @@ import BlogSection from '@/components/BlogSection';
 import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
 import ThalloAIPage from '@/components/ThalloAIPage';
+import ServicesPage from '@/components/ServicesPage';
 import Industries from '@/components/Industries';
 import About from '@/components/About';
 import { useRevealBatch } from '@/components/motion';
@@ -43,6 +44,8 @@ export default function Home() {
             <BlogSection />
             <CTASection />
           </>
+        ) : view === 'services' ? (
+          <ServicesPage />
         ) : (
           <ThalloAIPage />
         )}
