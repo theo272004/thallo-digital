@@ -53,7 +53,7 @@ export default function BlogSection() {
   const track = [...REVIEWS, ...REVIEWS];
 
   return (
-    <section className="bg-gray-50/50 py-28 border-b border-gray-100 overflow-hidden" id="reviews">
+    <section className="bg-gray-100/60 py-28 border-b border-gray-100 overflow-hidden" id="reviews">
       <style>{`
         @keyframes review-scroll {
           from { transform: translateX(0); }
