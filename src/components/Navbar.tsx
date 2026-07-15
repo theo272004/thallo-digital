@@ -65,6 +65,7 @@ export default function Navbar({ currentView, setView }: NavbarProps) {
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-7">
           <a href="#services" onClick={(e) => handleNavClick('services', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Services</a>
+          <a href="#industries" onClick={(e) => handleNavClick('industries', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Industries</a>
           <a href="#approach" onClick={(e) => handleHomeAnchorClick('approach', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Our Approach</a>
           <a href="#results" onClick={(e) => handleHomeAnchorClick('results', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Results</a>
           <a href="#blog" onClick={(e) => handleHomeAnchorClick('blog', e)} className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Resources</a>
@@ -112,6 +113,7 @@ export default function Navbar({ currentView, setView }: NavbarProps) {
           </button>
           <div className="flex flex-col gap-6 mt-12 text-lg font-bold text-gray-800">
             <a href="#services" onClick={(e) => handleNavClick('services', e)}>Services</a>
+            <a href="#industries" onClick={(e) => handleNavClick('industries', e)}>Industries</a>
             <a href="#approach" onClick={(e) => handleHomeAnchorClick('approach', e)}>Our Approach</a>
             <a href="#results" onClick={(e) => handleHomeAnchorClick('results', e)}>Results</a>
             <a href="#blog" onClick={(e) => handleHomeAnchorClick('blog', e)}>Resources</a>
