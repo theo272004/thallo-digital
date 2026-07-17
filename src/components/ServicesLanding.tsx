@@ -156,15 +156,20 @@ export default function ServicesPage() {
     <>
 
       {/* ── Hero (centered) ───────────────────────────────────────────────── */}
-      <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
-        <div className="max-w-[1440px] mx-auto px-6 text-center">
+      <section className="bg-white pt-44 pb-16 2xl:pt-56 2xl:pb-28 border-b border-gray-100">
+        <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
           <Eyebrow center className="mb-5">Services</Eyebrow>
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans">
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-2xl">
             One engine to make you<br />the answer.
           </h1>
-          <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mx-auto">
+          <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mb-10">
             Everything we do builds toward one outcome: making you the name buyers and AI trust.
           </p>
+          <img
+            src="/thallo-digital/flower.png"
+            alt="Thallo"
+            className="w-20 h-20 object-contain opacity-80"
+          />
         </div>
       </section>
 
