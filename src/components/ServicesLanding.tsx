@@ -361,7 +361,7 @@ export default function ServicesPage() {
         <div className="max-w-[1440px] mx-auto px-6 w-full">
           <div className="relative overflow-hidden rounded-[28px] px-12 py-20 sm:px-20 sm:py-28">
             <img
-              src="/thallo-digital/cta-bg.png"
+              src="/thallo-digital/cta-bg-services.png"
               alt=""
               aria-hidden="true"
               className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
