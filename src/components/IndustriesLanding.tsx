@@ -105,23 +105,88 @@ export default function IndustriesPage() {
       {/* How buyers decide */}
       <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
-          <div className="relative overflow-hidden rounded-[28px] bg-[#39471D] px-10 py-14 sm:px-16 sm:py-20">
+          <div
+            className="relative overflow-hidden rounded-[28px] px-10 py-14 sm:px-16 sm:py-20"
+            style={{
+              backgroundImage: 'url(/thallo-digital/buyers-bg.png)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          >
             <div className="max-w-lg mb-14">
               <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white leading-[1.05] font-sans">
                 Buyers decide before they ever contact you.
               </h2>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {STATS.map((s) => (
-                <div
-                  key={s.label}
-                  className="bg-white/[0.06] border border-white/10 rounded-2xl p-7 hover:-translate-y-1 transition-transform duration-300"
-                >
-                  <p className="font-bold text-[2.6rem] leading-none text-[#E4D2A2] mb-4 font-sans tracking-tight">{s.val}</p>
-                  <h3 className="text-white font-semibold text-base mb-2">{s.label}</h3>
-                  <p className="text-[#CBD0AC] text-sm font-medium leading-relaxed">{s.desc}</p>
+
+              {/* Card 1 — 73% Research */}
+              <div
+                className="relative overflow-hidden rounded-3xl p-[30px] transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02]"
+                style={{
+                  background: 'rgba(255,255,255,0.08)',
+                  backdropFilter: 'blur(18px)',
+                  WebkitBackdropFilter: 'blur(18px)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  boxShadow: '0 4px 24px rgba(0,0,0,0.18)',
+                }}
+              >
+                {/* Graphic: upward trend line */}
+                <svg className="absolute bottom-5 right-5 opacity-20" width="80" height="48" viewBox="0 0 80 48" fill="none">
+                  <polyline points="0,44 20,32 40,20 60,10 80,2" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                  <circle cx="20" cy="32" r="2.5" fill="white" opacity="0.8"/>
+                  <circle cx="60" cy="10" r="2.5" fill="white" opacity="0.8"/>
+                  <circle cx="80" cy="2" r="3" fill="white"/>
+                </svg>
+                <p className="font-bold text-[2.6rem] leading-none font-sans tracking-tight mb-4" style={{ color: '#F3E6C1' }}>73%</p>
+                <h3 className="font-semibold text-base mb-2" style={{ color: '#FFFFFF' }}>Research before contact</h3>
+                <p className="text-sm font-medium leading-relaxed" style={{ color: 'rgba(255,255,255,0.82)' }}>Most buyers investigate thoroughly online before they speak to anyone. The shortlist forms in private.</p>
+              </div>
+
+              {/* Card 2 — 45% AI in the mix */}
+              <div
+                className="relative overflow-hidden rounded-3xl p-[30px] transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02]"
+                style={{
+                  background: 'rgba(255,255,255,0.08)',
+                  backdropFilter: 'blur(18px)',
+                  WebkitBackdropFilter: 'blur(18px)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  boxShadow: '0 4px 24px rgba(0,0,0,0.18)',
+                }}
+              >
+                {/* Graphic: floating AI chips */}
+                <div className="absolute bottom-5 right-4 flex flex-col gap-1.5 opacity-20">
+                  {['ChatGPT', 'Google AI', 'Perplexity'].map((label) => (
+                    <span key={label} className="text-[9px] font-bold text-white border border-white/40 rounded-full px-2 py-0.5 whitespace-nowrap">{label}</span>
+                  ))}
                 </div>
-              ))}
+                <p className="font-bold text-[2.6rem] leading-none font-sans tracking-tight mb-4" style={{ color: '#F3E6C1' }}>45%</p>
+                <h3 className="font-semibold text-base mb-2" style={{ color: '#FFFFFF' }}>AI in the mix</h3>
+                <p className="text-sm font-medium leading-relaxed" style={{ color: 'rgba(255,255,255,0.82)' }}>Buyers fold ChatGPT and Perplexity into their research, and act on the names those tools surface first.</p>
+              </div>
+
+              {/* Card 3 — 1st Preference wins */}
+              <div
+                className="relative overflow-hidden rounded-3xl p-[30px] transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02]"
+                style={{
+                  background: 'rgba(255,255,255,0.08)',
+                  backdropFilter: 'blur(18px)',
+                  WebkitBackdropFilter: 'blur(18px)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  boxShadow: '0 4px 24px rgba(0,0,0,0.18)',
+                }}
+              >
+                {/* Graphic: circular badge with check */}
+                <svg className="absolute bottom-4 right-4 opacity-20" width="52" height="52" viewBox="0 0 52 52" fill="none">
+                  <circle cx="26" cy="26" r="22" stroke="white" strokeWidth="1.2"/>
+                  <circle cx="26" cy="26" r="16" stroke="white" strokeWidth="0.6" strokeDasharray="3 3"/>
+                  <path d="M18 26L23 31L34 20" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                <p className="font-bold text-[2.6rem] leading-none font-sans tracking-tight mb-4" style={{ color: '#F3E6C1' }}>1st</p>
+                <h3 className="font-semibold text-base mb-2" style={{ color: '#FFFFFF' }}>Preference wins</h3>
+                <p className="text-sm font-medium leading-relaxed" style={{ color: 'rgba(255,255,255,0.82)' }}>The provider seen as most credible early is usually the one that wins, often before a sales call ever happens.</p>
+              </div>
+
             </div>
           </div>
         </div>
