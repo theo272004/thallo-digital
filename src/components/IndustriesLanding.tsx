@@ -124,11 +124,9 @@ export default function IndustriesPage() {
               <div
                 className="rounded-3xl p-[30px] transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02]"
                 style={{
-                  background: 'rgba(255,255,255,0.18)',
-                  backdropFilter: 'blur(18px)',
-                  WebkitBackdropFilter: 'blur(18px)',
-                  border: '1px solid rgba(255,255,255,0.22)',
-                  boxShadow: '0 4px 24px rgba(0,0,0,0.18)',
+                  background: 'rgba(20,20,18,0.72)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  boxShadow: '0 2px 16px rgba(0,0,0,0.28)',
                 }}
               >
                 <p className="font-bold text-[2.6rem] leading-none font-sans tracking-tight mb-4" style={{ color: '#F3E6C1' }}>73%</p>
@@ -140,11 +138,9 @@ export default function IndustriesPage() {
               <div
                 className="rounded-3xl p-[30px] transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02]"
                 style={{
-                  background: 'rgba(255,255,255,0.18)',
-                  backdropFilter: 'blur(18px)',
-                  WebkitBackdropFilter: 'blur(18px)',
-                  border: '1px solid rgba(255,255,255,0.22)',
-                  boxShadow: '0 4px 24px rgba(0,0,0,0.18)',
+                  background: 'rgba(20,20,18,0.72)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  boxShadow: '0 2px 16px rgba(0,0,0,0.28)',
                 }}
               >
                 <p className="font-bold text-[2.6rem] leading-none font-sans tracking-tight mb-4" style={{ color: '#F3E6C1' }}>45%</p>
@@ -156,11 +152,9 @@ export default function IndustriesPage() {
               <div
                 className="rounded-3xl p-[30px] transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02]"
                 style={{
-                  background: 'rgba(255,255,255,0.18)',
-                  backdropFilter: 'blur(18px)',
-                  WebkitBackdropFilter: 'blur(18px)',
-                  border: '1px solid rgba(255,255,255,0.22)',
-                  boxShadow: '0 4px 24px rgba(0,0,0,0.18)',
+                  background: 'rgba(20,20,18,0.72)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  boxShadow: '0 2px 16px rgba(0,0,0,0.28)',
                 }}
               >
                 <p className="font-bold text-[2.6rem] leading-none font-sans tracking-tight mb-4" style={{ color: '#F3E6C1' }}>1st</p>
