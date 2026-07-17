@@ -1,35 +1,11 @@
 import React from 'react';
 
-interface FooterProps {
-  setView: (view: string) => void;
-}
-
-export default function Footer({ setView }: FooterProps) {
-  const handleLogoClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setView('home');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleNavClick = (view: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    setView(view);
-    window.scrollTo({ top: 0, behavior: 'auto' });
-  };
-
-  const handleHomeAnchorClick = (anchorId: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    setView('home');
-    setTimeout(() => {
-      document.getElementById(anchorId)?.scrollIntoView({ behavior: 'smooth' });
-    }, 50);
-  };
-
+export default function Footer() {
   return (
     <footer className="bg-white border-t border-gray-100 py-16" id="contact">
       <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
         <div className="md:col-span-1">
-          <a href="/" onClick={handleLogoClick} className="inline-block mb-4">
+          <a href="/thallo-digital/" className="inline-block mb-4">
             <img src="/thallo-digital/logo.png" alt="Thallo Digital" className="h-5 object-contain" />
           </a>
           <p className="text-[11px] text-gray-400 font-semibold leading-relaxed max-w-[28ch]">
@@ -40,30 +16,30 @@ export default function Footer({ setView }: FooterProps) {
         <div>
           <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Solutions</h4>
           <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
-            <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)} className="hover:text-[#39471D]">AI Visibility Audit</a>
-            <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)} className="hover:text-[#39471D]">Authority Engine</a>
-            <a href="#services" onClick={(e) => handleHomeAnchorClick('services', e)} className="hover:text-[#39471D]">Flagship Projects</a>
-            <a href="#tool" onClick={(e) => handleHomeAnchorClick('tool', e)} className="hover:text-[#39471D]">Visibility Check</a>
+            <a href="/thallo-digital/services/" className="hover:text-[#39471D]">AI Visibility Audit</a>
+            <a href="/thallo-digital/services/" className="hover:text-[#39471D]">Authority Engine</a>
+            <a href="/thallo-digital/services/" className="hover:text-[#39471D]">Flagship Projects</a>
+            <a href="/thallo-digital/thallo-ai/" className="hover:text-[#39471D]">Visibility Check</a>
           </div>
         </div>
 
         <div>
           <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Industries</h4>
           <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
-            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">Fintech</a>
-            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">Health tech</a>
-            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">Professional services</a>
-            <a href="#services" onClick={(e) => e.preventDefault()} className="hover:text-[#39471D]">Health & recovery</a>
+            <a href="/thallo-digital/industries/" className="hover:text-[#39471D]">Fintech</a>
+            <a href="/thallo-digital/industries/" className="hover:text-[#39471D]">Health tech</a>
+            <a href="/thallo-digital/industries/" className="hover:text-[#39471D]">Professional services</a>
+            <a href="/thallo-digital/industries/" className="hover:text-[#39471D]">Health &amp; recovery</a>
           </div>
         </div>
 
         <div>
           <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Company</h4>
           <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
-            <a href="/" onClick={handleLogoClick} className="hover:text-[#39471D]">About</a>
-            <a href="/thallo-ai" onClick={(e) => handleNavClick('ai-tool', e)} className="hover:text-[#39471D]">Blog</a>
-            <a href="#contact" onClick={(e) => handleHomeAnchorClick('contact', e)} className="hover:text-[#39471D]">Contact</a>
-            <a href="#cta" onClick={(e) => handleHomeAnchorClick('cta', e)} className="hover:text-[#39471D]">Book an audit</a>
+            <a href="/thallo-digital/" className="hover:text-[#39471D]">About</a>
+            <a href="/thallo-digital/#blog" className="hover:text-[#39471D]">Blog</a>
+            <a href="/thallo-digital/#contact" className="hover:text-[#39471D]">Contact</a>
+            <a href="mailto:hello@thallo.co?subject=AI Visibility Audit Request" className="hover:text-[#39471D]">Book an audit</a>
           </div>
         </div>
       </div>
