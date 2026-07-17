@@ -228,7 +228,7 @@ export default function ServicesPage() {
                         <span className={`font-mono text-[11px] font-bold tracking-[0.18em] uppercase transition-colors duration-500 ${isFeatured ? 'text-white/70' : 'text-gray-400'}`}>
                           {svc.idx} / {svc.kicker}
                         </span>
-                        {isFeatured && (
+                        {i === 1 && (
                           <span className="font-mono text-[11px] font-bold tracking-widest uppercase text-[#39471D] bg-[#CBD0AC] px-2 py-1 rounded-full">
                             Most chosen
                           </span>
