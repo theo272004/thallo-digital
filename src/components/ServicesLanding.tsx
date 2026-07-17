@@ -209,7 +209,7 @@ export default function ServicesPage() {
                   <div
                     style={{
                       height: '100%',
-                      transform: isFeatured ? 'scale(1.04)' : 'scale(1)',
+                      transform: isFeatured ? 'scale(1.08)' : 'scale(1)',
                       transition: 'transform 0.5s cubic-bezier(0.22,1,0.36,1)',
                       transformOrigin: 'center center',
                     }}
