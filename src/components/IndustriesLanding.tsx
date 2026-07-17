@@ -183,7 +183,11 @@ export default function IndustriesPage() {
             {INDUSTRIES.map((ind) => (
               <div
                 key={ind.name}
-                className="relative overflow-hidden bg-gray-50/60 border border-gray-100 rounded-3xl p-8 flex flex-col gap-5 hover:-translate-y-1 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-30px_rgba(57,71,29,0.2)] transition-all duration-300 min-h-[240px]"
+                className={`relative overflow-hidden rounded-3xl p-8 flex flex-col gap-5 transition-all duration-300 min-h-[240px] ${
+                  ind.type === 'phrase'
+                    ? 'bg-[#39471D] border border-[#39471D] hover:-translate-y-1 hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,0.55)]'
+                    : 'bg-gray-50/60 border border-gray-100 hover:-translate-y-1 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-30px_rgba(57,71,29,0.2)]'
+                }`}
               >
                 {ind.type === 'metric' ? (
                   <>
@@ -199,11 +203,11 @@ export default function IndustriesPage() {
                   </>
                 ) : (
                   <>
-                    <p className="font-serif italic text-[1.55rem] leading-[1.25] text-[#39471D] flex-1">
+                    <p className="font-serif italic text-[1.55rem] leading-[1.25] text-[#CBD0AC] flex-1">
                       {ind.phrase}
                     </p>
-                    <div className="pt-5 border-t border-gray-200/70">
-                      <h3 className="text-base font-bold text-gray-900">{ind.name}</h3>
+                    <div className="pt-5 border-t border-white/15">
+                      <h3 className="text-base font-bold text-white">{ind.name}</h3>
                     </div>
                   </>
                 )}
