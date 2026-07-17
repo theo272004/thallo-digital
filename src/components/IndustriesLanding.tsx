@@ -85,7 +85,7 @@ export default function IndustriesPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
+      <section className="bg-white pt-36 pb-16 2xl:pt-48 2xl:pb-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
           <Eyebrow center className="mb-5">Industries</Eyebrow>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-2xl">
