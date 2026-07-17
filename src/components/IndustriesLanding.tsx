@@ -86,16 +86,19 @@ export default function IndustriesPage() {
     <>
       {/* Hero */}
       <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
-        <div className="max-w-[1440px] mx-auto px-6">
-          <div className="max-w-2xl">
-            <Eyebrow className="mb-5">Industries</Eyebrow>
-            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans">
-              Built for high-consideration<br />industries.
-            </h1>
-            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch]">
-              Where the decision is high-stakes, buyers research hard before they commit. We make you the name they are most likely to trust.
-            </p>
-          </div>
+        <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
+          <Eyebrow center className="mb-5">Industries</Eyebrow>
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-2xl">
+            Built for high-consideration<br />industries.
+          </h1>
+          <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mb-10">
+            Where the decision is high-stakes, buyers research hard before they commit. We make you the name they are most likely to trust.
+          </p>
+          <img
+            src="/thallo-digital/flower.png"
+            alt="Thallo"
+            className="w-20 h-20 object-contain opacity-80"
+          />
         </div>
       </section>
 
