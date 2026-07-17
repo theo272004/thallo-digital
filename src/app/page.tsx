@@ -13,7 +13,7 @@ import BlogSection from '@/components/BlogSection';
 import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
 import ThalloAIPage from '@/components/ThalloAIPage';
-import ServicesPage from '@/components/ServicesPage';
+import ServicesPage from '@/components/ServicesLanding';
 import IndustriesPage from '@/components/IndustriesLanding';
 import Industries from '@/components/Industries';
 import About from '@/components/About';
