@@ -209,8 +209,8 @@ export default function ServicesPage() {
                   <div
                     className={`relative overflow-hidden p-8 rounded-3xl flex flex-col h-full transition-all duration-500 hover:-translate-y-1 ${
                       isFeatured
-                        ? 'bg-[#39471D] border border-[#39471D] shadow-[0_30px_70px_-30px_rgba(57,71,29,0.6)]'
-                        : 'bg-gray-50/60 border border-gray-100 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-30px_rgba(57,71,29,0.25)]'
+                        ? 'bg-[#39471D] border border-[#39471D] shadow-[0_2px_6px_rgba(57,71,29,0.35),0_10px_28px_-4px_rgba(57,71,29,0.55)]'
+                        : 'bg-gray-50/60 border border-gray-100 shadow-[0_1px_3px_rgba(0,0,0,0.07),0_4px_12px_-2px_rgba(0,0,0,0.08)] hover:border-[#55672E]/30 hover:shadow-[0_2px_6px_rgba(0,0,0,0.09),0_8px_20px_-4px_rgba(0,0,0,0.11)]'
                     }`}
                   >
                     {isFeatured && (
