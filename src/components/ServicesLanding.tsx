@@ -95,11 +95,33 @@ function Check({ featured }: { featured: boolean }) {
   );
 }
 
-function Cell({ val, highlight }: { val: boolean | string; highlight?: boolean }) {
-  const bg = highlight ? 'bg-[#39471D]/[0.04]' : '';
-  if (val === true)  return <td className={`${bg} py-4 px-6 text-center text-[#39471D] font-bold`}>&#10003;</td>;
-  if (val === false) return <td className={`${bg} py-4 px-6 text-center text-gray-300`}>&#10005;</td>;
-  return <td className={`${bg} py-4 px-6 text-center text-sm font-semibold text-gray-600`}>{val}</td>;
+function CompareCell({ val }: { val: boolean | string }) {
+  if (val === true) return (
+    <div className="w-8 h-8 rounded-full bg-[#EEF1E6] flex items-center justify-center transition-transform duration-200 hover:scale-110">
+      <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="#3E531C" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 8l4 4 7-7"/></svg>
+    </div>
+  );
+  if (val === false) return (
+    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center transition-transform duration-200 hover:scale-110">
+      <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="#CBD5E1" strokeWidth="1.8" strokeLinecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+    </div>
+  );
+  return <span className="text-sm font-bold text-[#3E531C]">{val}</span>;
+}
+
+function CompareIcon({ feature }: { feature: string }) {
+  const s = { viewBox: '0 0 24 24', width: 18, height: 18, fill: 'none' as const, stroke: '#3E531C', strokeWidth: 1.6, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
+  const map: Record<string, React.ReactNode> = {
+    'AI visibility benchmark':       <svg {...s}><circle cx="11" cy="11" r="7"/><path d="M5 11s2-4 6-4 6 4 6 4-2 4-6 4-6-4-6-4z"/><circle cx="11" cy="11" r="2.5" fill="#3E531C"/></svg>,
+    'Technical AI-readiness build':  <svg {...s}><rect x="7" y="7" width="10" height="10" rx="1"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/><rect x="2" y="2" width="20" height="20" rx="3"/></svg>,
+    'Original, researched content':  <svg {...s}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+    'Distribution & publishing':     <svg {...s}><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><line x1="8.3" y1="13.3" x2="15.7" y2="17.7"/><line x1="15.7" y1="6.3" x2="8.3" y2="10.7"/></svg>,
+    'Proprietary data studies':      <svg {...s}><line x1="18" y1="20" x2="18" y2="9"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="13"/><line x1="2" y1="20" x2="22" y2="20"/></svg>,
+    'Digital PR & podcasts':         <svg {...s}><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>,
+    'Monthly outcome reporting':     <svg {...s}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>,
+    'Best for':                      <svg {...s}><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="#3E531C"/></svg>,
+  };
+  return <span className="flex-shrink-0">{map[feature] ?? null}</span>;
 }
 
 // visual order: active card → middle, others fill left/right in their natural sequence
@@ -331,27 +353,60 @@ export default function ServicesPage() {
             </h2>
           </div>
 
-          <div className="overflow-x-auto rounded-[20px] border border-gray-100 shadow-[0_2px_20px_-8px_rgba(57,71,29,0.08)]">
-            <table className="w-full border-collapse min-w-[600px]">
-              <thead>
-                <tr className="border-b border-gray-100">
-                  <th className="text-left py-4 px-6 font-semibold text-sm text-gray-900 bg-gray-50/60">Feature</th>
-                  <th className="py-4 px-6 text-center font-semibold text-sm text-gray-900 bg-gray-50/60">Audit</th>
-                  <th className="py-4 px-6 text-center font-semibold text-sm text-white bg-[#39471D]">Authority Engine</th>
-                  <th className="py-4 px-6 text-center font-semibold text-sm text-gray-900 bg-gray-50/60">Flagship</th>
-                </tr>
-              </thead>
-              <tbody>
+          {/* Premium floating card */}
+          <div className="rounded-[28px] border border-[#ECE9E2] bg-white shadow-[0_4px_40px_-12px_rgba(57,71,29,0.12)] overflow-hidden">
+            <div className="overflow-x-auto">
+              <div className="min-w-[680px]">
+
+                {/* Header row */}
+                <div className="grid" style={{ gridTemplateColumns: '2fr 1fr 1fr 1fr' }}>
+                  <div className="flex items-end py-5 px-7 border-b border-[#ECE9E2]">
+                    <span className="text-[10px] font-bold tracking-[0.20em] uppercase text-gray-400">Feature</span>
+                  </div>
+                  <div className="flex items-end justify-center py-5 px-6 border-b border-[#ECE9E2] border-l border-[#ECE9E2]">
+                    <span className="text-[10px] font-bold tracking-[0.20em] uppercase text-gray-500">Audit</span>
+                  </div>
+                  {/* Authority Engine — taller, olive, badge + label */}
+                  <div className="flex flex-col items-center justify-end py-6 px-6 bg-[#3E531C]" style={{ borderLeft: '1px solid #3E531C', borderRight: '1px solid #3E531C' }}>
+                    <div className="w-[46px] h-[46px] rounded-full bg-white/[0.12] flex items-center justify-center mb-3 ring-[1.5px] ring-white/20">
+                      <img src="/thallo-digital/flower.png" alt="" aria-hidden className="w-[22px] h-[22px] object-contain" style={{ filter: 'brightness(0) invert(1)', opacity: 0.9 }} />
+                    </div>
+                    <span className="text-[10px] font-bold tracking-[0.20em] uppercase text-white/90">Authority Engine</span>
+                  </div>
+                  <div className="flex items-end justify-center py-5 px-6 border-b border-[#ECE9E2] border-l border-[#ECE9E2]">
+                    <span className="text-[10px] font-bold tracking-[0.20em] uppercase text-gray-500">Flagship</span>
+                  </div>
+                </div>
+
+                {/* Data rows */}
                 {COMPARE.map((row, i) => (
-                  <tr key={i} className="border-b border-gray-100 last:border-b-0">
-                    <td className="py-4 px-6 text-sm font-semibold text-gray-800">{row.feature}</td>
-                    <Cell val={row.audit} />
-                    <Cell val={row.engine} highlight />
-                    <Cell val={row.flagship} />
-                  </tr>
+                  <div
+                    key={i}
+                    className="grid group transition-colors duration-[250ms]"
+                    style={{ gridTemplateColumns: '2fr 1fr 1fr 1fr', borderTop: '1px solid #ECE9E2' }}
+                  >
+                    {/* Feature + icon */}
+                    <div className="flex items-center gap-4 py-[18px] px-7 group-hover:bg-[#F8F9F3] transition-colors duration-[250ms]">
+                      <CompareIcon feature={row.feature} />
+                      <span className="text-[14px] font-medium text-gray-800 leading-snug">{row.feature}</span>
+                    </div>
+                    {/* Audit */}
+                    <div className="flex items-center justify-center py-[18px] px-6 group-hover:bg-[#F8F9F3] transition-colors duration-[250ms]" style={{ borderLeft: '1px solid #ECE9E2' }}>
+                      <CompareCell val={row.audit} />
+                    </div>
+                    {/* Authority Engine — warm tint column */}
+                    <div className="flex items-center justify-center py-[18px] px-6 bg-[#F8F9F3]" style={{ borderLeft: '1px solid #e5ecd8', borderRight: '1px solid #e5ecd8' }}>
+                      <CompareCell val={row.engine} />
+                    </div>
+                    {/* Flagship */}
+                    <div className="flex items-center justify-center py-[18px] px-6 group-hover:bg-[#F8F9F3] transition-colors duration-[250ms]" style={{ borderLeft: '1px solid #ECE9E2' }}>
+                      <CompareCell val={row.flagship} />
+                    </div>
+                  </div>
                 ))}
-              </tbody>
-            </table>
+
+              </div>
+            </div>
           </div>
         </div>
       </section>
