@@ -319,7 +319,7 @@ export default function ServicesPage() {
       {/* ── Process ───────────────────────────────────────────────────────── */}
       <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
-          <div className="max-w-2xl mb-16">
+          <div className="max-w-2xl">
             <Eyebrow className="mb-5">How an engagement runs</Eyebrow>
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans">
               What working together looks like.
@@ -328,21 +328,38 @@ export default function ServicesPage() {
               A clear arc from first look to compounding results — no hidden phases, no surprises.
             </p>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {PROCESS.map((step) => (
-              <div
-                key={step.idx}
-                className="p-8 rounded-3xl bg-gray-50/60 border border-gray-100 flex flex-col gap-4"
-              >
-                <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: '#E7ECD9' }}>
-                  <span className="text-[11px] font-semibold" style={{ color: '#39471D' }}>{step.idx}</span>
+        {/* Full-bleed desk banner */}
+        <div className="w-full my-12 lg:my-16">
+          <img
+            src="/thallo-digital/engagement-desk.png"
+            alt="A Thallo engagement laid out on a desk: visibility audit, brand map, content calendar, distribution plan and results"
+            className="w-full h-auto select-none pointer-events-none"
+          />
+        </div>
+
+        {/* Horizontal timeline: 01 → 02 → 03 → 04 */}
+        <div className="max-w-[1440px] mx-auto px-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+            {PROCESS.map((step, i) => (
+              <div key={step.idx} className="flex flex-col">
+                <div className="flex items-center mb-6">
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#E7ECD9' }}>
+                    <span className="text-[12px] font-semibold" style={{ color: '#39471D' }}>{step.idx}</span>
+                  </div>
+                  {i < PROCESS.length - 1 && (
+                    <div className="hidden lg:flex items-center flex-1 ml-4">
+                      <span className="block h-px flex-1" style={{ backgroundColor: '#CBD9AE' }} />
+                      <svg width="7" height="10" viewBox="0 0 7 10" fill="none" className="ml-1" style={{ color: '#9CB36A' }}>
+                        <path d="M1 1l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </div>
+                  )}
                 </div>
-                <div>
-                  <p className="font-mono text-[11px] font-bold tracking-[0.18em] uppercase text-gray-400 mb-2">{step.period}</p>
-                  <h3 className="text-base font-bold text-gray-900 mb-2">{step.title}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
-                </div>
+                <p className="font-mono text-[11px] font-bold tracking-[0.18em] uppercase mb-2" style={{ color: '#7D9A4E' }}>{step.period}</p>
+                <h3 className="text-base font-bold text-gray-900 mb-2">{step.title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
               </div>
             ))}
           </div>
