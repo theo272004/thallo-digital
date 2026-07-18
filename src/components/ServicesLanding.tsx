@@ -95,33 +95,39 @@ function Check({ featured }: { featured: boolean }) {
   );
 }
 
+const OLIVE_TEXT = new Set(['Monthly', 'Deep', 'Compounding growth']);
+
 function CompareCell({ val }: { val: boolean | string }) {
   if (val === true) return (
-    <div className="w-8 h-8 rounded-full bg-[#EEF1E6] flex items-center justify-center transition-transform duration-200 hover:scale-110">
-      <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="#3E531C" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 8l4 4 7-7"/></svg>
+    <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#EEF2E4', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#445A20" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="4 12 9 17 20 7" />
+      </svg>
     </div>
   );
   if (val === false) return (
-    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center transition-transform duration-200 hover:scale-110">
-      <svg viewBox="0 0 16 16" width="11" height="11" fill="none" stroke="#CBD5E1" strokeWidth="1.8" strokeLinecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+    <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#F6F6F6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#BFC3C8" strokeWidth="2" strokeLinecap="round">
+        <line x1="5" y1="5" x2="19" y2="19" /><line x1="19" y1="5" x2="5" y2="19" />
+      </svg>
     </div>
   );
-  return <span className="text-sm font-bold text-[#3E531C]">{val}</span>;
+  return <span style={{ fontSize: 18, fontWeight: 700, color: OLIVE_TEXT.has(val as string) ? '#445A20' : '#111827', textAlign: 'center' as const }}>{val}</span>;
 }
 
 function CompareIcon({ feature }: { feature: string }) {
-  const s = { viewBox: '0 0 24 24', width: 18, height: 18, fill: 'none' as const, stroke: '#3E531C', strokeWidth: 1.6, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
+  const p = { viewBox: '0 0 24 24', width: 26, height: 26, fill: 'none' as const, stroke: '#445A20', strokeWidth: 2, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
   const map: Record<string, React.ReactNode> = {
-    'AI visibility benchmark':       <svg {...s}><circle cx="11" cy="11" r="7"/><path d="M5 11s2-4 6-4 6 4 6 4-2 4-6 4-6-4-6-4z"/><circle cx="11" cy="11" r="2.5" fill="#3E531C"/></svg>,
-    'Technical AI-readiness build':  <svg {...s}><rect x="7" y="7" width="10" height="10" rx="1"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/><rect x="2" y="2" width="20" height="20" rx="3"/></svg>,
-    'Original, researched content':  <svg {...s}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
-    'Distribution & publishing':     <svg {...s}><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><line x1="8.3" y1="13.3" x2="15.7" y2="17.7"/><line x1="15.7" y1="6.3" x2="8.3" y2="10.7"/></svg>,
-    'Proprietary data studies':      <svg {...s}><line x1="18" y1="20" x2="18" y2="9"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="13"/><line x1="2" y1="20" x2="22" y2="20"/></svg>,
-    'Digital PR & podcasts':         <svg {...s}><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/></svg>,
-    'Monthly outcome reporting':     <svg {...s}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>,
-    'Best for':                      <svg {...s}><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="#3E531C"/></svg>,
+    'AI visibility benchmark':       <svg {...p}><line x1="18" y1="20" x2="18" y2="9"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="13"/><line x1="2" y1="20" x2="22" y2="20"/></svg>,
+    'Technical AI-readiness build':  <svg {...p}><rect x="7" y="7" width="10" height="10" rx="1"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/><rect x="2" y="2" width="20" height="20" rx="3"/></svg>,
+    'Original, researched content':  <svg {...p}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+    'Distribution & publishing':     <svg {...p}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>,
+    'Proprietary data studies':      <svg {...p}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+    'Digital PR & podcasts':         <svg {...p}><path d="M12 2a3 3 0 00-3 3v7a3 3 0 006 0V5a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>,
+    'Monthly outcome reporting':     <svg {...p}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>,
+    'Best for':                      <svg {...p}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
   };
-  return <span className="flex-shrink-0">{map[feature] ?? null}</span>;
+  return <>{map[feature] ?? null}</>;
 }
 
 // visual order: active card → middle, others fill left/right in their natural sequence
@@ -353,58 +359,64 @@ export default function ServicesPage() {
             </h2>
           </div>
 
-          {/* Premium floating card */}
-          <div className="rounded-[28px] border border-[#ECE9E2] bg-white shadow-[0_4px_40px_-12px_rgba(57,71,29,0.12)] overflow-hidden">
-            <div className="overflow-x-auto">
-              <div className="min-w-[680px]">
+          {/* Outer: space above card for the floating badge */}
+          <div style={{ position: 'relative', paddingTop: 28 }}>
 
-                {/* Header row */}
-                <div className="grid" style={{ gridTemplateColumns: '2fr 1fr 1fr 1fr' }}>
-                  <div className="flex items-end py-5 px-7 border-b border-[#ECE9E2]">
-                    <span className="text-[10px] font-bold tracking-[0.20em] uppercase text-gray-400">Feature</span>
-                  </div>
-                  <div className="flex items-end justify-center py-5 px-6 border-b border-[#ECE9E2] border-l border-[#ECE9E2]">
-                    <span className="text-[10px] font-bold tracking-[0.20em] uppercase text-gray-500">Audit</span>
-                  </div>
-                  {/* Authority Engine — taller, olive, badge + label */}
-                  <div className="flex flex-col items-center justify-end py-6 px-6 bg-[#3E531C]" style={{ borderLeft: '1px solid #3E531C', borderRight: '1px solid #3E531C' }}>
-                    <div className="w-[46px] h-[46px] rounded-full bg-white/[0.12] flex items-center justify-center mb-3 ring-[1.5px] ring-white/20">
-                      <img src="/thallo-digital/flower.png" alt="" aria-hidden className="w-[22px] h-[22px] object-contain" style={{ filter: 'brightness(0) invert(1)', opacity: 0.9 }} />
+            {/* Floating flower badge — centered on Authority Engine col (42+19+10 = 71%) */}
+            <div style={{
+              position: 'absolute', top: 0, left: '71%', transform: 'translateX(-50%)',
+              zIndex: 20, width: 56, height: 56, borderRadius: '50%',
+              background: '#445A20', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 10px 25px rgba(0,0,0,.12)',
+            }}>
+              <img src="/thallo-digital/flower.png" alt="" aria-hidden style={{ width: 28, height: 28, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            </div>
+
+            {/* Card */}
+            <div style={{ background: '#FFFFFF', border: '1px solid #ECE9E2', borderRadius: 30, boxShadow: '0 18px 55px rgba(32,32,24,.06)', overflow: 'hidden' }}>
+              <div style={{ overflowX: 'auto' }}>
+                <div style={{ minWidth: 720 }}>
+
+                  {/* Header row */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '42fr 19fr 20fr 19fr' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', minHeight: 84, paddingLeft: 28, paddingRight: 20, borderBottom: '1px solid #F2F1ED' }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#9CA3AF', whiteSpace: 'nowrap' }}>Feature</span>
                     </div>
-                    <span className="text-[10px] font-bold tracking-[0.20em] uppercase text-white/90">Authority Engine</span>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 84, borderBottom: '1px solid #F2F1ED', borderLeft: '1px solid #F2F1ED' }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#6B7280', whiteSpace: 'nowrap' }}>Audit</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 84, background: '#445A20', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#FFFFFF', whiteSpace: 'nowrap' }}>Authority Engine</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 84, borderBottom: '1px solid #F2F1ED', borderLeft: '1px solid #F2F1ED' }}>
+                      <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#6B7280', whiteSpace: 'nowrap' }}>Flagship</span>
+                    </div>
                   </div>
-                  <div className="flex items-end justify-center py-5 px-6 border-b border-[#ECE9E2] border-l border-[#ECE9E2]">
-                    <span className="text-[10px] font-bold tracking-[0.20em] uppercase text-gray-500">Flagship</span>
-                  </div>
+
+                  {/* Data rows */}
+                  {COMPARE.map((row, i) => (
+                    <div
+                      key={i}
+                      className="group"
+                      style={{ display: 'grid', gridTemplateColumns: '42fr 19fr 20fr 19fr', borderTop: '1px solid #F2F1ED' }}
+                    >
+                      <div className="group-hover:bg-[#FAFAF8]" style={{ display: 'flex', alignItems: 'center', minHeight: 72, paddingLeft: 28, paddingRight: 20, gap: 18, transition: 'background 150ms' }}>
+                        <CompareIcon feature={row.feature} />
+                        <span style={{ fontSize: 20, fontWeight: 600, color: '#111827', lineHeight: 1.3 }}>{row.feature}</span>
+                      </div>
+                      <div className="group-hover:bg-[#FAFAF8]" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 72, borderLeft: '1px solid #F2F1ED', transition: 'background 150ms' }}>
+                        <CompareCell val={row.audit} />
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 72, background: '#FBFCF7', borderLeft: '1px solid #edf0e8', borderRight: '1px solid #edf0e8' }}>
+                        <CompareCell val={row.engine} />
+                      </div>
+                      <div className="group-hover:bg-[#FAFAF8]" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 72, borderLeft: '1px solid #F2F1ED', transition: 'background 150ms' }}>
+                        <CompareCell val={row.flagship} />
+                      </div>
+                    </div>
+                  ))}
+
                 </div>
-
-                {/* Data rows */}
-                {COMPARE.map((row, i) => (
-                  <div
-                    key={i}
-                    className="grid group transition-colors duration-[250ms]"
-                    style={{ gridTemplateColumns: '2fr 1fr 1fr 1fr', borderTop: '1px solid #ECE9E2' }}
-                  >
-                    {/* Feature + icon */}
-                    <div className="flex items-center gap-4 py-[18px] px-7 group-hover:bg-[#F8F9F3] transition-colors duration-[250ms]">
-                      <CompareIcon feature={row.feature} />
-                      <span className="text-[14px] font-medium text-gray-800 leading-snug">{row.feature}</span>
-                    </div>
-                    {/* Audit */}
-                    <div className="flex items-center justify-center py-[18px] px-6 group-hover:bg-[#F8F9F3] transition-colors duration-[250ms]" style={{ borderLeft: '1px solid #ECE9E2' }}>
-                      <CompareCell val={row.audit} />
-                    </div>
-                    {/* Authority Engine — warm tint column */}
-                    <div className="flex items-center justify-center py-[18px] px-6 bg-[#F8F9F3]" style={{ borderLeft: '1px solid #e5ecd8', borderRight: '1px solid #e5ecd8' }}>
-                      <CompareCell val={row.engine} />
-                    </div>
-                    {/* Flagship */}
-                    <div className="flex items-center justify-center py-[18px] px-6 group-hover:bg-[#F8F9F3] transition-colors duration-[250ms]" style={{ borderLeft: '1px solid #ECE9E2' }}>
-                      <CompareCell val={row.flagship} />
-                    </div>
-                  </div>
-                ))}
-
               </div>
             </div>
           </div>
