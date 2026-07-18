@@ -317,21 +317,21 @@ export default function ServicesPage() {
       </section>
 
       {/* ── Process ───────────────────────────────────────────────────────── */}
-      <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
+      <section className="bg-white py-12 2xl:py-16 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
-          <div className="max-w-2xl">
-            <Eyebrow className="mb-5">How an engagement runs</Eyebrow>
+          <div className="max-w-2xl mx-auto text-center">
+            <Eyebrow center className="mb-5">How an engagement runs</Eyebrow>
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans">
               What working together looks like.
             </h2>
-            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[48ch]">
+            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[48ch] mx-auto">
               A clear arc from first look to compounding results — no hidden phases, no surprises.
             </p>
           </div>
         </div>
 
-        {/* Full-bleed desk banner */}
-        <div className="w-full my-12 lg:my-16">
+        {/* Full-bleed desk banner — spans the full page width, as the section was designed */}
+        <div className="w-full mt-6 mb-7 lg:mb-8">
           <img
             src="/thallo-digital/engagement-desk.png"
             alt="A Thallo engagement laid out on a desk: visibility audit, brand map, content calendar, distribution plan and results"
@@ -341,23 +341,29 @@ export default function ServicesPage() {
 
         {/* Horizontal timeline: 01 → 02 → 03 → 04 */}
         <div className="max-w-[1440px] mx-auto px-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-9">
             {PROCESS.map((step, i) => (
-              <div key={step.idx} className="flex flex-col">
-                <div className="flex items-center mb-6">
-                  <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: '#E7ECD9' }}>
-                    <span className="text-[12px] font-semibold" style={{ color: '#39471D' }}>{step.idx}</span>
+              <div key={step.idx} className="group flex flex-col">
+                <div className="flex items-center mb-5">
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ring-4 ring-white shadow-sm transition-transform duration-300 group-hover:-translate-y-0.5"
+                    style={{ backgroundColor: '#445A20' }}
+                  >
+                    <span className="text-[13px] font-semibold text-white">{step.idx}</span>
                   </div>
                   {i < PROCESS.length - 1 && (
-                    <div className="hidden lg:flex items-center flex-1 ml-4">
-                      <span className="block h-px flex-1" style={{ backgroundColor: '#CBD9AE' }} />
-                      <svg width="7" height="10" viewBox="0 0 7 10" fill="none" className="ml-1" style={{ color: '#9CB36A' }}>
-                        <path d="M1 1l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </div>
+                    <span
+                      className="hidden lg:block h-px flex-1 ml-3"
+                      style={{ background: 'linear-gradient(to right, #C7D6A6 0%, rgba(199,214,166,0) 92%)' }}
+                    />
                   )}
                 </div>
-                <p className="font-mono text-[11px] font-bold tracking-[0.18em] uppercase mb-2" style={{ color: '#7D9A4E' }}>{step.period}</p>
+                <span
+                  className="self-start inline-flex items-center rounded-full px-2.5 py-1 mb-3 font-mono text-[10px] font-bold tracking-[0.16em] uppercase"
+                  style={{ backgroundColor: '#EEF2E3', color: '#5A7030' }}
+                >
+                  {step.period}
+                </span>
                 <h3 className="text-base font-bold text-gray-900 mb-2">{step.title}</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
               </div>
