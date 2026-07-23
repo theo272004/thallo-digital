@@ -165,21 +165,7 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Ticker — anchored at the bottom of the hero above the fold */}
-      <div className="relative z-10 w-full pb-8 pt-2">
-        <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-center uppercase text-gray-400 mb-5">
-          Cited across the answers your buyers trust
-        </p>
-        <div className="overflow-hidden flex">
-          <div className="flex gap-16 animate-marquee whitespace-nowrap">
-            {TICKER.map((name, i) => (
-              <span key={i} className="text-gray-400 text-sm font-bold tracking-wider">
-                {name}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* Ticker hidden provisionally */}
     </section>
   );
 }
