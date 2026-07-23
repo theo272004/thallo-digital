@@ -74,7 +74,7 @@ export default function About() {
         className="hidden xl:block absolute pointer-events-none select-none"
         style={{
           zIndex: 30,
-          top: 'calc(50% - 100px)',
+          top: 'calc(50% - 90px)',
           left: 'calc(50% + 275px)',
           height: 'clamp(200px, 26vw, 400px)',
           width: 'auto',
