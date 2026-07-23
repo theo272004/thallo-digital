@@ -47,34 +47,36 @@ export default function About() {
          REFERENCE POINTS: 1440px → ~95%   1920px → 72% (crossover to the 72% baseline).
          To make it bigger/smaller at 1440 without touching desktop, adjust the 1368px.
          The 56.6% left shifts the whole composition slightly to the right. */}
-      {/* Phone + coffee — LEFT. Right edge just kisses "our clients" in the body text. */}
+      {/* Phone + coffee — LEFT, lower to align with "our clients" in body paragraph.
+          ~80px below section center. Right edge 6px inside text-block left edge. */}
       <img
         src="/thallo-digital/cel-cafe.png"
         alt=""
         aria-hidden="true"
         className="hidden xl:block absolute pointer-events-none select-none"
         style={{
-          zIndex: 20,
-          top: '50%',
-          right: 'calc(50% + 381px)',
-          height: 'clamp(220px, 26vw, 420px)',
+          zIndex: 30,
+          top: 'calc(50% + 80px)',
+          right: 'calc(50% + 378px)',
+          height: 'clamp(110px, 13vw, 210px)',
           width: 'auto',
           maxWidth: 'none',
           transform: 'translateY(-50%)',
         }}
       />
 
-      {/* Laptop — RIGHT. Left edge just kisses "without the" in the heading. */}
+      {/* Laptop — RIGHT, slightly above center to align with "without the" (heading line 1).
+          ~70px above section center. Left edge 6px inside text-block right edge. */}
       <img
         src="/thallo-digital/pc-about.png"
         alt=""
         aria-hidden="true"
         className="hidden xl:block absolute pointer-events-none select-none"
         style={{
-          zIndex: 20,
-          top: '50%',
-          left: 'calc(50% + 381px)',
-          height: 'clamp(220px, 28vw, 440px)',
+          zIndex: 30,
+          top: 'calc(50% - 60px)',
+          left: 'calc(50% + 378px)',
+          height: 'clamp(200px, 26vw, 400px)',
           width: 'auto',
           maxWidth: 'none',
           transform: 'translateY(-50%)',
