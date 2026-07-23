@@ -47,26 +47,7 @@ export default function About() {
          REFERENCE POINTS: 1440px → ~95%   1920px → 72% (crossover to the 72% baseline).
          To make it bigger/smaller at 1440 without touching desktop, adjust the 1368px.
          The 56.6% left shifts the whole composition slightly to the right. */}
-      {/* Laptop — LEFT. Right edge sits 3 px into "without the" (0.2% of the letter).
-          right: calc(50% + 381px) anchors to the text block left edge (max-w-3xl = 768px → half = 384px, minus 3px overlap). */}
-      <img
-        src="/thallo-digital/pc-about.png"
-        alt=""
-        aria-hidden="true"
-        className="hidden xl:block absolute pointer-events-none select-none"
-        style={{
-          zIndex: 20,
-          top: '50%',
-          right: 'calc(50% + 381px)',
-          height: 'clamp(280px, 32vw, 520px)',
-          width: 'auto',
-          maxWidth: 'none',
-          transform: 'translateY(-50%)',
-        }}
-      />
-
-      {/* Phone + coffee — RIGHT. Left edge sits 3 px into "our clients".
-          left: calc(50% + 381px) mirrors the laptop anchor exactly. */}
+      {/* Phone + coffee — LEFT. Right edge just kisses "our clients" in the body text. */}
       <img
         src="/thallo-digital/cel-cafe.png"
         alt=""
@@ -75,8 +56,25 @@ export default function About() {
         style={{
           zIndex: 20,
           top: '50%',
+          right: 'calc(50% + 381px)',
+          height: 'clamp(220px, 26vw, 420px)',
+          width: 'auto',
+          maxWidth: 'none',
+          transform: 'translateY(-50%)',
+        }}
+      />
+
+      {/* Laptop — RIGHT. Left edge just kisses "without the" in the heading. */}
+      <img
+        src="/thallo-digital/pc-about.png"
+        alt=""
+        aria-hidden="true"
+        className="hidden xl:block absolute pointer-events-none select-none"
+        style={{
+          zIndex: 20,
+          top: '50%',
           left: 'calc(50% + 381px)',
-          height: 'clamp(280px, 34vw, 520px)',
+          height: 'clamp(220px, 28vw, 440px)',
           width: 'auto',
           maxWidth: 'none',
           transform: 'translateY(-50%)',
