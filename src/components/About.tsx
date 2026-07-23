@@ -57,7 +57,7 @@ export default function About() {
         style={{
           zIndex: 30,
           top: 'calc(50% + 115px)',
-          right: 'calc(50% + 378px)',
+          right: 'calc(50% + 335px)',
           height: 'clamp(150px, 18vw, 270px)',
           width: 'auto',
           maxWidth: 'none',
@@ -75,7 +75,7 @@ export default function About() {
         style={{
           zIndex: 30,
           top: 'calc(50% - 60px)',
-          left: 'calc(50% + 345px)',
+          left: 'calc(50% + 275px)',
           height: 'clamp(200px, 26vw, 400px)',
           width: 'auto',
           maxWidth: 'none',
