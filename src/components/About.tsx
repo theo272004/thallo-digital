@@ -56,9 +56,9 @@ export default function About() {
         className="hidden xl:block absolute pointer-events-none select-none"
         style={{
           zIndex: 30,
-          top: 'calc(50% + 80px)',
+          top: 'calc(50% + 115px)',
           right: 'calc(50% + 378px)',
-          height: 'clamp(110px, 13vw, 210px)',
+          height: 'clamp(150px, 18vw, 270px)',
           width: 'auto',
           maxWidth: 'none',
           transform: 'translateY(-50%)',
@@ -66,7 +66,7 @@ export default function About() {
       />
 
       {/* Laptop — RIGHT, slightly above center to align with "without the" (heading line 1).
-          ~70px above section center. Left edge 6px inside text-block right edge. */}
+          Moved left so leading edge nearly touches the 'e' of "the". */}
       <img
         src="/thallo-digital/pc-about.png"
         alt=""
@@ -75,7 +75,7 @@ export default function About() {
         style={{
           zIndex: 30,
           top: 'calc(50% - 60px)',
-          left: 'calc(50% + 378px)',
+          left: 'calc(50% + 345px)',
           height: 'clamp(200px, 26vw, 400px)',
           width: 'auto',
           maxWidth: 'none',
