@@ -2,11 +2,11 @@ import React from 'react';
 
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-100 py-16" id="contact">
+    <footer className="bg-white border-t border-gray-100 py-16">
       <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
         <div className="md:col-span-1">
           <a href="/thallo-digital/" className="inline-block mb-4">
-            <img src="/thallo-digital/logo.png" alt="Thallo Digital" className="h-5 object-contain" />
+            <img loading="lazy" decoding="async" src="/thallo-digital/logo.png" alt="Thallo Digital" className="h-5 object-contain" />
           </a>
           <p className="text-[11px] text-gray-400 font-semibold leading-relaxed max-w-[28ch]">
             The AI visibility agency. We make our clients the name buyers and algorithms trust.
@@ -39,7 +39,7 @@ export default function Footer() {
             <a href="/thallo-digital/" className="hover:text-[#39471D]">About</a>
             <a href="/thallo-digital/#blog" className="hover:text-[#39471D]">Blog</a>
             <a href="/thallo-digital/#contact" className="hover:text-[#39471D]">Contact</a>
-            <a href="mailto:hello@thallo.co?subject=AI Visibility Audit Request" className="hover:text-[#39471D]">Book an audit</a>
+            <a href="/thallo-digital/#contact" className="hover:text-[#39471D]">Book an audit</a>
           </div>
         </div>
       </div>

@@ -59,7 +59,7 @@ export default function Navbar() {
             Check my visibility ↗
           </a>
           <Magnetic>
-            <a href="mailto:hello@thallo.co?subject=AI Visibility Audit Request" className="px-4 py-2 bg-[#39471D] border border-[#39471D] rounded-full text-sm font-semibold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all">
+            <a href="/thallo-digital/#contact" className="px-4 py-2 bg-[#39471D] border border-[#39471D] rounded-full text-sm font-semibold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all">
               Book an audit ↗
             </a>
           </Magnetic>
@@ -98,7 +98,7 @@ export default function Navbar() {
           </div>
           <div className="flex flex-col gap-4 mt-auto">
             <a href="/thallo-digital/thallo-ai/" className="w-full py-3.5 border border-gray-200 rounded-full text-center text-sm font-bold text-gray-800">Check my visibility ↗</a>
-            <a href="mailto:hello@thallo.co?subject=AI Visibility Audit Request" className="w-full py-3.5 bg-[#39471D] rounded-full text-center text-sm font-bold text-white">Book an audit ↗</a>
+            <a href="/thallo-digital/#contact" onClick={() => setMobileMenuOpen(false)} className="w-full py-3.5 bg-[#39471D] rounded-full text-center text-sm font-bold text-white">Book an audit ↗</a>
           </div>
         </div>
       )}

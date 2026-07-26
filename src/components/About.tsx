@@ -49,8 +49,8 @@ export default function About() {
          The 56.6% left shifts the whole composition slightly to the right. */}
       {/* Phone + coffee — LEFT, lower to align with "our clients" in body paragraph.
           ~80px below section center. Right edge 6px inside text-block left edge. */}
-      <img
-        src="/thallo-digital/cel-cafe.png"
+      <img loading="lazy" decoding="async"
+        src="/thallo-digital/cel-cafe.webp"
         alt=""
         aria-hidden="true"
         className="hidden xl:block absolute pointer-events-none select-none"
@@ -67,8 +67,8 @@ export default function About() {
 
       {/* Laptop — RIGHT, slightly above center to align with "without the" (heading line 1).
           Moved left so leading edge nearly touches the 'e' of "the". */}
-      <img
-        src="/thallo-digital/pc-about.png"
+      <img loading="lazy" decoding="async"
+        src="/thallo-digital/pc-about.webp"
         alt=""
         aria-hidden="true"
         className="hidden xl:block absolute pointer-events-none select-none"

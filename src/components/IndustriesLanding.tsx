@@ -94,8 +94,8 @@ export default function IndustriesPage() {
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mb-10">
             Where the decision is high-stakes, buyers research hard before they commit. We make you the name they are most likely to trust.
           </p>
-          <img
-            src="/thallo-digital/flower.png"
+          <img loading="lazy" decoding="async"
+            src="/thallo-digital/flower.webp"
             alt="Thallo"
             className="w-20 h-20 object-contain opacity-80"
           />
@@ -108,7 +108,7 @@ export default function IndustriesPage() {
           <div
             className="relative overflow-hidden rounded-[28px] px-10 py-14 sm:px-16 sm:py-20"
             style={{
-              backgroundImage: 'url(/thallo-digital/buyers-bg.png)',
+              backgroundImage: 'url(/thallo-digital/buyers-bg.webp)',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
@@ -246,8 +246,8 @@ export default function IndustriesPage() {
       <section className="bg-white py-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 w-full">
           <div className="relative overflow-hidden rounded-[28px] px-12 py-20 sm:px-20 sm:py-28">
-            <img
-              src="/thallo-digital/cta-bg-industries.png"
+            <img loading="lazy" decoding="async"
+              src="/thallo-digital/cta-bg-industries.webp"
               alt=""
               aria-hidden="true"
               className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"

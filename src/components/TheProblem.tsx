@@ -40,8 +40,8 @@ export default function TheProblem() {
 
         {/* ── Feature card — panoramic, full-width, dark image-backed ── */}
         <div className="relative overflow-hidden rounded-[28px] bg-[#171a10] w-full aspect-[16/6] min-h-[360px] lg:min-h-0">
-          <img
-            src="/thallo-digital/shift.jpg"
+          <img loading="lazy" decoding="async"
+            src="/thallo-digital/shift.webp"
             alt="Laptop with an analytics dashboard on a desk beside a sketchbook"
             className="absolute inset-0 w-full h-full object-cover"
           />

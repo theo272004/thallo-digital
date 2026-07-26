@@ -76,7 +76,7 @@ export default function Services() {
             >
               {/* Isotipo watermark — tone-on-tone, bleeding off the top-right corner */}
               {svc.featured && (
-                <img
+                <img loading="lazy" decoding="async"
                   src="/thallo-digital/isotipo.png"
                   alt=""
                   aria-hidden="true"
