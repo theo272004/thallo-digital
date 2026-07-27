@@ -45,6 +45,23 @@ body {
   to   { opacity: 1; transform: none; }
 }
 
+/* The isotipo turning on the Services and Industries heroes.
+   `linear` is the whole trick: any easing would make it visibly slow down
+   and re-accelerate once per turn, which reads as a stutter. A full 360°
+   also means the last frame equals the first, so the loop has no seam.
+   translateZ(0) hands it to the GPU as its own layer, so the rotation never
+   competes with layout work happening elsewhere on the page. */
+@keyframes thallo-spin {
+  from { transform: translateZ(0) rotate(0deg); }
+  to   { transform: translateZ(0) rotate(360deg); }
+}
+.thallo-spin {
+  animation: thallo-spin 30s linear infinite;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
 /* Keyboard focus — the rounded pills and hairline inputs give the UA ring
    nothing to sit against, so state it explicitly in the brand olive. Only on
    :focus-visible, so a mouse click never draws it. */

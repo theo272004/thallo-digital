@@ -196,7 +196,7 @@ export default function ServicesPage() {
           <img loading="lazy" decoding="async"
             src="/thallo-digital/flower.webp"
             alt="Thallo"
-            className="w-20 h-20 object-contain opacity-80"
+            className="w-20 h-20 object-contain opacity-80 thallo-spin"
           />
         </div>
       </section>
