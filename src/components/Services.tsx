@@ -8,7 +8,7 @@ export default function Services() {
       idx: '01',
       kicker: 'Entry',
       title: 'AI Visibility Audit',
-      desc: 'See exactly where you show up when buyers ask AI — and where the gaps are.',
+      desc: 'See exactly where you show up when your customers ask AI — and where the gaps are.',
       items: [
         'Visibility benchmark vs. competitors',
         'Share-of-answer assessment',
@@ -26,7 +26,7 @@ export default function Services() {
       items: [
         'Deeply researched original content',
         'Site built to be read & cited',
-        'Distribution where buyers research',
+        'Distribution where customers research',
         'Monthly outcome reporting',
       ],
       price: 'From $2,500 / month · 6-month term',
@@ -58,8 +58,9 @@ export default function Services() {
             className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 font-sans leading-[1.05]"
             html="One engine. Built to<br>make you the reference."
           />
-          <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch]">
-            A low-risk way in, a compounding core program, and premium projects when you&rsquo;re ready to accelerate.
+          <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[56ch]">
+            A low-risk way in, a compounding core program, and premium projects when you&rsquo;re ready to
+            accelerate. The same engine, scaled to the size of your business.
           </p>
         </div>
 

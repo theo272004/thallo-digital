@@ -229,8 +229,9 @@ export default function HowItWorks() {
               html="Authority isn't one thing. It's a few, grown well."
             />
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch]">
-              A systematic B2B authority building process that converts search
-              queries into revenue-generating recommendations.
+              One authority building process, applied the same way to a software
+              company or a neighbourhood clinic — turning the questions people ask
+              into recommendations that bring revenue.
             </p>
           </div>
 
@@ -278,7 +279,7 @@ export default function HowItWorks() {
                 <h3 className="text-base font-bold text-gray-900 mb-2">Technical infrastructure</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">
                   A site search engines and AI can read, understand, and cite,
-                  structured to answer the questions buyers actually ask.
+                  structured to answer the questions your customers actually ask.
                 </p>
               </div>
             </div>
@@ -294,8 +295,8 @@ export default function HowItWorks() {
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Distribution</h3>
                 <p className="text-sm text-gray-500 leading-relaxed">
-                  We carry the work to where buyers already research, so authority
-                  is met in the places that shape opinion.
+                  We carry the work to where your customers already research, so
+                  authority is met in the places that shape opinion.
                 </p>
               </div>
             </div>

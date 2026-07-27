@@ -23,10 +23,11 @@ export function Counter({ to, prefix = '', suffix = '', decimals = 0, duration =
         v.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) +
         suffix;
 
-      if (prefersReducedMotion()) {
-        el.textContent = fmt(to);
-        return;
-      }
+      // The markup ships the FINAL figure so JS-less crawlers never read a zero.
+      if (prefersReducedMotion()) return;
+      // useGSAP runs in the layout phase, so rewinding to zero here happens
+      // before paint — no flash of the real number snapping back to 0.
+      el.textContent = fmt(0);
       const obj = { val: 0 };
       gsap.to(obj, {
         val: to,

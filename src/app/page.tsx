@@ -12,6 +12,7 @@ import VideoSection from '@/components/VideoSection';
 import BlogSection from '@/components/BlogSection';
 import CTASection from '@/components/CTASection';
 import Contact from '@/components/Contact';
+import FAQ from '@/components/FAQ';
 import Footer from '@/components/Footer';
 import Industries from '@/components/Industries';
 import About from '@/components/About';
@@ -36,6 +37,7 @@ export default function Home() {
         <BlogSection />
         <CTASection />
         <Contact />
+        <FAQ />
       </main>
       <Footer />
     </div>

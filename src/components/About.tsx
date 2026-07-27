@@ -22,9 +22,10 @@ export default function About() {
             html="Premium authority, without the premium agency price."
           />
           <p className="text-gray-500 font-medium text-base sm:text-lg leading-relaxed">
-            Thallo builds authority for companies in high-consideration industries. We combine strong fundamentals with
-            strategies tuned to how buyers research and decide today, so our clients stay the trusted answer no matter how
-            the channels change. A senior team, deliberately small, focused on doing a few things exceptionally well.
+            Thallo builds authority for businesses and brands of every size — software companies and clinics, ecommerce
+            and professional firms, studios and local favourites. We combine strong fundamentals with strategies tuned to
+            how people research and decide today, so our clients stay the trusted answer no matter how the channels
+            change. A senior team, deliberately small, focused on doing a few things exceptionally well.
           </p>
 
           {/* IndustryTicker hidden provisionally */}

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Eyebrow from '@/components/ui/Eyebrow';
@@ -10,8 +10,13 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
+// The rewind-to-zero below must land BEFORE the browser paints, or the real
+// figure flashes and snaps back. useLayoutEffect does that; on the server
+// (static export pre-render) React warns about it, so fall back there.
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
 const STATS = [
-  { val: 45, suffix: '%', label: 'B2B AI Evaluation',       copy: 'of B2B buyers used AI during a recent purchase to evaluate vendors.' },
+  { val: 45, suffix: '%', label: 'AI-Assisted Research',    copy: 'of customers used AI during a recent purchase to weigh up their options.' },
   { val: 69, suffix: '%', label: 'Zero-Click Searches',     copy: 'of search queries now end directly inside conversational responses.' },
   { val: 1,  suffix: '',  label: 'Primary Recommendation',  copy: 'AI engines increasingly return one synthesized recommendation instead of ten blue links.' },
 ];
@@ -19,10 +24,18 @@ const STATS = [
 export default function TheProblem() {
   const numRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
+    // Reduced motion: the markup already carries the final figure — leave it.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
     STATS.forEach((item, i) => {
       const el = numRefs.current[i];
       if (!el) return;
+      // The server renders the REAL figure so JS-less crawlers (GPTBot,
+      // PerplexityBot, ClaudeBot) read "45%", never "0%". Rewinding to zero
+      // here — inside a layout-phase effect, before first paint — keeps the
+      // count-up without ever showing the wrong number to a human.
+      el.innerText = '0' + item.suffix;
       const obj = { value: 0 };
       gsap.to(obj, {
         value: item.val,
@@ -58,8 +71,9 @@ export default function TheProblem() {
               html="Buying now starts with a question typed into a machine."
             />
             <p className="text-gray-300 font-medium text-sm sm:text-base leading-relaxed max-w-[46ch]">
-              Search results pages of ten blue links are fading. Conversational AIs formulate
-              recommendations directly. The brand it names first is the one that wins.
+              Search results pages of ten blue links are fading. Whether someone is choosing a
+              software vendor or a restaurant, conversational AIs now formulate the recommendation
+              directly. The brand it names first is the one that wins.
             </p>
           </div>
         </div>
@@ -72,7 +86,7 @@ export default function TheProblem() {
                 className="text-5xl lg:text-6xl font-serif text-[#39471D] font-bold mb-3 tabular-nums"
                 ref={(el) => { numRefs.current[i] = el; }}
               >
-                0{s.suffix}
+                {s.val}{s.suffix}
               </div>
               <p className="text-[11px] font-bold tracking-wider uppercase text-gray-900 mb-2">{s.label}</p>
               <p className="text-sm text-gray-500 leading-relaxed font-medium">{s.copy}</p>

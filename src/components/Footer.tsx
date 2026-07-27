@@ -9,37 +9,40 @@ export default function Footer() {
             <img loading="lazy" decoding="async" src="/thallo-digital/logo.png" alt="Thallo Digital" className="h-5 object-contain" />
           </a>
           <p className="text-[11px] text-gray-400 font-semibold leading-relaxed max-w-[28ch]">
-            The AI visibility agency. We make our clients the name buyers and algorithms trust.
+            The AI visibility agency. We make our clients the name customers and algorithms trust —
+            businesses, brands and local favourites alike.
           </p>
         </div>
 
         <div>
-          <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Solutions</h4>
-          <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
-            <a href="/thallo-digital/services/" className="hover:text-[#39471D]">AI Visibility Audit</a>
-            <a href="/thallo-digital/services/" className="hover:text-[#39471D]">Authority Engine</a>
-            <a href="/thallo-digital/services/" className="hover:text-[#39471D]">Flagship Projects</a>
-            <a href="/thallo-digital/thallo-ai/" className="hover:text-[#39471D]">Visibility Check</a>
+          <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-2">Solutions</h4>
+          <div className="flex flex-col text-[11px] text-gray-500 font-semibold">
+            <a href="/thallo-digital/services/" className="py-2 hover:text-[#39471D]">AI Visibility Audit</a>
+            <a href="/thallo-digital/services/" className="py-2 hover:text-[#39471D]">Authority Engine</a>
+            <a href="/thallo-digital/services/" className="py-2 hover:text-[#39471D]">Flagship Projects</a>
+            <a href="/thallo-digital/thallo-ai/" className="py-2 hover:text-[#39471D]">Visibility Check</a>
           </div>
         </div>
 
         <div>
-          <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Industries</h4>
-          <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
-            <a href="/thallo-digital/industries/" className="hover:text-[#39471D]">Fintech</a>
-            <a href="/thallo-digital/industries/" className="hover:text-[#39471D]">Health tech</a>
-            <a href="/thallo-digital/industries/" className="hover:text-[#39471D]">Professional services</a>
-            <a href="/thallo-digital/industries/" className="hover:text-[#39471D]">Health &amp; recovery</a>
+          <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-2">Industries</h4>
+          {/* py-2 on each link keeps the visual rhythm while giving every row a
+              ≥40px touch target — the 17px-tall links failed on phones. */}
+          <div className="flex flex-col text-[11px] text-gray-500 font-semibold">
+            <a href="/thallo-digital/industries/" className="py-2 hover:text-[#39471D]">Software &amp; SaaS</a>
+            <a href="/thallo-digital/industries/" className="py-2 hover:text-[#39471D]">Ecommerce &amp; retail</a>
+            <a href="/thallo-digital/industries/" className="py-2 hover:text-[#39471D]">Clinics &amp; health</a>
+            <a href="/thallo-digital/industries/" className="py-2 hover:text-[#39471D]">Restaurants &amp; local</a>
           </div>
         </div>
 
         <div>
-          <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Company</h4>
-          <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
-            <a href="/thallo-digital/" className="hover:text-[#39471D]">About</a>
-            <a href="/thallo-digital/#blog" className="hover:text-[#39471D]">Blog</a>
-            <a href="/thallo-digital/#contact" className="hover:text-[#39471D]">Contact</a>
-            <a href="/thallo-digital/#contact" className="hover:text-[#39471D]">Book an audit</a>
+          <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-2">Company</h4>
+          <div className="flex flex-col text-[11px] text-gray-500 font-semibold">
+            <a href="/thallo-digital/#about" className="py-2 hover:text-[#39471D]">About</a>
+            <a href="/thallo-digital/#faq" className="py-2 hover:text-[#39471D]">FAQ</a>
+            <a href="/thallo-digital/#contact" className="py-2 hover:text-[#39471D]">Contact</a>
+            <a href="/thallo-digital/#contact" className="py-2 hover:text-[#39471D]">Book an audit</a>
           </div>
         </div>
       </div>

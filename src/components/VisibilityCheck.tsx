@@ -37,7 +37,7 @@ export default function VisibilityCheck() {
         googleAi: 'Not recommended',
         advice: score > 30 
           ? `Your brand "${brand}" has baseline citations in ${category}, but lacks connection to authority databases. It is frequently bypassed for direct purchaser recommendations.`
-          : `Your brand "${brand}" is completely invisible to conversational AI models for B2B searches in ${category}. The recommendations default entirely to your competitors.`
+          : `Your brand "${brand}" is completely invisible to conversational AI models for searches in ${category}. The recommendations default entirely to your competitors.`
       });
       setIsLoading(false);
     }, 1200);
@@ -130,7 +130,7 @@ export default function VisibilityCheck() {
                   onClick={(e) => { e.preventDefault(); document.getElementById('cta')?.scrollIntoView({ behavior: 'smooth' }); }}
                   className="text-xs font-bold text-[#39471D] underline"
                 >
-                  Book a full B2B visibility audit to fix this →
+                  Book a full AI visibility audit to fix this →
                 </a>
               </div>
             ) : (

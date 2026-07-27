@@ -22,7 +22,7 @@ export default function CTASection() {
             <SplitReveal
               as="h2"
               className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-8 font-sans"
-              html="Be the answer buyers <em>find first.</em>"
+              html="Be the answer they <em>find first.</em>"
             />
             <p className="text-[#CBD0AC] font-medium text-base sm:text-lg leading-relaxed max-w-[44ch]">
               Start with an AI visibility audit. See exactly where you stand,

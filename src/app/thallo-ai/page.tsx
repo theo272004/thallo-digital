@@ -5,14 +5,14 @@ import ThalloAIPage from '@/components/ThalloAIPage';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Visibility Check',
+  title: 'Free AI Visibility Check',
   description:
-    'See how AI assistants describe your brand today — a walkthrough of the AI visibility report we run for B2B clients.',
+    'See how AI assistants describe your business today — a walkthrough of the AI visibility report we run for clients, from software companies to local brands.',
   alternates: { canonical: 'https://theo272004.github.io/thallo-digital/thallo-ai/' },
   openGraph: {
-    title: 'Visibility Check · Thallo Digital',
+    title: 'Free AI Visibility Check · Thallo Digital',
     description:
-      'See how AI assistants describe your brand today — a walkthrough of the AI visibility report we run for B2B clients.',
+      'See how AI assistants describe your business today — a walkthrough of the AI visibility report we run for clients.',
     url: 'https://theo272004.github.io/thallo-digital/thallo-ai/',
   },
 };

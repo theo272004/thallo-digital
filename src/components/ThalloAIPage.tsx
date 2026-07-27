@@ -28,11 +28,11 @@ export default function ThalloAIPage() {
     setScanLogs([]);
     
     const logs = [
-      'Initializing B2B search crawlers...',
+      'Initializing search crawlers...',
       'Connecting to ChatGPT (GPT-4o) api reference logs...',
       'Scanning Perplexity (sonar-large) index files...',
       'Querying Google AI Overview database refs...',
-      'Mapping brand mentions against B2B category contexts...',
+      'Mapping brand mentions against category contexts...',
       'Auditing schema markup & author credentials...',
       'Scan complete. Compiling visibility score and action items.'
     ];
@@ -76,10 +76,11 @@ export default function ThalloAIPage() {
             <span className="text-[11px] font-bold tracking-[0.12em] uppercase text-gray-500">Thallo Visibility Engine</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 mb-4 font-sans leading-tight">
-            Run your free B2B AI visibility audit
+            Run your free AI visibility audit
           </h1>
-          <p className="text-gray-500 font-medium text-xs leading-relaxed max-w-[45ch] mx-auto">
-            Check if ChatGPT, Perplexity, and Google AI Overview recommend your company to active B2B buyers.
+          <p className="text-gray-500 font-medium text-xs leading-relaxed max-w-[48ch] mx-auto">
+            Check if ChatGPT, Perplexity, and Google AI Overview recommend your business — whether your
+            customers are companies or people.
           </p>
         </div>
       </div>
@@ -243,7 +244,7 @@ export default function ThalloAIPage() {
                       <li className="flex gap-3 items-start">
                         <input type="checkbox" className="mt-1" />
                         <div>
-                          <strong>Establish primary B2B co-citations in trade registries</strong>
+                          <strong>Establish primary co-citations in category registries</strong>
                           <p className="text-[11px] text-gray-400 font-medium mt-0.5">Publish research reports cited by scraping models.</p>
                         </div>
                       </li>
@@ -274,7 +275,7 @@ export default function ThalloAIPage() {
                       <li className="flex gap-3 items-start">
                         <input type="checkbox" className="mt-1" />
                         <div>
-                          <strong>Deploy secondary reference backlinks on B2B forums</strong>
+                          <strong>Deploy secondary reference backlinks on industry forums</strong>
                           <p className="text-[11px] text-gray-400 font-medium mt-0.5">Increase reference crawler crawl budgets.</p>
                         </div>
                       </li>
