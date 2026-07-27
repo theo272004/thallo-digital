@@ -66,18 +66,27 @@ const INDUSTRIES: Industry[] = [
   },
 ];
 
+/* Same words as before, split into role + sector so the attribution can use
+   the home page's avatar layout. These quotes are anonymous, so the disc
+   carries the sector's initials — there is no name to put there. */
 const QUOTES = [
   {
     text: 'In our category, being the name AI recommends changed everything about how fast deals moved.',
-    who: 'VP Marketing - Fintech',
+    role: 'VP Marketing',
+    sector: 'Fintech',
+    initials: 'FT',
   },
   {
     text: 'They understood our regulatory world. The content was credible enough to be cited, not just published.',
-    who: 'Founder - Health tech',
+    role: 'Founder',
+    sector: 'Health tech',
+    initials: 'HT',
   },
   {
     text: 'Referrals used to be our whole pipeline. Now buyers find us first, already trusting us.',
-    who: 'Partner - Professional services',
+    role: 'Partner',
+    sector: 'Professional services',
+    initials: 'PS',
   },
 ];
 
@@ -222,20 +231,40 @@ export default function IndustriesPage() {
         <div className="max-w-[1440px] mx-auto px-6">
           <Eyebrow center className="mb-12 justify-center">What clients say</Eyebrow>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {QUOTES.map((q) => (
+            {QUOTES.map((q, i) => (
               <div
-                key={q.who}
-                className="bg-white border border-gray-100 rounded-3xl p-8 flex flex-col gap-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
+                key={q.sector}
+                /* Middle card runs half a cycle behind the outer two, so it
+                   rises while they fall and vice versa. A NEGATIVE delay of
+                   half the duration starts it already mid-cycle — a positive
+                   one would hold all three still for three seconds first. */
+                className={`quote-float bg-white border border-gray-100 rounded-3xl p-8 flex flex-col gap-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]`}
+                style={{ animationDelay: i === 1 ? '-3s' : '0s' }}
               >
+                {/* Stars — olive and 13px, matching the home carousel */}
                 <div className="flex gap-0.5">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <svg key={i} viewBox="0 0 12 12" width="14" height="14" fill="#B0812E">
-                      <path d="M6 1l1.4 2.9 3.1.4-2.2 2.2.5 3.1L6 8.1 3.2 9.6l.5-3.1L1.5 4.3l3.1-.4z" />
+                  {Array.from({ length: 5 }).map((_, s) => (
+                    <svg key={s} viewBox="0 0 16 16" width="13" height="13" fill="#39471D">
+                      <path d="M8 1l1.854 3.757L14 5.528l-3 2.924.708 4.128L8 10.5l-3.708 2.08L5 8.452 2 5.528l4.146-.771L8 1z" />
                     </svg>
                   ))}
                 </div>
-                <p className="text-gray-900 font-medium text-base leading-relaxed flex-1">{q.text}</p>
-                <p className="font-mono text-[11px] font-bold tracking-[0.14em] uppercase text-gray-400">{q.who}</p>
+
+                {/* Quote */}
+                <p className="text-sm text-gray-700 font-medium leading-relaxed flex-1">
+                  &ldquo;{q.text}&rdquo;
+                </p>
+
+                {/* Attribution */}
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-[#39471D]/10 flex items-center justify-center flex-shrink-0">
+                    <span className="text-[10px] font-bold text-[#39471D]">{q.initials}</span>
+                  </div>
+                  <div>
+                    <p className="text-[12px] font-bold text-gray-900 leading-none">{q.role}</p>
+                    <p className="text-[11px] text-gray-400 font-medium mt-0.5">{q.sector}</p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

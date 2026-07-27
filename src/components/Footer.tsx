@@ -6,7 +6,18 @@ export default function Footer() {
       <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
         <div className="md:col-span-1">
           <a href="/thallo-digital/" className="inline-block mb-4">
-            <img loading="lazy" decoding="async" src="/thallo-digital/logo.png" alt="Thallo Digital" className="h-5 object-contain" />
+            {/* Trimmed of its transparent margin, so h-5 is 20px of actual
+                wordmark. width/height are the real ratio (7.09:1) — the box is
+                reserved before the file lands, so the footer never reflows. */}
+            <img
+              loading="lazy"
+              decoding="async"
+              src="/thallo-digital/logo-wordmark.png"
+              alt="Thallo Digital"
+              width={900}
+              height={127}
+              className="h-5 w-auto object-contain"
+            />
           </a>
           <p className="text-[11px] text-gray-400 font-semibold leading-relaxed max-w-[28ch]">
             The AI visibility agency. We make our clients the name buyers and algorithms trust.

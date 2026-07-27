@@ -62,6 +62,20 @@ body {
   backface-visibility: hidden;
 }
 
+/* Testimonial cards on /industries/ breathing in opposition: the middle card
+   is given a -3s delay (half the 6s cycle) so it sits at the bottom of its
+   travel while the outer two sit at the top, and they trade places from
+   there. ease-in-out on purpose — a float should slow at each turning point,
+   unlike the flower above, where any easing would read as a stutter. */
+@keyframes quote-float {
+  0%, 100% { transform: translateY(-10px); }
+  50%      { transform: translateY(10px); }
+}
+.quote-float {
+  animation: quote-float 6s ease-in-out infinite;
+  will-change: transform;
+}
+
 /* Keyboard focus — the rounded pills and hairline inputs give the UA ring
    nothing to sit against, so state it explicitly in the brand olive. Only on
    :focus-visible, so a mouse click never draws it. */
