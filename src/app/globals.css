@@ -62,6 +62,25 @@ body {
   backface-visibility: hidden;
 }
 
+/* Contact: the photograph is pinned to the viewport so the white section that
+   follows rides up over it, rather than the picture scrolling away.
+
+   Gated on height as well as width. Pinning caps the section at one screen, so
+   on a short viewport the foot of the form would sit below the fold with the
+   white band sliding over it — unreachable. Under 820px tall the section simply
+   grows with its content and scrolls normally, which is the safe end to fail on.
+   `top: 0` sticks it for the length of <main>, so it stays put underneath every
+   section that follows instead of unpinning at its own bottom edge. */
+@media (min-width: 1024px) and (min-height: 820px) {
+  .contact-pin {
+    position: sticky;
+    top: 0;
+    z-index: 0;
+    height: 100svh;
+    min-height: 0;
+  }
+}
+
 /* Testimonial cards on /industries/ breathing in opposition: the middle card
    is given a -3s delay (half the 6s cycle) so it sits at the bottom of its
    travel while the outer two sit at the top, and they trade places from

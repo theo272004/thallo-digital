@@ -104,33 +104,26 @@ export default function ContactLanding() {
 
   return (
     <>
-      {/* ── The photograph is the page: it fills the screen from behind the
-             navbar, holds still while the card scrolls over it, and only slides
-             away once the white runs out. ──────────────────────────────────── */}
-      <section className="relative isolate min-h-[100svh]">
-        {/* The sticky layer claims one screen of height; the content below pulls
-            itself back up over it. That is what pins the photograph — no scroll
-            listener, no fixed positioning (which iOS renders unreliably). */}
-        <div className="sticky top-0 z-0 h-[100svh] w-full overflow-hidden">
-          <img
-            src="/thallo-digital/contact-bg.webp"
-            alt=""
-            aria-hidden="true"
-            width={2048}
-            height={1152}
-            fetchPriority="high"
-            decoding="async"
-            className="absolute inset-0 h-full w-full object-cover object-center select-none pointer-events-none"
-          />
-          {/* Light scrim — enough to seat the card, not enough to flatten the light */}
-          <div aria-hidden="true" className="absolute inset-0 bg-[#171a10]/35" />
-        </div>
+      {/* ── One screen of photograph. It holds still and the white section
+             below rides up over it — see .contact-pin in globals.css. ─────── */}
+      <section className="contact-pin relative isolate overflow-hidden min-h-[100svh]">
+        <img
+          src="/thallo-digital/contact-bg.webp"
+          alt=""
+          aria-hidden="true"
+          width={2048}
+          height={1152}
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 -z-10 h-full w-full object-cover object-center select-none pointer-events-none"
+        />
+        {/* Light scrim — enough to seat the card, not enough to flatten the light */}
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[#171a10]/35" />
 
         {/* Extra side padding from lg up so the photograph always reads as the
             backdrop instead of a hairline frame around an almost-full-bleed card.
-            The top padding clears the floating navbar; the deep bottom padding on
-            desktop is the travel the card scrolls through before the photo lets go. */}
-        <div className="relative z-10 -mt-[100svh] max-w-[1440px] mx-auto px-6 lg:px-14 pt-36 pb-20 sm:pt-40 sm:pb-28 lg:pt-48 lg:pb-[50vh]">
+            The top padding clears the floating navbar. */}
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-14 pt-36 pb-20 sm:pt-40 sm:pb-28 lg:pt-36 lg:pb-16">
           {/* ── Floating editorial card ──────────────────────────────────────── */}
           <div
             data-reveal
@@ -273,8 +266,9 @@ export default function ContactLanding() {
         </div>
       </section>
 
-      {/* ── For visitors who are not ready to write yet ────────────────────── */}
-      <section className="bg-white py-24 lg:py-28 border-b border-gray-100">
+      {/* ── For visitors who are not ready to write yet. Sits above the pinned
+             photograph, so scrolling slides it up over the picture. ───────── */}
+      <section className="relative z-10 bg-white py-24 lg:py-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-14">
           <div className="flex flex-col items-center text-center mb-12">
             <img
