@@ -33,8 +33,10 @@ export default function Home() {
         <Testimonials />
         <VideoSection />
         <Services />
-        <BlogSection />
         <CTASection />
+        {/* "In their words" — the testimonial carousel, despite the file name.
+            Sits last so the proof is the final thing read before the form. */}
+        <BlogSection />
         <Contact />
       </main>
       <Footer />
