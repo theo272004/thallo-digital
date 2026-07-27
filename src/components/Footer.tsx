@@ -1,8 +1,11 @@
 import React from 'react';
 
+// `relative z-10` is load-bearing: /contact/ pins a photograph at z-index 0, and
+// a static footer — however late in the document — paints underneath any
+// positioned element. Without it the picture covers the whole footer.
 export default function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-100 py-16">
+    <footer className="relative z-10 bg-white border-t border-gray-100 py-16">
       <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
         <div className="md:col-span-1">
           <a href="/thallo-digital/" className="inline-block mb-4">
