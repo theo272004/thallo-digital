@@ -104,26 +104,33 @@ export default function ContactLanding() {
 
   return (
     <>
-      {/* ── The photograph is the page: it runs from behind the navbar all the
-             way down to the band below, with the card floating on top. ─────── */}
-      <section className="relative isolate overflow-hidden">
-        <img
-          src="/thallo-digital/contact-bg.webp"
-          alt=""
-          aria-hidden="true"
-          width={2048}
-          height={1152}
-          fetchPriority="high"
-          decoding="async"
-          className="absolute inset-0 -z-10 h-full w-full object-cover object-center select-none pointer-events-none"
-        />
-        {/* Light scrim — enough to seat the card, not enough to flatten the light */}
-        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[#171a10]/35" />
+      {/* ── The photograph is the page: it fills the screen from behind the
+             navbar, holds still while the card scrolls over it, and only slides
+             away once the white runs out. ──────────────────────────────────── */}
+      <section className="relative isolate min-h-[100svh]">
+        {/* The sticky layer claims one screen of height; the content below pulls
+            itself back up over it. That is what pins the photograph — no scroll
+            listener, no fixed positioning (which iOS renders unreliably). */}
+        <div className="sticky top-0 z-0 h-[100svh] w-full overflow-hidden">
+          <img
+            src="/thallo-digital/contact-bg.webp"
+            alt=""
+            aria-hidden="true"
+            width={2048}
+            height={1152}
+            fetchPriority="high"
+            decoding="async"
+            className="absolute inset-0 h-full w-full object-cover object-center select-none pointer-events-none"
+          />
+          {/* Light scrim — enough to seat the card, not enough to flatten the light */}
+          <div aria-hidden="true" className="absolute inset-0 bg-[#171a10]/35" />
+        </div>
 
         {/* Extra side padding from lg up so the photograph always reads as the
             backdrop instead of a hairline frame around an almost-full-bleed card.
-            The top padding clears the floating navbar. */}
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-14 pt-36 pb-20 sm:pt-40 sm:pb-28 lg:pt-48 lg:pb-36">
+            The top padding clears the floating navbar; the deep bottom padding on
+            desktop is the travel the card scrolls through before the photo lets go. */}
+        <div className="relative z-10 -mt-[100svh] max-w-[1440px] mx-auto px-6 lg:px-14 pt-36 pb-20 sm:pt-40 sm:pb-28 lg:pt-48 lg:pb-[50vh]">
           {/* ── Floating editorial card ──────────────────────────────────────── */}
           <div
             data-reveal
