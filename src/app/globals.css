@@ -77,6 +77,54 @@ body {
   will-change: transform;
 }
 
+/* Services · "How an engagement runs". Each step's drawing loops a motion that
+   mirrors what that step actually produces — a scan, a structure assembling,
+   work going out, a line climbing.
+
+   Every keyframe RESTS on its finished state (the last stop is the same as the
+   element's base style, never the empty one). The reduced-motion rule below
+   collapses animations to a single 0.01ms pass, so a drawing that animated
+   *towards* emptiness would be left half-built for that visitor. This way it
+   simply renders complete. */
+@keyframes step-draw {
+  0%        { stroke-dashoffset: var(--len, 100); }
+  55%, 100% { stroke-dashoffset: 0; }
+}
+@keyframes step-scan {
+  0%        { transform: translateY(0); opacity: 0; }
+  12%       { opacity: 1; }
+  68%       { transform: translateY(44px); opacity: 1; }
+  84%, 100% { transform: translateY(44px); opacity: 0; }
+}
+@keyframes step-row {
+  0%, 12%   { opacity: 0.22; }
+  38%, 100% { opacity: 1; }
+}
+@keyframes step-node {
+  0%, 22%   { opacity: 0; transform: scale(0.55); }
+  48%, 100% { opacity: 1; transform: none; }
+}
+@keyframes step-chip {
+  0%        { opacity: 0; transform: translateX(0); }
+  18%       { opacity: 1; }
+  72%       { opacity: 1; transform: translateX(30px); }
+  88%, 100% { opacity: 0; transform: translateX(30px); }
+}
+@keyframes step-ping {
+  0%, 58%   { opacity: 0; transform: scale(0.4); }
+  78%, 100% { opacity: 1; transform: scale(1); }
+}
+
+.step-draw { animation: step-draw 5s ease-in-out infinite; }
+.step-scan { animation: step-scan 5s ease-in-out infinite; }
+.step-row  { animation: step-row  5s ease-in-out infinite; }
+.step-chip { animation: step-chip 5s ease-in-out infinite; }
+/* transform-box so scale() pivots on the shape itself, not the SVG viewport */
+.step-node,
+.step-ping { transform-box: fill-box; transform-origin: center; }
+.step-node { animation: step-node 5s ease-in-out infinite; }
+.step-ping { animation: step-ping 5s ease-in-out infinite; }
+
 /* Keyboard focus — the rounded pills and hairline inputs give the UA ring
    nothing to sit against, so state it explicitly in the brand olive. Only on
    :focus-visible, so a mouse click never draws it. */

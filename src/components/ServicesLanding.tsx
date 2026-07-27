@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useLayoutEffect } from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
+import EngagementSteps from '@/components/EngagementSteps';
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -54,13 +55,6 @@ const SERVICES = [
     ],
     price: 'Per project · scoped to you',
   },
-];
-
-const PROCESS = [
-  { idx: '01', period: 'Week 1-3',        title: 'Audit & diagnosis',    desc: 'We benchmark where you show up across Google and AI, score your share of answer, and hand you a prioritized roadmap.' },
-  { idx: '02', period: 'Month 1',          title: 'Foundation',           desc: 'We rebuild the technical infrastructure so search engines and AI can read, understand, and cite you, plus your first authority piece.' },
-  { idx: '03', period: 'Month 2 onward',   title: 'The Authority Engine', desc: 'Original content, distribution, and visibility work, published and compounded every month, with reporting on real outcomes.' },
-  { idx: '04', period: 'When you are ready', title: 'Accelerate',         desc: 'Flagship projects, proprietary studies, digital PR, and interactive tools that put you on the map for good.' },
 ];
 
 const COMPARE = [
@@ -317,60 +311,7 @@ export default function ServicesPage() {
       </section>
 
       {/* ── Process ───────────────────────────────────────────────────────── */}
-      <section className="bg-white py-12 2xl:py-16 border-b border-gray-100">
-        <div className="max-w-[1440px] mx-auto px-6">
-          <div className="max-w-2xl mx-auto text-center">
-            <Eyebrow center className="mb-5">How an engagement runs</Eyebrow>
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans">
-              What working together looks like.
-            </h2>
-            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[48ch] mx-auto">
-              A clear arc from first look to compounding results — no hidden phases, no surprises.
-            </p>
-          </div>
-        </div>
-
-        {/* Full-bleed desk banner — spans the full page width, as the section was designed */}
-        <div className="w-full mt-6 mb-7 lg:mb-8">
-          <img loading="lazy" decoding="async"
-            src="/thallo-digital/engagement-desk.webp"
-            alt="A Thallo engagement laid out on a desk: visibility audit, brand map, content calendar, distribution plan and results"
-            className="w-full h-auto select-none pointer-events-none"
-          />
-        </div>
-
-        {/* Horizontal timeline: 01 → 02 → 03 → 04 */}
-        <div className="max-w-[1440px] mx-auto px-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-9">
-            {PROCESS.map((step, i) => (
-              <div key={step.idx} className="group flex flex-col">
-                <div className="flex items-center mb-5">
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ring-4 ring-white shadow-sm transition-transform duration-300 group-hover:-translate-y-0.5"
-                    style={{ backgroundColor: '#445A20' }}
-                  >
-                    <span className="text-[13px] font-semibold text-white">{step.idx}</span>
-                  </div>
-                  {i < PROCESS.length - 1 && (
-                    <span
-                      className="hidden lg:block h-px flex-1 ml-3"
-                      style={{ background: 'linear-gradient(to right, #C7D6A6 0%, rgba(199,214,166,0) 92%)' }}
-                    />
-                  )}
-                </div>
-                <span
-                  className="self-start inline-flex items-center rounded-full px-2.5 py-1 mb-3 font-mono text-[10px] font-bold tracking-[0.16em] uppercase"
-                  style={{ backgroundColor: '#EEF2E3', color: '#5A7030' }}
-                >
-                  {step.period}
-                </span>
-                <h3 className="text-base font-bold text-gray-900 mb-2">{step.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <EngagementSteps />
 
       {/* ── Compare ───────────────────────────────────────────────────────── */}
       <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
