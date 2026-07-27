@@ -19,7 +19,7 @@ export default function Footer() {
             <a href="/thallo-digital/services/" className="hover:text-[#39471D]">AI Visibility Audit</a>
             <a href="/thallo-digital/services/" className="hover:text-[#39471D]">Authority Engine</a>
             <a href="/thallo-digital/services/" className="hover:text-[#39471D]">Flagship Projects</a>
-            <a href="/thallo-digital/thallo-ai/" className="hover:text-[#39471D]">Visibility Check</a>
+            <a href="/thallo-digital/scan/" className="hover:text-[#39471D]">Visibility Check</a>
           </div>
         </div>
 
