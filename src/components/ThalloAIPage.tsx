@@ -1,36 +1,35 @@
 'use client';
 
 import React from 'react';
+import Eyebrow from '@/components/ui/Eyebrow';
+import { SplitReveal } from '@/components/motion';
 
-/* ── Design tokens ──────────────────────────────────────────────────────────
-   Swiss editorial: warm off-white ground, a single hairline weight, two olives
-   and one high-voltage accent used rarely enough that it still reads as an
-   accent. No gradient, no glow, no dark mode, no skeuomorphism.            */
-const C = {
-  bg:       '#FBFCF7',
-  line:     '#ECE9E2',
-  olive:    '#39471D',
-  oliveMid: '#445A20',
-  lime:     '#DFFF3B',
-  ink:      '#1B1D17',
-  muted:    '#767B6C',
-  ghost:    '#A8ADA0',
+/* Guidelines, section 8 — one soft olive-tinted shadow. Elevation is only ever
+   suggested; it never defines the component. */
+const SOFT = { boxShadow: '0 24px 60px -20px rgba(57,71,29,.20)' };
+
+/* The three platforms we hold real marks for. No logo is invented here. */
+const LOGO = {
+  chatgpt: '/thallo-digital/logos/chatgpt.svg',
+  google: '/thallo-digital/logos/google.svg',
+  perplexity: '/thallo-digital/logos/perplexity.png',
 } as const;
 
-const CARD = 'bg-white rounded-[28px] border';
-const SHADOW = { boxShadow: '0 24px 60px -32px rgba(27,29,23,0.16)' };
+const PlatformMark = ({ src, name }: { src?: string; name: string }) => (
+  <span className="w-8 h-8 rounded-xl bg-white border border-gray-100 flex items-center justify-center shrink-0 p-1.5">
+    {src ? (
+      <img src={src} alt="" aria-hidden="true" width={20} height={20} className="w-full h-full object-contain" />
+    ) : (
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#445A20" strokeWidth="1.8" strokeLinecap="round">
+        <circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
+      </svg>
+    )}
+    <span className="sr-only">{name}</span>
+  </span>
+);
 
-function Mono({ children, className = '', style }: { children: React.ReactNode; className?: string; style?: React.CSSProperties }) {
-  return (
-    <span className={`font-mono text-[10px] font-bold uppercase tracking-[0.16em] ${className}`} style={style}>
-      {children}
-    </span>
-  );
-}
-
-/* ── Stage content ──────────────────────────────────────────────────────── */
 const ANALYZE = [
-  'AI Recommendations (ChatGPT, Gemini, Perplexity)',
+  'AI Recommendations (ChatGPT, Google AI, Perplexity)',
   'Brand Mentions & Citations',
   'Google AI Overview Presence',
   'Authority & Trust Signals',
@@ -39,18 +38,16 @@ const ANALYZE = [
 ];
 
 const SCAN = [
-  { name: 'ChatGPT',                 pct: 72, state: 'Scanning…' },
-  { name: 'Gemini',                  pct: 54, state: 'Scanning…' },
-  { name: 'Perplexity',              pct: 31, state: 'Scanning…' },
-  { name: 'Google AI Overview',      pct: 0,  state: 'Waiting…'  },
-  { name: 'Website & Technical SEO', pct: 0,  state: 'Waiting…'  },
+  { name: 'ChatGPT',                 logo: LOGO.chatgpt,    pct: 72, state: 'Scanning…' },
+  { name: 'Google AI Overview',      logo: LOGO.google,     pct: 54, state: 'Scanning…' },
+  { name: 'Perplexity',              logo: LOGO.perplexity, pct: 31, state: 'Scanning…' },
+  { name: 'Website & Technical SEO', logo: undefined,       pct: 0,  state: 'Waiting…'  },
 ];
 
 const PRESENCE = [
-  { name: 'ChatGPT',            sub: 'Found in 3 of 5 answers',     tag: 'Mentioned',     tone: 'on'  },
-  { name: 'Gemini',             sub: 'Found in 4 of 5 answers',     tag: 'Mentioned',     tone: 'on'  },
-  { name: 'Perplexity',         sub: 'Found in 0 of 5 answers',     tag: 'Not mentioned', tone: 'off' },
-  { name: 'Google AI Overview', sub: 'Appears in related overview', tag: 'Partial',       tone: 'mid' },
+  { name: 'ChatGPT',            logo: LOGO.chatgpt,    sub: 'Found in 3 of 5 answers',     tag: 'Mentioned',     tone: 'on'  },
+  { name: 'Google AI Overview', logo: LOGO.google,     sub: 'Appears in related overview', tag: 'Partial',       tone: 'mid' },
+  { name: 'Perplexity',         logo: LOGO.perplexity, sub: 'Found in 0 of 5 answers',     tag: 'Not mentioned', tone: 'off' },
 ];
 
 const TILES = [
@@ -61,405 +58,420 @@ const TILES = [
 ];
 
 const BREAKDOWN = [
-  { name: 'ChatGPT',            pct: 60, note: '3 / 5 answers' },
-  { name: 'Gemini',             pct: 80, note: '4 / 5 answers' },
-  { name: 'Perplexity',         pct: 0,  note: '0 / 5 answers' },
-  { name: 'Google AI Overview', pct: 40, note: 'Partial presence' },
+  { name: 'ChatGPT',            logo: LOGO.chatgpt,    pct: 60, note: '3 / 5 answers' },
+  { name: 'Google AI Overview', logo: LOGO.google,     pct: 40, note: 'Partial presence' },
+  { name: 'Perplexity',         logo: LOGO.perplexity, pct: 0,  note: '0 / 5 answers' },
 ];
 
 const ACTIONS = [
-  { t: 'Create authoritative comparison content',    d: 'Build in-depth comparison pages for key solutions in your category.',       impact: 4, p: 'High'   },
-  { t: 'Earn mentions from trusted websites',        d: 'Acquire backlinks and brand mentions from high-authority sites.',           impact: 3, p: 'High'   },
-  { t: 'Optimize for AI-friendly content structure', d: 'Use clear headings, summaries and structured data for better AI parsing.',  impact: 3, p: 'Medium' },
+  { t: 'Create authoritative comparison content',    d: 'Build in-depth comparison pages for the key solutions in your category.',  impact: 4, p: 'High'   },
+  { t: 'Earn mentions from trusted websites',        d: 'Acquire backlinks and brand mentions from high-authority sites.',          impact: 3, p: 'High'   },
+  { t: 'Optimize for AI-friendly content structure', d: 'Clear headings, summaries and structured data for better AI parsing.',     impact: 3, p: 'Medium' },
 ];
 
 /* ── Primitives ─────────────────────────────────────────────────────────── */
-function Stage({ n, label, blurb, children }: { n: string; label: string; blurb: string; children: React.ReactNode }) {
+
+/** Stage number + label. Space Mono, per guidelines §1 — "números de procesos". */
+function Rail({ n, label, blurb }: { n: string; label: string; blurb: string }) {
   return (
-    <section className="grid grid-cols-1 lg:grid-cols-[186px_1fr] gap-8 lg:gap-14">
-      {/* Left rail — the spine that makes six screens read as one journey */}
-      <div className="relative lg:pt-1">
-        <span
-          aria-hidden="true"
-          className="hidden lg:block absolute -left-[36px] top-[13px] w-[7px] h-[7px] rounded-full"
-          style={{ background: C.olive }}
-        />
-        <p className="font-serif text-[32px] leading-none mb-3" style={{ color: C.ink }}>{n}</p>
-        <Mono className="block mb-4" style={{ color: C.oliveMid }}>{label}</Mono>
-        <p className="text-sm font-medium leading-relaxed max-w-[24ch]" style={{ color: C.muted }}>{blurb}</p>
-      </div>
-      <div className="min-w-0">{children}</div>
-    </section>
+    <div className="lg:pt-1">
+      <p className="font-mono text-[13px] font-bold tracking-[0.2em] text-[#55672E] mb-4">{n}</p>
+      <h3 className="text-2xl font-bold tracking-tight text-gray-900 leading-[1.1] mb-3">{label}</h3>
+      <p className="text-sm font-medium leading-relaxed text-gray-500 max-w-[30ch]">{blurb}</p>
+    </div>
   );
 }
 
-function Bar({ pct, h = 4 }: { pct: number; h?: number }) {
+const Label = ({ children }: { children: React.ReactNode }) => (
+  <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">{children}</span>
+);
+
+function Bar({ pct, h = 5 }: { pct: number; h?: number }) {
   return (
-    <span className="block w-full rounded-full overflow-hidden" style={{ background: C.line, height: h }}>
-      <span className="block h-full rounded-full" style={{ width: `${pct}%`, background: C.olive }} />
+    <span className="block w-full rounded-full bg-gray-100 overflow-hidden" style={{ height: h }}>
+      <span className="block h-full rounded-full bg-[#39471D]" style={{ width: `${pct}%` }} />
     </span>
   );
 }
 
 function Tag({ children, tone }: { children: React.ReactNode; tone: string }) {
   const s =
-    tone === 'on'  ? { background: C.olive, color: '#fff' }
-  : tone === 'mid' ? { background: C.lime, color: C.olive }
-  :                  { background: '#fff', color: C.muted, border: `1px solid ${C.line}` };
+    tone === 'on'  ? 'bg-[#39471D] text-white'
+  : tone === 'mid' ? 'bg-[#E7ECD9] text-[#39471D]'
+  :                  'bg-white text-gray-400 border border-gray-200';
   return (
-    <span className="font-mono text-[9px] font-bold uppercase tracking-[0.12em] px-2.5 py-1 rounded-full whitespace-nowrap shrink-0" style={s}>
+    <span className={`font-mono text-[10px] font-bold uppercase tracking-[0.12em] px-2.5 py-1 rounded-full whitespace-nowrap shrink-0 ${s}`}>
       {children}
     </span>
   );
 }
 
-const Glyph = ({ d, s = 11 }: { d: string; s?: number }) => (
-  <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={C.oliveMid} strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-    <path d={d} />
-  </svg>
+const Check = () => (
+  <span className="w-6 h-6 rounded-lg border border-gray-100 bg-white flex items-center justify-center shrink-0 mt-px">
+    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#445A20" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 6 9 17l-5-5" />
+    </svg>
+  </span>
+);
+
+/** Section shell — white ground, the site's vertical rhythm, hairline divider. */
+const Section = ({ children }: { children: React.ReactNode }) => (
+  <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
+    <div className="max-w-[1440px] mx-auto px-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-10 lg:gap-16 items-start">{children}</div>
+    </div>
+  </section>
 );
 
 export default function ThalloAIPage() {
-  const R = 52;
+  const R = 54;
   const CIRC = 2 * Math.PI * R;
 
   return (
-    <div className="pt-32 pb-24" style={{ background: C.bg }}>
-      <div className="max-w-[1180px] mx-auto px-6">
-
-        {/* ── Masthead ───────────────────────────────────────────────────── */}
-        <header className="max-w-[64ch] mb-20">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="h-px w-7" style={{ background: C.oliveMid }} />
-            <Mono style={{ color: C.oliveMid }}>Thallo AI Visibility Engine</Mono>
-          </div>
-          <h1 className="font-serif text-5xl sm:text-6xl leading-[1.03] mb-6" style={{ color: C.ink }}>
-            See how AI answers<br />describe you — end to end.
+    <>
+      {/* ── Hero ─────────────────────────────────────────────────────────── */}
+      <section className="bg-white pt-44 pb-16 2xl:pt-56 2xl:pb-28 border-b border-gray-100">
+        <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
+          <Eyebrow center className="mb-5">Thallo AI Visibility Engine</Eyebrow>
+          {/* text-balance rather than a hard break — a <br/> here strands "you,"
+              on its own line at mid widths. */}
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-3xl text-balance">
+            See how AI answers describe you, end to end.
           </h1>
-          <p className="text-base font-medium leading-relaxed mb-7 max-w-[58ch]" style={{ color: C.muted }}>
-            Six stages, from the question you type to the plan you act on. Below is the full
-            journey of a Thallo visibility audit, shown exactly as it runs.
+          <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[56ch] mb-8">
+            Six stages, from the question you type to the plan you act on. Below is the full journey
+            of a Thallo visibility audit, shown exactly as it runs.
           </p>
-          <span className="inline-flex items-center gap-2.5 rounded-full px-4 py-2" style={{ border: `1px solid ${C.line}`, background: '#fff' }}>
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.lime }} />
-            <Mono style={{ color: C.muted }}>Sample report · illustrative figures</Mono>
+          <span className="inline-flex items-center gap-2.5 rounded-full border border-gray-200 px-4 py-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#55672E]" />
+            <Label>Sample report · illustrative figures</Label>
           </span>
-        </header>
+        </div>
+      </section>
 
-        {/* ── The journey ────────────────────────────────────────────────── */}
-        <div className="relative flex flex-col gap-16 lg:gap-24 lg:pl-[52px]">
-          <span aria-hidden="true" className="hidden lg:block absolute left-0 top-3 bottom-3 w-px" style={{ background: C.line }} />
-
-          {/* ── 01 · Audit setup ───────────────────────────────────────── */}
-          <Stage n="01" label="Audit setup" blurb="Tell us about your brand and target category.">
-            <div className={CARD} style={{ borderColor: C.line, ...SHADOW }}>
-              <div className="grid grid-cols-1 md:grid-cols-2">
-                <div className="p-8 sm:p-10 md:border-r" style={{ borderColor: C.line }}>
-                  <Mono className="block mb-7" style={{ color: C.muted }}>Audit parameters</Mono>
-                  {[
-                    ['Brand name', 'e.g. Ledgerly', false],
-                    ['Industry / target query', 'Fintech', true],
-                    ['Website URL (optional)', 'e.g. https://ledgerly.co', false],
-                  ].map(([l, p, filled]) => (
-                    <div key={l as string} className="mb-5">
-                      <Mono className="block mb-2" style={{ color: C.muted }}>{l as string}</Mono>
-                      <div
-                        className="rounded-2xl px-4 py-3.5 text-sm font-medium flex items-center justify-between"
-                        style={{ border: `1px solid ${C.line}`, color: filled ? C.ink : C.ghost }}
-                      >
-                        {p as string}
-                        {filled ? <span style={{ color: C.muted }}>⌄</span> : null}
-                      </div>
+      {/* ── 01 · Audit setup ──────────────────────────────────────────────── */}
+      <Section>
+        <Rail n="01" label="Audit setup" blurb="Tell us about your brand and the category you want to be found in." />
+        <div className="rounded-[28px] border border-gray-100 bg-white overflow-hidden" style={SOFT}>
+          <div className="grid grid-cols-1 md:grid-cols-2">
+            <div className="p-8 sm:p-10 md:border-r border-gray-100">
+              <Label>Audit parameters</Label>
+              <div className="mt-7">
+                {[
+                  ['Brand name', 'e.g. Ledgerly', false],
+                  ['Industry / target query', 'Fintech', true],
+                  ['Website URL (optional)', 'e.g. https://ledgerly.co', false],
+                ].map(([l, p, filled]) => (
+                  <div key={l as string} className="mb-5">
+                    <span className="block font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-2">{l as string}</span>
+                    <div className={`rounded-2xl border border-gray-200 px-4 py-3.5 text-sm font-medium flex items-center justify-between ${filled ? 'text-gray-900' : 'text-gray-400'}`}>
+                      {p as string}
+                      {filled ? <span className="text-gray-400">⌄</span> : null}
                     </div>
-                  ))}
-                  <div className="mt-7 rounded-full py-3.5 text-center text-sm font-semibold text-white" style={{ background: C.olive }}>
-                    Start AI Visibility Audit
-                  </div>
-                  <div className="mt-5 rounded-2xl p-4 flex gap-3" style={{ background: C.bg }}>
-                    <span className="mt-0.5 shrink-0"><Glyph d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" s={14} /></span>
-                    <p className="text-[11px] font-medium leading-relaxed" style={{ color: C.muted }}>
-                      No signup required · Results in under 30 seconds.<br />
-                      Powered by ChatGPT, Gemini &amp; Perplexity.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-8 sm:p-10 relative overflow-hidden">
-                  <Mono className="block mb-7" style={{ color: C.muted }}>What we will analyze</Mono>
-                  <ul className="flex flex-col gap-4 relative z-10">
-                    {ANALYZE.map((a) => (
-                      <li key={a} className="flex items-start gap-3">
-                        <span className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0 mt-px bg-white" style={{ border: `1px solid ${C.line}` }}>
-                          <Glyph d="M20 6 9 17l-5-5" />
-                        </span>
-                        <span className="text-sm font-medium leading-snug" style={{ color: C.ink }}>{a}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <img
-                    src="/thallo-digital/isotipo.png" alt="" aria-hidden="true" loading="lazy" decoding="async"
-                    width={512} height={512}
-                    className="absolute -bottom-8 -right-8 w-44 h-44 object-contain opacity-[0.06] rotate-[14deg] pointer-events-none select-none"
-                  />
-                </div>
-              </div>
-            </div>
-          </Stage>
-
-          {/* ── 02 · Scanning ──────────────────────────────────────────── */}
-          <Stage n="02" label="Scanning" blurb="Agents read how each platform answers for your category.">
-            <div className={`${CARD} p-8 sm:p-10`} style={{ borderColor: C.line, ...SHADOW }}>
-              <h2 className="font-serif text-3xl mb-8" style={{ color: C.ink }}>Scanning your visibility…</h2>
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_264px] gap-8 lg:gap-12">
-                <div className="flex flex-col gap-5">
-                  {SCAN.map((s) => (
-                    <div key={s.name} className="flex items-center gap-4">
-                      <span className="w-7 h-7 rounded-lg shrink-0" style={{ border: `1px solid ${C.line}`, background: C.bg }} />
-                      {/* 184px so "Website & Technical SEO" sits on one line */}
-                      <span className="text-sm font-semibold w-[184px] shrink-0" style={{ color: C.ink }}>{s.name}</span>
-                      <span className="flex-1 min-w-0"><Bar pct={s.pct} /></span>
-                      <Mono className="w-[64px] shrink-0 text-right" style={{ color: C.muted }}>{s.state}</Mono>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="rounded-[20px] p-6" style={{ background: C.bg, border: `1px solid ${C.line}` }}>
-                  <Mono className="block mb-4" style={{ color: C.muted }}>Live progress</Mono>
-                  <p className="font-serif text-5xl leading-none mb-1" style={{ color: C.ink }}>
-                    2 <span className="text-2xl" style={{ color: C.muted }}>/ 5</span>
-                  </p>
-                  <p className="text-sm font-medium mb-5" style={{ color: C.muted }}>Platforms scanned</p>
-                  <Bar pct={40} h={5} />
-                  <p className="mt-6 pt-5 text-[11px] font-medium leading-relaxed" style={{ borderTop: `1px solid ${C.line}`, color: C.muted }}>
-                    This usually takes 20–30 seconds.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Stage>
-
-          {/* ── 03 · Results overview ──────────────────────────────────── */}
-          <Stage n="03" label="Results overview" blurb="How the brand performs across AI platforms.">
-            <div className="flex flex-col gap-5">
-              <div className={CARD} style={{ borderColor: C.line, ...SHADOW }}>
-                <div className="grid grid-cols-1 lg:grid-cols-3">
-                  <div className="p-8 sm:p-10 lg:border-r" style={{ borderColor: C.line }}>
-                    <Mono className="block mb-7" style={{ color: C.muted }}>AI visibility score</Mono>
-                    <div className="relative w-[186px] h-[186px] mx-auto">
-                      <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
-                        <circle cx="60" cy="60" r={R} fill="none" stroke={C.line} strokeWidth="11" />
-                        <circle cx="60" cy="60" r={R} fill="none" stroke={C.olive} strokeWidth="11" strokeLinecap="round"
-                          strokeDasharray={`${CIRC * 0.27} ${CIRC}`} />
-                        {/* Short lime tail — the headroom, the only place the accent appears here */}
-                        <circle cx="60" cy="60" r={R} fill="none" stroke={C.lime} strokeWidth="11" strokeLinecap="round"
-                          strokeDasharray={`${CIRC * 0.08} ${CIRC}`} strokeDashoffset={`${-CIRC * 0.29}`} />
-                      </svg>
-                      <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="font-serif text-[46px] leading-none" style={{ color: C.ink }}>27%</span>
-                        <span className="mt-2 text-[11px] font-medium text-center leading-tight" style={{ color: C.muted }}>
-                          Your visibility<br />score
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-8 sm:p-10 lg:border-r" style={{ borderColor: C.line }}>
-                    <Mono className="block mb-5" style={{ color: C.muted }}>AI platform presence</Mono>
-                    <div className="flex flex-col gap-3">
-                      {PRESENCE.map((p) => (
-                        <div key={p.name} className="rounded-2xl p-3.5 flex items-center gap-3" style={{ border: `1px solid ${C.line}` }}>
-                          <span className="w-7 h-7 rounded-lg shrink-0" style={{ background: C.bg, border: `1px solid ${C.line}` }} />
-                          <span className="min-w-0 flex-1">
-                            <span className="block text-[13px] font-bold truncate" style={{ color: C.ink }}>{p.name}</span>
-                            <span className="block text-[11px] font-medium truncate" style={{ color: C.muted }}>{p.sub}</span>
-                          </span>
-                          <Tag tone={p.tone}>{p.tag}</Tag>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Competitors stay redacted — this is a sample, and naming
-                      real rivals in one would be a claim we cannot stand behind. */}
-                  <div className="p-8 sm:p-10">
-                    <Mono className="block mb-5" style={{ color: C.muted }}>Recommended instead of you</Mono>
-                    <div className="flex flex-col gap-3">
-                      {[8, 7, 6, 6].map((n, i) => (
-                        <div key={i} className="rounded-2xl p-3.5 flex items-center gap-3" style={{ background: C.bg }}>
-                          <Mono style={{ color: C.muted }}>{String(i + 1).padStart(2, '0')}</Mono>
-                          <span className="min-w-0 flex-1">
-                            <span className="block h-2.5 rounded-full mb-1.5" style={{ background: C.line, width: `${64 - i * 6}%` }} />
-                            <span className="block text-[11px] font-medium" style={{ color: C.muted }}>Mentioned in {n} answers</span>
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-                {TILES.map((t) => (
-                  <div key={t.l} className={`${CARD} px-7 py-6`} style={{ borderColor: C.line }}>
-                    <p className="font-serif text-[38px] leading-none mb-3" style={{ color: C.ink }}>{t.n}</p>
-                    <Mono style={{ color: C.muted }}>{t.l}</Mono>
                   </div>
                 ))}
               </div>
+              <div className="mt-7 rounded-full bg-[#39471D] py-3.5 text-center text-sm font-semibold text-white">
+                Start AI Visibility Audit
+              </div>
+              <div className="mt-5 rounded-2xl bg-gray-50/60 p-4 flex gap-3">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#445A20" strokeWidth="1.8" className="mt-0.5 shrink-0">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+                <p className="text-[11px] font-semibold leading-relaxed text-gray-500">
+                  No signup required · Results in under 30 seconds.<br />
+                  Powered by ChatGPT, Google AI &amp; Perplexity.
+                </p>
+              </div>
             </div>
-          </Stage>
 
-          {/* ── 04 · Detailed report ───────────────────────────────────── */}
-          <Stage n="04" label="Detailed report" blurb="Deeper insight across every category we score.">
-            <div className={CARD} style={{ borderColor: C.line, ...SHADOW }}>
-              <div className="px-8 sm:px-10 pt-7 flex flex-wrap items-center gap-x-8 gap-y-3 justify-between" style={{ borderBottom: `1px solid ${C.line}` }}>
-                <div className="flex flex-wrap gap-x-8 gap-y-3">
-                  {['AI visibility', 'Authority', 'Content', 'Technical', 'Comparisons'].map((t, i) => (
-                    <span key={t} className="pb-4 -mb-px" style={i === 0 ? { borderBottom: `2px solid ${C.olive}` } : undefined}>
-                      <Mono style={{ color: i === 0 ? C.ink : C.muted }}>{t}</Mono>
+            <div className="p-8 sm:p-10 relative overflow-hidden">
+              <Label>What we will analyze</Label>
+              <ul className="mt-7 flex flex-col gap-4 relative z-10">
+                {ANALYZE.map((a) => (
+                  <li key={a} className="flex items-start gap-3">
+                    <Check />
+                    <span className="text-sm font-medium leading-snug text-gray-900">{a}</span>
+                  </li>
+                ))}
+              </ul>
+              <img
+                src="/thallo-digital/isotipo.png" alt="" aria-hidden="true" loading="lazy" decoding="async"
+                width={512} height={512}
+                className="absolute -bottom-10 -right-10 w-48 h-48 object-contain opacity-[0.06] rotate-[14deg] pointer-events-none select-none"
+              />
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* ── 02 · Scanning ─────────────────────────────────────────────────── */}
+      <Section>
+        <Rail n="02" label="Scanning" blurb="Our agents read how each platform answers for your category." />
+        <div className="rounded-[28px] border border-gray-100 bg-white p-8 sm:p-10" style={SOFT}>
+          <h4 className="text-xl font-bold tracking-tight text-gray-900 mb-8">Scanning your visibility…</h4>
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-8 lg:gap-14">
+            <div className="flex flex-col gap-6">
+              {SCAN.map((s) => (
+                <div key={s.name} className="flex items-center gap-4">
+                  <PlatformMark src={s.logo} name={s.name} />
+                  <span className="text-sm font-semibold text-gray-900 w-[190px] shrink-0">{s.name}</span>
+                  <span className="flex-1 min-w-0"><Bar pct={s.pct} /></span>
+                  <span className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-gray-400 w-[72px] text-right shrink-0">{s.state}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="rounded-3xl bg-gray-50/60 border border-gray-100 p-7">
+              <Label>Live progress</Label>
+              <p className="mt-4 text-5xl font-extrabold tracking-tight text-gray-900 leading-none mb-2">
+                2 <span className="text-2xl font-bold text-gray-400">/ 4</span>
+              </p>
+              <p className="text-sm font-medium text-gray-500 mb-5">Platforms scanned</p>
+              <Bar pct={50} h={6} />
+              <p className="mt-6 pt-5 border-t border-gray-100 text-[11px] font-semibold leading-relaxed text-gray-500">
+                This usually takes 20–30 seconds.
+              </p>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* ── 03 · Results overview ─────────────────────────────────────────── */}
+      <Section>
+        <Rail n="03" label="Results overview" blurb="How the brand performs across every AI platform we check." />
+        <div className="flex flex-col gap-5">
+          <div className="rounded-[28px] border border-gray-100 bg-white overflow-hidden" style={SOFT}>
+            <div className="grid grid-cols-1 lg:grid-cols-3">
+              <div className="p-8 sm:p-10 lg:border-r border-gray-100">
+                <Label>AI visibility score</Label>
+                <div className="relative w-[196px] h-[196px] mx-auto mt-7">
+                  <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
+                    <circle cx="60" cy="60" r={R} fill="none" stroke="#F2F1ED" strokeWidth="10" />
+                    <circle cx="60" cy="60" r={R} fill="none" stroke="#39471D" strokeWidth="10" strokeLinecap="round"
+                      strokeDasharray={`${CIRC * 0.27} ${CIRC}`} />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-5xl font-extrabold tracking-tight text-gray-900 leading-none">27%</span>
+                    <span className="mt-2 text-[11px] font-semibold text-center leading-tight text-gray-400">
+                      Your visibility<br />score
                     </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-8 sm:p-10 lg:border-r border-gray-100">
+                <Label>AI platform presence</Label>
+                <div className="mt-6 flex flex-col gap-3">
+                  {PRESENCE.map((p) => (
+                    <div key={p.name} className="rounded-2xl border border-gray-100 p-4 flex items-center gap-3">
+                      <PlatformMark src={p.logo} name={p.name} />
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-[13px] font-bold text-gray-900 truncate">{p.name}</span>
+                        <span className="block text-[11px] font-medium text-gray-400 truncate">{p.sub}</span>
+                      </span>
+                      <Tag tone={p.tone}>{p.tag}</Tag>
+                    </div>
                   ))}
                 </div>
-                <span className="mb-4 rounded-full px-4 py-2 flex items-center gap-2 bg-white" style={{ border: `1px solid ${C.line}` }}>
-                  <Mono style={{ color: C.ink }}>Download full report</Mono>
-                  <Glyph d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16" />
+              </div>
+
+              {/* Competitors stay redacted — naming real rivals inside sample
+                  data would be a claim we cannot stand behind. */}
+              <div className="p-8 sm:p-10">
+                <Label>Recommended instead of you</Label>
+                <div className="mt-6 flex flex-col gap-3">
+                  {[8, 7, 6, 6].map((n, i) => (
+                    <div key={i} className="rounded-2xl bg-gray-50/60 p-4 flex items-center gap-3">
+                      <span className="font-mono text-[11px] font-bold text-gray-400">{String(i + 1).padStart(2, '0')}</span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block h-2.5 rounded-full bg-gray-200 mb-1.5" style={{ width: `${66 - i * 6}%` }} />
+                        <span className="block text-[11px] font-medium text-gray-400">Mentioned in {n} answers</span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+            {TILES.map((t) => (
+              <div key={t.l} className="rounded-3xl bg-gray-50/60 border border-gray-100 px-7 py-7">
+                <p className="text-4xl font-extrabold tracking-tight text-gray-900 leading-none mb-3">{t.n}</p>
+                <Label>{t.l}</Label>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* ── 04 · Detailed report ──────────────────────────────────────────── */}
+      <Section>
+        <Rail n="04" label="Detailed report" blurb="Deeper insight across every category we score." />
+        <div className="rounded-[28px] border border-gray-100 bg-white overflow-hidden" style={SOFT}>
+          <div className="px-8 sm:px-10 pt-7 border-b border-gray-100 flex flex-wrap items-center gap-x-9 gap-y-3 justify-between">
+            <div className="flex flex-wrap gap-x-9 gap-y-3">
+              {['AI visibility', 'Authority', 'Content', 'Technical', 'Comparisons'].map((t, i) => (
+                <span key={t} className={`pb-4 -mb-px ${i === 0 ? 'border-b-2 border-[#39471D]' : ''}`}>
+                  <span className={`font-mono text-[11px] font-bold uppercase tracking-[0.2em] ${i === 0 ? 'text-gray-900' : 'text-gray-400'}`}>{t}</span>
                 </span>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_336px]">
-                <div className="p-8 sm:p-10 lg:border-r" style={{ borderColor: C.line }}>
-                  <h3 className="font-serif text-2xl mb-2" style={{ color: C.ink }}>AI Visibility Breakdown</h3>
-                  <p className="text-sm font-medium mb-8" style={{ color: C.muted }}>
-                    Presence in AI-generated answers and recommendations.
-                  </p>
-                  <div className="flex flex-col gap-6">
-                    {BREAKDOWN.map((b) => (
-                      <div key={b.name} className="flex items-center gap-4">
-                        <span className="w-6 h-6 rounded-lg shrink-0" style={{ border: `1px solid ${C.line}`, background: C.bg }} />
-                        <span className="text-[13px] font-semibold w-[142px] shrink-0 truncate" style={{ color: C.ink }}>{b.name}</span>
-                        <span className="flex-1 min-w-0"><Bar pct={b.pct} h={5} /></span>
-                        <span className="font-serif text-lg w-11 text-right shrink-0" style={{ color: C.ink }}>{b.pct}%</span>
-                        <Mono className="w-[84px] text-right shrink-0" style={{ color: C.muted }}>{b.note}</Mono>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="p-8 sm:p-10 flex flex-col gap-5">
-                  {[
-                    ['Key insight', 'Mentioned by ChatGPT and Gemini, but not by Perplexity. Strengthening third-party mentions and authoritative content can improve coverage.'],
-                    ['Top opportunity', 'Build content that answers buyer questions related to “Fintech”, and earn citations from high-authority sources in the industry.'],
-                  ].map(([t, d]) => (
-                    <div key={t} className="rounded-[20px] p-6" style={{ background: C.bg }}>
-                      <div className="flex items-center gap-2.5 mb-3">
-                        <Glyph d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z" s={14} />
-                        <span className="text-[13px] font-bold" style={{ color: C.ink }}>{t}</span>
-                      </div>
-                      <p className="text-[13px] font-medium leading-relaxed" style={{ color: C.muted }}>{d}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              ))}
             </div>
-          </Stage>
+            <span className="mb-4 rounded-full border border-gray-200 px-4 py-2 flex items-center gap-2">
+              <span className="font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-gray-800">Download full report</span>
+              <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#111827" strokeWidth="2" strokeLinecap="round">
+                <path d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16" />
+              </svg>
+            </span>
+          </div>
 
-          {/* ── 05 · Priority actions ──────────────────────────────────── */}
-          <Stage n="05" label="Priority actions" blurb="A plan, ordered by what moves the needle first.">
-            <div className={`${CARD} p-8 sm:p-10`} style={{ borderColor: C.line, ...SHADOW }}>
-              <h3 className="font-serif text-2xl mb-2" style={{ color: C.ink }}>Recommended next steps</h3>
-              <p className="text-sm font-medium mb-8" style={{ color: C.muted }}>Actionable steps to improve AI visibility.</p>
-
-              <div className="flex flex-col gap-4">
-                {ACTIONS.map((a) => (
-                  <div key={a.t} className="rounded-[20px] p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-5" style={{ border: `1px solid ${C.line}` }}>
-                    <span className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: C.bg, border: `1px solid ${C.line}` }}>
-                      <Glyph d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6" s={16} />
-                    </span>
-                    <span className="flex-1 min-w-0">
-                      <span className="block text-[15px] font-bold mb-1" style={{ color: C.ink }}>{a.t}</span>
-                      <span className="block text-[13px] font-medium leading-relaxed" style={{ color: C.muted }}>{a.d}</span>
-                    </span>
-                    <span className="flex items-center gap-8 shrink-0">
-                      <span>
-                        <Mono className="block mb-2" style={{ color: C.muted }}>Impact</Mono>
-                        <span className="flex gap-1.5">
-                          {Array.from({ length: 5 }).map((_, i) => (
-                            <span key={i} className="w-[7px] h-[7px] rounded-full" style={{ background: i < a.impact ? C.olive : C.line }} />
-                          ))}
-                        </span>
-                      </span>
-                      <span>
-                        <Mono className="block mb-2" style={{ color: C.muted }}>Priority</Mono>
-                        <span
-                          className="font-mono text-[9px] font-bold uppercase tracking-[0.12em] px-2.5 py-1 rounded-full"
-                          style={a.p === 'High' ? { background: C.lime, color: C.olive } : { background: C.bg, color: C.muted, border: `1px solid ${C.line}` }}
-                        >
-                          {a.p}
-                        </span>
-                      </span>
-                    </span>
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px]">
+            <div className="p-8 sm:p-10 lg:border-r border-gray-100">
+              <h4 className="text-xl font-bold tracking-tight text-gray-900 mb-2">AI Visibility Breakdown</h4>
+              <p className="text-sm font-medium text-gray-500 mb-8">Presence in AI-generated answers and recommendations.</p>
+              <div className="flex flex-col gap-7">
+                {BREAKDOWN.map((b) => (
+                  <div key={b.name} className="flex items-center gap-4">
+                    <PlatformMark src={b.logo} name={b.name} />
+                    <span className="text-[13px] font-bold text-gray-900 w-[168px] shrink-0">{b.name}</span>
+                    <span className="flex-1 min-w-0"><Bar pct={b.pct} /></span>
+                    <span className="text-[13px] font-bold text-gray-900 w-12 text-right shrink-0 tabular-nums">{b.pct}%</span>
+                    <span className="font-mono text-[11px] font-bold uppercase tracking-[0.12em] text-gray-400 w-[96px] text-right shrink-0">{b.note}</span>
                   </div>
                 ))}
               </div>
-
-              <p className="mt-8 text-center text-sm font-semibold" style={{ color: C.olive }}>View full action plan →</p>
             </div>
-          </Stage>
 
-          {/* ── 06 · Stay ahead ────────────────────────────────────────── */}
-          <Stage n="06" label="Stay ahead" blurb="Track progress and improve over time.">
-            <div className={`${CARD} p-8 sm:p-10`} style={{ borderColor: C.line, ...SHADOW }}>
-              <div className="flex flex-col lg:flex-row lg:items-center gap-7">
-                <span className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: C.bg, border: `1px solid ${C.line}` }}>
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={C.oliveMid} strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m2 7 10 6 10-6" />
+            <div className="p-8 sm:p-10 flex flex-col gap-5">
+              {[
+                ['Key insight', 'Mentioned by ChatGPT and partially in Google AI Overview, but absent from Perplexity. Strengthening third-party mentions and authoritative content can improve coverage.'],
+                ['Top opportunity', 'Build content that answers the buyer questions around “Fintech”, and earn citations from high-authority sources in the industry.'],
+              ].map(([t, d]) => (
+                <div key={t} className="rounded-3xl bg-gray-50/60 p-7">
+                  <div className="flex items-center gap-2.5 mb-3">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#445A20" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z" />
+                    </svg>
+                    <span className="text-[13px] font-bold text-gray-900">{t}</span>
+                  </div>
+                  <p className="text-[13px] font-medium leading-relaxed text-gray-500">{d}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* ── 05 · Priority actions ─────────────────────────────────────────── */}
+      <Section>
+        <Rail n="05" label="Priority actions" blurb="A plan, ordered by what moves the needle first." />
+        <div className="rounded-[28px] border border-gray-100 bg-white p-8 sm:p-10" style={SOFT}>
+          <h4 className="text-xl font-bold tracking-tight text-gray-900 mb-2">Recommended next steps</h4>
+          <p className="text-sm font-medium text-gray-500 mb-8">Actionable steps to improve AI visibility.</p>
+
+          <div className="flex flex-col gap-4">
+            {ACTIONS.map((a) => (
+              <div key={a.t} className="rounded-3xl border border-gray-100 p-6 flex flex-col sm:flex-row sm:items-center gap-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,.20)]">
+                <span className="w-10 h-10 rounded-xl bg-gray-50/60 border border-gray-100 flex items-center justify-center shrink-0">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#445A20" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" />
                   </svg>
                 </span>
                 <span className="flex-1 min-w-0">
-                  <span className="block text-[15px] font-bold mb-1" style={{ color: C.ink }}>Get monthly AI visibility updates</span>
-                  <span className="block text-[13px] font-medium leading-relaxed" style={{ color: C.muted }}>
-                    Updates, insights and new opportunities to keep the brand visible in AI.
-                  </span>
+                  <span className="block text-[15px] font-bold text-gray-900 mb-1">{a.t}</span>
+                  <span className="block text-sm font-medium leading-relaxed text-gray-500">{a.d}</span>
                 </span>
-                <span className="flex flex-col sm:flex-row gap-3 shrink-0">
-                  <span className="rounded-full px-5 py-3 text-sm font-medium min-w-[220px]" style={{ border: `1px solid ${C.line}`, color: C.ghost }}>
-                    Enter your work email
+                <span className="flex items-center gap-10 shrink-0">
+                  <span>
+                    <Label>Impact</Label>
+                    <span className="flex gap-1.5 mt-2">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <span key={i} className={`w-[7px] h-[7px] rounded-full ${i < a.impact ? 'bg-[#39471D]' : 'bg-gray-200'}`} />
+                      ))}
+                    </span>
                   </span>
-                  <span className="rounded-full px-6 py-3 text-sm font-semibold text-white text-center whitespace-nowrap" style={{ background: C.olive }}>
-                    Get updates
+                  <span>
+                    <Label>Priority</Label>
+                    <span className={`block mt-2 font-mono text-[10px] font-bold uppercase tracking-[0.12em] px-2.5 py-1 rounded-full text-center ${a.p === 'High' ? 'bg-[#39471D] text-white' : 'bg-[#E7ECD9] text-[#39471D]'}`}>
+                      {a.p}
+                    </span>
                   </span>
                 </span>
               </div>
-
-              <div className="mt-8 pt-6 flex flex-wrap items-center justify-between gap-4" style={{ borderTop: `1px solid ${C.line}` }}>
-                <Mono style={{ color: C.muted }}>15 questions · 3 models · scanned Jul 26, 2026</Mono>
-                <span className="text-[13px] font-semibold" style={{ color: C.olive }}>See the exact questions we asked →</span>
-              </div>
-            </div>
-          </Stage>
-        </div>
-
-        {/* ── Close ──────────────────────────────────────────────────────── */}
-        <div className="mt-24 pt-10 flex flex-col sm:flex-row sm:items-end justify-between gap-8" style={{ borderTop: `1px solid ${C.line}` }}>
-          <div className="max-w-[48ch]">
-            <h2 className="font-serif text-3xl leading-tight mb-3" style={{ color: C.ink }}>
-              Want this run on your brand?
-            </h2>
-            <p className="text-sm font-medium leading-relaxed" style={{ color: C.muted }}>
-              The figures above are a worked example. A real audit runs the same six stages against
-              your category and the names competing for it.
-            </p>
+            ))}
           </div>
-          <a
-            href="/thallo-digital/#contact"
-            className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-white shrink-0 hover:opacity-90 transition-opacity"
-            style={{ background: C.olive }}
-          >
-            Book an audit <span className="text-[11px]">↗</span>
-          </a>
-        </div>
 
-      </div>
-    </div>
+          <p className="mt-8 text-center text-sm font-semibold text-[#39471D]">View full action plan →</p>
+        </div>
+      </Section>
+
+      {/* ── 06 · Stay ahead ───────────────────────────────────────────────── */}
+      <Section>
+        <Rail n="06" label="Stay ahead" blurb="Track progress and improve over time." />
+        <div className="rounded-[28px] border border-gray-100 bg-white p-8 sm:p-10" style={SOFT}>
+          <div className="flex flex-col lg:flex-row lg:items-center gap-7">
+            <span className="w-11 h-11 rounded-xl bg-gray-50/60 border border-gray-100 flex items-center justify-center shrink-0">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#445A20" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m2 7 10 6 10-6" />
+              </svg>
+            </span>
+            <span className="flex-1 min-w-0">
+              <span className="block text-[15px] font-bold text-gray-900 mb-1">Get monthly AI visibility updates</span>
+              <span className="block text-sm font-medium leading-relaxed text-gray-500">
+                Updates, insights and new opportunities to keep your brand visible in AI.
+              </span>
+            </span>
+            <span className="flex flex-col sm:flex-row gap-3 shrink-0">
+              <span className="rounded-full border border-gray-200 px-5 py-3 text-sm font-medium text-gray-400 min-w-[240px]">
+                Enter your work email
+              </span>
+              <span className="rounded-full bg-[#39471D] px-7 py-3 text-sm font-semibold text-white text-center whitespace-nowrap">
+                Get updates
+              </span>
+            </span>
+          </div>
+
+          <div className="mt-8 pt-6 border-t border-gray-100 flex flex-wrap items-center justify-between gap-4">
+            <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">
+              15 questions · 3 platforms · scanned Jul 26, 2026
+            </span>
+            <span className="text-[13px] font-semibold text-[#39471D]">See the exact questions we asked →</span>
+          </div>
+        </div>
+      </Section>
+
+      {/* ── CTA ───────────────────────────────────────────────────────────── */}
+      <section className="bg-white py-28 border-b border-gray-100">
+        <div className="max-w-[1440px] mx-auto px-6 w-full">
+          <div className="relative overflow-hidden rounded-[28px] px-12 py-20 sm:px-20 sm:py-28">
+            <img loading="lazy" decoding="async"
+              src="/thallo-digital/cta-bg.webp"
+              alt="" aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+              style={{ zIndex: 0 }}
+            />
+            <div className="relative z-[2] max-w-xl">
+              <Eyebrow tone="light" className="mb-6">Your brand</Eyebrow>
+              <SplitReveal
+                as="h2"
+                className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-8 font-sans"
+                html="Run this on your own name."
+              />
+              <p className="text-[#CBD0AC] font-medium text-base sm:text-lg leading-relaxed max-w-[46ch] mb-8">
+                The figures above are a worked example. A real audit runs the same six stages against
+                your category and the names competing for it.
+              </p>
+              <a
+                href="/thallo-digital/#contact"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#39471D] rounded-full text-sm font-semibold hover:bg-[#CBD0AC] transition-colors"
+              >
+                Book an audit <span className="text-[11px]">↗</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
