@@ -64,7 +64,4 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-  /* The FAQ panel animates grid-template-rows; killing the transition alone
-     would leave it mid-height, so pin the open/closed states outright. */
-  [id^="faq-panel-"] { transition: none !important; }
 }

@@ -40,7 +40,7 @@ export default function Footer() {
           <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-2">Company</h4>
           <div className="flex flex-col text-[11px] text-gray-500 font-semibold">
             <a href="/thallo-digital/#about" className="py-2 hover:text-[#39471D]">About</a>
-            <a href="/thallo-digital/#faq" className="py-2 hover:text-[#39471D]">FAQ</a>
+            <a href="/thallo-digital/#blog" className="py-2 hover:text-[#39471D]">Blog</a>
             <a href="/thallo-digital/#contact" className="py-2 hover:text-[#39471D]">Contact</a>
             <a href="/thallo-digital/#contact" className="py-2 hover:text-[#39471D]">Book an audit</a>
           </div>
