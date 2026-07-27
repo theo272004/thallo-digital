@@ -32,10 +32,12 @@ export default function Home() {
         <Testimonials />
         <VideoSection />
         <Services />
-        <CTASection />
         {/* "In their words" — the testimonial carousel, despite the file name.
-            Sits last so the proof is the final thing read before the form. */}
+            The proof runs immediately before the ask. */}
         <BlogSection />
+        {/* Closes the page: with the form on its own route now, this is the
+            home's hand-off to /contact/. */}
+        <CTASection />
       </main>
       <Footer />
     </div>
