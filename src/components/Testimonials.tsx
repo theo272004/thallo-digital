@@ -34,8 +34,8 @@ export default function Testimonials() {
 
           {/* Featured card — heading lives inside the image */}
           <div className="relative overflow-hidden rounded-[28px] bg-[#1a1f10] min-h-[380px] lg:min-h-0 lg:w-[40%] lg:flex-shrink-0">
-            <img
-              src="/thallo-digital/notebook-desk.png"
+            <img loading="lazy" decoding="async"
+              src="/thallo-digital/notebook-desk.webp"
               alt=""
               className="absolute inset-0 w-full h-full object-cover"
             />

@@ -44,3 +44,55 @@ body {
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: none; }
 }
+
+/* The isotipo turning on the Services and Industries heroes.
+   `linear` is the whole trick: any easing would make it visibly slow down
+   and re-accelerate once per turn, which reads as a stutter. A full 360°
+   also means the last frame equals the first, so the loop has no seam.
+   translateZ(0) hands it to the GPU as its own layer, so the rotation never
+   competes with layout work happening elsewhere on the page. */
+@keyframes thallo-spin {
+  from { transform: translateZ(0) rotate(0deg); }
+  to   { transform: translateZ(0) rotate(360deg); }
+}
+.thallo-spin {
+  animation: thallo-spin 30s linear infinite;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Testimonial cards on /industries/ breathing in opposition: the middle card
+   is given a -3s delay (half the 6s cycle) so it sits at the bottom of its
+   travel while the outer two sit at the top, and they trade places from
+   there. ease-in-out on purpose — a float should slow at each turning point,
+   unlike the flower above, where any easing would read as a stutter. */
+@keyframes quote-float {
+  0%, 100% { transform: translateY(-10px); }
+  50%      { transform: translateY(10px); }
+}
+.quote-float {
+  animation: quote-float 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Keyboard focus — the rounded pills and hairline inputs give the UA ring
+   nothing to sit against, so state it explicitly in the brand olive. Only on
+   :focus-visible, so a mouse click never draws it. */
+:focus-visible {
+  outline: 2px solid #55672E;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* GSAP already honours this via prefersReducedMotion(), but the CSS-driven
+   motion (marquees, floating cards, accordion, pulses) did not — so a visitor
+   who asks the OS for less motion still got the whole page moving. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

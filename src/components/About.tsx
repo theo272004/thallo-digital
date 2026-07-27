@@ -27,19 +27,7 @@ export default function About() {
             the channels change. A senior team, deliberately small, focused on doing a few things exceptionally well.
           </p>
 
-          {/* Mobile: in normal flow */}
-          <div className="mt-8 xl:hidden">
-            <IndustryTicker />
-          </div>
-
-          {/* Desktop: absolutely positioned below the text block — does NOT add to block height,
-              so the flex-centering and image position stay exactly as before */}
-          <div
-            className="hidden xl:block absolute left-1/2 -translate-x-1/2"
-            style={{ top: '100%', marginTop: '28px' }}
-          >
-            <IndustryTicker />
-          </div>
+          {/* IndustryTicker hidden provisionally */}
         </div>
       </div>
 
@@ -59,18 +47,39 @@ export default function About() {
          REFERENCE POINTS: 1440px → ~95%   1920px → 72% (crossover to the 72% baseline).
          To make it bigger/smaller at 1440 without touching desktop, adjust the 1368px.
          The 56.6% left shifts the whole composition slightly to the right. */}
-      <img
-        src="/thallo-digital/pc-cafe.png"
+      {/* Phone + coffee — LEFT, lower to align with "our clients" in body paragraph.
+          ~80px below section center. Right edge 6px inside text-block left edge. */}
+      <img loading="lazy" decoding="async"
+        src="/thallo-digital/cel-cafe.webp"
         alt=""
         aria-hidden="true"
-        className="hidden xl:block absolute pointer-events-none select-none about-pc-image"
+        className="hidden xl:block absolute pointer-events-none select-none"
         style={{
-          zIndex: 20,
-          top: '50%',
-          left: '55.3%',
-          width: 'max(72%, 1368px)',
-          maxWidth: 'none', // override Tailwind Preflight's img{max-width:100%} so width can exceed 100%
-          transform: 'translate(-50%, -50%)',
+          zIndex: 30,
+          top: 'calc(50% + 115px)',
+          right: 'calc(50% + 335px)',
+          height: 'clamp(150px, 18vw, 270px)',
+          width: 'auto',
+          maxWidth: 'none',
+          transform: 'translateY(-50%)',
+        }}
+      />
+
+      {/* Laptop — RIGHT, slightly above center to align with "without the" (heading line 1).
+          Moved left so leading edge nearly touches the 'e' of "the". */}
+      <img loading="lazy" decoding="async"
+        src="/thallo-digital/pc-about.webp"
+        alt=""
+        aria-hidden="true"
+        className="hidden xl:block absolute pointer-events-none select-none"
+        style={{
+          zIndex: 30,
+          top: 'calc(50% - 90px)',
+          left: 'calc(50% + 275px)',
+          height: 'clamp(200px, 26vw, 400px)',
+          width: 'auto',
+          maxWidth: 'none',
+          transform: 'translateY(-50%)',
         }}
       />
 

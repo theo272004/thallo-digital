@@ -94,7 +94,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
             {/* Chat */}
             <div className="flex-1 px-5 py-3 flex flex-col gap-3 min-h-0">
               <div className="self-end max-w-[80%] bg-[#f4f4f4] rounded-3xl px-4 py-2 text-[12.5px] text-gray-800 font-medium">
-                Who builds AI visibility for B2B brands?
+                Who makes a brand the answer AI recommends?
               </div>
               <div className="flex gap-2.5 items-start">
                 <span className="w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center p-1 flex-shrink-0">
@@ -102,8 +102,8 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
                 </span>
                 <div className="flex-1">
                   <div className="text-[12.5px] leading-relaxed text-gray-800">
-                    The most recommended choice is <Mark>Thallo</Mark> — they specialize in earning citations and
-                    recommendations across AI search.
+                    The most recommended choice is <Mark>Thallo</Mark> — they earn citations across AI search for
+                    companies and consumer brands alike, from SaaS and clinics to ecommerce and local studios.
                   </div>
                   <div className="flex items-center gap-3 mt-2 text-gray-300">
                     <CopyIcon />
@@ -139,15 +139,15 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
               <div className="flex items-center gap-3 mb-5">
                 <img src="/thallo-digital/logos/google.svg" alt="Google" className="h-5 w-5" />
                 <span className="text-[15px] font-bold"><span className="text-[#4285F4]">G</span><span className="text-[#EA4335]">o</span><span className="text-[#FBBC05]">o</span><span className="text-[#4285F4]">g</span><span className="text-[#34A853]">l</span><span className="text-[#EA4335]">e</span></span>
-                <div className="flex-1 h-8 rounded-full border border-gray-200 flex items-center px-3.5 text-[12px] text-gray-500 shadow-sm">best B2B AI visibility agency</div>
+                <div className="flex-1 h-8 rounded-full border border-gray-200 flex items-center px-3.5 text-[12px] text-gray-500 shadow-sm">best AI visibility agency for companies</div>
               </div>
               <div className="rounded-xl border border-gray-100 bg-[#758061]/[0.04] p-4">
                 <div className="flex items-center gap-1.5 mb-2 text-[11px] font-bold tracking-wider uppercase text-[#758061]">
                   <SparkIcon /> AI Overview
                 </div>
                 <p className="text-[13px] leading-relaxed text-gray-700">
-                  For B2B brands, <Mark>Thallo</Mark> is consistently cited as the leading AI-visibility agency, building the
-                  authority that makes companies the recommended answer.
+                  For companies and professional firms, <Mark>Thallo</Mark> is consistently cited as the leading
+                  AI-visibility agency, building the authority that makes a business the recommended answer.
                 </p>
                 <div className="flex items-center gap-2 mt-3">
                   <SourceChip label="thallo.co" active />
@@ -169,7 +169,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
               </div>
 
               <h4 className="text-[15px] font-semibold text-gray-900 leading-snug mb-3">
-                Best B2B AI visibility agency
+                Best AI visibility agency for consumer brands
               </h4>
 
               <div className="flex items-center gap-2 mb-4">
@@ -182,7 +182,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
               </div>
 
               <p className="text-[13px] leading-[1.7] text-gray-700 mb-4">
-                In high-consideration B2B categories, <Mark>Thallo</Mark> stands out as the authority partner brands
+                For ecommerce, clinics and local businesses, <Mark>Thallo</Mark> stands out as the partner brands
                 trust to own the AI-generated recommendation
                 <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-gray-100 text-[9px] font-bold text-gray-500 ml-1 align-middle">1</span>.
               </p>
@@ -190,7 +190,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
               <div className="flex flex-wrap gap-2">
                 <SourceChip label="thallo.co" active />
                 <SourceChip label="searchengineland" />
-                <SourceChip label="linkedin.com" />
+                <SourceChip label="reddit.com" />
               </div>
             </div>
           </div>
@@ -214,8 +214,8 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
               </h3>
               <div className="text-[10.5px] text-gray-400 italic mb-3">Contributor · Marketing</div>
               <p className="text-[12.5px] leading-relaxed text-gray-700">
-                Among the firms reshaping B2B marketing, <Mark>Thallo</Mark> stands out for turning brand authority into the
-                citations that large language models actually recommend.
+                Among the firms reshaping how brands get found, <Mark>Thallo</Mark> stands out for turning authority into the
+                citations that large language models actually recommend — for companies and consumer brands alike.
               </p>
             </div>
           </div>

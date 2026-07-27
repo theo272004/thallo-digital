@@ -193,10 +193,10 @@ export default function ServicesPage() {
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mb-10">
             Everything we do builds toward one outcome: making you the name buyers and AI trust.
           </p>
-          <img
-            src="/thallo-digital/flower.png"
+          <img loading="lazy" decoding="async"
+            src="/thallo-digital/flower.webp"
             alt="Thallo"
-            className="w-20 h-20 object-contain opacity-80"
+            className="w-20 h-20 object-contain opacity-80 thallo-spin"
           />
         </div>
       </section>
@@ -255,7 +255,7 @@ export default function ServicesPage() {
                     }`}
                   >
                     {isFeatured && (
-                      <img
+                      <img loading="lazy" decoding="async"
                         src="/thallo-digital/isotipo.png"
                         alt=""
                         aria-hidden="true"
@@ -332,8 +332,8 @@ export default function ServicesPage() {
 
         {/* Full-bleed desk banner — spans the full page width, as the section was designed */}
         <div className="w-full mt-6 mb-7 lg:mb-8">
-          <img
-            src="/thallo-digital/engagement-desk.png"
+          <img loading="lazy" decoding="async"
+            src="/thallo-digital/engagement-desk.webp"
             alt="A Thallo engagement laid out on a desk: visibility audit, brand map, content calendar, distribution plan and results"
             className="w-full h-auto select-none pointer-events-none"
           />
@@ -392,7 +392,7 @@ export default function ServicesPage() {
               background: '#445A20', display: 'flex', alignItems: 'center', justifyContent: 'center',
               boxShadow: '0 10px 25px rgba(0,0,0,.12)',
             }}>
-              <img src="/thallo-digital/flower.png" alt="" aria-hidden style={{ width: 28, height: 28, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+              <img loading="lazy" decoding="async" src="/thallo-digital/flower.webp" alt="" aria-hidden style={{ width: 28, height: 28, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             </div>
 
             {/* Card */}
@@ -450,8 +450,8 @@ export default function ServicesPage() {
       <section className="bg-white py-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 w-full">
           <div className="relative overflow-hidden rounded-[28px] px-12 py-20 sm:px-20 sm:py-28">
-            <img
-              src="/thallo-digital/cta-bg-services.png"
+            <img loading="lazy" decoding="async"
+              src="/thallo-digital/cta-bg-services.webp"
               alt=""
               aria-hidden="true"
               className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"

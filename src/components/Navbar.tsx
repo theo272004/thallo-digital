@@ -53,13 +53,13 @@ export default function Navbar() {
         {/* Right CTA */}
         <div className="hidden md:flex items-center gap-3 shrink-0">
           <a
-            href="/thallo-digital/scan/"
+            href="/thallo-digital/thallo-ai/"
             className="px-4 py-2 border border-gray-200 rounded-full text-sm font-semibold text-gray-800 hover:border-gray-400 hover:bg-gray-50 transition-all"
           >
             Check my visibility ↗
           </a>
           <Magnetic>
-            <a href="mailto:hello@thallo.co?subject=AI Visibility Audit Request" className="px-4 py-2 bg-[#39471D] border border-[#39471D] rounded-full text-sm font-semibold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all">
+            <a href="/thallo-digital/#contact" className="px-4 py-2 bg-[#39471D] border border-[#39471D] rounded-full text-sm font-semibold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all">
               Book an audit ↗
             </a>
           </Magnetic>
@@ -97,8 +97,8 @@ export default function Navbar() {
             <a href="/thallo-digital/#blog">Resources</a>
           </div>
           <div className="flex flex-col gap-4 mt-auto">
-            <a href="/thallo-digital/scan/" className="w-full py-3.5 border border-gray-200 rounded-full text-center text-sm font-bold text-gray-800">Check my visibility ↗</a>
-            <a href="mailto:hello@thallo.co?subject=AI Visibility Audit Request" className="w-full py-3.5 bg-[#39471D] rounded-full text-center text-sm font-bold text-white">Book an audit ↗</a>
+            <a href="/thallo-digital/thallo-ai/" className="w-full py-3.5 border border-gray-200 rounded-full text-center text-sm font-bold text-gray-800">Check my visibility ↗</a>
+            <a href="/thallo-digital/#contact" onClick={() => setMobileMenuOpen(false)} className="w-full py-3.5 bg-[#39471D] rounded-full text-center text-sm font-bold text-white">Book an audit ↗</a>
           </div>
         </div>
       )}

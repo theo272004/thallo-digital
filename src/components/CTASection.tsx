@@ -9,8 +9,8 @@ export default function CTASection() {
         <div className="relative overflow-hidden rounded-[28px] px-12 py-20 sm:px-20 sm:py-28">
 
           {/* Background photo — no effects */}
-          <img
-            src="/thallo-digital/cta-bg.png"
+          <img loading="lazy" decoding="async"
+            src="/thallo-digital/cta-bg.webp"
             alt=""
             aria-hidden="true"
             className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"

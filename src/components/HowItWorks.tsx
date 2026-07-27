@@ -229,7 +229,7 @@ export default function HowItWorks() {
               html="Authority isn't one thing. It's a few, grown well."
             />
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch]">
-              A systematic B2B authority building process that converts search
+              A systematic authority building process that converts search
               queries into revenue-generating recommendations.
             </p>
           </div>

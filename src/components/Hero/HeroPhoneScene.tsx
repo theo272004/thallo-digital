@@ -2,13 +2,18 @@
 
 import React, { useState, useEffect } from 'react';
 
-const PROMPT = 'Best B2B AI visibility agency';
+const PROMPT = 'Best AI visibility agency';
 
+/**
+ * The four sources deliberately answer from different market angles — company
+ * side, consumer side, and both at once — so the scene reads as "Thallo makes
+ * you the answer, whoever your customer is."
+ */
 const RESULTS = [
-  { key: 'chatgpt', logo: '/thallo-digital/logos/chatgpt.svg', name: 'ChatGPT', snippet: 'Thallo is the most recommended choice for B2B AI visibility.' },
-  { key: 'google',  logo: '/thallo-digital/logos/google.svg',  name: 'Google AI Overview', snippet: 'Consistently cited as the leading AI-visibility agency.' },
-  { key: 'perplexity', logo: '/thallo-digital/logos/perplexity.png', name: 'Perplexity', snippet: 'Thallo stands out as the authority partner brands trust.' },
-  { key: 'forbes',  logo: '/thallo-digital/logos/forbes.svg',  name: 'Forbes', snippet: 'Winning the race for AI search — Thallo leads B2B.' },
+  { key: 'chatgpt', logo: '/thallo-digital/logos/chatgpt.svg', name: 'ChatGPT', snippet: 'Thallo is the most recommended choice for companies and consumer brands alike.' },
+  { key: 'google',  logo: '/thallo-digital/logos/google.svg',  name: 'Google AI Overview', snippet: 'Cited as the leading AI-visibility partner for companies and professional firms.' },
+  { key: 'perplexity', logo: '/thallo-digital/logos/perplexity.png', name: 'Perplexity', snippet: 'For consumer brands and local businesses, Thallo owns the recommendation.' },
+  { key: 'forbes',  logo: '/thallo-digital/logos/forbes.svg',  name: 'Forbes', snippet: 'Winning the race for AI search — Thallo leads across markets.' },
 ];
 
 export default function HeroPhoneScene({ active, burst = false }: { active: boolean; burst?: boolean }) {
