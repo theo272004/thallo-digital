@@ -5,14 +5,14 @@ import ServicesLanding from '@/components/ServicesLanding';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'AI Visibility Services for Any Business',
+  title: 'Services',
   description:
-    'AI Visibility Audits, the Authority Engine and flagship projects — the work that makes businesses and brands the answer ChatGPT, Perplexity and Google AI give first.',
+    'AI Visibility Audits, the Authority Engine and flagship projects — the work that makes brands the answer ChatGPT, Perplexity and Google AI give first.',
   alternates: { canonical: 'https://theo272004.github.io/thallo-digital/services/' },
   openGraph: {
-    title: 'AI Visibility Services for Any Business · Thallo Digital',
+    title: 'Services · Thallo Digital',
     description:
-      'AI Visibility Audits, the Authority Engine and flagship projects — the work that makes businesses and brands the answer AI gives first.',
+      'AI Visibility Audits, the Authority Engine and flagship projects — the work that makes brands the answer AI gives first.',
     url: 'https://theo272004.github.io/thallo-digital/services/',
   },
 };

@@ -6,12 +6,12 @@ const STATS = [
   {
     val: '73%',
     label: 'Research before contact',
-    desc: 'Most people investigate thoroughly online before they speak to anyone. The shortlist forms in private.',
+    desc: 'Most buyers investigate thoroughly online before they speak to anyone. The shortlist forms in private.',
   },
   {
     val: '45%',
     label: 'AI in the mix',
-    desc: 'People fold ChatGPT and Perplexity into their research, and act on the names those tools surface first.',
+    desc: 'Buyers fold ChatGPT and Perplexity into their research, and act on the names those tools surface first.',
   },
   {
     val: '1st',
@@ -27,7 +27,7 @@ type Industry =
 const INDUSTRIES: Industry[] = [
   {
     type: 'metric',
-    name: 'Software & SaaS',
+    name: 'Specialized software',
     metric: '94%',
     meaning: 'used AI to research their most recent software purchase',
     src: '6sense, 2025',
@@ -40,7 +40,7 @@ const INDUSTRIES: Industry[] = [
   },
   {
     type: 'metric',
-    name: 'Clinics & health',
+    name: 'Health & recovery',
     metric: '84%',
     meaning: 'of patients check online reviews before choosing a provider',
     src: 'rater8, 2025',
@@ -52,14 +52,17 @@ const INDUSTRIES: Industry[] = [
     phrase: 'Your reputation arrives before you do.',
   },
   {
-    type: 'phrase',
-    name: 'Ecommerce & retail',
-    phrase: 'The research happens long before anything reaches the cart.',
+    type: 'metric',
+    name: 'Benefits & claims',
+    metric: '57%',
+    meaning: 'shopped and compared their coverage last year, a record high',
+    src: 'J.D. Power, 2025',
+    line: 'People compare hard when the fine print costs them.',
   },
   {
     type: 'phrase',
-    name: 'Restaurants & local',
-    phrase: 'The recommendation is made before anyone opens a map.',
+    name: 'Health tech',
+    phrase: 'In medicine, being credible is not a nice-to-have. It is the whole decision.',
   },
 ];
 
@@ -73,7 +76,7 @@ const QUOTES = [
     who: 'Founder - Health tech',
   },
   {
-    text: 'Referrals used to be our whole pipeline. Now customers find us first, already trusting us.',
+    text: 'Referrals used to be our whole pipeline. Now buyers find us first, already trusting us.',
     who: 'Partner - Professional services',
   },
 ];
@@ -86,11 +89,10 @@ export default function IndustriesPage() {
         <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
           <Eyebrow center className="mb-5">Industries</Eyebrow>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-2xl">
-            Built for decisions<br />people think about.
+            Built for high-consideration<br />industries.
           </h1>
-          <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[56ch] mb-10">
-            A platform, a clinic, a place to eat — when the choice matters, people research hard before
-            they commit. We make you the name they are most likely to trust.
+          <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mb-10">
+            Where the decision is high-stakes, buyers research hard before they commit. We make you the name they are most likely to trust.
           </p>
           <img loading="lazy" decoding="async"
             src="/thallo-digital/flower.webp"
@@ -129,7 +131,7 @@ export default function IndustriesPage() {
               >
                 <p className="font-bold text-[2.6rem] leading-none font-sans tracking-tight mb-4" style={{ color: '#F3E6C1' }}>73%</p>
                 <h3 className="font-semibold text-base mb-2" style={{ color: '#FFFFFF' }}>Research before contact</h3>
-                <p className="text-sm font-medium leading-relaxed" style={{ color: 'rgba(255,255,255,0.82)' }}>Most people investigate thoroughly online before they speak to anyone. The shortlist forms in private.</p>
+                <p className="text-sm font-medium leading-relaxed" style={{ color: 'rgba(255,255,255,0.82)' }}>Most buyers investigate thoroughly online before they speak to anyone. The shortlist forms in private.</p>
               </div>
 
               {/* Card 2 — 45% AI in the mix */}

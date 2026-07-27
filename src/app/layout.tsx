@@ -23,7 +23,7 @@ const spaceMono = Space_Mono({
 
 const SITE_URL = "https://theo272004.github.io/thallo-digital";
 const DESCRIPTION =
-  "We make businesses and brands the default citation and recommendation in conversational LLM search answers — ChatGPT, Perplexity, Google AI and Claude.";
+  "We make brands the default citation and recommendation in conversational LLM search answers — ChatGPT, Perplexity, Google AI and Claude.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -38,10 +38,8 @@ export const metadata: Metadata = {
     "generative engine optimization",
     "GEO agency",
     "LLM search optimization",
-    "brand authority building",
+    "Brand authority building",
     "AI SEO",
-    "AI visibility for local business",
-    "AI visibility for ecommerce",
   ],
   // Absolute URLs on purpose: metadataBase carries a path segment (/thallo-digital),
   // and relative canonicals resolve against the origin, dropping it.
@@ -101,11 +99,6 @@ export default function RootLayout({
                 'Generative engine optimization',
                 'Brand authority building',
               ],
-              audience: {
-                '@type': 'Audience',
-                audienceType:
-                  'Businesses, consumer brands, ecommerce, clinics, restaurants, professional firms, studios and local businesses',
-              },
               contactPoint: {
                 '@type': 'ContactPoint',
                 contactType: 'sales',

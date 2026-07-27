@@ -16,7 +16,7 @@ if (typeof window !== 'undefined') {
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 const STATS = [
-  { val: 45, suffix: '%', label: 'AI-Assisted Research',    copy: 'of customers used AI during a recent purchase to weigh up their options.' },
+  { val: 45, suffix: '%', label: 'AI Evaluation',           copy: 'of buyers used AI during a recent purchase to evaluate vendors.' },
   { val: 69, suffix: '%', label: 'Zero-Click Searches',     copy: 'of search queries now end directly inside conversational responses.' },
   { val: 1,  suffix: '',  label: 'Primary Recommendation',  copy: 'AI engines increasingly return one synthesized recommendation instead of ten blue links.' },
 ];
@@ -71,9 +71,8 @@ export default function TheProblem() {
               html="Buying now starts with a question typed into a machine."
             />
             <p className="text-gray-300 font-medium text-sm sm:text-base leading-relaxed max-w-[46ch]">
-              Search results pages of ten blue links are fading. Whether someone is choosing a
-              software vendor or a restaurant, conversational AIs now formulate the recommendation
-              directly. The brand it names first is the one that wins.
+              Search results pages of ten blue links are fading. Conversational AIs formulate
+              recommendations directly. The brand it names first is the one that wins.
             </p>
           </div>
         </div>

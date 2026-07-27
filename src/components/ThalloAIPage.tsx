@@ -78,9 +78,8 @@ export default function ThalloAIPage() {
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 mb-4 font-sans leading-tight">
             Run your free AI visibility audit
           </h1>
-          <p className="text-gray-500 font-medium text-xs leading-relaxed max-w-[48ch] mx-auto">
-            Check if ChatGPT, Perplexity, and Google AI Overview recommend your business — whether your
-            customers are companies or people.
+          <p className="text-gray-500 font-medium text-xs leading-relaxed max-w-[45ch] mx-auto">
+            Check if ChatGPT, Perplexity, and Google AI Overview recommend your company to active buyers.
           </p>
         </div>
       </div>
@@ -244,7 +243,7 @@ export default function ThalloAIPage() {
                       <li className="flex gap-3 items-start">
                         <input type="checkbox" className="mt-1" />
                         <div>
-                          <strong>Establish primary co-citations in category registries</strong>
+                          <strong>Establish primary co-citations in trade registries</strong>
                           <p className="text-[11px] text-gray-400 font-medium mt-0.5">Publish research reports cited by scraping models.</p>
                         </div>
                       </li>

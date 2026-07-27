@@ -18,10 +18,9 @@ export default function HeroText() {
       />
 
       {/* Lede */}
-      <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[38ch] mb-10 2xl:mb-12">
-        Your customers ask ChatGPT, Perplexity, and Google before they ever ask you. Thallo makes sure the answer they
-        get is your brand — whether you sell to companies or straight to people — built on{' '}
-        <strong className="text-gray-900 font-bold">authority</strong> that compounds.
+      <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[36ch] mb-10 2xl:mb-12">
+        Your buyers ask ChatGPT, Perplexity, and Google before they ever ask you. Thallo makes sure the answer they get
+        is your brand, built on <strong className="text-gray-900 font-bold">authority</strong> that compounds.
       </p>
 
       {/* CTAs */}

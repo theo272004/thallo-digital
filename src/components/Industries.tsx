@@ -41,10 +41,8 @@ export default function Industries() {
             className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 font-sans leading-[1.05]"
             html="Where trust decides the sale."
           />
-          <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[56ch]">
-            We go deep wherever the choice is considered — a company picking a platform, or a
-            person picking a clinic. Different customers, same rule: they choose the name they
-            trust most.
+          <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch]">
+            We go deep in high-consideration categories, where buyers research hard and choose the provider they trust most.
           </p>
         </div>
 
@@ -65,8 +63,8 @@ export default function Industries() {
                 <p className="text-[9px] font-medium text-gray-400 mt-0.5">cited in AI overview</p>
               </div>
             </div>
-            <h3 className={h3Cls}>Software &amp; SaaS</h3>
-            <p className={pCls}>Category-defining products where the winner is the name buyers already trust.</p>
+            <h3 className={h3Cls}>Specialized software</h3>
+            <p className={pCls}>Category-defining SaaS where the winner is the name buyers already trust.</p>
           </div>
 
           {/* ── Fintech ──────────────────────────────────────────────────── */}
@@ -116,8 +114,8 @@ export default function Industries() {
                 <p className="text-[9px] font-medium text-gray-400 mt-0.5">by AI</p>
               </div>
             </div>
-            <h3 className={h3Cls}>Clinics &amp; health</h3>
-            <p className={pCls}>Personal, high-stakes decisions that reward the most credible, best-documented name.</p>
+            <h3 className={h3Cls}>Health tech</h3>
+            <p className={pCls}>Regulated, high-stakes buying that rewards the most credible, best-documented source.</p>
           </div>
 
           {/* ── Professional services ────────────────────────────────────── */}
@@ -144,13 +142,13 @@ export default function Industries() {
               </div>
             </div>
             <h3 className={h3Cls}>Professional services</h3>
-            <p className={pCls}>Law, accounting, consulting, studios — work that lives or dies on reputation and referral.</p>
+            <p className={pCls}>Expertise businesses that live or die on reputation and referral.</p>
           </div>
 
           {/* ── Health & recovery ────────────────────────────────────────── */}
           <div data-reveal className={cardCls}>
             <div className={panel('-top-4 -right-3 p-3 w-[160px]')}>
-              <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-2">Shopper intent</p>
+              <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-2">Buyer intent</p>
               <div className="flex items-center gap-2.5">
                 <svg viewBox="0 0 52 52" width="44" height="44" className="flex-shrink-0">
                   <circle cx="26" cy="26" r="20" fill="none" stroke="#e8e8e3" strokeWidth="4" />
@@ -173,14 +171,14 @@ export default function Industries() {
                 </div>
               ))}
             </div>
-            <h3 className={h3Cls}>Ecommerce &amp; retail</h3>
-            <p className={pCls}>Considered purchases people research before they ever add to cart.</p>
+            <h3 className={h3Cls}>Health &amp; recovery</h3>
+            <p className={pCls}>Deeply researched, deeply personal decisions where trust is everything.</p>
           </div>
 
           {/* ── Benefits & claims ────────────────────────────────────────── */}
           <div data-reveal className={cardCls}>
             <div className={panel('-top-4 -right-3 w-[152px] p-3')}>
-              <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-2">Local shortlist</p>
+              <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-2">Complex decisions</p>
               <div className="flex items-center gap-2 mb-1.5">
                 <div className="w-[14px] h-[14px] rounded-[4px] bg-[#39471D] flex items-center justify-center flex-shrink-0">
                   <svg viewBox="0 0 10 10" width="7" height="7" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round"><path d="M1.5 5L3.5 7.5L8.5 2" /></svg>
@@ -201,12 +199,12 @@ export default function Industries() {
             <div className={panel('-bottom-4 right-5 px-3 py-2.5 flex items-center gap-2')}>
               <Check />
               <div>
-                <p className="text-[10px] font-bold text-gray-900 leading-none">Named first</p>
-                <p className="text-[9px] font-medium text-gray-400 mt-0.5">when they ask</p>
+                <p className="text-[10px] font-bold text-gray-900 leading-none">Clear guidance</p>
+                <p className="text-[9px] font-medium text-gray-400 mt-0.5">wins confidence</p>
               </div>
             </div>
-            <h3 className={h3Cls}>Restaurants &amp; local</h3>
-            <p className={pCls}>Neighbourhood businesses that win the moment AI is asked for a recommendation nearby.</p>
+            <h3 className={h3Cls}>Benefits &amp; claims</h3>
+            <p className={pCls}>Complex, confusing choices where the clear, trusted guide wins.</p>
           </div>
 
         </div>

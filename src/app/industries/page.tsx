@@ -5,14 +5,14 @@ import IndustriesLanding from '@/components/IndustriesLanding';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'AI Visibility by Industry',
+  title: 'Industries',
   description:
-    'How AI visibility plays out for software, ecommerce, clinics, professional services and local businesses — wherever customers research before they ever contact you.',
+    'How AI visibility work plays out in fintech, health tech, professional services and health & recovery — where buyers research before they ever contact you.',
   alternates: { canonical: 'https://theo272004.github.io/thallo-digital/industries/' },
   openGraph: {
-    title: 'AI Visibility by Industry · Thallo Digital',
+    title: 'Industries · Thallo Digital',
     description:
-      'AI visibility for software, ecommerce, clinics, professional services and local businesses.',
+      'AI visibility for fintech, health tech, professional services and health & recovery.',
     url: 'https://theo272004.github.io/thallo-digital/industries/',
   },
 };
