@@ -1,174 +1,199 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
-import dynamic from 'next/dynamic';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
 
-if (typeof window !== 'undefined') { gsap.registerPlugin(ScrollTrigger); }
-
-// Recharts is the heaviest dependency on the home page and the chart sits well
-// below the fold — load it as its own chunk once the page is interactive.
-const ResultsChart = dynamic(() => import('@/components/ResultsChart'), {
-  ssr: false,
-  loading: () => <div className="h-full w-full" aria-hidden="true" />,
-});
-
-// ── Platform bars ─────────────────────────────────────────────────────────────
-const PLATFORMS = [
-  { name: 'ChatGPT',    count: 1240, pct: 100, color: '#39471D' },
-  { name: 'Perplexity', count: 960,  pct: 77,  color: '#4d5e26' },
-  { name: 'Google AI',  count: 810,  pct: 65,  color: '#5e722e' },
-  { name: 'Claude',     count: 560,  pct: 45,  color: '#6f8636' },
-  { name: 'Gemini',     count: 430,  pct: 35,  color: '#809a3e' },
+/**
+ * A real engagement, anonymised — Search Console figures, January–July 2026.
+ * Every number here traces back to that export; nothing is illustrative. The
+ * projected row stays labelled as projected for exactly that reason.
+ */
+const HEADLINE = [
+  { fig: '3.3x',        lbl: 'Monthly organic clicks' },
+  { fig: '+489%',       lbl: 'Impressions, Feb–Jun' },
+  { fig: '10.8 → 7.6',  lbl: 'Average position' },
+  { fig: '~10x',        lbl: 'Search visibility' },
 ];
 
+const MONTHS = [
+  { m: 'February', clicks: 12941, impr: '103,964', pos: '10.1' },
+  { m: 'March',    clicks: 13586, impr: '234,712', pos: '9.5'  },
+  { m: 'April',    clicks: 14566, impr: '301,977', pos: '9.7'  },
+  { m: 'May',      clicks: 16160, impr: '372,241', pos: '9.8'  },
+  { m: 'June',     clicks: 19938, impr: '612,076', pos: '8.0'  },
+  { m: 'July',     clicks: 22500, impr: '~615,000', pos: '7.6', projected: true },
+];
+
+const PEAK = Math.max(...MONTHS.map((r) => r.clicks));
+
+const CALLOUTS = [
+  { fig: '+54%',    lbl: 'Monthly clicks, February to June' },
+  { fig: '41 → 13', lbl: 'Flagship pillar page position' },
+  { fig: '+270%',   lbl: 'Growth in the top content cluster' },
+];
 
 export default function ResultsDashboard() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const barRefs      = useRef<(HTMLDivElement | null)[]>([]);
-  const floatRef     = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Horizontal bars widen on scroll-enter
-    PLATFORMS.forEach((p, i) => {
-      const el = barRefs.current[i];
-      if (!el) return;
-      gsap.fromTo(el,
-        { width: '0%' },
-        { width: `${p.pct}%`, duration: 1.2, ease: 'power2.out', delay: i * 0.1,
-          scrollTrigger: { trigger: containerRef.current, start: 'top 72%', once: true } }
-      );
-    });
-
-    // Floating card gentle parallax
-    gsap.to(floatRef.current, {
-      y: -18, ease: 'none',
-      scrollTrigger: { trigger: containerRef.current, start: 'top bottom', end: 'bottom top', scrub: 0.6 },
-    });
-  }, []);
-
   return (
-    <section
-      className="bg-gray-50/50 py-28 pb-36 border-b border-gray-100"
-      id="results"
-      ref={containerRef}
-    >
+    <section className="bg-gray-50/50 py-24 sm:py-28 border-b border-gray-100" id="results">
       <div className="max-w-[1440px] mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-[28%_1fr] gap-16 items-start">
 
-          {/* ── Left: copy ─────────────────────────────────────────────── */}
-          <div className="lg:pt-10">
-            <Eyebrow className="mb-5">Track Authority</Eyebrow>
-            <SplitReveal
-              as="h2"
-              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
-              html="Visualizing authority compounding."
-            />
-            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[30ch]">
-              We track the signals that matter across leading AI platforms—so you can see your visibility
-              grow, not just feel it.
+        {/* ── Header ──────────────────────────────────────────────────────── */}
+        <div className="max-w-[54ch] mb-16">
+          <Eyebrow className="mb-5">Case study</Eyebrow>
+          <SplitReveal
+            as="h2"
+            className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans text-balance"
+            html='From page two to page one, in <span class="font-serif italic text-[#39471D]">six months.</span>'
+          />
+          <p className="text-gray-500 font-medium text-base leading-relaxed">
+            A veteran-founded service in the VA disability claims space — a compliance-heavy
+            category where every statement has to be accurate, the incumbents are large, and
+            the audience is sceptical by default. Authority was the only way in.
+          </p>
+        </div>
+
+        {/* ── Headline figures ────────────────────────────────────────────── */}
+        <div data-reveal className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-gray-200/70 border border-gray-200/70 rounded-3xl overflow-hidden mb-20">
+          {HEADLINE.map((s) => (
+            <div key={s.lbl} className="bg-white px-7 py-9">
+              {/* nowrap so "10.8 → 7.6" stays on one line and every label in
+                  the band sits on the same baseline */}
+              <p className="text-3xl font-bold text-[#39471D] tracking-tight leading-none tabular-nums whitespace-nowrap">
+                {s.fig}
+              </p>
+              <p className="mt-3 text-[11px] font-bold tracking-[0.14em] uppercase text-gray-400">
+                {s.lbl}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* ── The six-month trajectory ────────────────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[30%_1fr] gap-10 lg:gap-16 items-start mb-20">
+          <div className="lg:pt-2">
+            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 leading-tight mb-4">
+              The six-month trajectory
+            </h3>
+            <p className="text-gray-500 font-medium text-base leading-relaxed">
+              Every full month beat the one before it on clicks. A curve, not a spike — which is
+              what tells you the gains are structural.
             </p>
           </div>
 
-          {/* ── Right: dashboard + floating card ───────────────────────── */}
-          <div className="relative">
-
-            {/* Dashboard card */}
-            <div className="bg-white border border-gray-100 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.05)]">
-
-              {/* Chrome bar */}
-              <div className="border-b border-gray-50 px-6 py-4 flex items-center gap-2 bg-gray-50/40 rounded-t-3xl">
-                <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
-                <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
-                <div className="w-2.5 h-2.5 rounded-full bg-gray-200" />
-                <span className="text-[11px] font-bold tracking-wider text-gray-400 uppercase ml-4">
-                  Citations Analytics · Q2 2026
-                </span>
-              </div>
-
-              {/* Two-column body */}
-              <div className="grid grid-cols-1 md:grid-cols-[55%_45%] md:divide-x divide-gray-50">
-
-                {/* ── Left panel: Recharts line chart ───────────────────── */}
-                <div className="p-7 lg:p-9">
-                  <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-1">
-                    AI Visibility Growth
-                  </p>
-                  <p className="text-[11px] text-gray-400 font-medium leading-none mb-1">Mentions</p>
-                  <p className="text-[38px] font-bold text-[#39471D] leading-none mb-1">+540%</p>
-                  <p className="text-[11px] text-gray-400 font-medium mb-5 leading-relaxed">
-                    Increase in AI platform mentions over 6 months
-                  </p>
-
-                  {/* Real chart — coordinate-based, not hand-drawn.
-                      accessibilityLayer + outline resets kill the black focus/
-                      tap box Recharts otherwise draws around the plot on tap. */}
-                  <div
-                    className="[&_*]:outline-none [&_.recharts-surface]:outline-none focus:outline-none select-none"
-                    style={{ height: '148px', WebkitTapHighlightColor: 'transparent' }}
+          {/* Wide content scrolls inside its own container, never the page */}
+          <div data-reveal className="overflow-x-auto rounded-3xl border border-gray-100 bg-white shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+            <table className="w-full min-w-[560px] border-collapse text-left">
+              <caption className="sr-only">
+                Monthly organic clicks, impressions and average position, February to July 2026
+              </caption>
+              <thead>
+                <tr className="border-b border-gray-100">
+                  {['Month', 'Organic clicks', 'Impressions', 'Avg. position'].map((h, i) => (
+                    <th
+                      key={h}
+                      scope="col"
+                      className={`px-6 py-4 font-mono text-[10px] font-bold tracking-[0.16em] uppercase text-gray-400 ${i > 0 ? 'text-right' : ''}`}
+                    >
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {MONTHS.map((r) => (
+                  <tr
+                    key={r.m}
+                    className={`border-b border-gray-50 last:border-0 ${r.projected ? 'bg-[#39471D]/[0.04]' : ''}`}
                   >
-                    <ResultsChart />
-                  </div>
-                </div>
-
-                {/* ── Right panel: platform bars + average position ──────── */}
-                <div className="p-7 lg:p-9 flex flex-col">
-                  <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-5">
-                    Top AI Platforms
-                  </p>
-
-                  <div className="flex flex-col gap-4 flex-1">
-                    {PLATFORMS.map((p, i) => (
-                      <div key={p.name} className="flex items-center gap-3">
-                        <span className="text-[12px] font-medium text-gray-600 w-[76px] flex-shrink-0">
-                          {p.name}
+                    <th scope="row" className="px-6 py-4 text-sm font-bold text-gray-900 whitespace-nowrap">
+                      {r.m}
+                      {r.projected && (
+                        <span className="ml-2 font-mono text-[9px] font-bold tracking-[0.12em] uppercase text-[#55672E] align-middle">
+                          Projected
                         </span>
-                        <div className="flex-1 bg-gray-100 rounded-full h-[7px] overflow-hidden">
-                          <div
-                            ref={(el) => { barRefs.current[i] = el; }}
-                            className="h-full rounded-full"
-                            style={{ width: '0%', backgroundColor: p.color }}
-                          />
-                        </div>
-                        <span className="text-[11px] font-bold text-gray-700 w-10 text-right tabular-nums">
-                          {p.count.toLocaleString()}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Divider + Average Position */}
-                  <div className="mt-6 pt-5 border-t border-gray-100">
-                    <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-2">
-                      Average Position
-                    </p>
-                    <div>
-                      <span className="text-[36px] font-bold text-gray-900 leading-none">2.3</span>
-                      <span className="text-[12px] font-medium text-gray-400 block mt-0.5">
-                        vs. 8.7 industry avg.
+                      )}
+                    </th>
+                    <td className="px-6 py-4 text-right">
+                      <span className="text-sm font-bold text-gray-900 tabular-nums">
+                        {r.projected ? '~' : ''}{r.clicks.toLocaleString('en-US')}
                       </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Floating card — peeks out below-left of dashboard */}
-            <div
-              ref={floatRef}
-              className="absolute -left-3 -bottom-8 bg-white border border-gray-100 px-5 py-4 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] z-20 flex flex-col gap-1 pointer-events-none"
-            >
-              <span className="text-[22px] font-bold text-[#39471D] leading-none">+420%</span>
-              <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-gray-400">
-                Platform growth
-              </span>
-            </div>
-
+                      {/* Bar carries the shape of the curve without a chart library */}
+                      <span aria-hidden="true" className="mt-1.5 block h-[3px] rounded-full bg-gray-100 overflow-hidden">
+                        <span
+                          className="block h-full rounded-full bg-[#39471D]"
+                          style={{ width: `${(r.clicks / PEAK) * 100}%` }}
+                        />
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right text-sm font-medium text-gray-500 tabular-nums whitespace-nowrap">
+                      {r.impr}
+                    </td>
+                    <td className="px-6 py-4 text-right text-sm font-bold text-[#39471D] tabular-nums">
+                      {r.pos}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
+
+        {/* ── Callout figures ─────────────────────────────────────────────── */}
+        <div data-reveal className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-20">
+          {CALLOUTS.map((c) => (
+            <div key={c.lbl} className="rounded-3xl p-8 bg-[#39471D]">
+              <p className="text-3xl font-bold text-[#CBD0AC] tracking-tight leading-none tabular-nums whitespace-nowrap">
+                {c.fig}
+              </p>
+              <p className="mt-3 text-[11px] font-bold tracking-[0.14em] uppercase text-white/50">
+                {c.lbl}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* ── The compounding effect ──────────────────────────────────────── */}
+        <div className="grid grid-cols-1 lg:grid-cols-[30%_1fr] gap-10 lg:gap-16 items-start">
+          <div className="lg:pt-2">
+            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 leading-tight">
+              The compounding effect
+            </h3>
+          </div>
+
+          <div data-reveal className="max-w-[64ch]">
+            <p className="text-gray-500 font-medium text-base leading-relaxed mb-5">
+              The work was built to compound. Early cluster work matured into rankings months
+              later, while fresh content and refreshes kept adding momentum on top of it. By June
+              the site was being shown for roughly{' '}
+              <strong className="text-gray-900 font-bold">ten times more searches</strong> than in
+              January, and average position had climbed from page two to page one.
+            </p>
+            <p className="text-gray-500 font-medium text-base leading-relaxed">
+              What matters most is that the growth was{' '}
+              <strong className="text-gray-900 font-bold">spread across the whole site</strong>,
+              not carried by one lucky page. Every hub grew by double or triple digits — the
+              signature of authority that holds, rather than a ranking that happened to land.
+            </p>
+
+            <blockquote className="mt-10 border-l-2 border-[#39471D] pl-7">
+              <p className="font-serif italic text-xl sm:text-2xl text-gray-900 leading-snug">
+                The two clusters we invested in most heavily were also the two that grew the most —
+                270% and 242%. When results track investment that precisely, you know it is the
+                strategy working, not luck.
+              </p>
+            </blockquote>
+
+            {/* Provenance — the figures are real, so say where they come from
+                and what they do and do not promise. */}
+            <p className="mt-10 pt-6 border-t border-gray-200/70 font-mono text-[10px] leading-relaxed tracking-[0.08em] uppercase text-gray-400">
+              Source: Google Search Console, January–July 2026. Client identity withheld for
+              confidentiality. Figures reflect one engagement over a defined period and are not a
+              guarantee of future results — outcomes vary by market, competition and site.
+            </p>
+          </div>
+        </div>
+
       </div>
     </section>
   );
