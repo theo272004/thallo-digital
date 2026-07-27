@@ -159,14 +159,16 @@ export default function Industries() {
               </div>
             </div>
             <div className={panel('-bottom-4 left-1/2 -translate-x-1/2 px-3 py-2.5 flex items-center gap-2')}>
+              {/* Search · document · shield, as path data rather than JSX in an
+                  array — every shape now carries its own key. */}
               {[
-                <><path d="M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" /><path d="M21 21l-4.35-4.35" /></>,
-                <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /></>,
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />,
+                ['M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z', 'M21 21l-4.35-4.35'],
+                ['M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z', 'M14 2v6h6'],
+                ['M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'],
               ].map((paths, i) => (
                 <div key={i} className="w-7 h-7 rounded-full border border-[#e8e8e3] flex items-center justify-center">
                   <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#39471D" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    {paths}
+                    {paths.map((d) => <path key={d} d={d} />)}
                   </svg>
                 </div>
               ))}

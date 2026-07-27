@@ -22,12 +22,7 @@ export default function HeroPhoneScene({ active, burst = false }: { active: bool
   const [visibleResults, setVisibleResults] = useState(0);
 
   useEffect(() => {
-    if (!active) {
-      setStep(0);
-      setQuery('');
-      setVisibleResults(0);
-      return;
-    }
+    if (!active) return;
     let alive = true;
     const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
     (async () => {
@@ -51,7 +46,15 @@ export default function HeroPhoneScene({ active, burst = false }: { active: bool
         setVisibleResults(i);
       }
     })();
-    return () => { alive = false; };
+    // Rewinding on teardown rather than in the effect body: same reset when the
+    // scene goes inactive, without a synchronous setState triggering a second
+    // render pass on every run.
+    return () => {
+      alive = false;
+      setStep(0);
+      setQuery('');
+      setVisibleResults(0);
+    };
   }, [active]);
 
   return (

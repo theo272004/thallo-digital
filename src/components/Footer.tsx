@@ -49,8 +49,8 @@ export default function Footer() {
           <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
             <a href="/thallo-digital/" className="hover:text-[#39471D]">About</a>
             <a href="/thallo-digital/#blog" className="hover:text-[#39471D]">Blog</a>
-            <a href="/thallo-digital/#contact" className="hover:text-[#39471D]">Contact</a>
-            <a href="/thallo-digital/#contact" className="hover:text-[#39471D]">Book an audit</a>
+            <a href="/thallo-digital/contact/" className="hover:text-[#39471D]">Contact</a>
+            <a href="/thallo-digital/contact/" className="hover:text-[#39471D]">Book an audit</a>
           </div>
         </div>
       </div>

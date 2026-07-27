@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useSyncExternalStore } from 'react';
 import BackgroundGrid from './BackgroundGrid';
 import HeroText from './HeroText';
 import HeroPhoneScene from './HeroPhoneScene';
@@ -22,6 +22,12 @@ const GATHER_STAGGER = 240; // gap between each card flying into the window
 const CARD_FLIGHT_MS = 700; // how long a single card takes to reach + dissolve into its tab
 const TAB_MS = 1500; // each browser tab stays active this long (snappier switching)
 
+/** Module-level so the reference is stable across renders. */
+const subscribeVisibility = (onChange: () => void) => {
+  document.addEventListener('visibilitychange', onChange);
+  return () => document.removeEventListener('visibilitychange', onChange);
+};
+
 /**
  * A single looping sequence: the phone types a query, the four source cards
  * fly out of it one by one (ChatGPT → Google → Perplexity → Forbes), hold,
@@ -36,15 +42,10 @@ export default function Hero() {
   const [phase, setPhase] = useState<Phase>('phone');
   const [tabIndex, setTabIndex] = useState(0);
   const [revealedTabs, setRevealedTabs] = useState(0);
-  const [paused, setPaused] = useState(false);
-
-  // Pause the loop while the tab is hidden.
-  useEffect(() => {
-    const onVis = () => setPaused(document.hidden);
-    setPaused(document.hidden);
-    document.addEventListener('visibilitychange', onVis);
-    return () => document.removeEventListener('visibilitychange', onVis);
-  }, []);
+  // Pause the loop while the tab is hidden. Page visibility is an external
+  // store, so read it as one — mirroring it into state meant a setState in an
+  // effect body, and a cascading render on every mount.
+  const paused = useSyncExternalStore(subscribeVisibility, () => document.hidden, () => false);
 
   // Self-scheduling state machine — each phase queues the next.
   useEffect(() => {

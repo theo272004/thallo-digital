@@ -103,7 +103,7 @@ export default function RootLayout({
                 '@type': 'ContactPoint',
                 contactType: 'sales',
                 email: 'hello@thallo.co',
-                url: `${SITE_URL}/#contact`,
+                url: `${SITE_URL}/contact/`,
                 availableLanguage: ['English'],
               },
             }),

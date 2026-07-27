@@ -11,7 +11,6 @@ import Testimonials from '@/components/Testimonials';
 import VideoSection from '@/components/VideoSection';
 import BlogSection from '@/components/BlogSection';
 import CTASection from '@/components/CTASection';
-import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
 import Industries from '@/components/Industries';
 import About from '@/components/About';
@@ -37,7 +36,6 @@ export default function Home() {
         {/* "In their words" — the testimonial carousel, despite the file name.
             Sits last so the proof is the final thing read before the form. */}
         <BlogSection />
-        <Contact />
       </main>
       <Footer />
     </div>

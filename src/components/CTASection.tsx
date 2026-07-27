@@ -1,6 +1,6 @@
 import React from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
-import { SplitReveal } from '@/components/motion';
+import { SplitReveal, Magnetic } from '@/components/motion';
 
 export default function CTASection() {
   return (
@@ -28,6 +28,24 @@ export default function CTASection() {
               Start with an AI visibility audit. See exactly where you stand,
               and what it takes to lead.
             </p>
+
+            {/* The form lives on its own page now — this is the home's way in. */}
+            <div className="mt-10 flex flex-col sm:flex-row gap-3 sm:items-center">
+              <Magnetic>
+                <a
+                  href="/thallo-digital/contact/"
+                  className="inline-block w-full sm:w-auto text-center px-7 py-3.5 bg-white rounded-full text-sm font-semibold text-[#39471D] hover:bg-[#E7ECD9] transition-colors"
+                >
+                  Book an audit ↗
+                </a>
+              </Magnetic>
+              <a
+                href="/thallo-digital/thallo-ai/"
+                className="inline-block w-full sm:w-auto text-center px-7 py-3.5 border border-white/30 rounded-full text-sm font-semibold text-white hover:bg-white/10 transition-colors"
+              >
+                Check my visibility ↗
+              </a>
+            </div>
           </div>
 
         </div>
