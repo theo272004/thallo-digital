@@ -46,7 +46,7 @@ export default function Navbar() {
           <a href="/thallo-digital/services/" className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Services</a>
           <a href="/thallo-digital/industries/" className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Industries</a>
           <a href="/thallo-digital/#approach" className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Our Approach</a>
-          <a href="/thallo-digital/#results" className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Results</a>
+          <a href="/thallo-digital/results/" className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Results</a>
           <a href="/thallo-digital/#blog" className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Resources</a>
         </div>
 
@@ -93,7 +93,7 @@ export default function Navbar() {
             <a href="/thallo-digital/services/">Services</a>
             <a href="/thallo-digital/industries/">Industries</a>
             <a href="/thallo-digital/#approach">Our Approach</a>
-            <a href="/thallo-digital/#results">Results</a>
+            <a href="/thallo-digital/results/">Results</a>
             <a href="/thallo-digital/#blog">Resources</a>
           </div>
           <div className="flex flex-col gap-4 mt-auto">
