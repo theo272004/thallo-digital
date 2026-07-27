@@ -104,22 +104,32 @@ export default function ContactLanding() {
 
   return (
     <>
-      {/* ── One screen of photograph. It holds still and the white section
-             below rides up over it — see .contact-pin in globals.css. ─────── */}
-      <section className="contact-pin relative isolate overflow-hidden min-h-[100svh]">
+      {/* ── The photograph, pinned. It gets its own layer rather than wrapping
+             the card, because a pinned section pins everything inside it — the
+             card would hold still too and the white would swallow it. Here the
+             picture stays put and the card scrolls up off the top, over it.
+             The negative margin takes the layer back out of the flow, so what
+             follows starts at the top of the page and lies on the photo. ──── */}
+      <div
+        aria-hidden="true"
+        className="sticky top-0 z-0 h-[100svh] -mb-[100svh] overflow-hidden pointer-events-none"
+      >
         <img
           src="/thallo-digital/contact-bg.webp"
           alt=""
-          aria-hidden="true"
           width={2048}
           height={1152}
           fetchPriority="high"
           decoding="async"
-          className="absolute inset-0 -z-10 h-full w-full object-cover object-center select-none pointer-events-none"
+          className="absolute inset-0 h-full w-full object-cover object-center select-none"
         />
         {/* Light scrim — enough to seat the card, not enough to flatten the light */}
-        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[#171a10]/35" />
+        <div className="absolute inset-0 bg-[#171a10]/35" />
+      </div>
 
+      {/* One screen of photograph before the white arrives; the card rides on
+          top of everything so it never passes behind the section below. */}
+      <section className="relative z-20 min-h-[100svh]">
         {/* Extra side padding from lg up so the photograph always reads as the
             backdrop instead of a hairline frame around an almost-full-bleed card.
             The top padding clears the floating navbar. */}
