@@ -25,20 +25,6 @@ const fieldCls =
 
 const labelCls = 'block text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-2';
 
-/* The promise, stated up front on the photograph — the three things a visitor
-   actually wants to know before writing to a stranger. */
-const PROMISES = [
-  'Reply within one business day',
-  'A founder reads it, not a queue',
-  'No sequences, no sales floor',
-];
-
-const STEPS: [string, string, string][] = [
-  ['01', 'We read it', 'Your message goes to the people who do the work, not to a CRM.'],
-  ['02', 'We look first', 'Before replying we check how AI assistants describe you today.'],
-  ['03', 'We reply with substance', 'Findings and a straight answer on whether we are a fit.'],
-];
-
 const ROUTES = [
   {
     href: '/thallo-digital/thallo-ai/',
@@ -118,7 +104,8 @@ export default function ContactLanding() {
 
   return (
     <>
-      {/* ── Hero — the photograph runs full-bleed and carries the page ─────── */}
+      {/* ── The photograph is the page: it runs from behind the navbar all the
+             way down to the band below, with the card floating on top. ─────── */}
       <section className="relative isolate overflow-hidden">
         <img
           src="/thallo-digital/contact-bg.webp"
@@ -130,86 +117,49 @@ export default function ContactLanding() {
           decoding="async"
           className="absolute inset-0 -z-10 h-full w-full object-cover object-center select-none pointer-events-none"
         />
-        {/* Gradient scrim, heaviest at the foot — the type sits on the dark end
-            while the top of the frame keeps the daylight of the photograph. */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-gradient-to-b from-[#171a10]/55 via-[#171a10]/40 to-[#171a10]/80"
-        />
+        {/* Light scrim — enough to seat the card, not enough to flatten the light */}
+        <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[#171a10]/35" />
 
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-14 pt-40 pb-44 lg:pt-52 lg:pb-56">
-          <Eyebrow tone="light" className="mb-6">Contact</Eyebrow>
-          <SplitReveal
-            as="h1"
-            scroll={false}
-            fade={false}
-            className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-7 font-sans text-balance max-w-[20ch]"
-            html="Tell us where you want to be found."
-          />
-          <p className="text-[#CBD0AC] font-medium text-base sm:text-lg leading-relaxed max-w-[52ch]">
-            One conversation is enough to know how AI describes your business today —
-            and what it takes to become the answer it gives first. Whoever your
-            customer is.
-          </p>
-
-          <ul className="mt-12 flex flex-col sm:flex-row sm:flex-wrap gap-x-10 gap-y-4">
-            {PROMISES.map((p) => (
-              <li key={p} className="flex items-center gap-3">
-                <span className="h-px w-6 bg-white/40" aria-hidden="true" />
-                <span className="font-mono text-[11px] font-bold tracking-[0.2em] uppercase text-white/80">
-                  {p}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* ── The card rises into the photograph ────────────────────────────── */}
-      <section className="bg-white pb-24 lg:pb-32">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-14">
+        {/* Extra side padding from lg up so the photograph always reads as the
+            backdrop instead of a hairline frame around an almost-full-bleed card.
+            The top padding clears the floating navbar. */}
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-14 pt-36 pb-20 sm:pt-40 sm:pb-28 lg:pt-48 lg:pb-36">
+          {/* ── Floating editorial card ──────────────────────────────────────── */}
           <div
-            className="relative -mt-24 lg:-mt-32 mx-auto max-w-[1180px] rounded-[32px] bg-white
-                       p-8 sm:p-12 lg:p-16 shadow-[0_50px_120px_-40px_rgba(23,26,16,0.55)]"
+            data-reveal
+            className="mx-auto max-w-[1180px] rounded-[32px] bg-white p-8 sm:p-12 lg:p-16
+                       shadow-[0_50px_120px_-40px_rgba(23,26,16,0.55)]"
           >
-            <div className="grid grid-cols-1 lg:grid-cols-[0.8fr_1fr] gap-12 lg:gap-20 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1fr] gap-12 lg:gap-20 items-start">
 
-              {/* ── Left — the direct line, then what actually happens ─────── */}
+              {/* ── Left — the invitation ────────────────────────────────────── */}
               <div className="lg:pt-2">
-                <p className="text-[11px] font-mono tracking-wider uppercase text-gray-400 mb-2">
-                  Write to us directly
+                <Eyebrow className="mb-6">Contact</Eyebrow>
+                <SplitReveal
+                  as="h1"
+                  className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans text-balance"
+                  html="Tell us where you want to be found."
+                />
+                <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[42ch]">
+                  One conversation is enough to know how AI describes your business today —
+                  and what it takes to become the answer it gives first. Whoever your
+                  customer is.
+                </p>
+
+                <div className="mt-10 h-px w-full max-w-[280px] bg-gray-100" />
+
+                <p className="mt-6 text-[11px] font-mono tracking-wider uppercase text-gray-400 mb-2">
+                  Or write to us directly
                 </p>
                 <a
                   href={`mailto:${INBOX}`}
-                  className="text-xl sm:text-2xl font-bold text-gray-900 hover:text-[#39471D] transition-colors break-words"
+                  className="text-base font-bold text-gray-900 hover:text-[#39471D] transition-colors break-words"
                 >
                   {INBOX}
                 </a>
-
-                <div className="my-9 h-px w-full max-w-[280px] bg-gray-100" />
-
-                <h2 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-6">
-                  What happens next
-                </h2>
-                <ol className="flex flex-col gap-6">
-                  {STEPS.map(([n, title, copy]) => (
-                    <li key={n} className="flex gap-4 items-start">
-                      <span
-                        className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold"
-                        style={{ backgroundColor: '#E7ECD9', color: '#39471D' }}
-                      >
-                        {n}
-                      </span>
-                      <div>
-                        <p className="text-sm font-bold text-gray-900 mb-1">{title}</p>
-                        <p className="text-sm text-gray-500 leading-relaxed">{copy}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
               </div>
 
-              {/* ── Right — the form ──────────────────────────────────────── */}
+              {/* ── Right — the form ─────────────────────────────────────────── */}
               <div>
                 {done ? (
                   <div className="py-8" role="status" aria-live="polite">
@@ -220,9 +170,9 @@ export default function ContactLanding() {
                     >
                       ✓
                     </span>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-3">
                       {status === 'mail' ? 'Your email is ready to send.' : 'Thanks — message received.'}
-                    </h3>
+                    </h2>
                     <p className="text-sm text-gray-500 leading-relaxed max-w-[44ch]">
                       {status === 'mail' ? (
                         <>
@@ -317,7 +267,7 @@ export default function ContactLanding() {
       </section>
 
       {/* ── For visitors who are not ready to write yet ────────────────────── */}
-      <section className="bg-white pb-28 border-b border-gray-100">
+      <section className="bg-white py-24 lg:py-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-14">
           <div className="flex flex-col items-center text-center mb-12">
             <img
