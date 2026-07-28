@@ -111,7 +111,7 @@ export default function IndustryTicker() {
                 {item.icon}
                 <span style={{ fontSize: '13px', fontWeight: 500 }}>{item.title}</span>
               </div>
-              <div style={{ width: '1px', height: '20px', background: '#E5E7DF', flexShrink: 0 }} />
+              <div style={{ width: '1px', height: '20px', background: '#E7ECD9', flexShrink: 0 }} />
             </React.Fragment>
           ))}
         </div>

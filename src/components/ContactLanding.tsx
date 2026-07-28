@@ -124,7 +124,7 @@ export default function ContactLanding() {
           className="absolute inset-0 h-full w-full object-cover object-center select-none"
         />
         {/* Light scrim — enough to seat the card, not enough to flatten the light */}
-        <div className="absolute inset-0 bg-[#171a10]/35" />
+        <div className="absolute inset-0 bg-[#171A10]/35" />
       </div>
 
       {/* One screen of photograph before the white arrives; the card rides on

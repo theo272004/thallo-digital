@@ -106,9 +106,9 @@ export default function HeroPhoneScene({ active, burst = false }: { active: bool
             {step === 2 && (
               <div className="flex items-center gap-2 px-1 pt-2">
                 <div className="flex gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#7f9b42] animate-pulse" style={{ animationDelay: '0ms' }} />
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#7f9b42] animate-pulse" style={{ animationDelay: '180ms' }} />
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#7f9b42] animate-pulse" style={{ animationDelay: '360ms' }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#55672E] animate-pulse" style={{ animationDelay: '0ms' }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#55672E] animate-pulse" style={{ animationDelay: '180ms' }} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#55672E] animate-pulse" style={{ animationDelay: '360ms' }} />
                 </div>
                 <span className="text-[11px] text-gray-400 font-medium">Checking sources…</span>
               </div>

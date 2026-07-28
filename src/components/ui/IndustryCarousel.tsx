@@ -109,7 +109,7 @@ export default function IndustryCarousel() {
             width: '44px',
             height: '44px',
             borderRadius: '12px',
-            background: '#F3F5EE',
+            background: '#F7F8F3',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -164,7 +164,7 @@ export default function IndustryCarousel() {
               width: i === current ? '16px' : '5px',
               height: '5px',
               borderRadius: '999px',
-              background: i === current ? '#39471D' : '#C5CCBA',
+              background: i === current ? '#39471D' : '#CBD0AC',
               transition: 'all 400ms ease',
             }}
           />

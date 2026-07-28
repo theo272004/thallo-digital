@@ -20,7 +20,7 @@ const PlatformMark = ({ src, name }: { src?: string; name: string }) => (
     {src ? (
       <img src={src} alt="" aria-hidden="true" width={20} height={20} className="w-full h-full object-contain" />
     ) : (
-      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#445A20" strokeWidth="1.8" strokeLinecap="round">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#39471D" strokeWidth="1.8" strokeLinecap="round">
         <circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
       </svg>
     )}
@@ -108,7 +108,7 @@ function Tag({ children, tone }: { children: React.ReactNode; tone: string }) {
 
 const Check = () => (
   <span className="w-6 h-6 rounded-lg border border-gray-100 bg-white flex items-center justify-center shrink-0 mt-px">
-    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#445A20" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#39471D" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20 6 9 17l-5-5" />
     </svg>
   </span>
@@ -175,7 +175,7 @@ export default function ThalloAIPage() {
                 Start AI Visibility Audit
               </div>
               <div className="mt-5 rounded-2xl bg-gray-50/60 p-4 flex gap-3">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#445A20" strokeWidth="1.8" className="mt-0.5 shrink-0">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#39471D" strokeWidth="1.8" className="mt-0.5 shrink-0">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 </svg>
                 <p className="text-[11px] font-semibold leading-relaxed text-gray-500">
@@ -350,7 +350,7 @@ export default function ThalloAIPage() {
               ].map(([t, d]) => (
                 <div key={t} className="rounded-3xl bg-gray-50/60 p-7">
                   <div className="flex items-center gap-2.5 mb-3">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#445A20" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#39471D" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z" />
                     </svg>
                     <span className="text-[13px] font-bold text-gray-900">{t}</span>
@@ -374,7 +374,7 @@ export default function ThalloAIPage() {
             {ACTIONS.map((a) => (
               <div key={a.t} className="rounded-3xl border border-gray-100 p-6 flex flex-col sm:flex-row sm:items-center gap-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,.20)]">
                 <span className="w-10 h-10 rounded-xl bg-gray-50/60 border border-gray-100 flex items-center justify-center shrink-0">
-                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#445A20" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#39471D" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" />
                   </svg>
                 </span>
@@ -412,7 +412,7 @@ export default function ThalloAIPage() {
         <div className="rounded-[28px] border border-gray-100 bg-white p-8 sm:p-10" style={SOFT}>
           <div className="flex flex-col lg:flex-row lg:items-center gap-7">
             <span className="w-11 h-11 rounded-xl bg-gray-50/60 border border-gray-100 flex items-center justify-center shrink-0">
-              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#445A20" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#39471D" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m2 7 10 6 10-6" />
               </svg>
             </span>

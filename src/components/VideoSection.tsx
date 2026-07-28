@@ -10,7 +10,7 @@ export default function VideoSection() {
       <div className="max-w-[1440px] mx-auto px-6">
         <div
           className="relative text-white rounded-[32px] overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, #252d12 0%, #39471D 55%, #4d5e26 100%)' }}
+          style={{ background: 'linear-gradient(135deg, #171A10 0%, #39471D 55%, #55672E 100%)' }}
         >
           {/* Radial highlight */}
           <div

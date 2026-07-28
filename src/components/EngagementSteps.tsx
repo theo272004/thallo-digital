@@ -15,9 +15,9 @@ import Eyebrow from '@/components/ui/Eyebrow';
 function Screen({ children }: { children: React.ReactNode }) {
   return (
     <svg viewBox="0 0 160 104" className="w-full h-auto" role="img" aria-hidden="true">
-      <rect x="16" y="8" width="128" height="74" rx="7" fill="#FFFFFF" stroke="#C9D2B4" strokeWidth="1.5" />
+      <rect x="16" y="8" width="128" height="74" rx="7" fill="#FFFFFF" stroke="#CBD0AC" strokeWidth="1.5" />
       {children}
-      <path d="M80 82v10M62 92h36" stroke="#C9D2B4" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M80 82v10M62 92h36" stroke="#CBD0AC" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }
@@ -65,7 +65,7 @@ function ArtFoundation() {
         <rect
           key={x}
           x={x} y="54" width="24" height="12" rx="3"
-          fill="#FFFFFF" stroke="#C9D2B4" strokeWidth="1.5"
+          fill="#FFFFFF" stroke="#CBD0AC" strokeWidth="1.5"
           className="step-node"
           style={{ animationDelay: `${i * 0.16}s` }}
         />
@@ -79,7 +79,7 @@ function ArtEngine() {
   return (
     <Screen>
       {[{ y: 26, w: 44 }, { y: 40, w: 34 }, { y: 54, w: 40 }].map((l) => (
-        <rect key={l.y} x="28" y={l.y} width={l.w} height="4" rx="2" fill="#C9D2B4" />
+        <rect key={l.y} x="28" y={l.y} width={l.w} height="4" rx="2" fill="#CBD0AC" />
       ))}
       {[24, 40, 56].map((y, i) => (
         <rect
@@ -98,7 +98,7 @@ function ArtEngine() {
 function ArtAccelerate() {
   return (
     <Screen>
-      <path d="M28 70h104" stroke="#E2E6D8" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M28 70h104" stroke="#E7ECD9" strokeWidth="1.5" strokeLinecap="round" />
       <path
         d="M30 64 52 56 74 58 96 42 118 28"
         fill="none" stroke="#39471D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
@@ -158,7 +158,7 @@ export default function EngagementSteps() {
                 as broken by them rather than running underneath. */}
             <div
               aria-hidden="true"
-              className="hidden lg:block absolute left-0 right-0 top-[15px] border-t border-dashed border-[#D5DAC6]"
+              className="hidden lg:block absolute left-0 right-0 top-[15px] border-t border-dashed border-[#CBD0AC]"
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 lg:gap-x-0 lg:gap-y-0">

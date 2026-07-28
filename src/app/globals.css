@@ -8,6 +8,34 @@
   --animate-marquee: marquee 32s linear infinite;
 }
 
+/* ─── The greens ──────────────────────────────────────────────────────────────
+   Five, and they are the whole set. Everything olive on this site resolves to
+   one of these; anything between them had drifted in and has been folded back.
+
+     ink    #171A10   scrims, the deep end of dark gradients
+     olive  #39471D   the brand green — fills, figures, icons, buttons
+     mid    #55672E   button hover, secondary marks, small accents
+     soft   #CBD0AC   copy and rules ON olive; too light to sit on white
+     tint   #E7ECD9   fills and rules on white; too light to carry text
+
+   For a ramp — a bar chart, a set of steps — use `olive` at falling opacity
+   rather than picking new greens. That is what ResultsDashboard does now.
+
+   Deliberately outside the set: #34A853 and #28C840 in the hero browser are
+   Google's own green and the macOS window light. They are quotations, not
+   brand colour, so unifying them would be a mistake.
+
+   `paper` is not a green, it is the off-white the tinted panels sit on; it is
+   here because eight near-identical versions of it had accumulated too. */
+@theme {
+  --color-olive-ink: #171A10;
+  --color-olive: #39471D;
+  --color-olive-mid: #55672E;
+  --color-olive-soft: #CBD0AC;
+  --color-olive-tint: #E7ECD9;
+  --color-paper: #F7F8F3;
+}
+
 /* The ticker renders its logo list 3× and slides one third of its width, so
    the loop is seamless. */
 @keyframes marquee {

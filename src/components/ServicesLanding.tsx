@@ -93,8 +93,8 @@ const OLIVE_TEXT = new Set(['Monthly', 'Deep', 'Compounding growth']);
 
 function CompareCell({ val }: { val: boolean | string }) {
   if (val === true) return (
-    <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#EEF2E4', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#445A20" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#E7ECD9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#39471D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="4 12 9 17 20 7" />
       </svg>
     </div>
@@ -106,11 +106,11 @@ function CompareCell({ val }: { val: boolean | string }) {
       </svg>
     </div>
   );
-  return <span style={{ fontSize: 13, fontWeight: 700, color: OLIVE_TEXT.has(val as string) ? '#445A20' : '#111827', textAlign: 'center' as const }}>{val}</span>;
+  return <span style={{ fontSize: 13, fontWeight: 700, color: OLIVE_TEXT.has(val as string) ? '#39471D' : '#111827', textAlign: 'center' as const }}>{val}</span>;
 }
 
 function CompareIcon({ feature }: { feature: string }) {
-  const p = { viewBox: '0 0 24 24', width: 20, height: 20, fill: 'none' as const, stroke: '#445A20', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
+  const p = { viewBox: '0 0 24 24', width: 20, height: 20, fill: 'none' as const, stroke: '#39471D', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
   const map: Record<string, React.ReactNode> = {
     'AI visibility benchmark':       <svg {...p}><line x1="18" y1="20" x2="18" y2="9"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="13"/><line x1="2" y1="20" x2="22" y2="20"/></svg>,
     'Technical AI-readiness build':  <svg {...p}><rect x="7" y="7" width="10" height="10" rx="1"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/><rect x="2" y="2" width="20" height="20" rx="3"/></svg>,
@@ -330,14 +330,14 @@ export default function ServicesPage() {
             <div style={{
               position: 'absolute', top: 0, left: '71%', transform: 'translateX(-50%)',
               zIndex: 20, width: 56, height: 56, borderRadius: '50%',
-              background: '#445A20', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: '#39471D', display: 'flex', alignItems: 'center', justifyContent: 'center',
               boxShadow: '0 10px 25px rgba(0,0,0,.12)',
             }}>
               <img loading="lazy" decoding="async" src="/thallo-digital/flower.webp" alt="" aria-hidden style={{ width: 28, height: 28, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
             </div>
 
             {/* Card */}
-            <div style={{ background: '#FFFFFF', border: '1px solid #ECE9E2', borderRadius: 30, boxShadow: '0 18px 55px rgba(32,32,24,.06)', overflow: 'hidden' }}>
+            <div style={{ background: '#FFFFFF', border: '1px solid #ECE9E2', borderRadius: 30, boxShadow: '0 18px 55px rgba(23,26,16,.06)', overflow: 'hidden' }}>
               <div style={{ overflowX: 'auto' }}>
                 <div style={{ minWidth: 720 }}>
 
@@ -349,7 +349,7 @@ export default function ServicesPage() {
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 64, borderBottom: '1px solid #F2F1ED', borderLeft: '1px solid #F2F1ED' }}>
                       <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#6B7280', whiteSpace: 'nowrap' }}>Audit</span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 64, background: '#445A20', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 64, background: '#39471D', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
                       <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#FFFFFF', whiteSpace: 'nowrap' }}>Authority Engine</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 64, borderBottom: '1px solid #F2F1ED', borderLeft: '1px solid #F2F1ED' }}>
@@ -364,17 +364,17 @@ export default function ServicesPage() {
                       className="group"
                       style={{ display: 'grid', gridTemplateColumns: '42fr 19fr 20fr 19fr', borderTop: '1px solid #F2F1ED' }}
                     >
-                      <div className="group-hover:bg-[#FAFAF8]" style={{ display: 'flex', alignItems: 'center', minHeight: 58, paddingLeft: 24, paddingRight: 16, gap: 14, transition: 'background 150ms' }}>
+                      <div className="group-hover:bg-[#F7F8F3]" style={{ display: 'flex', alignItems: 'center', minHeight: 58, paddingLeft: 24, paddingRight: 16, gap: 14, transition: 'background 150ms' }}>
                         <CompareIcon feature={row.feature} />
                         <span style={{ fontSize: 14, fontWeight: 600, color: '#111827', lineHeight: 1.35 }}>{row.feature}</span>
                       </div>
-                      <div className="group-hover:bg-[#FAFAF8]" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 58, borderLeft: '1px solid #F2F1ED', transition: 'background 150ms' }}>
+                      <div className="group-hover:bg-[#F7F8F3]" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 58, borderLeft: '1px solid #F2F1ED', transition: 'background 150ms' }}>
                         <CompareCell val={row.audit} />
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 58, background: '#FBFCF7', borderLeft: '1px solid #edf0e8', borderRight: '1px solid #edf0e8' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 58, background: '#F7F8F3', borderLeft: '1px solid #E7ECD9', borderRight: '1px solid #E7ECD9' }}>
                         <CompareCell val={row.engine} />
                       </div>
-                      <div className="group-hover:bg-[#FAFAF8]" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 58, borderLeft: '1px solid #F2F1ED', transition: 'background 150ms' }}>
+                      <div className="group-hover:bg-[#F7F8F3]" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 58, borderLeft: '1px solid #F2F1ED', transition: 'background 150ms' }}>
                         <CompareCell val={row.flagship} />
                       </div>
                     </div>

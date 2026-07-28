@@ -4,9 +4,9 @@
 
 /* Custom Font Declarations & Variables */
 :root {
-  --olive-deep: #758061;
-  --olive-light: #697357;
-  --olive-line: rgba(40, 44, 27, 0.08);
+  --olive-deep: #55672E;
+  --olive-light: #55672E;
+  --olive-line: rgba(23, 26, 16, 0.08);
   --paper: #FFFFFF;
   --ink: #111111;
   --ink-soft: #666666;
@@ -23,7 +23,7 @@
 
 /* Background Dotted Grid Pattern */
 .bg-grid-dots {
-  background-image: radial-gradient(rgba(40, 44, 27, 0.08) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(23, 26, 16, 0.08) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 

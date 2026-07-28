@@ -168,7 +168,7 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
             cardRefs.current[c.key] = el;
           }}
           className={`src-card absolute ${c.pos} w-[156px] overflow-hidden bg-white rounded-2xl border border-gray-100 p-3 flex items-center gap-2.5 ${
-            show ? 'opacity-100 shadow-[0_24px_50px_-24px_rgba(30,34,20,0.35)]' : 'opacity-0 shadow-none'
+            show ? 'opacity-100 shadow-[0_24px_50px_-24px_rgba(23,26,16,0.35)]' : 'opacity-0 shadow-none'
           }`}
         >
           <div className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center p-1.5 flex-shrink-0">
@@ -176,7 +176,7 @@ export default function HeroSourceCards({ phase }: { phase: CardsPhase }) {
           </div>
           <div className="min-w-0">
             <div className="text-[11px] font-bold text-gray-900 leading-tight">{c.name}</div>
-            <div className="text-[11px] font-semibold text-[#758061]">{c.tag}</div>
+            <div className="text-[11px] font-semibold text-[#55672E]">{c.tag}</div>
           </div>
         </div>
       ))}

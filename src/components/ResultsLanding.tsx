@@ -161,7 +161,7 @@ export default function ResultsLanding() {
                 so the heading clears AA whatever photograph goes in here next. */}
             <div
               aria-hidden="true"
-              className="absolute inset-0 bg-gradient-to-r from-[#171a10]/55 via-[#171a10]/20 to-transparent"
+              className="absolute inset-0 bg-gradient-to-r from-[#171A10]/55 via-[#171A10]/20 to-transparent"
             />
 
             <div className="relative max-w-lg mb-14">
@@ -405,7 +405,7 @@ export default function ResultsLanding() {
                 left, and this photograph's left edge carries lit wood. */}
             <div
               aria-hidden="true"
-              className="absolute inset-0 z-[1] bg-gradient-to-r from-[#171a10]/55 via-[#171a10]/20 to-transparent"
+              className="absolute inset-0 z-[1] bg-gradient-to-r from-[#171A10]/55 via-[#171A10]/20 to-transparent"
             />
             <div className="relative z-[2] max-w-xl">
               <Eyebrow tone="light" className="mb-6">Your turn</Eyebrow>

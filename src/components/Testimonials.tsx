@@ -33,7 +33,7 @@ export default function Testimonials() {
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 items-stretch">
 
           {/* Featured card — heading lives inside the image */}
-          <div className="relative overflow-hidden rounded-[28px] bg-[#1a1f10] min-h-[380px] lg:min-h-0 lg:w-[40%] lg:flex-shrink-0">
+          <div className="relative overflow-hidden rounded-[28px] bg-[#171A10] min-h-[380px] lg:min-h-0 lg:w-[40%] lg:flex-shrink-0">
             <img loading="lazy" decoding="async"
               src="/thallo-digital/notebook-desk.webp"
               alt=""

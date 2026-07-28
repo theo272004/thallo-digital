@@ -23,7 +23,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
   return (
     <div
       className="hero-browser relative w-full max-w-[480px] 2xl:max-w-[540px] rounded-[18px] bg-white border border-gray-200/80 overflow-hidden"
-      style={{ boxShadow: '0 40px 90px -40px rgba(28,32,15,0.45)' }}
+      style={{ boxShadow: '0 40px 90px -40px rgba(23,26,16,0.45)' }}
     >
       {/* Top chrome */}
       <div className="bg-gray-100/70 border-b border-gray-200/60">
@@ -141,8 +141,8 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
                 <span className="text-[15px] font-bold"><span className="text-[#4285F4]">G</span><span className="text-[#EA4335]">o</span><span className="text-[#FBBC05]">o</span><span className="text-[#4285F4]">g</span><span className="text-[#34A853]">l</span><span className="text-[#EA4335]">e</span></span>
                 <div className="flex-1 h-8 rounded-full border border-gray-200 flex items-center px-3.5 text-[12px] text-gray-500 shadow-sm">best AI visibility agency for companies</div>
               </div>
-              <div className="rounded-xl border border-gray-100 bg-[#758061]/[0.04] p-4">
-                <div className="flex items-center gap-1.5 mb-2 text-[11px] font-bold tracking-wider uppercase text-[#758061]">
+              <div className="rounded-xl border border-gray-100 bg-[#55672E]/[0.04] p-4">
+                <div className="flex items-center gap-1.5 mb-2 text-[11px] font-bold tracking-wider uppercase text-[#55672E]">
                   <SparkIcon /> AI Overview
                 </div>
                 <p className="text-[13px] leading-relaxed text-gray-700">
@@ -226,14 +226,14 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
 }
 
 function Mark({ children }: { children: React.ReactNode }) {
-  return <span className="font-bold text-white bg-[#758061] px-1 rounded-[3px]">{children}</span>;
+  return <span className="font-bold text-white bg-[#55672E] px-1 rounded-[3px]">{children}</span>;
 }
 
 function SourceChip({ label, active = false }: { label: string; active?: boolean }) {
   return (
     <span
       className={`text-[11px] font-semibold px-2 py-1 rounded-full border ${
-        active ? 'bg-[#758061] text-white border-[#758061]' : 'bg-white text-gray-500 border-gray-200'
+        active ? 'bg-[#55672E] text-white border-[#55672E]' : 'bg-white text-gray-500 border-gray-200'
       }`}
     >
       {label}

@@ -17,12 +17,14 @@ const ResultsChart = dynamic(() => import('@/components/ResultsChart'), {
 });
 
 // ── Platform bars ─────────────────────────────────────────────────────────────
+// The ramp is the one olive at descending strength rather than five hand-picked
+// greens. It still reads as a ranking, and it cannot drift out of the palette.
 const PLATFORMS = [
-  { name: 'ChatGPT',    count: 1240, pct: 100, color: '#39471D' },
-  { name: 'Perplexity', count: 960,  pct: 77,  color: '#4d5e26' },
-  { name: 'Google AI',  count: 810,  pct: 65,  color: '#5e722e' },
-  { name: 'Claude',     count: 560,  pct: 45,  color: '#6f8636' },
-  { name: 'Gemini',     count: 430,  pct: 35,  color: '#809a3e' },
+  { name: 'ChatGPT',    count: 1240, pct: 100, color: 'rgba(57,71,29,1)' },
+  { name: 'Perplexity', count: 960,  pct: 77,  color: 'rgba(57,71,29,0.82)' },
+  { name: 'Google AI',  count: 810,  pct: 65,  color: 'rgba(57,71,29,0.64)' },
+  { name: 'Claude',     count: 560,  pct: 45,  color: 'rgba(57,71,29,0.46)' },
+  { name: 'Gemini',     count: 430,  pct: 35,  color: 'rgba(57,71,29,0.30)' },
 ];
 
 

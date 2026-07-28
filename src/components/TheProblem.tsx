@@ -52,7 +52,7 @@ export default function TheProblem() {
       <div className="max-w-[1440px] mx-auto px-6">
 
         {/* ── Feature card — panoramic, full-width, dark image-backed ── */}
-        <div className="relative overflow-hidden rounded-[28px] bg-[#171a10] w-full aspect-[16/6] min-h-[360px] lg:min-h-0">
+        <div className="relative overflow-hidden rounded-[28px] bg-[#171A10] w-full aspect-[16/6] min-h-[360px] lg:min-h-0">
           <img loading="lazy" decoding="async"
             src="/thallo-digital/shift.webp"
             alt="Laptop with an analytics dashboard on a desk beside a sketchbook"
