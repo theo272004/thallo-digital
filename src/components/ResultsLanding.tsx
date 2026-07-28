@@ -34,15 +34,6 @@ const CALLOUTS = [
   { fig: '+270',  suffix: '%', lbl: 'Top cluster',     copy: 'Growth in the content hub that received the deepest investment.' },
 ];
 
-/* Lifted off the compounding-effect sheet. Every figure here is already stated
-   elsewhere on the page — 270% and 242% inside the quote itself, 41→13 in the
-   callouts — so the sheet asserts nothing new. */
-const SHEET_CARDS = [
-  { fig: '+270%', lbl: 'Top cluster' },
-  { fig: '+242%', lbl: 'Second cluster' },
-  { fig: '41→13', lbl: 'Flagship pillar' },
-];
-
 /* The dark cards floating on the photo panel — the site's signature move. */
 const glassCard = {
   background: 'rgba(20,20,18,0.72)',
@@ -237,77 +228,45 @@ export default function ResultsLanding() {
               </p>
             </div>
 
-            {/* The sheet, built the way the reference builds it: a panel laid
-                flat in space, carrying its own mark, with cards lifted clear of
-                its surface on their own z-plane. It runs off the right edge and
-                the section clips it.
-
-                At rest it sits at the reference's angle, where the quote reads
-                as a shape more than a sentence — hovering brings it upright to
-                be read. That is the honest compromise for putting a message on
-                a surface that is, by design, turned away from the reader.
-                Flat below lg: an angled sheet in a 375px column costs
-                legibility and buys nothing. */}
+            {/* The sheet, drawn the way the reference draws it: a light panel
+                laid flat in space, hairline border, soft shadow, the mark in
+                the corner and plain sans on the surface. It runs off the right
+                edge and the section clips it. Nothing here moves — no hover,
+                no entrance. Flat below lg, where an angled sheet costs
+                legibility. */}
             <div data-reveal className="sheet-stage relative lg:-mr-20 xl:-mr-36">
               <div className="sheet-plane relative">
-                {/* The sheet's own thickness, sitting a hair behind and below */}
+                {/* The sheet's own thickness, a hair behind and below */}
                 <div
                   aria-hidden="true"
-                  className="absolute inset-0 translate-x-2 translate-y-3 rounded-[28px] bg-[#283215]"
+                  className="absolute inset-0 translate-x-2 translate-y-3 rounded-[28px] bg-gray-100"
                 />
 
-                <div className="relative overflow-hidden rounded-[28px] bg-[#39471D] p-8 sm:p-11 shadow-[0_80px_140px_-50px_rgba(23,26,16,0.75)]">
-                  <img
-                    loading="lazy"
-                    decoding="async"
-                    src="/thallo-digital/isotipo.png"
-                    alt=""
-                    aria-hidden="true"
-                    className="pointer-events-none absolute -top-16 -right-16 w-72 rotate-[18deg] opacity-[0.09] select-none"
-                    style={{ filter: 'brightness(0) invert(1)' }}
-                  />
-
-                  {/* The mark on the sheet, as the reference carries its own */}
-                  <div className="relative mb-7 flex items-center gap-3">
-                    <img
-                      loading="lazy"
-                      decoding="async"
-                      src="/thallo-digital/isotipo.png"
-                      alt=""
-                      aria-hidden="true"
-                      className="h-8 w-8 shrink-0 object-contain select-none"
-                      style={{ filter: 'brightness(0) invert(1)' }}
-                    />
-                    <span className="text-[13px] font-bold uppercase tracking-[0.18em] text-white/80">
-                      Thallo
+                <div className="relative overflow-hidden rounded-[28px] border border-gray-100 bg-white p-8 sm:p-11 shadow-[0_80px_140px_-50px_rgba(23,26,16,0.45)]">
+                  {/* The mark, the way the reference carries its own */}
+                  <div className="mb-8 flex items-center gap-3">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#39471D]">
+                      <img
+                        loading="lazy"
+                        decoding="async"
+                        src="/thallo-digital/isotipo.png"
+                        alt=""
+                        aria-hidden="true"
+                        className="h-6 w-6 object-contain select-none"
+                        style={{ filter: 'brightness(0) invert(1)' }}
+                      />
+                    </span>
+                    <span>
+                      <span className="block text-sm font-bold text-gray-900">Thallo</span>
+                      <span className="block text-xs font-medium text-gray-400">Case study</span>
                     </span>
                   </div>
 
-                  <p className="relative font-serif italic text-2xl sm:text-3xl text-white leading-snug">
+                  <p className="text-xl sm:text-2xl font-medium leading-relaxed text-gray-900">
                     The two clusters we invested in most heavily were also the two that grew the most —
                     270% and 242%. When results track investment that precisely, you know it is the
                     strategy working, not luck.
                   </p>
-                </div>
-
-                {/* Lifted off the sheet on their own plane. Decorative — every
-                    figure is already stated in the prose and the callouts. */}
-                <div
-                  aria-hidden="true"
-                  className="sheet-lift pointer-events-none absolute -right-8 top-8 hidden lg:block"
-                >
-                  <div className="flex flex-col gap-3">
-                    {SHEET_CARDS.map((c, i) => (
-                      <div
-                        key={c.lbl}
-                        className="sheet-card-in flex items-center gap-3 rounded-2xl border border-black/5 bg-white px-4 py-3 shadow-[0_20px_44px_-20px_rgba(23,26,16,0.55)]"
-                        style={{ animationDelay: `${0.3 + i * 0.15}s` }}
-                      >
-                        <span className="text-base font-bold text-[#39471D] tabular-nums">{c.fig}</span>
-                        <span className="whitespace-nowrap text-xs font-semibold text-gray-500">{c.lbl}</span>
-                      </div>
-                    ))}
-                  </div>
                 </div>
               </div>
             </div>

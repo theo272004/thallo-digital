@@ -77,39 +77,18 @@ body {
   will-change: transform;
 }
 
-/* Results · the cards lifted off the compounding-effect sheet. They arrive once
-   and stay — the reference fades its first and last rows out, which was the one
-   thing about it we did not want. `both` fill so the card holds the hidden
-   state before it starts and the resting state after, which also means the
-   reduced-motion rule leaves them visible rather than mid-flight. */
-@keyframes sheet-card-in {
-  from { opacity: 0; transform: translateY(26px); }
-}
-.sheet-card-in {
-  animation: sheet-card-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
+/* Results · the compounding-effect sheet, set flat in space like the reference.
+   It just sits there: no hover, no entrance, nothing that moves.
 
-/* Results · the compounding-effect sheet, set flat in space.
-
-   Written here rather than as `lg:[transform:…]` utilities: that arbitrary
-   property leaked below the breakpoint while its sibling `lg:[perspective:…]`
-   correctly did not, which left the sheet skewed on tablets with no perspective
-   and its children flattened. A media query states the whole thing once.
-
-   Flat below lg on purpose — an angled sheet in a narrow column costs
-   legibility and buys nothing. */
-.sheet-plane {
-  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);
-}
+   One media query states perspective, transform-style and transform together —
+   they have to switch at the same breakpoint, so they are written in one place.
+   Flat below lg, where an angled sheet in a narrow column costs legibility. */
 @media (min-width: 1024px) {
   .sheet-stage { perspective: 1600px; }
   .sheet-plane {
     transform-style: preserve-3d;
     transform: rotateX(42deg) rotateZ(-28deg);
   }
-  /* Turned away from the reader at rest, upright when they want to read it */
-  .sheet-plane:hover { transform: rotateX(8deg) rotateZ(-4deg); }
-  .sheet-lift { transform: translateZ(70px); }
 }
 
 /* Services · "How an engagement runs". Each step's drawing loops a motion that
