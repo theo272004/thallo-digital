@@ -72,6 +72,7 @@ export default function ResultsLanding() {
       const rows = gsap.utils.toArray<HTMLElement>('tbody tr', root);
       const bars = gsap.utils.toArray<HTMLElement>('[data-bar]', root);
       const figures = gsap.utils.toArray<HTMLElement>('[data-to]', root);
+      const tiles = gsap.utils.toArray<HTMLElement>('[data-tile]', root);
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -102,6 +103,16 @@ export default function ResultsLanding() {
           0.08 + Math.floor(i / 3) * 0.07
         );
       });
+
+      // The totals land on the table once the months have finished arriving.
+      // They settle rather than count: one of the three is 41→13, which is a
+      // journey and not a quantity, and three tiles animating three different
+      // ways would read as noise.
+      tl.from(
+        tiles,
+        { autoAlpha: 0, y: 16, scale: 0.96, duration: 0.6, ease: 'power3.out', stagger: 0.08 },
+        0.62
+      );
     },
     { scope: tableRef }
   );
@@ -137,7 +148,11 @@ export default function ResultsLanding() {
             style={{
               backgroundImage: 'url(/thallo-digital/measured-bg.webp)',
               backgroundSize: 'cover',
-              backgroundPosition: 'center',
+              // As high as the crop allows without enlarging the picture. The
+              // photograph is 2.48:1 against a 2.63:1 panel, so `cover` leaves
+              // only ~29px of vertical slack; this pins its bottom edge to the
+              // panel's, which is the full 14px of travel there is.
+              backgroundPosition: 'center 100%',
             }}
           >
             {/* A scrim only where the type sits. The photograph averages dark,
@@ -200,12 +215,15 @@ export default function ResultsLanding() {
               part that did not belong. Numbers are right-aligned on tabular
               figures, so the digits line up column by column and the eye can
               run down them. */}
-          <div
-            ref={tableRef}
-            className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_2px_14px_rgba(20,20,18,0.05)]"
-          >
-            {/* Wide content scrolls inside its own panel, never the page */}
-            <div className="overflow-x-auto">
+          {/* The panel and its totals animate as one arrival, so they share a
+              scope and a single ScrollTrigger. */}
+          <div ref={tableRef}>
+          <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_2px_14px_rgba(20,20,18,0.05)]">
+            {/* Wide content scrolls inside its own panel, never the page.
+                overflow-y-hidden is not redundant: setting one axis to `auto`
+                computes the other from `visible` to `auto` too, so the 12px the
+                rows travel during the entrance raised a vertical scrollbar. */}
+            <div className="overflow-x-auto overflow-y-hidden">
               <table className="w-full min-w-[640px] border-collapse text-left">
                 <caption className="sr-only">
                   Monthly organic clicks, impressions and average position, February to July 2026
@@ -282,7 +300,7 @@ export default function ResultsLanding() {
             {CALLOUTS.map((c) => (
               <div
                 key={c.lbl}
-                data-reveal
+                data-tile
                 className="min-w-[150px] flex-1 rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-[0_14px_34px_-12px_rgba(20,20,18,0.22)] md:flex-none"
               >
                 <div className="whitespace-nowrap font-serif text-2xl font-bold leading-none text-[#39471D] tabular-nums">
@@ -291,6 +309,7 @@ export default function ResultsLanding() {
                 <p className="mt-1.5 text-[11px] font-bold text-gray-900">{c.lbl}</p>
               </div>
             ))}
+          </div>
           </div>
         </div>
       </section>
