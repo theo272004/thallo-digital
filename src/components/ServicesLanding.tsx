@@ -92,21 +92,25 @@ function Check({ featured }: { featured: boolean }) {
 
 const OLIVE_TEXT = new Set(['Monthly', 'Deep', 'Compounding growth']);
 
-/* The mark alone says nothing to a screen reader, so each carries its word. */
+/**
+ * Yes is loud, no is quiet. Both marks used to be a pale disc with a pale glyph
+ * inside, so the table read as one even texture and you had to stop and look to
+ * find what was included. A filled olive disc against a bare dash separates
+ * them at a glance — and absence should not draw the eye anyway.
+ * The mark alone says nothing aloud, so each carries its word.
+ */
 function CompareCell({ val }: { val: boolean | string }) {
   if (val === true) return (
-    <span className="mx-auto flex h-7 w-7 items-center justify-center rounded-full bg-[#E7ECD9]">
-      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#39471D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <span className="mx-auto flex h-[26px] w-[26px] items-center justify-center rounded-full bg-[#39471D]">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <polyline points="4 12 9 17 20 7" />
       </svg>
       <span className="sr-only">Included</span>
     </span>
   );
   if (val === false) return (
-    <span className="mx-auto flex h-7 w-7 items-center justify-center rounded-full bg-gray-50">
-      <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#BFC3C8" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-        <line x1="5" y1="5" x2="19" y2="19" /><line x1="19" y1="5" x2="5" y2="19" />
-      </svg>
+    <span className="mx-auto flex h-[26px] w-[26px] items-center justify-center">
+      <span className="block h-[2px] w-[11px] rounded-full bg-gray-300" aria-hidden="true" />
       <span className="sr-only">Not included</span>
     </span>
   );
@@ -336,22 +340,12 @@ export default function ServicesPage() {
             </h2>
           </div>
 
-          {/* Outer: space above card for the floating badge */}
-          <div style={{ position: 'relative', paddingTop: 28 }}>
-
-            {/* Floating flower badge, centred on the Authority Engine column
-                (42 + 19 + 10 = 71%). Hidden below lg: there the table scrolls
-                inside its panel and 71% of the panel stops being 71% of the
-                table, so the badge would point at the wrong column. */}
-            <div className="absolute top-0 left-[71%] z-20 hidden h-14 w-14 -translate-x-1/2 items-center justify-center rounded-full bg-[#39471D] shadow-[0_10px_25px_rgba(23,26,16,0.18)] lg:flex">
-              <img
-                loading="lazy" decoding="async"
-                src="/thallo-digital/flower.webp"
-                alt="" aria-hidden="true"
-                className="h-7 w-7 object-contain"
-                style={{ filter: 'brightness(0) invert(1)' }}
-              />
-            </div>
+          {/* The flower badge that used to float over the recommended column is
+              gone. It was sized against a 64px header; the rebuilt header is
+              44px, so it sat on top of "Authority Engine" and cut the word in
+              half. It was also saying a third time what the olive cap says and
+              what the plan cards above already flag as most chosen. */}
+          <div>
 
             {/* A real table now, matched to the trajectory panel on /results/ —
                 same shell, same hairlines, same heading type. It was a grid of
@@ -375,7 +369,9 @@ export default function ServicesPage() {
                       <th scope="col" className="border-b border-gray-100 px-4 py-4 text-center text-xs font-medium text-gray-400">
                         Audit
                       </th>
-                      <th scope="col" className="rounded-t-[20px] bg-[#39471D] px-4 py-4 text-center text-xs font-medium text-white">
+                      {/* A cap, not a bubble — 20px of radius on a 44px header
+                          read as a floating pill sitting on the table. */}
+                      <th scope="col" className="rounded-t-lg bg-[#39471D] px-4 py-4 text-center text-xs font-semibold text-white">
                         Authority Engine
                       </th>
                       <th scope="col" className="border-b border-gray-100 px-4 py-4 text-center text-xs font-medium text-gray-400">
@@ -395,9 +391,12 @@ export default function ServicesPage() {
                         <td className="px-4 py-5 text-center transition-colors group-hover:bg-[#F7F8F3]">
                           <CompareCell val={row.audit} />
                         </td>
-                        {/* The recommended column keeps its tint through every
-                            row, so the eye can run straight down it. */}
-                        <td className="border-x border-[#E7ECD9] bg-[#F7F8F3] px-4 py-5 text-center">
+                        {/* White, like every other column. The tint here was
+                            #F7F8F3 — a near-white laid over white, which does
+                            not read as a highlight, it reads as a smudge. The
+                            olive rules down both sides carry the column
+                            instead, cleanly. */}
+                        <td className="border-x border-[#39471D]/20 px-4 py-5 text-center">
                           <CompareCell val={row.engine} />
                         </td>
                         <td className="px-4 py-5 text-center transition-colors group-hover:bg-[#F7F8F3]">
