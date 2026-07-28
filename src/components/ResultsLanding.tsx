@@ -223,7 +223,7 @@ export default function ResultsLanding() {
             />
           </div>
 
-          <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-20">
+          <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:gap-20">
             {/* Prose — no box around it any more; the sheet is the object here */}
             <div data-reveal>
               <p className="text-gray-500 font-medium text-base leading-relaxed mb-5">
@@ -246,7 +246,7 @@ export default function ResultsLanding() {
                 over a name and a label. */}
             <div data-reveal>
               <div className="relative">
-                <div className="relative overflow-hidden rounded-[28px] border border-gray-100 bg-white p-8 sm:p-11 shadow-[0_40px_90px_-40px_rgba(23,26,16,0.35)]">
+                <div className="relative overflow-hidden rounded-[28px] border border-gray-100 bg-white p-7 sm:p-9 shadow-[0_40px_90px_-40px_rgba(23,26,16,0.35)]">
                   {/* The mark, the way the reference carries its own */}
                   <div className="mb-8 flex items-center gap-3">
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#39471D]">
@@ -266,7 +266,7 @@ export default function ResultsLanding() {
                     </span>
                   </div>
 
-                  <p className="text-xl sm:text-2xl font-medium leading-relaxed text-gray-900">
+                  <p className="text-base sm:text-lg font-medium leading-relaxed text-gray-900">
                     The two clusters we invested in most heavily were also the two that grew the most —
                     270% and 242%. When results track investment that precisely, you know it is the
                     strategy working, not luck.
