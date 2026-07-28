@@ -413,7 +413,7 @@ export default function ServicesPage() {
                 Book an AI visibility audit. Clear, fixed scope, and a roadmap you keep either way.
               </p>
               <a
-                href="mailto:hello@thallo.co?subject=AI Visibility Audit Request"
+                href="/thallo-digital/contact/"
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#39471D] rounded-full text-sm font-semibold hover:bg-[#CBD0AC] transition-colors"
               >
                 Book your audit &#x2197;
