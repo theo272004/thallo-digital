@@ -1,7 +1,8 @@
 'use client';
-import React from 'react';
+import React, { useRef } from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
+import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 
 /**
  * A real engagement, anonymised. Every figure traces back to a Search Console
@@ -41,7 +42,70 @@ const glassCard = {
   boxShadow: '0 2px 16px rgba(0,0,0,0.28)',
 } as const;
 
+/** Reads the count-up settings a figure carries and formats a value with them. */
+function formatFrom(el: HTMLElement, v: number) {
+  const decimals = Number(el.dataset.decimals || 0);
+  return (
+    (el.dataset.prefix || '') +
+    v.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
+  );
+}
+
 export default function ResultsLanding() {
+  const tableRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * The table fills itself in the first time it is scrolled to: rows rise in,
+   * the click bars grow from nothing, and every figure counts up from zero.
+   * Once only — it plays as you arrive at the section, not every time you pass.
+   *
+   * The markup always ships the finished numbers, so a crawler, a reader with
+   * JavaScript off and anyone who asked their system for less motion all get
+   * the real figures. The rewind to zero happens on enter, in the same frame
+   * the tween starts, so the final value is never seen snapping back.
+   */
+  useGSAP(
+    () => {
+      const root = tableRef.current;
+      if (!root || prefersReducedMotion()) return;
+
+      const rows = gsap.utils.toArray<HTMLElement>('tbody tr', root);
+      const bars = gsap.utils.toArray<HTMLElement>('[data-bar]', root);
+      const figures = gsap.utils.toArray<HTMLElement>('[data-to]', root);
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: root,
+          start: 'top 82%',
+          once: true,
+          onEnter: () => figures.forEach((el) => { el.textContent = formatFrom(el, 0); }),
+        },
+      });
+
+      tl.from(rows, { autoAlpha: 0, y: 12, duration: 0.5, ease: 'power2.out', stagger: 0.07 }, 0)
+        .from(bars, { scaleX: 0, duration: 0.9, ease: 'power3.out', stagger: 0.07 }, 0.08);
+
+      figures.forEach((el, i) => {
+        const to = Number(el.dataset.to);
+        const decimals = Number(el.dataset.decimals || 0);
+        const obj = { v: 0 };
+        tl.to(
+          obj,
+          {
+            v: to,
+            duration: 1.1,
+            ease: 'power2.out',
+            snap: { v: decimals ? 1 / 10 ** decimals : 1 },
+            onUpdate: () => { el.textContent = formatFrom(el, obj.v); },
+          },
+          // three figures per row, so they run with the row that owns them
+          0.08 + Math.floor(i / 3) * 0.07
+        );
+      });
+    },
+    { scope: tableRef }
+  );
+
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
@@ -128,7 +192,7 @@ export default function ResultsLanding() {
               figures, so the digits line up column by column and the eye can
               run down them. */}
           <div
-            data-reveal
+            ref={tableRef}
             className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_2px_14px_rgba(20,20,18,0.05)]"
           >
             {/* Wide content scrolls inside its own panel, never the page */}
@@ -146,7 +210,12 @@ export default function ResultsLanding() {
                   </tr>
                 </thead>
                 <tbody>
-                  {MONTHS.map((r) => (
+                  {MONTHS.map((r) => {
+                    // Impressions ship as display strings; the counter needs the
+                    // number and the leading ~ kept apart.
+                    const imprTo = Number(r.impr.replace(/[^0-9]/g, ''));
+                    const imprPrefix = r.impr.trim().startsWith('~') ? '~' : '';
+                    return (
                     /* The projected month carries a wash of olive and its label,
                        nothing louder — it is still one of the rows. */
                     <tr
@@ -162,7 +231,11 @@ export default function ResultsLanding() {
                         )}
                       </th>
                       <td className="px-7 py-5 text-right align-middle">
-                        <span className="text-[15px] font-bold text-[#39471D] tabular-nums">
+                        <span
+                          className="text-[15px] font-bold text-[#39471D] tabular-nums"
+                          data-to={r.clicks}
+                          data-prefix={r.projected ? '~' : ''}
+                        >
                           {r.projected ? '~' : ''}{r.clicks.toLocaleString('en-US')}
                         </span>
                         {/* Carries the shape of the curve without a chart library */}
@@ -171,19 +244,21 @@ export default function ResultsLanding() {
                           className="mt-2 ml-auto block h-[3px] w-full max-w-[120px] overflow-hidden rounded-full bg-gray-100"
                         >
                           <span
-                            className="block h-full rounded-full bg-[#39471D]"
+                            data-bar
+                            className="block h-full origin-left rounded-full bg-[#39471D]"
                             style={{ width: `${(r.clicks / PEAK) * 100}%` }}
                           />
                         </span>
                       </td>
                       <td className="whitespace-nowrap px-7 py-5 text-right align-middle text-sm font-medium text-gray-500 tabular-nums">
-                        {r.impr}
+                        <span data-to={imprTo} data-prefix={imprPrefix}>{r.impr}</span>
                       </td>
                       <td className="px-7 py-5 text-right align-middle text-sm font-semibold text-gray-900 tabular-nums">
-                        {r.pos}
+                        <span data-to={r.pos} data-decimals="1">{r.pos}</span>
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
