@@ -6,107 +6,122 @@ import Eyebrow from '@/components/ui/Eyebrow';
  * own small looping drawing. Replaces the full-bleed desk photograph, which
  * said the same thing in one static frame.
  *
- * The drawings are inline SVG animated from globals.css (step-* keyframes)
- * rather than images: four more files to download, and a photograph can't show
- * a scan running or a structure assembling.
+ * Each step is drawn inside a laptop built the same way the hero builds its
+ * phone and its browser: real chrome in HTML and CSS, animated from globals.css
+ * (step-* keyframes). Not images — four more files to download, and a still
+ * cannot show a scan running or a structure assembling.
  */
 
-/* Every drawing shares the same monitor frame, so the four read as one set. */
-function Screen({ children }: { children: React.ReactNode }) {
+/**
+ * The shell every step is drawn inside: a laptop, built the way the hero builds
+ * its phone and its browser — real chrome in HTML and CSS rather than an SVG
+ * sketch of one. Lid, bezel, a browser bar with its three lights and a URL
+ * field, then the deck and its lip below.
+ */
+function Laptop({ children }: { children: React.ReactNode }) {
   return (
-    <svg viewBox="0 0 160 104" className="w-full h-auto" role="img" aria-hidden="true">
-      <rect x="16" y="8" width="128" height="74" rx="7" fill="#FFFFFF" stroke="#CBD0AC" strokeWidth="1.5" />
-      {children}
-      <path d="M80 82v10M62 92h36" stroke="#CBD0AC" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
+    <div className="mx-auto w-full max-w-[238px] select-none" aria-hidden="true">
+      {/* Lid — the dark bezel wraps the screen */}
+      <div className="rounded-[11px] bg-[#1B1B1A] p-[5px] shadow-[0_14px_28px_-16px_rgba(23,26,16,0.55)]">
+        <div className="h-[136px] overflow-hidden rounded-[6px] bg-white">
+          {/* Browser chrome */}
+          <div className="flex items-center gap-[3px] border-b border-gray-100 bg-gray-50 px-2 py-[5px]">
+            <span className="h-[4px] w-[4px] rounded-full bg-[#ff5f57]" />
+            <span className="h-[4px] w-[4px] rounded-full bg-[#febc2e]" />
+            <span className="h-[4px] w-[4px] rounded-full bg-[#28c840]" />
+            <span className="ml-[6px] h-[7px] flex-1 rounded-full bg-gray-200/80" />
+          </div>
+          <div className="relative h-[110px] overflow-hidden px-2.5 py-2.5">{children}</div>
+        </div>
+      </div>
+      {/* Deck — a touch wider than the lid, with the lip that opens it */}
+      <div className="-mx-[7%] h-[7px] rounded-b-[8px] bg-gradient-to-b from-[#dededa] to-[#b6b6b1]" />
+      <div className="mx-auto h-[3px] w-[15%] rounded-b-[3px] bg-[#a8a8a3]" />
+    </div>
   );
 }
 
-/* 01 — a scan sweeping the page, findings lighting up behind it. */
+/* 01 — the audit running down the page, each finding landing as it is checked. */
 function ArtAudit() {
-  const rows = [
-    { y: 26, w: 84 },
-    { y: 40, w: 62 },
-    { y: 54, w: 76 },
-    { y: 68, w: 48 },
+  const findings = [
+    { label: 'Technical readiness', w: '86%' },
+    { label: 'Content coverage', w: '64%' },
+    { label: 'Authority signals', w: '74%' },
+    { label: 'Schema & markup', w: '52%' },
   ];
   return (
-    <Screen>
-      {rows.map((r, i) => (
-        <rect
-          key={r.y}
-          x="30" y={r.y} width={r.w} height="5" rx="2.5"
-          fill="#39471D"
-          className="step-row"
-          style={{ animationDelay: `${i * 0.28}s` }}
-        />
-      ))}
-      <rect
-        x="24" y="20" width="112" height="2.5" rx="1.25"
-        fill="#39471D" opacity="0.35"
-        className="step-scan"
-      />
-    </Screen>
+    <Laptop>
+      <div className="relative space-y-[9px]">
+        {findings.map((f, i) => (
+          <div key={f.label} className="step-row flex items-center gap-[6px]" style={{ animationDelay: `${i * 0.26}s` }}>
+            <span className="h-[6px] w-[6px] shrink-0 rounded-full border-[1.5px] border-[#39471D]" />
+            <span className="h-[4px] rounded-full bg-[#39471D]/75" style={{ width: f.w }} />
+          </div>
+        ))}
+        {/* the pass sweeping down them */}
+        <span className="step-scan absolute -inset-x-2.5 top-[-6px] h-[10px] bg-[#39471D]/10" />
+      </div>
+    </Laptop>
   );
 }
 
-/* 02 — the structure drawing itself, then the pages landing under it. */
+/* 02 — the structure being built: a parent, then the pages hung beneath it. */
 function ArtFoundation() {
   return (
-    <Screen>
-      <rect x="66" y="18" width="28" height="12" rx="3" fill="#E7ECD9" stroke="#39471D" strokeWidth="1.5" />
-      <path
-        d="M80 30v14M44 44h72M44 44v10M80 44v10M116 44v10"
-        fill="none" stroke="#39471D" strokeWidth="1.5" strokeLinecap="round"
-        className="step-draw"
-        style={{ strokeDasharray: 116, '--len': 116 } as React.CSSProperties}
-      />
-      {[32, 68, 104].map((x, i) => (
-        <rect
-          key={x}
-          x={x} y="54" width="24" height="12" rx="3"
-          fill="#FFFFFF" stroke="#CBD0AC" strokeWidth="1.5"
-          className="step-node"
-          style={{ animationDelay: `${i * 0.16}s` }}
-        />
-      ))}
-    </Screen>
+    <Laptop>
+      <div className="step-node flex items-center gap-[6px]">
+        <span className="h-[7px] w-[7px] shrink-0 rounded-[2px] bg-[#39471D]" />
+        <span className="h-[4px] w-[52px] rounded-full bg-[#39471D]" />
+      </div>
+      <div className="mt-[9px] ml-[3px] space-y-[8px] border-l border-dashed border-[#CBD0AC] pl-[11px]">
+        {['64px', '44px', '54px'].map((w, i) => (
+          <div key={w} className="step-node flex items-center gap-[6px]" style={{ animationDelay: `${0.14 + i * 0.13}s` }}>
+            <span className="h-[6px] w-[6px] shrink-0 rounded-[2px] bg-[#CBD0AC]" />
+            <span className="h-[3.5px] rounded-full bg-[#CBD0AC]" style={{ width: w }} />
+          </div>
+        ))}
+      </div>
+    </Laptop>
   );
 }
 
-/* 03 — work leaving the page, month after month. */
+/* 03 — the month's work leaving the page, one piece after another. */
 function ArtEngine() {
   return (
-    <Screen>
-      {[{ y: 26, w: 44 }, { y: 40, w: 34 }, { y: 54, w: 40 }].map((l) => (
-        <rect key={l.y} x="28" y={l.y} width={l.w} height="4" rx="2" fill="#CBD0AC" />
-      ))}
-      {[24, 40, 56].map((y, i) => (
-        <rect
-          key={y}
-          x="82" y={y} width="18" height="10" rx="5"
-          fill="#E7ECD9" stroke="#39471D" strokeWidth="1.5"
-          className="step-chip"
-          style={{ animationDelay: `${i * 0.34}s` }}
-        />
-      ))}
-    </Screen>
+    <Laptop>
+      <div className="space-y-[11px]">
+        {['58%', '46%', '52%'].map((w, i) => (
+          <div key={w} className="flex items-center justify-between gap-2">
+            <span className="h-[4px] rounded-full bg-[#CBD0AC]" style={{ width: w }} />
+            <span
+              className="step-chip h-[11px] w-[26px] shrink-0 rounded-full border border-[#39471D]/25 bg-[#E7ECD9]"
+              style={{ animationDelay: `${i * 0.3}s` }}
+            />
+          </div>
+        ))}
+      </div>
+    </Laptop>
   );
 }
 
 /* 04 — the line that keeps climbing once the engine compounds. */
 function ArtAccelerate() {
   return (
-    <Screen>
-      <path d="M28 70h104" stroke="#E7ECD9" strokeWidth="1.5" strokeLinecap="round" />
-      <path
-        d="M30 64 52 56 74 58 96 42 118 28"
-        fill="none" stroke="#39471D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-        className="step-draw"
-        style={{ strokeDasharray: 100, '--len': 100 } as React.CSSProperties}
-      />
-      <circle cx="118" cy="28" r="4.5" fill="#39471D" className="step-ping" />
-    </Screen>
+    <Laptop>
+      <svg viewBox="0 0 200 96" className="h-full w-full" preserveAspectRatio="none">
+        {[24, 48, 72].map((y) => (
+          <path key={y} d={`M2 ${y}h196`} stroke="#E7ECD9" strokeWidth="1.5" />
+        ))}
+        <path
+          d="M6 82 52 66 98 71 144 38 190 14"
+          fill="none" stroke="#39471D" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+          className="step-draw"
+          style={{ strokeDasharray: 210, '--len': 210 } as React.CSSProperties}
+          vectorEffect="non-scaling-stroke"
+        />
+        <circle cx="190" cy="14" r="5" fill="#39471D" className="step-ping" />
+      </svg>
+    </Laptop>
   );
 }
 

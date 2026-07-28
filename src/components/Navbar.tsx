@@ -1,9 +1,28 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { Magnetic } from '@/components/motion';
 
+/**
+ * `page` is the route this link owns, when it owns one. The two anchors point
+ * at sections of the home page rather than pages, so they never light up —
+ * marking them would claim you are somewhere you are not.
+ */
+const LINKS = [
+  { label: 'Services', href: '/thallo-digital/services/', page: '/services' },
+  { label: 'Industries', href: '/thallo-digital/industries/', page: '/industries' },
+  { label: 'Our Approach', href: '/thallo-digital/#approach' },
+  { label: 'Results', href: '/thallo-digital/results/', page: '/results' },
+  { label: 'Resources', href: '/thallo-digital/#blog' },
+];
+
 export default function Navbar() {
+  // Next strips basePath here, so /thallo-digital/services/ arrives as /services
+  const pathname = usePathname();
+  const isCurrent = (page?: string) =>
+    !!page && (pathname === page || pathname === page + '/');
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -41,13 +60,23 @@ export default function Navbar() {
           <img src="/thallo-digital/logo.png" alt="Thallo Digital" className="h-9 sm:h-11 object-contain" />
         </a>
 
-        {/* Desktop Menu */}
+        {/* Desktop Menu — the page you are on wears the hover colour for good */}
         <div className="hidden md:flex items-center gap-7">
-          <a href="/thallo-digital/services/" className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Services</a>
-          <a href="/thallo-digital/industries/" className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Industries</a>
-          <a href="/thallo-digital/#approach" className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Our Approach</a>
-          <a href="/thallo-digital/results/" className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Results</a>
-          <a href="/thallo-digital/#blog" className="text-sm font-semibold text-gray-500 hover:text-[#39471D] transition-colors">Resources</a>
+          {LINKS.map((l) => {
+            const here = isCurrent(l.page);
+            return (
+              <a
+                key={l.label}
+                href={l.href}
+                aria-current={here ? 'page' : undefined}
+                className={`text-sm font-semibold transition-colors hover:text-[#39471D] ${
+                  here ? 'text-[#39471D]' : 'text-gray-500'
+                }`}
+              >
+                {l.label}
+              </a>
+            );
+          })}
         </div>
 
         {/* Right CTA */}
@@ -89,12 +118,20 @@ export default function Navbar() {
           >
             ✕
           </button>
-          <div className="flex flex-col gap-6 mt-12 text-lg font-bold text-gray-800">
-            <a href="/thallo-digital/services/">Services</a>
-            <a href="/thallo-digital/industries/">Industries</a>
-            <a href="/thallo-digital/#approach">Our Approach</a>
-            <a href="/thallo-digital/results/">Results</a>
-            <a href="/thallo-digital/#blog">Resources</a>
+          <div className="flex flex-col gap-6 mt-12 text-lg font-bold">
+            {LINKS.map((l) => {
+              const here = isCurrent(l.page);
+              return (
+                <a
+                  key={l.label}
+                  href={l.href}
+                  aria-current={here ? 'page' : undefined}
+                  className={here ? 'text-[#39471D]' : 'text-gray-800'}
+                >
+                  {l.label}
+                </a>
+              );
+            })}
           </div>
           <div className="flex flex-col gap-4 mt-auto">
             <a href="/thallo-digital/thallo-ai/" className="w-full py-3.5 border border-gray-200 rounded-full text-center text-sm font-bold text-gray-800">Check my visibility ↗</a>
