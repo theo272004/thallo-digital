@@ -77,19 +77,6 @@ body {
   will-change: transform;
 }
 
-/* Results · the compounding-effect sheet, set flat in space like the reference.
-   It just sits there: no hover, no entrance, nothing that moves.
-
-   One media query states perspective, transform-style and transform together —
-   they have to switch at the same breakpoint, so they are written in one place.
-   Flat below lg, where an angled sheet in a narrow column costs legibility. */
-@media (min-width: 1024px) {
-  .sheet-stage { perspective: 1600px; }
-  .sheet-plane {
-    transform-style: preserve-3d;
-    transform: rotateX(42deg) rotateZ(-28deg);
-  }
-}
 
 /* Services · "How an engagement runs". Each step's drawing loops a motion that
    mirrors what that step actually produces — a scan, a structure assembling,

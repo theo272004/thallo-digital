@@ -121,63 +121,71 @@ export default function ResultsLanding() {
             </p>
           </div>
 
-          {/* One card per month. Each figure carries its own label, so the row
-              of mono column headings is gone and nothing depends on a header
-              that scrolls out of view. Every card sits at full opacity — none
-              of the reference's fading top and bottom rows. */}
-          <ul
-            className="flex flex-col gap-3"
-            aria-label="Monthly organic clicks, impressions and average position, February to July 2026"
+          {/* One panel, hairline rules between the months. No pills: the figure
+              is the object, so it carries the weight and the label sits once at
+              the top of its column, in Inter — the mono heading row was the
+              part that did not belong. Numbers are right-aligned on tabular
+              figures, so the digits line up column by column and the eye can
+              run down them. */}
+          <div
+            data-reveal
+            className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_2px_14px_rgba(20,20,18,0.05)]"
           >
-            {MONTHS.map((r) => (
-              <li
-                key={r.m}
-                data-reveal
-                className={`flex flex-col gap-4 rounded-2xl border px-5 py-4 sm:flex-row sm:items-center sm:gap-6 sm:px-6 transition-shadow duration-300
-                            shadow-[0_2px_14px_rgba(20,20,18,0.05)] hover:shadow-[0_14px_34px_-16px_rgba(57,71,29,0.32)]
-                            ${r.projected ? 'border-[#39471D]/15 bg-[#39471D]/[0.035]' : 'border-gray-100 bg-white'}`}
-              >
-                <div className="sm:w-[210px] sm:shrink-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-gray-900">{r.m}</span>
-                    {r.projected && (
-                      <span className="rounded-full bg-[#E7ECD9] px-2 py-0.5 text-[10px] font-semibold text-[#39471D]">
-                        Projected
-                      </span>
-                    )}
-                  </div>
-                  {/* Carries the shape of the curve without a chart library */}
-                  <span aria-hidden="true" className="mt-2.5 block h-[3px] overflow-hidden rounded-full bg-gray-100">
-                    <span
-                      className="block h-full rounded-full bg-[#39471D]"
-                      style={{ width: `${(r.clicks / PEAK) * 100}%` }}
-                    />
-                  </span>
-                </div>
-
-                {/* Fixed track widths from lg up, so clicks sits under clicks,
-                    impressions under impressions and position under position.
-                    Below lg the pills wrap instead — three fixed columns plus
-                    the month would not fit a tablet. */}
-                <div className="flex flex-wrap items-center gap-2 lg:ml-auto lg:grid lg:grid-cols-[150px_200px_175px]">
-                  <span className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#39471D]/15 bg-[#E7ECD9] px-3 py-1.5 text-[13px] text-[#39471D]">
-                    <b className="font-bold tabular-nums">
-                      {r.projected ? '~' : ''}{r.clicks.toLocaleString('en-US')}
-                    </b>
-                    clicks
-                  </span>
-                  <span className="inline-flex items-center justify-center gap-1.5 rounded-full border border-gray-100 bg-gray-50 px-3 py-1.5 text-[13px] text-gray-500">
-                    <b className="font-semibold text-gray-900 tabular-nums">{r.impr}</b>
-                    impressions
-                  </span>
-                  <span className="inline-flex items-center justify-center gap-1.5 rounded-full border border-gray-100 bg-gray-50 px-3 py-1.5 text-[13px] text-gray-500">
-                    <b className="font-semibold text-gray-900 tabular-nums">{r.pos}</b>
-                    avg. position
-                  </span>
-                </div>
-              </li>
-            ))}
-          </ul>
+            {/* Wide content scrolls inside its own panel, never the page */}
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[640px] border-collapse text-left">
+                <caption className="sr-only">
+                  Monthly organic clicks, impressions and average position, February to July 2026
+                </caption>
+                <thead>
+                  <tr className="border-b border-gray-100">
+                    <th scope="col" className="px-7 py-4 text-xs font-medium text-gray-400">Month</th>
+                    <th scope="col" className="px-7 py-4 text-right text-xs font-medium text-gray-400">Organic clicks</th>
+                    <th scope="col" className="px-7 py-4 text-right text-xs font-medium text-gray-400">Impressions</th>
+                    <th scope="col" className="px-7 py-4 text-right text-xs font-medium text-gray-400">Avg. position</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {MONTHS.map((r) => (
+                    <tr
+                      key={r.m}
+                      className={`border-b border-gray-50 transition-colors last:border-0 ${
+                        r.projected ? 'bg-[#39471D]/[0.03]' : 'hover:bg-gray-50/60'
+                      }`}
+                    >
+                      <th scope="row" className="whitespace-nowrap px-7 py-5 align-middle">
+                        <span className="text-sm font-bold text-gray-900">{r.m}</span>
+                        {r.projected && (
+                          <span className="ml-2 text-xs font-medium text-[#55672E]">Projected</span>
+                        )}
+                      </th>
+                      <td className="px-7 py-5 text-right align-middle">
+                        <span className="text-[15px] font-bold text-[#39471D] tabular-nums">
+                          {r.projected ? '~' : ''}{r.clicks.toLocaleString('en-US')}
+                        </span>
+                        {/* Carries the shape of the curve without a chart library */}
+                        <span
+                          aria-hidden="true"
+                          className="mt-2 ml-auto block h-[3px] w-full max-w-[120px] overflow-hidden rounded-full bg-gray-100"
+                        >
+                          <span
+                            className="block h-full rounded-full bg-[#39471D]"
+                            style={{ width: `${(r.clicks / PEAK) * 100}%` }}
+                          />
+                        </span>
+                      </td>
+                      <td className="whitespace-nowrap px-7 py-5 text-right align-middle text-sm font-medium text-gray-500 tabular-nums">
+                        {r.impr}
+                      </td>
+                      <td className="px-7 py-5 text-right align-middle text-sm font-semibold text-gray-900 tabular-nums">
+                        {r.pos}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -228,21 +236,12 @@ export default function ResultsLanding() {
               </p>
             </div>
 
-            {/* The sheet, drawn the way the reference draws it: a light panel
-                laid flat in space, hairline border, soft shadow, the mark in
-                the corner and plain sans on the surface. It runs off the right
-                edge and the section clips it. Nothing here moves — no hover,
-                no entrance. Flat below lg, where an angled sheet costs
-                legibility. */}
-            <div data-reveal className="sheet-stage relative lg:-mr-20 xl:-mr-36">
-              <div className="sheet-plane relative">
-                {/* The sheet's own thickness, a hair behind and below */}
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 translate-x-2 translate-y-3 rounded-[28px] bg-gray-100"
-                />
-
-                <div className="relative overflow-hidden rounded-[28px] border border-gray-100 bg-white p-8 sm:p-11 shadow-[0_80px_140px_-50px_rgba(23,26,16,0.45)]">
+            {/* The reference's materials on a card that sits straight: light
+                surface, hairline border, soft shadow, the mark in the corner
+                over a name and a label. */}
+            <div data-reveal>
+              <div className="relative">
+                <div className="relative overflow-hidden rounded-[28px] border border-gray-100 bg-white p-8 sm:p-11 shadow-[0_40px_90px_-40px_rgba(23,26,16,0.35)]">
                   {/* The mark, the way the reference carries its own */}
                   <div className="mb-8 flex items-center gap-3">
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#39471D]">
