@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useLayoutEffect } from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
+import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import EngagementSteps from '@/components/EngagementSteps';
 import { Magnetic } from '@/components/motion';
 
@@ -136,11 +137,24 @@ function CompareIcon({ feature }: { feature: string }) {
   return <>{map[feature] ?? null}</>;
 }
 
-// visual order: active card → middle, others fill left/right in their natural sequence
-function getOrder(cardIdx: number, active: number): number {
-  if (cardIdx === active) return 2;
+/**
+ * Desktop lays the three side by side and puts the active one in the middle;
+ * stacked on a phone the middle is nowhere, so the active one goes on top and
+ * the other two keep their natural sequence below it.
+ *
+ * Written as whole class strings because Tailwind reads the source as text —
+ * a built-up `lg:order-${n}` is invisible to it and never gets generated.
+ */
+const ORDER = {
+  mobile: ['order-1', 'order-2', 'order-3'],
+  desktop: ['lg:order-1', 'lg:order-2', 'lg:order-3'],
+};
+
+function orderClasses(cardIdx: number, active: number): string {
   const others = [0, 1, 2].filter(i => i !== active);
-  return cardIdx === others[0] ? 1 : 3;
+  const rank = cardIdx === active ? 0 : others.indexOf(cardIdx) + 1; // 0-based
+  const desktop = cardIdx === active ? 1 : (cardIdx === others[0] ? 0 : 2);
+  return `${ORDER.mobile[rank]} ${ORDER.desktop[desktop]}`;
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -218,7 +232,7 @@ export default function ServicesPage() {
                 <button
                   key={svc.idx}
                   onClick={() => handleServiceChange(i)}
-                  className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 whitespace-nowrap ${
+                  className={`px-3.5 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 whitespace-nowrap ${
                     activeService === i
                       ? 'bg-[#39471D] text-white shadow-[0_2px_8px_rgba(57,71,29,0.35)]'
                       : 'text-gray-500 hover:text-[#39471D]'
@@ -230,28 +244,24 @@ export default function ServicesPage() {
             </div>
           </div>
 
-          {/* Cards grid — FLIP-animated */}
-          <div className="flex gap-6 items-stretch" style={{ minHeight: 0 }}>
+          {/* Cards grid — FLIP-animated across, stacked down on phones */}
+          <div className="flex flex-col lg:flex-row gap-6 lg:items-stretch" style={{ minHeight: 0 }}>
             {SERVICES.map((svc, i) => {
               const isFeatured = i === activeService;
               return (
                 <div
                   key={svc.idx}
                   ref={el => { wrapperRefs.current[i] = el; }}
-                  style={{
-                    order: getOrder(i, activeService),
-                    flex: '0 0 calc((100% - 48px) / 3)',
-                  }}
                   onClick={() => handleServiceChange(i)}
-                  className="cursor-pointer"
+                  className={`cursor-pointer w-full lg:w-[calc((100%-48px)/3)] lg:flex-none ${orderClasses(i, activeService)}`}
                 >
+                  {/* The 1.08 lift is desktop-only: stacked, the cards are the
+                      full column width, so scaling one just pushes it past the
+                      screen edge. */}
                   <div
-                    style={{
-                      height: '100%',
-                      transform: isFeatured ? 'scale(1.08)' : 'scale(1)',
-                      transition: 'transform 0.5s cubic-bezier(0.22,1,0.36,1)',
-                      transformOrigin: 'center center',
-                    }}
+                    className={`h-full origin-center transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                      isFeatured ? 'lg:scale-[1.08]' : ''
+                    }`}
                   >
                   <div
                     className={`relative overflow-hidden p-8 rounded-3xl flex flex-col h-full transition-all duration-500 hover:-translate-y-1 ${
@@ -271,7 +281,7 @@ export default function ServicesPage() {
                     )}
 
                     <div className="relative flex-1">
-                      <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center justify-between gap-3 mb-6">
                         <span className={`font-mono text-[11px] font-bold tracking-[0.18em] uppercase transition-colors duration-500 ${isFeatured ? 'text-white/70' : 'text-gray-400'}`}>
                           {svc.idx} / {svc.kicker}
                         </span>
@@ -320,7 +330,7 @@ export default function ServicesPage() {
                 href="/thallo-digital/contact/"
                 className="inline-block px-9 py-4 bg-[#39471D] border border-[#39471D] rounded-full text-base font-semibold text-white shadow-[0_18px_36px_-16px_rgba(57,71,29,0.55)] hover:bg-[#55672E] hover:border-[#55672E] transition-all"
               >
-                Book an audit &#x2197;
+                Book an audit <ArrowUpRight className="ml-0.5" />
               </a>
             </Magnetic>
           </div>
@@ -368,18 +378,24 @@ export default function ServicesPage() {
                 divs, which read to a screen reader as a pile of unrelated text
                 rather than a comparison. */}
             <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_2px_14px_rgba(20,20,18,0.05)]">
+              {/* On a phone the table still has to scroll, but it used to open
+                  on the feature names alone — 42% of 720px is most of the
+                  screen — so the first thing you saw was a list, not a
+                  comparison. The feature column is narrower and pinned now: it
+                  stays put while the three plans slide past it, and the plans
+                  are what you land on. */}
               <div className="overflow-x-auto overflow-y-hidden">
-                <table className="w-full min-w-[720px] border-collapse text-left">
+                <table className="w-full min-w-[560px] sm:min-w-[720px] border-collapse text-left">
                   <caption className="sr-only">What each engagement includes</caption>
                   <colgroup>
-                    <col className="w-[42%]" />
-                    <col className="w-[19%]" />
-                    <col className="w-[20%]" />
-                    <col className="w-[19%]" />
+                    <col className="w-[34%] sm:w-[42%]" />
+                    <col className="w-[22%] sm:w-[19%]" />
+                    <col className="w-[22%] sm:w-[20%]" />
+                    <col className="w-[22%] sm:w-[19%]" />
                   </colgroup>
                   <thead>
                     <tr>
-                      <th scope="col" className="border-b border-gray-100 px-7 py-4 text-xs font-medium text-gray-400">
+                      <th scope="col" className="sticky left-0 z-10 bg-white border-b border-gray-100 px-4 sm:px-7 py-4 text-xs font-medium text-gray-400">
                         Feature
                       </th>
                       <th scope="col" className="border-b border-gray-100 px-4 py-4 text-center text-xs font-medium text-gray-400">
@@ -398,9 +414,11 @@ export default function ServicesPage() {
                   <tbody>
                     {COMPARE.map((row) => (
                       <tr key={row.feature} className="group border-b border-gray-50 last:border-0">
-                        <th scope="row" className="px-7 py-5 text-left transition-colors group-hover:bg-[#F7F8F3]">
-                          <span className="flex items-center gap-3.5">
-                            <CompareIcon feature={row.feature} />
+                        {/* Pinned, so it needs an opaque background of its own —
+                            the cells sliding under it would show through. */}
+                        <th scope="row" className="sticky left-0 z-10 bg-white px-4 sm:px-7 py-5 text-left transition-colors group-hover:bg-[#F7F8F3]">
+                          <span className="flex items-center gap-2.5 sm:gap-3.5">
+                            <span className="hidden sm:flex shrink-0"><CompareIcon feature={row.feature} /></span>
                             <span className="text-sm font-semibold text-gray-900">{row.feature}</span>
                           </span>
                         </th>
@@ -451,7 +469,7 @@ export default function ServicesPage() {
                 href="/thallo-digital/contact/"
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#39471D] rounded-full text-sm font-semibold hover:bg-[#CBD0AC] transition-colors"
               >
-                Book your audit &#x2197;
+                Book your audit <ArrowUpRight className="ml-0.5" />
               </a>
             </div>
           </div>

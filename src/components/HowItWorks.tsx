@@ -220,15 +220,18 @@ export default function HowItWorks() {
         </div>
 
         {/* ── Right: content ────────────────────────────────────────────────── */}
-        <div className="flex flex-col gap-14 2xl:gap-20 lg:pt-[5.5rem]">
+        {/* The drawn branch is desktop-only, so on phones this column is the whole
+            section — left-aligned copy hugging one edge read as a leftover of a
+            two-column layout that isn't there. Centred, it stands on its own. */}
+        <div className="flex flex-col gap-14 2xl:gap-20 lg:pt-[5.5rem] text-center lg:text-left">
           <div>
-            <Eyebrow className="mb-5">Our approach</Eyebrow>
+            <Eyebrow className="mb-5 justify-center lg:justify-start">Our approach</Eyebrow>
             <SplitReveal
               as="h2"
               className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
               html="Authority isn't one thing. It's a few, grown well."
             />
-            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch]">
+            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch] mx-auto lg:mx-0">
               A systematic authority building process that converts search
               queries into revenue-generating recommendations.
             </p>
@@ -249,7 +252,7 @@ export default function HowItWorks() {
               }}
             />
 
-            <div ref={step1Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
+            <div ref={step1Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start justify-center lg:justify-start">
               <div
                 ref={circle1Ref}
                 className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
@@ -266,7 +269,7 @@ export default function HowItWorks() {
               </div>
             </div>
 
-            <div ref={step2Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
+            <div ref={step2Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start justify-center lg:justify-start">
               <div
                 ref={circle2Ref}
                 className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
@@ -283,7 +286,7 @@ export default function HowItWorks() {
               </div>
             </div>
 
-            <div ref={step3Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
+            <div ref={step3Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start justify-center lg:justify-start">
               <div
                 ref={circle3Ref}
                 className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
@@ -300,7 +303,7 @@ export default function HowItWorks() {
               </div>
             </div>
 
-            <div ref={step4Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start">
+            <div ref={step4Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start justify-center lg:justify-start">
               <div
                 ref={circle4Ref}
                 className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"

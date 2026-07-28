@@ -2,6 +2,7 @@
 
 import React, { useRef, useState } from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
+import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import { SplitReveal, Magnetic, useRevealBatch } from '@/components/motion';
 
 /**
@@ -259,7 +260,7 @@ export default function ContactLanding() {
                           disabled={status === 'sending'}
                           className="w-full sm:w-auto shrink-0 whitespace-nowrap px-8 py-4 bg-[#39471D] border border-[#39471D] rounded-full text-sm font-semibold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                         >
-                          {status === 'sending' ? 'Sending…' : 'Send message ↗'}
+                          {status === 'sending' ? 'Sending…' : <>Send message <ArrowUpRight className="ml-0.5" /></>}
                         </button>
                       </Magnetic>
                       <p className="text-xs text-gray-400 font-semibold leading-relaxed max-w-[32ch]">
@@ -315,7 +316,7 @@ export default function ContactLanding() {
                 <p className="text-lg font-bold text-gray-900 mb-2">{r.label}</p>
                 <p className="text-sm text-gray-500 leading-relaxed mb-6">{r.copy}</p>
                 <span className="font-mono text-[11px] font-bold tracking-wider uppercase text-[#55672E] group-hover:text-[#39471D] transition-colors">
-                  Open ↗
+                  Open <ArrowUpRight className="ml-0.5" />
                 </span>
               </a>
             ))}

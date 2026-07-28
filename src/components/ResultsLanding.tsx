@@ -1,6 +1,7 @@
 'use client';
 import React, { useRef } from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
+import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import { SplitReveal } from '@/components/motion';
 import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 
@@ -419,7 +420,7 @@ export default function ResultsLanding() {
                 href="/thallo-digital/contact/"
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#39471D] rounded-full text-sm font-semibold hover:bg-[#CBD0AC] transition-colors"
               >
-                Book an audit <span className="text-[11px]">↗</span>
+                Book an audit <ArrowUpRight className="text-[11px]" />
               </a>
             </div>
           </div>

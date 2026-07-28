@@ -1,4 +1,5 @@
 import React from 'react';
+import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import { SplitReveal, Magnetic, scrollToEl } from '@/components/motion';
 
 export default function HeroText() {
@@ -35,7 +36,7 @@ export default function HeroText() {
             className="px-6 py-3.5 rounded-full text-xs font-bold text-white bg-[#39471D] border border-[#39471D] hover:bg-[#55672E] hover:border-[#55672E] transition-all flex items-center gap-2 group shadow-sm shadow-[#55672E]/10"
           >
             Book an AI visibility audit
-            <span className="text-[11px] group-hover:translate-x-0.5 transition-transform">↗</span>
+            <ArrowUpRight className="text-[11px] group-hover:translate-x-0.5 transition-transform" />
           </a>
         </Magnetic>
         <a
