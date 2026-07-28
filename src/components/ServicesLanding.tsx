@@ -333,7 +333,10 @@ export default function ServicesPage() {
       {/* ── Compare ───────────────────────────────────────────────────────── */}
       <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
-          <div className="max-w-2xl mb-14">
+          {/* Barely any margin here: the 128px above the table that gives the
+              spinning mark its room already separates this from the panel, and
+              mb-14 on top of it left the heading stranded. */}
+          <div className="max-w-2xl mb-1">
             <Eyebrow className="mb-5">Compare</Eyebrow>
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans">
               What is in each.
@@ -409,7 +412,7 @@ export default function ServicesPage() {
                             not read as a highlight, it reads as a smudge. The
                             olive rules down both sides carry the column
                             instead, cleanly. */}
-                        <td className="border-x border-[#39471D]/20 px-4 py-5 text-center">
+                        <td className="border-x border-[#39471D]/20 px-4 py-5 text-center transition-colors group-hover:bg-[#F7F8F3]">
                           <CompareCell val={row.engine} />
                         </td>
                         <td className="px-4 py-5 text-center transition-colors group-hover:bg-[#F7F8F3]">

@@ -32,8 +32,16 @@ export function SplitReveal({ as: Tag = 'h2', html, scroll = true, fade = true, 
         mask: 'lines',
         autoSplit: true,
         aria: 'auto',
-        onSplit: (self) =>
-          gsap.from(self.lines, {
+        onSplit: (self) => {
+          // The masks clip to the line box, which is tighter than the glyphs
+          // themselves — an italic serif cap leans past it and gets sliced
+          // mid-animation, which is what cut the "A" of "AI recommends" on the
+          // home page. A clip margin gives the ink room on every side; it is far
+          // smaller than the 110% the line travels, so nothing leaks early.
+          (self as unknown as { masks?: HTMLElement[] }).masks?.forEach((m) => {
+            m.style.overflowClipMargin = '0.22em';
+          });
+          return gsap.from(self.lines, {
             yPercent: 110,
             ...(fade ? { opacity: 0 } : {}),
             duration: 1,
@@ -46,7 +54,8 @@ export function SplitReveal({ as: Tag = 'h2', html, scroll = true, fade = true, 
             // glyph descenders (g, y, p, j). Reverting removes the masks so
             // descenders render fully — across every heading on the page.
             onComplete: () => self.revert(),
-          }),
+          });
+        },
       });
     },
     { scope: ref }
