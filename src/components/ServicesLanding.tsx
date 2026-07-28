@@ -340,12 +340,21 @@ export default function ServicesPage() {
             </h2>
           </div>
 
-          {/* The flower badge that used to float over the recommended column is
-              gone. It was sized against a 64px header; the rebuilt header is
-              44px, so it sat on top of "Authority Engine" and cut the word in
-              half. It was also saying a third time what the olive cap says and
-              what the plan cards above already flag as most chosen. */}
-          <div>
+          {/* The mark sits above the recommended column, clear of it — the
+              padding here is what keeps it off the header this time, rather
+              than a badge overlapping the type. Centred on the Authority Engine
+              column (42 + 19 + 10 = 71%), and hidden below lg, where the table
+              scrolls inside its panel and 71% of the panel stops being 71% of
+              the table. */}
+          <div className="relative pt-12">
+            <img
+              loading="lazy"
+              decoding="async"
+              src="/thallo-digital/flower.webp"
+              alt=""
+              aria-hidden="true"
+              className="thallo-spin absolute top-0 left-[71%] hidden h-9 w-9 -translate-x-1/2 object-contain lg:block"
+            />
 
             {/* A real table now, matched to the trajectory panel on /results/ —
                 same shell, same hairlines, same heading type. It was a grid of
