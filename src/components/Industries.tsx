@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
 
@@ -11,16 +11,55 @@ const fp =
   'group-hover:-translate-y-[6px] group-hover:scale-[1.03] ' +
   'group-hover:shadow-[0_10px_28px_rgba(0,0,0,0.13)]';
 
-// All cards are always green
-const cardCls =
-  'group relative p-8 pt-16 pb-12 border border-transparent rounded-3xl transition-all duration-300 ' +
-  'bg-[#39471D] shadow-[0_8px_32px_-12px_rgba(57,71,29,0.40)] ' +
-  'hover:-translate-y-1 hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,0.55)]';
+// Exactly one card is green at a time. Six blocks of solid green read as a
+// wall; one green against five white reads as a selection, and the grid stops
+// competing with the floating panels for attention.
+const cardBase =
+  'group relative p-8 pt-16 pb-12 border rounded-3xl ' +
+  'transition-[background-color,border-color,box-shadow,transform] duration-300 ease-out ' +
+  'hover:-translate-y-1';
 
-const h3Cls = 'text-xl font-semibold mb-2.5 text-white';
-const pCls  = 'text-sm leading-relaxed font-medium text-[#CBD0AC]';
+const cardOn =
+  'bg-[#39471D] border-transparent shadow-[0_8px_32px_-12px_rgba(57,71,29,0.40)] ' +
+  'hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,0.55)]';
+
+const cardOff =
+  'bg-white border-gray-100 shadow-[0_2px_12px_-6px_rgba(23,26,16,0.10)] ' +
+  'hover:shadow-[0_20px_48px_-24px_rgba(23,26,16,0.30)]';
 
 const panel = (extra: string) => `${fp} ${extra}`;
+
+/* The green never resets on mouse-out: whichever card the cursor touched last
+   stays lit once you scroll on, so the section keeps a chosen state instead of
+   snapping back to a default the moment you leave. */
+function Card({
+  index, active, onActivate, title, body, children,
+}: {
+  index: number;
+  active: number;
+  onActivate: (i: number) => void;
+  title: string;
+  body: string;
+  children: React.ReactNode;
+}) {
+  const on = index === active;
+  return (
+    <div
+      data-reveal
+      onMouseEnter={() => onActivate(index)}
+      onClick={() => onActivate(index)}
+      className={`${cardBase} ${on ? cardOn : cardOff}`}
+    >
+      {children}
+      <h3 className={`text-xl font-semibold mb-2.5 transition-colors duration-300 ${on ? 'text-white' : 'text-gray-900'}`}>
+        {title}
+      </h3>
+      <p className={`text-sm leading-relaxed font-medium transition-colors duration-300 ${on ? 'text-[#CBD0AC]' : 'text-gray-500'}`}>
+        {body}
+      </p>
+    </div>
+  );
+}
 
 const Check = () => (
   <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
@@ -31,6 +70,8 @@ const Check = () => (
 );
 
 export default function Industries() {
+  const [active, setActive] = useState(0);
+
   return (
     <section className="bg-gray-50/25 py-16 2xl:py-28 min-h-[80vh] flex flex-col justify-center border-b border-gray-100" id="industries">
       <div className="max-w-[1440px] mx-auto px-6">
@@ -49,7 +90,11 @@ export default function Industries() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
 
           {/* ── Specialized software ─────────────────────────────────────── */}
-          <div data-reveal className={cardCls}>
+          <Card
+            index={0} active={active} onActivate={setActive}
+            title="Specialized software"
+            body="Category-defining SaaS where the winner is the name buyers already trust."
+          >
             <div className={panel('-top-4 -right-4 w-[152px] p-3')}>
               <p className="text-[9px] font-bold tracking-[0.15em] uppercase text-gray-400 mb-2">AI Overview</p>
               <div className="h-[5px] rounded-full bg-[#39471D] mb-1.5" />
@@ -63,12 +108,14 @@ export default function Industries() {
                 <p className="text-[9px] font-medium text-gray-400 mt-0.5">cited in AI overview</p>
               </div>
             </div>
-            <h3 className={h3Cls}>Specialized software</h3>
-            <p className={pCls}>Category-defining SaaS where the winner is the name buyers already trust.</p>
-          </div>
+          </Card>
 
           {/* ── Fintech ──────────────────────────────────────────────────── */}
-          <div data-reveal className={cardCls}>
+          <Card
+            index={1} active={active} onActivate={setActive}
+            title="Fintech"
+            body="Where a wrong vendor is costly to unwind, and credibility clears the shortlist."
+          >
             <div className={panel('-top-8 left-1/2 -translate-x-1/2 w-[148px] p-3')}>
               <p className="text-[9px] font-bold tracking-[0.15em] uppercase text-gray-400 mb-2">Buyer shortlist</p>
               <div className="flex items-center gap-2 mb-1.5">
@@ -92,12 +139,14 @@ export default function Industries() {
                 <span className="text-[9px] font-bold text-[#39471D] bg-[#39471D]/10 px-2 py-0.5 rounded-full whitespace-nowrap">ROI</span>
               </div>
             </div>
-            <h3 className={h3Cls}>Fintech</h3>
-            <p className={pCls}>Where a wrong vendor is costly to unwind, and credibility clears the shortlist.</p>
-          </div>
+          </Card>
 
           {/* ── Health tech ──────────────────────────────────────────────── */}
-          <div data-reveal className={cardCls}>
+          <Card
+            index={2} active={active} onActivate={setActive}
+            title="Health tech"
+            body="Regulated, high-stakes buying that rewards the most credible, best-documented source."
+          >
             <div className={panel('-top-4 -right-3 w-[148px] p-3')}>
               <p className="text-[9px] font-bold tracking-[0.15em] uppercase text-gray-400 mb-2">AI Answer</p>
               <div className="h-[5px] rounded-full bg-[#e8e8e3] mb-1.5" />
@@ -114,12 +163,14 @@ export default function Industries() {
                 <p className="text-[9px] font-medium text-gray-400 mt-0.5">by AI</p>
               </div>
             </div>
-            <h3 className={h3Cls}>Health tech</h3>
-            <p className={pCls}>Regulated, high-stakes buying that rewards the most credible, best-documented source.</p>
-          </div>
+          </Card>
 
           {/* ── Professional services ────────────────────────────────────── */}
-          <div data-reveal className={cardCls}>
+          <Card
+            index={3} active={active} onActivate={setActive}
+            title="Professional services"
+            body="Expertise businesses that live or die on reputation and referral."
+          >
             <div className={panel('-top-4 -right-3 w-[148px] p-3')}>
               <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-1">Reputation score</p>
               <p className="text-[18px] font-bold text-gray-900 leading-tight">
@@ -141,12 +192,14 @@ export default function Industries() {
                 <p className="text-[9px] font-medium text-gray-400 mt-0.5 whitespace-nowrap">drive growth</p>
               </div>
             </div>
-            <h3 className={h3Cls}>Professional services</h3>
-            <p className={pCls}>Expertise businesses that live or die on reputation and referral.</p>
-          </div>
+          </Card>
 
           {/* ── Health & recovery ────────────────────────────────────────── */}
-          <div data-reveal className={cardCls}>
+          <Card
+            index={4} active={active} onActivate={setActive}
+            title="Health & recovery"
+            body="Deeply researched, deeply personal decisions where trust is everything."
+          >
             <div className={panel('-top-4 -right-3 p-3 w-[160px]')}>
               <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-2">Buyer intent</p>
               <div className="flex items-center gap-2.5">
@@ -173,12 +226,14 @@ export default function Industries() {
                 </div>
               ))}
             </div>
-            <h3 className={h3Cls}>Health &amp; recovery</h3>
-            <p className={pCls}>Deeply researched, deeply personal decisions where trust is everything.</p>
-          </div>
+          </Card>
 
           {/* ── Benefits & claims ────────────────────────────────────────── */}
-          <div data-reveal className={cardCls}>
+          <Card
+            index={5} active={active} onActivate={setActive}
+            title="Benefits & claims"
+            body="Complex, confusing choices where the clear, trusted guide wins."
+          >
             <div className={panel('-top-4 -right-3 w-[152px] p-3')}>
               <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-2">Complex decisions</p>
               <div className="flex items-center gap-2 mb-1.5">
@@ -205,9 +260,7 @@ export default function Industries() {
                 <p className="text-[9px] font-medium text-gray-400 mt-0.5">wins confidence</p>
               </div>
             </div>
-            <h3 className={h3Cls}>Benefits &amp; claims</h3>
-            <p className={pCls}>Complex, confusing choices where the clear, trusted guide wins.</p>
-          </div>
+          </Card>
 
         </div>
       </div>
