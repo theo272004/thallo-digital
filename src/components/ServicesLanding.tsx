@@ -346,18 +346,18 @@ export default function ServicesPage() {
               column (42 + 19 + 10 = 71%), and hidden below lg, where the table
               scrolls inside its panel and 71% of the panel stops being 71% of
               the table. */}
-          {/* 64px of mark inside 96px of padding. The clearance has to beat the
+          {/* 88px of mark inside 128px of padding. The clearance has to beat the
               mark's rotated bounding box, not its width — a spinning square
-              sweeps out to about 1.41x itself at 45°, so 64 reaches 90 and
-              hangs 13px below where it looks like it ends. */}
-          <div className="relative pt-24">
+              sweeps out to about 1.41x itself at 45°, so 88 reaches 124 and
+              hangs 18px below where it looks like it ends. */}
+          <div className="relative pt-32">
             <img
               loading="lazy"
               decoding="async"
               src="/thallo-digital/flower.webp"
               alt=""
               aria-hidden="true"
-              className="thallo-spin absolute top-0 left-[71%] hidden h-16 w-16 -translate-x-1/2 object-contain lg:block"
+              className="thallo-spin absolute top-0 left-[71%] hidden h-[88px] w-[88px] -translate-x-1/2 object-contain lg:block"
             />
 
             {/* A real table now, matched to the trajectory panel on /results/ —
