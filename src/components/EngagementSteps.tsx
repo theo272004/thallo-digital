@@ -141,7 +141,7 @@ export default function EngagementSteps() {
   return (
     <section className="bg-white py-16 2xl:py-24 border-b border-gray-100">
       <div className="max-w-[1440px] mx-auto px-6">
-        <div className="rounded-[32px] border border-gray-100 bg-[#F8F9F5] p-7 sm:p-10 lg:p-14">
+        <div className="rounded-[32px] border border-gray-100 bg-white p-7 sm:p-10 lg:p-14">
 
           <div className="max-w-2xl mx-auto text-center mb-12 lg:mb-16">
             <Eyebrow center className="mb-5">How an engagement runs</Eyebrow>
@@ -175,13 +175,7 @@ export default function EngagementSteps() {
                   )}
 
                   <div className="relative mb-6 flex">
-                    <span
-                      className={`inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold transition-colors duration-300 ${
-                        i === 0
-                          ? 'bg-[#39471D] border border-[#39471D] text-white'
-                          : 'bg-white border border-gray-200 text-gray-500 group-hover:border-[#39471D] group-hover:bg-[#E7ECD9] group-hover:text-[#39471D]'
-                      }`}
-                    >
+                    <span className="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold bg-[#39471D] border border-[#39471D] text-white transition-colors duration-300 group-hover:bg-[#55672E] group-hover:border-[#55672E]">
                       Step {i + 1}
                     </span>
                   </div>
