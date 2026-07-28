@@ -8,14 +8,26 @@ export default function VideoSection() {
   return (
     <section className="bg-white py-16 border-b border-gray-100">
       <div className="max-w-[1440px] mx-auto px-6">
-        <div
-          className="relative text-white rounded-[32px] overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, #171A10 0%, #39471D 55%, #55672E 100%)' }}
-        >
-          {/* Radial highlight */}
+        <div className="relative text-white rounded-[32px] overflow-hidden bg-[#171A10]">
+          {/* Desk photo — same treatment as the "Notes on getting found" card:
+              a flat black scrim over it so white type stays legible. The scrim
+              deepens while the video panel is open so the frame reads as the
+              foreground instead of competing with the photo. */}
+          <img loading="lazy" decoding="async"
+            src="/thallo-digital/case-film-bg.webp"
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div
+            className={`absolute inset-0 pointer-events-none transition-colors duration-500 ${
+              isOpen ? 'bg-black/65' : 'bg-black/40'
+            }`}
+          />
+
+          {/* Left-side falloff so the copy never lands on the lit part of the desk */}
           <div
             className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(60% 90% at 85% 15%, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0) 70%)' }}
+            style={{ background: 'linear-gradient(90deg, rgba(23,26,16,0.75) 0%, rgba(23,26,16,0.25) 45%, rgba(23,26,16,0) 75%)' }}
           />
 
           {/* Banner row — always visible, never changes size */}
