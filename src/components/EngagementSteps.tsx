@@ -175,7 +175,9 @@ export default function EngagementSteps() {
   return (
     <section className="bg-white py-16 2xl:py-24 border-b border-gray-100">
       <div className="max-w-[1440px] mx-auto px-6">
-        <div className="rounded-[32px] border border-gray-100 bg-white p-7 sm:p-10 lg:p-14">
+        {/* Horizontal padding drops to match what the columns now carry, so the
+            outer copy still starts 56px in from the card edge. */}
+        <div className="rounded-[32px] border border-gray-100 bg-white p-7 sm:p-10 lg:px-7 lg:py-14">
 
           <div className="max-w-2xl mx-auto text-center mb-12 lg:mb-16">
             <Eyebrow center className="mb-5">How an engagement runs</Eyebrow>
@@ -199,7 +201,11 @@ export default function EngagementSteps() {
               {STEPS.map((s, i) => (
                 <div
                   key={s.title}
-                  className="group relative flex flex-col lg:px-7 lg:first:pl-0 lg:last:pr-0"
+                  /* Every column pads on both sides. The outer two used to skip
+                     their outside padding, which made them 28px wider — so as
+                     the viewport narrowed the middle two hit the laptop's
+                     max-width first and shrank alone. */
+                  className="group relative flex flex-col lg:px-7"
                 >
                   {i > 0 && (
                     <span
