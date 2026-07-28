@@ -53,16 +53,23 @@ export default function VideoSection() {
             </button>
           </div>
 
-          {/* Inline video — expands downward on play click */}
+          {/* Inline video — expands downward on play click. Same grid-rows
+              opening as the FAQ, and for the same reason: the 600px max-height
+              was well above the content it held, so the panel stopped moving
+              part-way through the transition and the rest of it ran on nothing. */}
           <div
-            className="transition-all duration-500 ease-in-out overflow-hidden"
-            style={{ maxHeight: isOpen ? '600px' : '0px', touchAction: 'pan-y' }}
+            className={`grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+            }`}
+            style={{ touchAction: 'pan-y' }}
           >
-            <div className="px-12 pb-12">
-              {/* Fixed height so content never overflows the 600px max-height container —
-                  aspect-video at 1440px = 810px which triggers an iOS scroll trap.
-                  Swap this div for <iframe src="…"> when the video URL is ready. */}
-              <div className="w-full h-[400px] rounded-2xl bg-black/50" />
+            <div className="overflow-hidden">
+              <div className="px-12 pb-12">
+                {/* Fixed height rather than aspect-video: at 1440px that would be
+                    810px tall, which triggers an iOS scroll trap.
+                    Swap this div for <iframe src="…"> when the video URL is ready. */}
+                <div className="w-full h-[400px] rounded-2xl bg-black/50" />
+              </div>
             </div>
           </div>
 

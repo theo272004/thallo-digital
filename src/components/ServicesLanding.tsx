@@ -471,13 +471,16 @@ export default function ServicesPage() {
               return (
                 <div key={i} className="border-b border-gray-100">
                   <button
+                    id={`faq-q-${i}`}
                     onClick={() => setOpenFaq(isOpen ? null : i)}
+                    aria-expanded={isOpen}
+                    aria-controls={`faq-a-${i}`}
                     className="w-full text-left py-6 flex justify-between items-center gap-5 group"
                   >
                     <span className="text-base font-semibold text-gray-900 group-hover:text-[#39471D] transition-colors">
                       {faq.q}
                     </span>
-                    <span className={`shrink-0 w-7 h-7 rounded-full border flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
+                    <span className={`shrink-0 w-7 h-7 rounded-full border flex items-center justify-center text-sm font-semibold transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                       isOpen
                         ? 'bg-[#39471D] border-[#39471D] text-white rotate-45'
                         : 'border-gray-200 text-gray-400'
@@ -485,11 +488,37 @@ export default function ServicesPage() {
                       +
                     </span>
                   </button>
+                  {/* Grid rows from 0fr to 1fr, rather than a max-height to a
+                      guessed pixel value.
+
+                      The old 300px was far taller than any answer — 138px at
+                      desktop width, 229px at 375px. Height is min(content,
+                      max-height), so the panel finished opening once max-height
+                      passed the content, at roughly half the duration, and the
+                      other half ran on an element that had already stopped. It
+                      opened through the fast middle of the curve and never
+                      reached the ease-out, which is what made it feel abrupt;
+                      closing was the same in reverse, a pause and then a drop.
+
+                      1fr is whatever the answer actually measures, so the easing
+                      applies to the real distance from first pixel to last. */}
                   <div
-                    className="overflow-hidden transition-all duration-300 ease-in-out"
-                    style={{ maxHeight: isOpen ? '300px' : '0px' }}
+                    id={`faq-a-${i}`}
+                    role="region"
+                    aria-labelledby={`faq-q-${i}`}
+                    className={`grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                      isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                    }`}
                   >
-                    <p className="pb-6 text-sm text-gray-500 font-medium leading-relaxed max-w-[68ch]">{faq.a}</p>
+                    <div className="overflow-hidden">
+                      <p
+                        className={`pb-6 text-sm text-gray-500 font-medium leading-relaxed max-w-[68ch] transition-opacity duration-300 ${
+                          isOpen ? 'opacity-100 delay-150' : 'opacity-0'
+                        }`}
+                      >
+                        {faq.a}
+                      </p>
+                    </div>
                   </div>
                 </div>
               );
