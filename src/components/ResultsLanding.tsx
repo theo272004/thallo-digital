@@ -147,57 +147,39 @@ export default function ResultsLanding() {
                 </thead>
                 <tbody>
                   {MONTHS.map((r) => (
-                    /* The projected month is the only one that is not measured,
-                       so it is the only one that gets inverted — solid olive,
-                       white figures. It reads as a different kind of row at a
-                       glance, which is exactly what it is. */
+                    /* The projected month carries a wash of olive and its label,
+                       nothing louder — it is still one of the rows. */
                     <tr
                       key={r.m}
                       className={`border-b border-gray-50 transition-colors last:border-0 ${
-                        r.projected ? 'bg-[#39471D]' : 'hover:bg-gray-50/60'
+                        r.projected ? 'bg-[#39471D]/[0.03]' : 'hover:bg-gray-50/60'
                       }`}
                     >
                       <th scope="row" className="whitespace-nowrap px-7 py-5 align-middle">
-                        <span className={`text-sm font-bold ${r.projected ? 'text-white' : 'text-gray-900'}`}>
-                          {r.m}
-                        </span>
+                        <span className="text-sm font-bold text-gray-900">{r.m}</span>
                         {r.projected && (
-                          <span className="ml-2 text-xs font-medium text-[#CBD0AC]">Projected</span>
+                          <span className="ml-2 text-xs font-medium text-[#55672E]">Projected</span>
                         )}
                       </th>
                       <td className="px-7 py-5 text-right align-middle">
-                        <span
-                          className={`text-[15px] font-bold tabular-nums ${
-                            r.projected ? 'text-white' : 'text-[#39471D]'
-                          }`}
-                        >
+                        <span className="text-[15px] font-bold text-[#39471D] tabular-nums">
                           {r.projected ? '~' : ''}{r.clicks.toLocaleString('en-US')}
                         </span>
                         {/* Carries the shape of the curve without a chart library */}
                         <span
                           aria-hidden="true"
-                          className={`mt-2 ml-auto block h-[3px] w-full max-w-[120px] overflow-hidden rounded-full ${
-                            r.projected ? 'bg-white/25' : 'bg-gray-100'
-                          }`}
+                          className="mt-2 ml-auto block h-[3px] w-full max-w-[120px] overflow-hidden rounded-full bg-gray-100"
                         >
                           <span
-                            className={`block h-full rounded-full ${r.projected ? 'bg-white' : 'bg-[#39471D]'}`}
+                            className="block h-full rounded-full bg-[#39471D]"
                             style={{ width: `${(r.clicks / PEAK) * 100}%` }}
                           />
                         </span>
                       </td>
-                      <td
-                        className={`whitespace-nowrap px-7 py-5 text-right align-middle text-sm font-medium tabular-nums ${
-                          r.projected ? 'text-[#CBD0AC]' : 'text-gray-500'
-                        }`}
-                      >
+                      <td className="whitespace-nowrap px-7 py-5 text-right align-middle text-sm font-medium text-gray-500 tabular-nums">
                         {r.impr}
                       </td>
-                      <td
-                        className={`px-7 py-5 text-right align-middle text-sm font-semibold tabular-nums ${
-                          r.projected ? 'text-white' : 'text-gray-900'
-                        }`}
-                      >
+                      <td className="px-7 py-5 text-right align-middle text-sm font-semibold text-gray-900 tabular-nums">
                         {r.pos}
                       </td>
                     </tr>
@@ -207,22 +189,23 @@ export default function ResultsLanding() {
             </div>
           </div>
 
-          {/* The three figures sit directly under the table, in its own section
-              and matched to its panel — same border, same shadow, same corner —
-              so they read as what the months add up to rather than as a
-              separate exhibit further down the page. */}
-          <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
+          {/* Three small tiles tucked under the table's numeric columns — the
+              totals the months add up to, sized as a footnote to the panel
+              rather than as three more full-width cards. The sentence that used
+              to sit under each figure is gone: at this size only the number and
+              what it counts fit, and the prose beneath the table already says
+              it. */}
+          <div className="mt-4 flex flex-wrap gap-3 md:justify-end">
             {CALLOUTS.map((c) => (
               <div
                 key={c.lbl}
                 data-reveal
-                className="flex flex-col rounded-3xl border border-gray-100 bg-white p-8 shadow-[0_2px_14px_rgba(20,20,18,0.05)] sm:p-10"
+                className="min-w-[150px] flex-1 rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-[0_2px_14px_rgba(20,20,18,0.05)] md:flex-none"
               >
-                <div className="mb-3 whitespace-nowrap font-serif text-5xl font-bold text-[#39471D] tabular-nums lg:text-6xl">
+                <div className="whitespace-nowrap font-serif text-2xl font-bold leading-none text-[#39471D] tabular-nums">
                   {c.fig}{c.suffix}
                 </div>
-                <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-gray-900">{c.lbl}</p>
-                <p className="text-sm font-medium leading-relaxed text-gray-500">{c.copy}</p>
+                <p className="mt-1.5 text-[11px] font-medium text-gray-500">{c.lbl}</p>
               </div>
             ))}
           </div>
