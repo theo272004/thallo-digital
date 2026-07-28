@@ -147,37 +147,57 @@ export default function ResultsLanding() {
                 </thead>
                 <tbody>
                   {MONTHS.map((r) => (
+                    /* The projected month is the only one that is not measured,
+                       so it is the only one that gets inverted — solid olive,
+                       white figures. It reads as a different kind of row at a
+                       glance, which is exactly what it is. */
                     <tr
                       key={r.m}
                       className={`border-b border-gray-50 transition-colors last:border-0 ${
-                        r.projected ? 'bg-[#39471D]/[0.03]' : 'hover:bg-gray-50/60'
+                        r.projected ? 'bg-[#39471D]' : 'hover:bg-gray-50/60'
                       }`}
                     >
                       <th scope="row" className="whitespace-nowrap px-7 py-5 align-middle">
-                        <span className="text-sm font-bold text-gray-900">{r.m}</span>
+                        <span className={`text-sm font-bold ${r.projected ? 'text-white' : 'text-gray-900'}`}>
+                          {r.m}
+                        </span>
                         {r.projected && (
-                          <span className="ml-2 text-xs font-medium text-[#55672E]">Projected</span>
+                          <span className="ml-2 text-xs font-medium text-[#CBD0AC]">Projected</span>
                         )}
                       </th>
                       <td className="px-7 py-5 text-right align-middle">
-                        <span className="text-[15px] font-bold text-[#39471D] tabular-nums">
+                        <span
+                          className={`text-[15px] font-bold tabular-nums ${
+                            r.projected ? 'text-white' : 'text-[#39471D]'
+                          }`}
+                        >
                           {r.projected ? '~' : ''}{r.clicks.toLocaleString('en-US')}
                         </span>
                         {/* Carries the shape of the curve without a chart library */}
                         <span
                           aria-hidden="true"
-                          className="mt-2 ml-auto block h-[3px] w-full max-w-[120px] overflow-hidden rounded-full bg-gray-100"
+                          className={`mt-2 ml-auto block h-[3px] w-full max-w-[120px] overflow-hidden rounded-full ${
+                            r.projected ? 'bg-white/25' : 'bg-gray-100'
+                          }`}
                         >
                           <span
-                            className="block h-full rounded-full bg-[#39471D]"
+                            className={`block h-full rounded-full ${r.projected ? 'bg-white' : 'bg-[#39471D]'}`}
                             style={{ width: `${(r.clicks / PEAK) * 100}%` }}
                           />
                         </span>
                       </td>
-                      <td className="whitespace-nowrap px-7 py-5 text-right align-middle text-sm font-medium text-gray-500 tabular-nums">
+                      <td
+                        className={`whitespace-nowrap px-7 py-5 text-right align-middle text-sm font-medium tabular-nums ${
+                          r.projected ? 'text-[#CBD0AC]' : 'text-gray-500'
+                        }`}
+                      >
                         {r.impr}
                       </td>
-                      <td className="px-7 py-5 text-right align-middle text-sm font-semibold text-gray-900 tabular-nums">
+                      <td
+                        className={`px-7 py-5 text-right align-middle text-sm font-semibold tabular-nums ${
+                          r.projected ? 'text-white' : 'text-gray-900'
+                        }`}
+                      >
                         {r.pos}
                       </td>
                     </tr>
