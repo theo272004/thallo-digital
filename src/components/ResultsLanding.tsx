@@ -206,20 +206,23 @@ export default function ResultsLanding() {
               </table>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* ── Callouts — the house stat card, serif figures on white ───────── */}
-      <section className="bg-gray-50/50 py-16 2xl:py-28 border-b border-gray-100">
-        <div className="max-w-[1440px] mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {/* The three figures sit directly under the table, in its own section
+              and matched to its panel — same border, same shadow, same corner —
+              so they read as what the months add up to rather than as a
+              separate exhibit further down the page. */}
+          <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-3">
             {CALLOUTS.map((c) => (
-              <div key={c.lbl} data-reveal className="p-8 sm:p-10 bg-white border border-gray-100 rounded-3xl flex flex-col">
-                <div className="text-5xl lg:text-6xl font-serif font-bold text-[#39471D] mb-3 tabular-nums whitespace-nowrap">
+              <div
+                key={c.lbl}
+                data-reveal
+                className="flex flex-col rounded-3xl border border-gray-100 bg-white p-8 shadow-[0_2px_14px_rgba(20,20,18,0.05)] sm:p-10"
+              >
+                <div className="mb-3 whitespace-nowrap font-serif text-5xl font-bold text-[#39471D] tabular-nums lg:text-6xl">
                   {c.fig}{c.suffix}
                 </div>
-                <p className="text-[11px] font-bold tracking-wider uppercase text-gray-900 mb-2">{c.lbl}</p>
-                <p className="text-sm text-gray-500 leading-relaxed font-medium">{c.copy}</p>
+                <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-gray-900">{c.lbl}</p>
+                <p className="text-sm font-medium leading-relaxed text-gray-500">{c.copy}</p>
               </div>
             ))}
           </div>
