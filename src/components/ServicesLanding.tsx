@@ -3,6 +3,7 @@
 import React, { useState, useRef, useLayoutEffect } from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import EngagementSteps from '@/components/EngagementSteps';
+import { Magnetic } from '@/components/motion';
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -299,13 +300,18 @@ export default function ServicesPage() {
             })}
           </div>
 
-          <div className="mt-10 flex justify-center">
-            <a
-              href="mailto:hello@thallo.co?subject=AI Visibility Audit Request"
-              className="px-5 py-2.5 bg-[#39471D] border border-[#39471D] rounded-full text-sm font-semibold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all"
-            >
-              Book an audit &#x2197;
-            </a>
+          {/* The ask under the three plans. It was small enough to read as a
+              footnote, and it was the last "Book an audit" still pointing at
+              the mailto — every other one goes to /contact/. */}
+          <div className="mt-16 flex justify-center">
+            <Magnetic>
+              <a
+                href="/thallo-digital/contact/"
+                className="inline-block px-9 py-4 bg-[#39471D] border border-[#39471D] rounded-full text-base font-semibold text-white shadow-[0_18px_36px_-16px_rgba(57,71,29,0.55)] hover:bg-[#55672E] hover:border-[#55672E] transition-all"
+              >
+                Book an audit &#x2197;
+              </a>
+            </Magnetic>
           </div>
         </div>
       </section>
