@@ -135,17 +135,26 @@ export default function ResultsLanding() {
           <div
             className="relative overflow-hidden rounded-[28px] px-10 py-14 sm:px-16 sm:py-20"
             style={{
-              backgroundImage: 'url(/thallo-digital/results-bg.webp)',
+              backgroundImage: 'url(/thallo-digital/measured-bg.webp)',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
           >
-            <div className="max-w-lg mb-14">
+            {/* A scrim only where the type sits. The photograph averages dark,
+                but its highlights — the lit flower on the wall — reach a point
+                where white on them falls to 3.7:1. This holds the left side down
+                so the heading clears AA whatever photograph goes in here next. */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-gradient-to-r from-[#171a10]/55 via-[#171a10]/20 to-transparent"
+            />
+
+            <div className="relative max-w-lg mb-14">
               <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white leading-[1.05] font-sans">
                 Six months, measured.
               </h2>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {HEADLINE.map((s) => (
                 <div
                   key={s.lbl}
@@ -364,12 +373,20 @@ export default function ResultsLanding() {
       <section className="bg-white py-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 w-full">
           <div className="relative overflow-hidden rounded-[28px] px-12 py-20 sm:px-20 sm:py-28">
+            {/* The photograph that used to head the figures panel. Its own file,
+                not a rename — cta-bg is still the home page's closing shot. */}
             <img loading="lazy" decoding="async"
-              src="/thallo-digital/cta-bg.webp"
+              src="/thallo-digital/results-bg.webp"
               alt=""
               aria-hidden="true"
               className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
               style={{ zIndex: 0 }}
+            />
+            {/* Same reasoning as the figures panel: the copy block sits on the
+                left, and this photograph's left edge carries lit wood. */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 z-[1] bg-gradient-to-r from-[#171a10]/55 via-[#171a10]/20 to-transparent"
             />
             <div className="relative z-[2] max-w-xl">
               <Eyebrow tone="light" className="mb-6">Your turn</Eyebrow>
