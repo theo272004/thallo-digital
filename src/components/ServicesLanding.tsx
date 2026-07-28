@@ -92,22 +92,29 @@ function Check({ featured }: { featured: boolean }) {
 
 const OLIVE_TEXT = new Set(['Monthly', 'Deep', 'Compounding growth']);
 
+/* The mark alone says nothing to a screen reader, so each carries its word. */
 function CompareCell({ val }: { val: boolean | string }) {
   if (val === true) return (
-    <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#E7ECD9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#39471D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <span className="mx-auto flex h-7 w-7 items-center justify-center rounded-full bg-[#E7ECD9]">
+      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#39471D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         <polyline points="4 12 9 17 20 7" />
       </svg>
-    </div>
+      <span className="sr-only">Included</span>
+    </span>
   );
   if (val === false) return (
-    <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#F6F6F6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-      <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#BFC3C8" strokeWidth="2" strokeLinecap="round">
+    <span className="mx-auto flex h-7 w-7 items-center justify-center rounded-full bg-gray-50">
+      <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#BFC3C8" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
         <line x1="5" y1="5" x2="19" y2="19" /><line x1="19" y1="5" x2="5" y2="19" />
       </svg>
-    </div>
+      <span className="sr-only">Not included</span>
+    </span>
   );
-  return <span style={{ fontSize: 13, fontWeight: 700, color: OLIVE_TEXT.has(val as string) ? '#39471D' : '#111827', textAlign: 'center' as const }}>{val}</span>;
+  return (
+    <span className={`text-[13px] font-bold ${OLIVE_TEXT.has(val as string) ? 'text-[#39471D]' : 'text-gray-900'}`}>
+      {val}
+    </span>
+  );
 }
 
 function CompareIcon({ feature }: { feature: string }) {
@@ -332,61 +339,74 @@ export default function ServicesPage() {
           {/* Outer: space above card for the floating badge */}
           <div style={{ position: 'relative', paddingTop: 28 }}>
 
-            {/* Floating flower badge — centered on Authority Engine col (42+19+10 = 71%) */}
-            <div style={{
-              position: 'absolute', top: 0, left: '71%', transform: 'translateX(-50%)',
-              zIndex: 20, width: 56, height: 56, borderRadius: '50%',
-              background: '#39471D', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 10px 25px rgba(0,0,0,.12)',
-            }}>
-              <img loading="lazy" decoding="async" src="/thallo-digital/flower.webp" alt="" aria-hidden style={{ width: 28, height: 28, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+            {/* Floating flower badge, centred on the Authority Engine column
+                (42 + 19 + 10 = 71%). Hidden below lg: there the table scrolls
+                inside its panel and 71% of the panel stops being 71% of the
+                table, so the badge would point at the wrong column. */}
+            <div className="absolute top-0 left-[71%] z-20 hidden h-14 w-14 -translate-x-1/2 items-center justify-center rounded-full bg-[#39471D] shadow-[0_10px_25px_rgba(23,26,16,0.18)] lg:flex">
+              <img
+                loading="lazy" decoding="async"
+                src="/thallo-digital/flower.webp"
+                alt="" aria-hidden="true"
+                className="h-7 w-7 object-contain"
+                style={{ filter: 'brightness(0) invert(1)' }}
+              />
             </div>
 
-            {/* Card */}
-            <div style={{ background: '#FFFFFF', border: '1px solid #ECE9E2', borderRadius: 30, boxShadow: '0 18px 55px rgba(23,26,16,.06)', overflow: 'hidden' }}>
-              <div style={{ overflowX: 'auto' }}>
-                <div style={{ minWidth: 720 }}>
-
-                  {/* Header row */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '42fr 19fr 20fr 19fr' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', minHeight: 64, paddingLeft: 24, paddingRight: 16, borderBottom: '1px solid #F2F1ED' }}>
-                      <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#9CA3AF', whiteSpace: 'nowrap' }}>Feature</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 64, borderBottom: '1px solid #F2F1ED', borderLeft: '1px solid #F2F1ED' }}>
-                      <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#6B7280', whiteSpace: 'nowrap' }}>Audit</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 64, background: '#39471D', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
-                      <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#FFFFFF', whiteSpace: 'nowrap' }}>Authority Engine</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 64, borderBottom: '1px solid #F2F1ED', borderLeft: '1px solid #F2F1ED' }}>
-                      <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#6B7280', whiteSpace: 'nowrap' }}>Flagship</span>
-                    </div>
-                  </div>
-
-                  {/* Data rows */}
-                  {COMPARE.map((row, i) => (
-                    <div
-                      key={i}
-                      className="group"
-                      style={{ display: 'grid', gridTemplateColumns: '42fr 19fr 20fr 19fr', borderTop: '1px solid #F2F1ED' }}
-                    >
-                      <div className="group-hover:bg-[#F7F8F3]" style={{ display: 'flex', alignItems: 'center', minHeight: 58, paddingLeft: 24, paddingRight: 16, gap: 14, transition: 'background 150ms' }}>
-                        <CompareIcon feature={row.feature} />
-                        <span style={{ fontSize: 14, fontWeight: 600, color: '#111827', lineHeight: 1.35 }}>{row.feature}</span>
-                      </div>
-                      <div className="group-hover:bg-[#F7F8F3]" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 58, borderLeft: '1px solid #F2F1ED', transition: 'background 150ms' }}>
-                        <CompareCell val={row.audit} />
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 58, background: '#F7F8F3', borderLeft: '1px solid #E7ECD9', borderRight: '1px solid #E7ECD9' }}>
-                        <CompareCell val={row.engine} />
-                      </div>
-                      <div className="group-hover:bg-[#F7F8F3]" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 58, borderLeft: '1px solid #F2F1ED', transition: 'background 150ms' }}>
-                        <CompareCell val={row.flagship} />
-                      </div>
-                    </div>
-                  ))}
-
-                </div>
+            {/* A real table now, matched to the trajectory panel on /results/ —
+                same shell, same hairlines, same heading type. It was a grid of
+                divs, which read to a screen reader as a pile of unrelated text
+                rather than a comparison. */}
+            <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_2px_14px_rgba(20,20,18,0.05)]">
+              <div className="overflow-x-auto overflow-y-hidden">
+                <table className="w-full min-w-[720px] border-collapse text-left">
+                  <caption className="sr-only">What each engagement includes</caption>
+                  <colgroup>
+                    <col className="w-[42%]" />
+                    <col className="w-[19%]" />
+                    <col className="w-[20%]" />
+                    <col className="w-[19%]" />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th scope="col" className="border-b border-gray-100 px-7 py-4 text-xs font-medium text-gray-400">
+                        Feature
+                      </th>
+                      <th scope="col" className="border-b border-gray-100 px-4 py-4 text-center text-xs font-medium text-gray-400">
+                        Audit
+                      </th>
+                      <th scope="col" className="rounded-t-[20px] bg-[#39471D] px-4 py-4 text-center text-xs font-medium text-white">
+                        Authority Engine
+                      </th>
+                      <th scope="col" className="border-b border-gray-100 px-4 py-4 text-center text-xs font-medium text-gray-400">
+                        Flagship
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {COMPARE.map((row) => (
+                      <tr key={row.feature} className="group border-b border-gray-50 last:border-0">
+                        <th scope="row" className="px-7 py-5 text-left transition-colors group-hover:bg-[#F7F8F3]">
+                          <span className="flex items-center gap-3.5">
+                            <CompareIcon feature={row.feature} />
+                            <span className="text-sm font-semibold text-gray-900">{row.feature}</span>
+                          </span>
+                        </th>
+                        <td className="px-4 py-5 text-center transition-colors group-hover:bg-[#F7F8F3]">
+                          <CompareCell val={row.audit} />
+                        </td>
+                        {/* The recommended column keeps its tint through every
+                            row, so the eye can run straight down it. */}
+                        <td className="border-x border-[#E7ECD9] bg-[#F7F8F3] px-4 py-5 text-center">
+                          <CompareCell val={row.engine} />
+                        </td>
+                        <td className="px-4 py-5 text-center transition-colors group-hover:bg-[#F7F8F3]">
+                          <CompareCell val={row.flagship} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
