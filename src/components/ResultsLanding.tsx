@@ -71,7 +71,7 @@ export default function ResultsLanding() {
           <div
             className="relative overflow-hidden rounded-[28px] px-10 py-14 sm:px-16 sm:py-20"
             style={{
-              backgroundImage: 'url(/thallo-digital/buyers-bg.webp)',
+              backgroundImage: 'url(/thallo-digital/results-bg.webp)',
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
@@ -189,23 +189,22 @@ export default function ResultsLanding() {
             </div>
           </div>
 
-          {/* Three small tiles tucked under the table's numeric columns — the
-              totals the months add up to, sized as a footnote to the panel
-              rather than as three more full-width cards. The sentence that used
-              to sit under each figure is gone: at this size only the number and
-              what it counts fit, and the prose beneath the table already says
-              it. */}
-          <div className="mt-4 flex flex-wrap gap-3 md:justify-end">
+          {/* Three small tiles, lifted so they sit ON the table's bottom edge
+              rather than below it. The overlap is 16px against 20px of cell
+              padding on the last row, so they cover the panel's own margin and
+              never reach a figure. A deeper shadow than the panel's sells the
+              lift; z-10 keeps them on top whatever the paint order. */}
+          <div className="relative z-10 -mt-4 flex flex-wrap gap-3 md:justify-end">
             {CALLOUTS.map((c) => (
               <div
                 key={c.lbl}
                 data-reveal
-                className="min-w-[150px] flex-1 rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-[0_2px_14px_rgba(20,20,18,0.05)] md:flex-none"
+                className="min-w-[150px] flex-1 rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-[0_14px_34px_-12px_rgba(20,20,18,0.22)] md:flex-none"
               >
                 <div className="whitespace-nowrap font-serif text-2xl font-bold leading-none text-[#39471D] tabular-nums">
                   {c.fig}{c.suffix}
                 </div>
-                <p className="mt-1.5 text-[11px] font-medium text-gray-500">{c.lbl}</p>
+                <p className="mt-1.5 text-[11px] font-bold text-gray-900">{c.lbl}</p>
               </div>
             ))}
           </div>
