@@ -129,11 +129,17 @@ export default function ContactLanding() {
 
       {/* One screen of photograph before the white arrives; the card rides on
           top of everything so it never passes behind the section below. */}
-      <section className="relative z-20 min-h-[100svh]">
+      <section className="relative z-20 flex min-h-[100svh] flex-col">
         {/* Extra side padding from lg up so the photograph always reads as the
             backdrop instead of a hairline frame around an almost-full-bleed card.
-            The top padding clears the floating navbar. */}
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-14 pt-36 pb-20 sm:pt-40 sm:pb-28 lg:pt-36 lg:pb-16">
+
+            my-auto rather than a fixed top padding: it splits the leftover
+            screen evenly above and below, so the card sits centred instead of
+            riding high. Auto margins collapse to nothing when there is no
+            leftover — which is the case on a phone, where the card is taller
+            than the screen — so it degrades to top-aligned rather than
+            centring the top of the card off the top of the page. */}
+        <div className="my-auto w-full max-w-[1440px] mx-auto px-6 lg:px-14 pt-32 pb-20 sm:pt-36 sm:pb-24 lg:py-16">
           {/* ── Floating editorial card ──────────────────────────────────────── */}
           <div
             data-reveal
