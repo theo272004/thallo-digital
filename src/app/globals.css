@@ -143,6 +143,15 @@ body {
   0%, 58%   { opacity: 0; transform: scale(0.4); }
   78%, 100% { opacity: 1; transform: scale(1); }
 }
+/* A status square going from waiting to done, and a bar filling behind it. */
+@keyframes step-fill {
+  0%, 12%   { background-color: #E7ECD9; }
+  38%, 100% { background-color: #39471D; }
+}
+@keyframes step-grow {
+  0%        { transform: scaleX(0); }
+  62%, 100% { transform: scaleX(1); }
+}
 
 .step-draw { animation: step-draw 5s ease-in-out infinite; }
 .step-scan { animation: step-scan 5s ease-in-out infinite; }
@@ -153,6 +162,8 @@ body {
 .step-ping { transform-box: fill-box; transform-origin: center; }
 .step-node { animation: step-node 5s ease-in-out infinite; }
 .step-ping { animation: step-ping 5s ease-in-out infinite; }
+.step-fill { animation: step-fill 5s ease-in-out infinite; }
+.step-grow { animation: step-grow 5s ease-in-out infinite; transform-origin: left; }
 
 /* Keyboard focus — the rounded pills and hairline inputs give the UA ring
    nothing to sit against, so state it explicitly in the brand olive. Only on

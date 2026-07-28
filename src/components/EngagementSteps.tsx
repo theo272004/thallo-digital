@@ -54,7 +54,13 @@ function ArtAudit() {
       <div className="relative space-y-[9px]">
         {findings.map((f, i) => (
           <div key={f.label} className="step-row flex items-center gap-[6px]" style={{ animationDelay: `${i * 0.26}s` }}>
-            <span className="h-[6px] w-[6px] shrink-0 rounded-full border-[1.5px] border-[#39471D]" />
+            {/* the circle fills as the pass reaches it — a finding checked off */}
+            <span className="relative h-[7px] w-[7px] shrink-0 rounded-full border-[1.5px] border-[#39471D]">
+              <span
+                className="step-node absolute inset-[1px] rounded-full bg-[#39471D]"
+                style={{ animationDelay: `${0.12 + i * 0.26}s` }}
+              />
+            </span>
             <span className="h-[4px] rounded-full bg-[#39471D]/75" style={{ width: f.w }} />
           </div>
         ))}
@@ -85,20 +91,33 @@ function ArtFoundation() {
   );
 }
 
-/* 03 — the month's work leaving the page, one piece after another. */
+/* 03 — the month's queue working itself off: each piece flips from waiting to
+   published, and the bar underneath fills as the month does. The pieces used to
+   slide out to the right, which the screen clipped, so nothing read as
+   happening. */
 function ArtEngine() {
+  const queue = [
+    { w: '62%', delay: 0 },
+    { w: '46%', delay: 0.34 },
+    { w: '54%', delay: 0.68 },
+  ];
   return (
     <Laptop>
-      <div className="space-y-[11px]">
-        {['58%', '46%', '52%'].map((w, i) => (
-          <div key={w} className="flex items-center justify-between gap-2">
-            <span className="h-[4px] rounded-full bg-[#CBD0AC]" style={{ width: w }} />
-            <span
-              className="step-chip h-[11px] w-[26px] shrink-0 rounded-full border border-[#39471D]/25 bg-[#E7ECD9]"
-              style={{ animationDelay: `${i * 0.3}s` }}
-            />
-          </div>
-        ))}
+      <div className="flex h-full flex-col">
+        <div className="space-y-[11px]">
+          {queue.map((q) => (
+            <div key={q.w} className="flex items-center gap-[7px]">
+              <span
+                className="step-fill h-[9px] w-[9px] shrink-0 rounded-[2px] bg-[#39471D]"
+                style={{ animationDelay: `${q.delay}s` }}
+              />
+              <span className="h-[4px] rounded-full bg-[#CBD0AC]" style={{ width: q.w }} />
+            </div>
+          ))}
+        </div>
+        <span className="mt-auto block h-[4px] w-full overflow-hidden rounded-full bg-gray-100">
+          <span className="step-grow block h-full w-full rounded-full bg-[#39471D]" />
+        </span>
       </div>
     </Laptop>
   );
@@ -201,8 +220,14 @@ export default function EngagementSteps() {
                   <h3 className="text-base font-bold text-gray-900 mb-2">{s.title}</h3>
                   <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>
 
-                  <div className="mt-7 rounded-2xl border border-gray-100 bg-white px-4 py-5">
-                    {s.art}
+                  {/* mt-auto pins every laptop to the bottom of its column, so
+                      the four line up however long the copy above them runs.
+                      The grid stretches the columns to equal height, which is
+                      what gives the auto margin something to push against. */}
+                  <div className="mt-auto pt-7">
+                    <div className="rounded-2xl border border-gray-100 bg-white px-4 py-5">
+                      {s.art}
+                    </div>
                   </div>
                 </div>
               ))}
