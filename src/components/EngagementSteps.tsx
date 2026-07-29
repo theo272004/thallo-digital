@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, { useEffect, useRef, useState } from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 
 /**
@@ -41,51 +43,96 @@ function Laptop({ children }: { children: React.ReactNode }) {
   );
 }
 
-/* 01 — the audit running down the page, each finding landing as it is checked. */
+/* 01 — the audit: a share-of-answer dial swinging round to its reading while
+   the findings behind it get checked off. The dial is the one round shape in
+   the set — four rectangular drawings in a row read as one drawing repeated. */
 function ArtAudit() {
+  const R = 19;
+  const LEN = 2 * Math.PI * R;         // circumference
+  const REST = LEN * (1 - 0.72);       // where the arc stops: 72%
+
   const findings = [
-    { label: 'Technical readiness', w: '86%' },
-    { label: 'Content coverage', w: '64%' },
-    { label: 'Authority signals', w: '74%' },
-    { label: 'Schema & markup', w: '52%' },
+    { label: 'Technical readiness', w: '52px' },
+    { label: 'Content coverage', w: '38px' },
+    { label: 'Authority signals', w: '45px' },
   ];
+
   return (
     <Laptop>
-      <div className="relative space-y-[9px]">
-        {findings.map((f, i) => (
-          <div key={f.label} className="step-row flex items-center gap-[6px]" style={{ animationDelay: `${i * 0.26}s` }}>
-            {/* the circle fills as the pass reaches it — a finding checked off */}
-            <span className="relative h-[7px] w-[7px] shrink-0 rounded-full border-[1.5px] border-[#39471D]">
-              <span
-                className="step-node absolute inset-[1px] rounded-full bg-[#39471D]"
-                style={{ animationDelay: `${0.12 + i * 0.26}s` }}
-              />
-            </span>
-            <span className="h-[4px] rounded-full bg-[#39471D]/75" style={{ width: f.w }} />
-          </div>
-        ))}
-        {/* the pass sweeping down them */}
-        <span className="step-scan absolute -inset-x-2.5 top-[-6px] h-[10px] bg-[#39471D]/10" />
+      <div className="relative flex h-full items-center gap-[10px]">
+        {/* Dial */}
+        <div className="relative shrink-0">
+          <svg viewBox="0 0 48 48" className="h-[52px] w-[52px] -rotate-90">
+            <circle cx="24" cy="24" r={R} fill="none" stroke="#E7ECD9" strokeWidth="5" />
+            <circle
+              cx="24" cy="24" r={R}
+              fill="none" stroke="#39471D" strokeWidth="5" strokeLinecap="round"
+              className="step-sweep"
+              style={{ strokeDasharray: LEN, '--len': LEN, '--rest': REST } as React.CSSProperties}
+            />
+          </svg>
+          <span className="absolute inset-0 flex items-center justify-center text-[11px] font-bold text-[#39471D]">
+            72
+          </span>
+        </div>
+
+        {/* Findings checking off beside it */}
+        <div className="relative flex-1 space-y-[9px]">
+          {findings.map((f, i) => (
+            <div key={f.label} className="step-row flex items-center gap-[6px]" style={{ animationDelay: `${i * 0.24}s` }}>
+              <span className="relative h-[7px] w-[7px] shrink-0 rounded-full border-[1.5px] border-[#39471D]">
+                <span
+                  className="step-node absolute inset-[1px] rounded-full bg-[#39471D]"
+                  style={{ animationDelay: `${0.12 + i * 0.24}s` }}
+                />
+              </span>
+              <span className="h-[4px] rounded-full bg-[#39471D]/75" style={{ width: f.w }} />
+            </div>
+          ))}
+          {/* the pass sweeping down them */}
+          <span className="step-scan absolute -inset-x-2 top-[-6px] h-[10px] bg-[#39471D]/10" />
+        </div>
       </div>
     </Laptop>
   );
 }
 
-/* 02 — the structure being built: a parent, then the pages hung beneath it. */
+/* 02 — the structure being built: a parent, then the trunk drawing down and the
+   pages hanging themselves off it one after another. */
 function ArtFoundation() {
+  const children = ['64px', '44px', '54px'];
   return (
     <Laptop>
       <div className="step-node flex items-center gap-[6px]">
         <span className="h-[7px] w-[7px] shrink-0 rounded-[2px] bg-[#39471D]" />
         <span className="h-[4px] w-[52px] rounded-full bg-[#39471D]" />
       </div>
-      <div className="mt-[9px] ml-[3px] space-y-[8px] border-l border-dashed border-[#CBD0AC] pl-[11px]">
-        {['64px', '44px', '54px'].map((w, i) => (
-          <div key={w} className="step-node flex items-center gap-[6px]" style={{ animationDelay: `${0.14 + i * 0.13}s` }}>
-            <span className="h-[6px] w-[6px] shrink-0 rounded-[2px] bg-[#CBD0AC]" />
-            <span className="h-[3.5px] rounded-full bg-[#CBD0AC]" style={{ width: w }} />
-          </div>
-        ))}
+      <div className="relative mt-[9px] ml-[3px] pl-[11px]">
+        {/* The trunk draws downward instead of being there from the start —
+            it is the thing the pages are hung from, so it has to arrive first. */}
+        <span
+          aria-hidden="true"
+          className="step-drop absolute left-0 top-0 h-full border-l border-dashed border-[#CBD0AC]"
+        />
+        <div className="space-y-[8px]">
+          {children.map((w, i) => (
+            <div key={w} className="flex items-center gap-[6px]">
+              {/* the branch out to each page, then the page itself */}
+              <span
+                className="step-grow h-px w-[5px] shrink-0 bg-[#CBD0AC]"
+                style={{ animationDelay: `${0.24 + i * 0.16}s` }}
+              />
+              <span
+                className="step-node h-[6px] w-[6px] shrink-0 rounded-[2px] bg-[#CBD0AC]"
+                style={{ animationDelay: `${0.3 + i * 0.16}s` }}
+              />
+              <span
+                className="step-node h-[3.5px] rounded-full bg-[#CBD0AC]"
+                style={{ width: w, animationDelay: `${0.36 + i * 0.16}s` }}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </Laptop>
   );
@@ -96,48 +143,84 @@ function ArtFoundation() {
    slide out to the right, which the screen clipped, so nothing read as
    happening. */
 function ArtEngine() {
-  const queue = [
-    { w: '62%', delay: 0 },
-    { w: '46%', delay: 0.34 },
-    { w: '54%', delay: 0.68 },
-  ];
+  // Month on month, each taller than the last — the compounding the step
+  // describes, and a different shape from the dial and the tree.
+  const months = [34, 46, 40, 62, 74, 92];
   return (
     <Laptop>
       <div className="flex h-full flex-col">
-        <div className="space-y-[11px]">
-          {queue.map((q) => (
-            <div key={q.w} className="flex items-center gap-[7px]">
-              <span
-                className="step-fill h-[9px] w-[9px] shrink-0 rounded-[2px] bg-[#39471D]"
-                style={{ animationDelay: `${q.delay}s` }}
-              />
-              <span className="h-[4px] rounded-full bg-[#CBD0AC]" style={{ width: q.w }} />
-            </div>
+        <div className="mb-[7px] flex items-center gap-[6px]">
+          <span className="step-fill h-[7px] w-[7px] shrink-0 rounded-[2px] bg-[#39471D]" />
+          <span className="h-[3.5px] w-[46px] rounded-full bg-[#CBD0AC]" />
+          <span
+            className="step-fill h-[7px] w-[7px] shrink-0 rounded-[2px] bg-[#39471D]"
+            style={{ animationDelay: '0.4s' }}
+          />
+          <span className="h-[3.5px] w-[28px] rounded-full bg-[#CBD0AC]" />
+        </div>
+
+        <div className="mt-auto flex h-[58px] items-end gap-[6px]">
+          {months.map((h, i) => (
+            <span
+              key={i}
+              className="step-rise flex-1 rounded-t-[2px]"
+              style={{
+                height: `${h}%`,
+                animationDelay: `${i * 0.11}s`,
+                backgroundColor: i === months.length - 1 ? '#39471D' : '#CBD0AC',
+              }}
+            />
           ))}
         </div>
-        <span className="mt-auto block h-[4px] w-full overflow-hidden rounded-full bg-gray-100">
-          <span className="step-grow block h-full w-full rounded-full bg-[#39471D]" />
-        </span>
+        <span className="mt-[5px] block h-px w-full bg-gray-200" />
       </div>
     </Laptop>
   );
 }
 
-/* 04 — the line that keeps climbing once the engine compounds. */
+/* 04 — the line that keeps climbing once the engine compounds: the area fills
+   in behind the stroke, the points land as it passes them, and the endpoint
+   throws a halo that keeps pulsing after everything else has settled. */
 function ArtAccelerate() {
+  const pts = [
+    [6, 82], [52, 66], [98, 71], [144, 38], [190, 14],
+  ] as const;
+  const line = pts.map(([x, y]) => `${x} ${y}`).join(' ');
+
   return (
     <Laptop>
       <svg viewBox="0 0 200 96" className="h-full w-full" preserveAspectRatio="none">
         {[24, 48, 72].map((y) => (
           <path key={y} d={`M2 ${y}h196`} stroke="#E7ECD9" strokeWidth="1.5" />
         ))}
+
+        {/* Area under the curve, wiped in left to right behind the stroke */}
         <path
-          d="M6 82 52 66 98 71 144 38 190 14"
+          d={`M${line} L190 94 L6 94 Z`}
+          fill="#39471D"
+          opacity="0.09"
+          className="step-wipe"
+        />
+
+        <path
+          d={`M${line}`}
           fill="none" stroke="#39471D" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
           className="step-draw"
           style={{ strokeDasharray: 210, '--len': 210 } as React.CSSProperties}
           vectorEffect="non-scaling-stroke"
         />
+
+        {/* The points the line passes through, landing in turn */}
+        {pts.slice(0, -1).map(([x, y], i) => (
+          <circle
+            key={i} cx={x} cy={y} r="3" fill="#fff" stroke="#39471D" strokeWidth="2"
+            className="step-node"
+            style={{ animationDelay: `${0.1 + i * 0.22}s` }}
+            vectorEffect="non-scaling-stroke"
+          />
+        ))}
+
+        <circle cx="190" cy="14" r="5" fill="#39471D" className="step-halo" />
         <circle cx="190" cy="14" r="5" fill="#39471D" className="step-ping" />
       </svg>
     </Laptop>
@@ -172,6 +255,32 @@ const STEPS = [
 ];
 
 export default function EngagementSteps() {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [running, setRunning] = useState(false);
+  /* Bumping this remounts the drawings, which is what restarts a CSS animation
+     from frame 0. Scroll away and back and you get the build again, not
+     whatever the loop happened to be in the middle of. */
+  const [runKey, setRunKey] = useState(0);
+
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setRunning(true);
+        setRunKey((k) => k + 1);
+      },
+      // A third of the block in view: enough that the laptops are on screen,
+      // not so much that you have to scroll past them to set it off.
+      { threshold: 0.33 },
+    );
+
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   return (
     <section className="bg-white py-16 2xl:py-24 border-b border-gray-100">
       <div className="max-w-[1440px] mx-auto px-6">
@@ -197,7 +306,11 @@ export default function EngagementSteps() {
               className="hidden lg:block absolute left-0 right-0 top-[15px] border-t border-dashed border-[#CBD0AC]"
             />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 lg:gap-x-0 lg:gap-y-0">
+            {/* The observed element stays mounted; the key that restarts the
+                drawings sits on the grid inside it, so remounting never tears
+                down the observer that triggered it. */}
+            <div ref={gridRef} className={running ? 'steps-run' : undefined}>
+            <div key={runKey} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 lg:gap-x-0 lg:gap-y-0">
               {STEPS.map((s, i) => (
                 <div
                   key={s.title}
@@ -237,6 +350,7 @@ export default function EngagementSteps() {
                   </div>
                 </div>
               ))}
+            </div>
             </div>
           </div>
 

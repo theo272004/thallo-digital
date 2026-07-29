@@ -143,6 +143,13 @@ body {
   0%, 58%   { opacity: 0; transform: scale(0.4); }
   78%, 100% { opacity: 1; transform: scale(1); }
 }
+/* The halo the endpoint throws off once it lands — the only piece that keeps
+   moving after the build finishes, so a settled drawing still has a pulse. */
+@keyframes step-halo {
+  0%, 72%   { opacity: 0; transform: scale(0.5); }
+  80%       { opacity: 0.45; }
+  100%      { opacity: 0; transform: scale(2.6); }
+}
 /* A status square going from waiting to done, and a bar filling behind it. */
 @keyframes step-fill {
   0%, 12%   { background-color: #E7ECD9; }
@@ -152,18 +159,60 @@ body {
   0%        { transform: scaleX(0); }
   62%, 100% { transform: scaleX(1); }
 }
+/* The gauge arc swinging round to its reading. --len is the full circumference,
+   --rest the offset it stops at, so one keyframe serves any percentage. */
+@keyframes step-sweep {
+  0%        { stroke-dashoffset: var(--len, 100); }
+  62%, 100% { stroke-dashoffset: var(--rest, 0); }
+}
+/* Bars coming up out of the axis, and the connector drawing down the tree. */
+@keyframes step-rise {
+  0%, 8%    { transform: scaleY(0); }
+  55%, 100% { transform: scaleY(1); }
+}
+@keyframes step-drop {
+  0%        { transform: scaleY(0); }
+  45%, 100% { transform: scaleY(1); }
+}
+/* The area under the trend line filling in behind the stroke. */
+@keyframes step-wipe {
+  0%, 20%   { clip-path: inset(0 100% 0 0); }
+  72%, 100% { clip-path: inset(0 0 0 0); }
+}
 
-.step-draw { animation: step-draw 5s ease-in-out infinite; }
-.step-scan { animation: step-scan 5s ease-in-out infinite; }
-.step-row  { animation: step-row  5s ease-in-out infinite; }
-.step-chip { animation: step-chip 5s ease-in-out infinite; }
+/* ── Held until the section is on screen ──────────────────────────────────────
+   These used to start at page load and never stop, so by the time anyone
+   scrolled down the loop was several passes in and they landed in the rest
+   phase every time — a still picture that happened to be an animation. Paused
+   at frame 0 until EngagementSteps puts .steps-run on the grid, so the build
+   always plays from the beginning, for everyone, once it is actually visible. */
+.step-draw { animation: step-draw 4.2s ease-in-out infinite; }
+.step-scan { animation: step-scan 4.2s ease-in-out infinite; }
+.step-row  { animation: step-row  4.2s ease-in-out infinite; }
+.step-chip { animation: step-chip 4.2s ease-in-out infinite; }
 /* transform-box so scale() pivots on the shape itself, not the SVG viewport */
 .step-node,
-.step-ping { transform-box: fill-box; transform-origin: center; }
-.step-node { animation: step-node 5s ease-in-out infinite; }
-.step-ping { animation: step-ping 5s ease-in-out infinite; }
-.step-fill { animation: step-fill 5s ease-in-out infinite; }
-.step-grow { animation: step-grow 5s ease-in-out infinite; transform-origin: left; }
+.step-ping,
+.step-halo { transform-box: fill-box; transform-origin: center; }
+.step-node  { animation: step-node  4.2s ease-in-out infinite; }
+.step-ping  { animation: step-ping  4.2s ease-in-out infinite; }
+.step-halo  { animation: step-halo  4.2s ease-out    infinite; }
+.step-fill  { animation: step-fill  4.2s ease-in-out infinite; }
+.step-grow  { animation: step-grow  4.2s ease-in-out infinite; transform-origin: left; }
+.step-sweep { animation: step-sweep 4.2s cubic-bezier(0.22, 1, 0.36, 1) infinite; }
+.step-rise  { animation: step-rise  4.2s cubic-bezier(0.22, 1, 0.36, 1) infinite; transform-origin: bottom; }
+.step-drop  { animation: step-drop  4.2s ease-in-out infinite; transform-origin: top; }
+.step-wipe  { animation: step-wipe  4.2s ease-in-out infinite; }
+
+.step-draw, .step-scan, .step-row, .step-chip, .step-node, .step-ping,
+.step-halo, .step-fill, .step-grow, .step-sweep, .step-rise, .step-drop,
+.step-wipe { animation-play-state: paused; }
+
+.steps-run .step-draw, .steps-run .step-scan, .steps-run .step-row,
+.steps-run .step-chip, .steps-run .step-node, .steps-run .step-ping,
+.steps-run .step-halo, .steps-run .step-fill, .steps-run .step-grow,
+.steps-run .step-sweep, .steps-run .step-rise, .steps-run .step-drop,
+.steps-run .step-wipe { animation-play-state: running; }
 
 /* Keyboard focus — the rounded pills and hairline inputs give the UA ring
    nothing to sit against, so state it explicitly in the brand olive. Only on
@@ -183,5 +232,10 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+    /* The step drawings hold at frame 0 — an empty screen — until they are
+       scrolled into view. Left paused, the single 0.01ms pass above never
+       runs and they stay empty, so unpause them here and let that pass land
+       them on their finished state. */
+    animation-play-state: running !important;
   }
 }
