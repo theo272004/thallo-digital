@@ -103,9 +103,20 @@ const OLIVE_TEXT = new Set(['Monthly', 'Deep', 'Compounding growth']);
  */
 function CompareCell({ val }: { val: boolean | string }) {
   if (val === true) return (
-    <span className="mx-auto flex h-[26px] w-[26px] items-center justify-center rounded-full bg-[#39471D]">
-      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        <polyline points="4 12 9 17 20 7" />
+    /* Disc and tick are one SVG, and that is the point. The disc used to be a
+       CSS border-radius with the tick as a separate SVG centred on top, and the
+       columns are percentage-width — so a disc lands on a fractional pixel
+       (717.92, 961.14, 1204.36) and the two shapes round their antialiasing
+       independently. At 26px that reads as a tick sitting slightly off centre,
+       differently in every column. Drawn together they cannot disagree. */
+    <span className="mx-auto block h-[26px] w-[26px]">
+      <svg viewBox="0 0 26 26" className="h-full w-full" aria-hidden="true">
+        <circle cx="13" cy="13" r="13" fill="#39471D" />
+        <polyline
+          points="8.7 13 11.4 15.7 17.3 10.3"
+          fill="none" stroke="#FFFFFF" strokeWidth="1.7"
+          strokeLinecap="round" strokeLinejoin="round"
+        />
       </svg>
       <span className="sr-only">Included</span>
     </span>
