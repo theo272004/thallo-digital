@@ -385,24 +385,33 @@ export default function ServicesPage() {
                 divs, which read to a screen reader as a pile of unrelated text
                 rather than a comparison. */}
             <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_2px_14px_rgba(20,20,18,0.05)]">
-              {/* On a phone the table still has to scroll, but it used to open
-                  on the feature names alone — 42% of 720px is most of the
-                  screen — so the first thing you saw was a list, not a
-                  comparison. The feature column is narrower and pinned now: it
-                  stays put while the three plans slide past it, and the plans
-                  are what you land on. */}
+              {/* A phone gets two clean screens rather than one and a sliver of
+                  the next. The table is exactly twice the panel wide below sm,
+                  so the feature column fills the first screenful on its own and
+                  the three plans divide the second — swipe across and you get
+                  the whole comparison, not a column and a half of it.
+
+                  Which also means the feature column must NOT be pinned here:
+                  at full width it would cover the plans it is meant to let you
+                  read. It pins from sm up, where the table is 720px and the
+                  overhang is small enough for that to help instead. */}
               <div className="overflow-x-auto overflow-y-hidden">
-                <table className="w-full min-w-[560px] sm:min-w-[720px] border-collapse text-left">
+                {/* table-fixed below sm, or the split is not a split: with the
+                    default auto layout the "Authority Engine" header claims the
+                    width it wants and takes it out of the feature column, which
+                    then stops short of the panel edge and lets the next column
+                    peek in. Fixed makes the colgroup the last word. */}
+                <table className="w-full min-w-[200%] table-fixed sm:min-w-[720px] sm:table-auto border-collapse text-left">
                   <caption className="sr-only">What each engagement includes</caption>
                   <colgroup>
-                    <col className="w-[34%] sm:w-[42%]" />
-                    <col className="w-[22%] sm:w-[19%]" />
-                    <col className="w-[22%] sm:w-[20%]" />
-                    <col className="w-[22%] sm:w-[19%]" />
+                    <col className="w-1/2 sm:w-[42%]" />
+                    <col className="w-[16.6667%] sm:w-[19%]" />
+                    <col className="w-[16.6667%] sm:w-[20%]" />
+                    <col className="w-[16.6667%] sm:w-[19%]" />
                   </colgroup>
                   <thead>
                     <tr>
-                      <th scope="col" className="sticky left-0 z-10 bg-white border-b border-gray-100 px-4 sm:px-7 py-4 text-xs font-medium text-gray-400">
+                      <th scope="col" className="sm:sticky sm:left-0 sm:z-10 bg-white border-b border-gray-100 px-5 sm:px-7 py-4 text-xs font-medium text-gray-400">
                         Feature
                       </th>
                       <th scope="col" className="border-b border-gray-100 px-4 py-4 text-center text-xs font-medium text-gray-400">
@@ -421,11 +430,13 @@ export default function ServicesPage() {
                   <tbody>
                     {COMPARE.map((row) => (
                       <tr key={row.feature} className="group border-b border-gray-50 last:border-0">
-                        {/* Pinned, so it needs an opaque background of its own —
-                            the cells sliding under it would show through. */}
-                        <th scope="row" className="sticky left-0 z-10 bg-white px-4 sm:px-7 py-5 text-left transition-colors group-hover:bg-[#F7F8F3]">
-                          <span className="flex items-center gap-2.5 sm:gap-3.5">
-                            <span className="hidden sm:flex shrink-0"><CompareIcon feature={row.feature} /></span>
+                        {/* Pinned from sm up, so it needs an opaque background
+                            of its own — the cells sliding under it would show
+                            through. The icons come back on phones now that the
+                            column has the full width to itself. */}
+                        <th scope="row" className="sm:sticky sm:left-0 sm:z-10 bg-white px-5 sm:px-7 py-5 text-left transition-colors group-hover:bg-[#F7F8F3]">
+                          <span className="flex items-center gap-3 sm:gap-3.5">
+                            <span className="flex shrink-0"><CompareIcon feature={row.feature} /></span>
                             <span className="text-sm font-semibold text-gray-900">{row.feature}</span>
                           </span>
                         </th>
