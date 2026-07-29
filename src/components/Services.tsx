@@ -74,13 +74,14 @@ export default function Services() {
                   : 'bg-gray-50/60 border border-gray-100 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-30px_rgba(57,71,29,0.25)]'
               }`}
             >
-              {/* Isotipo watermark — tone-on-tone, bleeding off the top-right corner */}
+              {/* Isotipo watermark — tone-on-tone, sat on the top-right corner
+                  with half of it cropped away by the card. */}
               {svc.featured && (
                 <img loading="lazy" decoding="async"
                   src="/thallo-digital/isotipo.png"
                   alt=""
                   aria-hidden="true"
-                  className="absolute -top-16 -right-16 w-72 rotate-[18deg] opacity-[0.09] pointer-events-none select-none"
+                  className="absolute -top-[10.5rem] -right-[10.5rem] w-[26rem] rotate-[18deg] opacity-[0.11] pointer-events-none select-none"
                   style={{ filter: 'brightness(0) invert(1)' }}
                 />
               )}

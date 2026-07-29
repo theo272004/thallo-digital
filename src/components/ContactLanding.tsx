@@ -3,6 +3,7 @@
 import React, { useRef, useState } from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
+import SpinFlower from '@/components/ui/SpinFlower';
 import { SplitReveal, Magnetic, useRevealBatch } from '@/components/motion';
 
 /**
@@ -288,13 +289,7 @@ export default function ContactLanding() {
       <section className="relative z-10 bg-white py-24 lg:py-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-14">
           <div className="flex flex-col items-center text-center mb-12">
-            <img
-              loading="lazy"
-              decoding="async"
-              src="/thallo-digital/flower.webp"
-              alt="Thallo"
-              className="w-16 h-16 object-contain opacity-80 thallo-spin mb-8"
-            />
+            <SpinFlower alt="Thallo" className="block w-16 h-16 opacity-80 mb-8" />
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans text-balance">
               Not ready to write yet?
             </h2>

@@ -3,6 +3,7 @@
 import React, { useState, useRef, useLayoutEffect } from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
+import SpinFlower from '@/components/ui/SpinFlower';
 import EngagementSteps from '@/components/EngagementSteps';
 import { Magnetic } from '@/components/motion';
 
@@ -213,11 +214,7 @@ export default function ServicesPage() {
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mb-10">
             Everything we do builds toward one outcome: making you the name buyers and AI trust.
           </p>
-          <img loading="lazy" decoding="async"
-            src="/thallo-digital/flower.webp"
-            alt="Thallo"
-            className="w-20 h-20 object-contain opacity-80 thallo-spin"
-          />
+          <SpinFlower alt="Thallo" className="block w-20 h-20 opacity-80" />
         </div>
       </section>
 
@@ -275,7 +272,13 @@ export default function ServicesPage() {
                         src="/thallo-digital/isotipo.png"
                         alt=""
                         aria-hidden="true"
-                        className="absolute -top-16 -right-16 w-72 rotate-[18deg] opacity-[0.09] pointer-events-none select-none"
+                        /* Sat on the corner rather than tucked inside it. At
+                           -64px of a 288px mark the whole flower cleared the
+                           edge with room to spare, so it read as a sticker
+                           dropped in the card. Half of it hangs out now and
+                           the card crops the rest — the mark belongs to the
+                           corner instead of floating near it. */
+                        className="absolute -top-[10.5rem] -right-[10.5rem] w-[26rem] rotate-[18deg] opacity-[0.11] pointer-events-none select-none"
                         style={{ filter: 'brightness(0) invert(1)' }}
                       />
                     )}
@@ -364,14 +367,7 @@ export default function ServicesPage() {
               sweeps out to about 1.41x itself at 45°, so 88 reaches 124 and
               hangs 18px below where it looks like it ends. */}
           <div className="relative pt-32">
-            <img
-              loading="lazy"
-              decoding="async"
-              src="/thallo-digital/flower.webp"
-              alt=""
-              aria-hidden="true"
-              className="thallo-spin absolute top-0 left-[71%] hidden h-[88px] w-[88px] -translate-x-1/2 object-contain lg:block"
-            />
+            <SpinFlower className="absolute top-0 left-[71%] hidden h-[88px] w-[88px] -translate-x-1/2 lg:block" />
 
             {/* A real table now, matched to the trajectory panel on /results/ —
                 same shell, same hairlines, same heading type. It was a grid of

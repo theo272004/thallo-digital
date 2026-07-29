@@ -2,6 +2,7 @@
 import React, { useRef } from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
+import SpinFlower from '@/components/ui/SpinFlower';
 import { SplitReveal } from '@/components/motion';
 import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 
@@ -133,11 +134,7 @@ export default function ResultsLanding() {
             category where every statement has to be accurate, the incumbents are large, and the
             audience is sceptical by default. Authority was the only way in.
           </p>
-          <img loading="lazy" decoding="async"
-            src="/thallo-digital/flower.webp"
-            alt="Thallo"
-            className="w-20 h-20 object-contain opacity-80 thallo-spin"
-          />
+          <SpinFlower alt="Thallo" className="block w-20 h-20 opacity-80" />
         </div>
       </section>
 

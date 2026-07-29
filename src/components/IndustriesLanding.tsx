@@ -2,6 +2,7 @@
 import React from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
+import SpinFlower from '@/components/ui/SpinFlower';
 
 const STATS = [
   {
@@ -104,11 +105,7 @@ export default function IndustriesPage() {
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mb-10">
             Where the decision is high-stakes, buyers research hard before they commit. We make you the name they are most likely to trust.
           </p>
-          <img loading="lazy" decoding="async"
-            src="/thallo-digital/flower.webp"
-            alt="Thallo"
-            className="w-20 h-20 object-contain opacity-80 thallo-spin"
-          />
+          <SpinFlower alt="Thallo" className="block w-20 h-20 opacity-80" />
         </div>
       </section>
 
