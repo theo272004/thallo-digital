@@ -29,8 +29,8 @@ type Props = {
   id?: string;
   image?: string;
   eyebrow: string;
-  /** Plain heading. Use `headingSlot` instead when it needs its own markup. */
-  heading?: string;
+  /** Plain heading; accepts JSX so a page can force its own line breaks. */
+  heading?: React.ReactNode;
   /** For a heading that carries emphasis or its own reveal animation. */
   headingSlot?: React.ReactNode;
   copy: React.ReactNode;
@@ -55,7 +55,11 @@ export default function AuditCTA({
   return (
     <section className="bg-white py-20 2xl:py-24 border-b border-gray-100" id={id}>
       <div className="max-w-[1440px] mx-auto px-6 w-full">
-        <div className="relative overflow-hidden rounded-[28px] px-8 py-14 sm:px-16 sm:py-20 lg:px-20 lg:py-28">
+        {/* The form sets this panel's height now, so the padding only has to
+            frame it. At py-28 — right for the text-only panel this used to be —
+            it added 112px of dead ground above and below a card that was
+            already tall. Sides stay generous; the top and bottom do not. */}
+        <div className="relative overflow-hidden rounded-[28px] px-8 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14">
           <img loading="lazy" decoding="async"
             src={image}
             alt=""
@@ -74,7 +78,9 @@ export default function AuditCTA({
           {/* The form sits in the empty half of the photograph. Every one of
               these shots was composed with its subject to one side, which is
               the room this uses. */}
-          <div className="relative z-[2] grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,460px)] lg:gap-16">
+          {/* 520px rather than 460: at the narrower width the consent sentence
+              wrapped to a third line carrying a single word. */}
+          <div className="relative z-[2] grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)] lg:gap-14">
             <div>
               <Eyebrow tone="light" className="mb-6">{eyebrow}</Eyebrow>
               {headingSlot ?? (

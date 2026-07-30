@@ -25,9 +25,12 @@ export default function ConsentCheck({ id = 'consent' }: { id?: string }) {
         required
         className="mt-0.5 h-4 w-4 flex-shrink-0 accent-[#39471D]"
       />
+      {/* Two lines at the width this sits in. Every clause is load-bearing —
+          purpose, no onward sharing, right to deletion — so it is tightened
+          rather than trimmed. */}
       <span className="text-[12px] font-medium leading-relaxed text-gray-500">
-        I agree that Thallo may use these details to reply to my enquiry. We do
-        not sell or share them, and you can ask us to delete them at any time.
+        I agree Thallo may use these details to reply. We never sell or share
+        them, and you can ask us to delete them.
       </span>
     </label>
   );

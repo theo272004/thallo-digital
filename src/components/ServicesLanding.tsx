@@ -444,7 +444,9 @@ export default function ServicesPage() {
       <AuditCTA
         image="/thallo-digital/cta-bg-services.webp"
         eyebrow="Ready?"
-        heading="Start with a clear look at where you stand."
+        /* Broken by hand: left to wrap it took three lines and stretched the
+           panel with it. */
+        heading={<>Start with a clear look<br />at where you stand.</>}
         copy={
           addons.length > 0
             ? `Your plan: ${planSummary}. Send it over and we'll confirm scope.`
