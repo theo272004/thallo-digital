@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import SpinFlower from '@/components/ui/SpinFlower';
-import { SplitReveal, Magnetic, useRevealBatch } from '@/components/motion';
+import { SplitReveal, useRevealBatch } from '@/components/motion';
+import AuditCTA from '@/components/AuditCTA';
 import { CASES, CASE_INDUSTRIES, type CaseStudy } from '@/lib/cases';
 
 /**
@@ -79,7 +80,9 @@ function CaseCard({ c }: { c: CaseStudy }) {
     return (
       <div
         aria-disabled="true"
-        className="flex h-full min-h-[300px] flex-col border border-gray-200 rounded-3xl p-8 bg-gray-50/60"
+        /* Same edge and shadow as a published case — the muted ground and the
+           "coming soon" pill carry the difference, not a flatter card. */
+        className="flex h-full min-h-[300px] flex-col border border-gray-200 rounded-3xl p-8 bg-gray-50/60 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)]"
       >
         {body}
       </div>
@@ -159,12 +162,15 @@ export default function CaseStudiesLanding() {
       {/* ── The list, with its filter ────────────────────────────────────── */}
       <section className="bg-white py-16 2xl:py-24 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
-          <div className="max-w-2xl mb-10" data-reveal>
-            <Eyebrow className="mb-4">Selected engagements</Eyebrow>
+          {/* Centred: with three cards the list reads as a set rather than the
+              start of a longer column, and a left-aligned header over it left
+              the row looking as though a fourth were missing. */}
+          <div className="max-w-2xl mx-auto mb-10 text-center" data-reveal>
+            <Eyebrow center className="mb-4 justify-center">Selected engagements</Eyebrow>
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-4 font-sans">
               The cases, by industry.
             </h2>
-            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch]">
+            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mx-auto">
               Published work sits alongside what is still being written up. Filter by sector to see
               the categories we build authority in.
             </p>
@@ -176,7 +182,7 @@ export default function CaseStudiesLanding() {
           <div
             role="group"
             aria-label="Filter case studies by industry"
-            className="mb-10 flex flex-wrap gap-2.5"
+            className="mb-10 flex flex-wrap justify-center gap-2.5"
           >
             {[null, ...CASE_INDUSTRIES].map((option) => {
               const active = industry === option;
@@ -207,43 +213,15 @@ export default function CaseStudiesLanding() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section className="bg-white py-28 border-b border-gray-100">
-        <div className="max-w-[1440px] mx-auto px-6 w-full">
-          <div className="relative overflow-hidden rounded-[28px] px-12 py-20 sm:px-20 sm:py-28">
-            <img loading="lazy" decoding="async"
-              src="/thallo-digital/results-bg.webp"
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
-              style={{ zIndex: 0 }}
-            />
-            {/* The copy block sits left, and this photograph carries lit wood on
-                that side — the scrim holds it down so white type clears AA. */}
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 z-[1] bg-gradient-to-r from-[#171A10]/55 via-[#171A10]/20 to-transparent"
-            />
-            <div className="relative z-[2] max-w-xl">
-              <Eyebrow tone="light" className="mb-6">Your turn</Eyebrow>
-              <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-8 font-sans">
-                Start with the evidence.
-              </h2>
-              <p className="text-[#CBD0AC] font-medium text-base sm:text-lg leading-relaxed max-w-[44ch] mb-8">
-                An AI visibility audit shows how your category looks today, where the authority sits,
-                and what it takes to move. Fixed scope, and a roadmap you keep either way.
-              </p>
-              <Magnetic>
-                <a
-                  href="/thallo-digital/contact/"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#39471D] rounded-full text-sm font-semibold hover:bg-[#CBD0AC] transition-colors"
-                >
-                  Book an audit <ArrowUpRight className="text-[11px]" />
-                </a>
-              </Magnetic>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Scrim because this photograph carries lit wood on the side the copy
+          sits on, and white type has to clear AA over it. */}
+      <AuditCTA
+        image="/thallo-digital/results-bg.webp"
+        scrim
+        eyebrow="Your turn"
+        heading="Start with the evidence."
+        copy="An AI visibility audit shows how your category looks today, where the authority sits, and what it takes to move. Fixed scope, and a roadmap you keep either way."
+      />
     </>
   );
 }

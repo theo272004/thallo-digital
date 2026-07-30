@@ -9,7 +9,7 @@ import { SplitReveal } from '@/components/motion';
 // competed with each other for the same glance.
 const fp =
   'absolute z-20 bg-white border border-[#ececec] rounded-[16px] ' +
-  'shadow-[0_8px_24px_-6px_rgba(23,26,16,0.16)] pointer-events-none ' +
+  'shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] pointer-events-none ' +
   'transition-all duration-300 ease-out ' +
   'group-hover:-translate-y-[6px] group-hover:scale-[1.03] ' +
   'group-hover:shadow-[0_10px_28px_rgba(0,0,0,0.13)]';
@@ -27,7 +27,7 @@ const cardOn =
   'hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,0.55)]';
 
 const cardOff =
-  'bg-white border-gray-200 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.16)] ' +
+  'bg-white border-gray-200 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] ' +
   'hover:shadow-[0_20px_48px_-24px_rgba(23,26,16,0.30)]';
 
 const panel = (extra: string) => `${fp} ${extra}`;

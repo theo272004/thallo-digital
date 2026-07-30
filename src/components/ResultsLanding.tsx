@@ -1,8 +1,8 @@
 'use client';
 import React, { useRef } from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
-import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import SpinFlower from '@/components/ui/SpinFlower';
+import AuditCTA from '@/components/AuditCTA';
 import { SplitReveal } from '@/components/motion';
 import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 
@@ -355,7 +355,7 @@ export default function ResultsLanding() {
                 over a name and a label. */}
             <div data-reveal>
               <div className="relative">
-                <div className="relative overflow-hidden rounded-[28px] border border-gray-200 bg-white p-7 sm:p-9 shadow-[0_40px_90px_-40px_rgba(23,26,16,0.35)]">
+                <div className="relative overflow-hidden rounded-[28px] border border-gray-200 bg-white p-7 sm:p-9 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)]">
                   {/* The mark, the way the reference carries its own */}
                   <div className="mb-8 flex items-center gap-3">
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#39471D]">
@@ -395,42 +395,15 @@ export default function ResultsLanding() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section className="bg-white py-28 border-b border-gray-100">
-        <div className="max-w-[1440px] mx-auto px-6 w-full">
-          <div className="relative overflow-hidden rounded-[28px] px-12 py-20 sm:px-20 sm:py-28">
-            {/* The photograph that used to head the figures panel. Its own file,
-                not a rename — cta-bg is still the home page's closing shot. */}
-            <img loading="lazy" decoding="async"
-              src="/thallo-digital/results-bg.webp"
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
-              style={{ zIndex: 0 }}
-            />
-            {/* Same reasoning as the figures panel: the copy block sits on the
-                left, and this photograph's left edge carries lit wood. */}
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 z-[1] bg-gradient-to-r from-[#171A10]/55 via-[#171A10]/20 to-transparent"
-            />
-            <div className="relative z-[2] max-w-xl">
-              <Eyebrow tone="light" className="mb-6">Your turn</Eyebrow>
-              <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-8 font-sans">
-                See where you stand today.
-              </h2>
-              <p className="text-[#CBD0AC] font-medium text-base sm:text-lg leading-relaxed max-w-[44ch] mb-8">
-                Start with an AI visibility audit. Fixed scope, and a roadmap you keep either way.
-              </p>
-              <a
-                href="/thallo-digital/contact/"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#39471D] rounded-full text-sm font-semibold hover:bg-[#CBD0AC] transition-colors"
-              >
-                Book an audit <ArrowUpRight className="text-[11px]" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* The photograph is this page's own — cta-bg is still the home's closing
+          shot — and its left edge carries lit wood, hence the scrim. */}
+      <AuditCTA
+        image="/thallo-digital/results-bg.webp"
+        scrim
+        eyebrow="Your turn"
+        heading="See where you stand today."
+        copy="Start with an AI visibility audit. Fixed scope, and a roadmap you keep either way."
+      />
     </>
   );
 }

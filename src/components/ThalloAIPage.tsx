@@ -4,10 +4,12 @@ import React from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import { SplitReveal, scrollToEl } from '@/components/motion';
+import AuditCTA from '@/components/AuditCTA';
 
-/* Guidelines, section 8 — one soft olive-tinted shadow. Elevation is only ever
-   suggested; it never defines the component. */
-const SOFT = { boxShadow: '0 24px 60px -20px rgba(57,71,29,.20)' };
+/* The site-wide card shadow. This used to be an olive-tinted one of its own,
+   which made these panels read as a different component from every other card
+   on the site — one edge, one shadow, everywhere. */
+const SOFT = { boxShadow: '0 6px 20px -8px rgba(23,26,16,0.14)' };
 
 /* The three platforms we hold real marks for. No logo is invented here. */
 const LOGO = {
@@ -453,36 +455,19 @@ export default function ThalloAIPage() {
       </Section>
 
       {/* ── CTA ───────────────────────────────────────────────────────────── */}
-      <section className="bg-white py-28 border-b border-gray-100">
-        <div className="max-w-[1440px] mx-auto px-6 w-full">
-          <div className="relative overflow-hidden rounded-[28px] px-12 py-20 sm:px-20 sm:py-28">
-            <img loading="lazy" decoding="async"
-              src="/thallo-digital/cta-bg.webp"
-              alt="" aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
-              style={{ zIndex: 0 }}
-            />
-            <div className="relative z-[2] max-w-xl">
-              <Eyebrow tone="light" className="mb-6">Your brand</Eyebrow>
-              <SplitReveal
-                as="h2"
-                className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-8 font-sans"
-                html="Run this on your own name."
-              />
-              <p className="text-[#CBD0AC] font-medium text-base sm:text-lg leading-relaxed max-w-[46ch] mb-8">
-                The figures above are a worked example. A real audit runs the same six stages against
-                your category and the names competing for it.
-              </p>
-              <a
-                href="/thallo-digital/contact/"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#39471D] rounded-full text-sm font-semibold hover:bg-[#CBD0AC] transition-colors"
-              >
-                Book an audit <ArrowUpRight className="text-[11px]" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* headingSlot rather than the plain heading, to keep this one's reveal. */}
+      <AuditCTA
+        image="/thallo-digital/cta-bg.webp"
+        eyebrow="Your brand"
+        headingSlot={
+          <SplitReveal
+            as="h2"
+            className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-8 font-sans"
+            html="Run this on your own name."
+          />
+        }
+        copy="The figures above are a worked example. A real audit runs the same six stages against your category and the names competing for it."
+      />
     </>
   );
 }

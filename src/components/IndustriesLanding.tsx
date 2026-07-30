@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
-import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import SpinFlower from '@/components/ui/SpinFlower';
+import AuditCTA from '@/components/AuditCTA';
 
 const STATS = [
   {
@@ -274,34 +274,12 @@ export default function IndustriesPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-white py-28 border-b border-gray-100">
-        <div className="max-w-[1440px] mx-auto px-6 w-full">
-          <div className="relative overflow-hidden rounded-[28px] px-12 py-20 sm:px-20 sm:py-28">
-            <img loading="lazy" decoding="async"
-              src="/thallo-digital/cta-bg-industries.webp"
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
-              style={{ zIndex: 0 }}
-            />
-            <div className="relative z-[2] max-w-xl">
-              <Eyebrow tone="light" className="mb-6">Your market</Eyebrow>
-              <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-8 font-sans">
-                Be the one they already trust.
-              </h2>
-              <p className="text-[#CBD0AC] font-medium text-base sm:text-lg leading-relaxed max-w-[44ch] mb-8">
-                Start with an audit tuned to your industry. See where you stand against the names winning your category.
-              </p>
-              <a
-                href="/thallo-digital/contact/"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#39471D] rounded-full text-sm font-semibold hover:bg-[#CBD0AC] transition-colors"
-              >
-                Book your audit <ArrowUpRight className="text-[11px]" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      <AuditCTA
+        image="/thallo-digital/cta-bg-industries.webp"
+        eyebrow="Your market"
+        heading="Be the one they already trust."
+        copy="Start with an audit tuned to your industry. See where you stand against the names winning your category."
+      />
     </>
   );
 }

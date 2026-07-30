@@ -5,7 +5,7 @@ import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import SpinFlower from '@/components/ui/SpinFlower';
 import EngagementSteps from '@/components/EngagementSteps';
-import PlanEnquiryForm from '@/components/PlanEnquiryForm';
+import AuditCTA from '@/components/AuditCTA';
 import { Magnetic } from '@/components/motion';
 
 // ─── Data ────────────────────────────────────────────────────────────────────
@@ -224,7 +224,7 @@ export default function ServicesPage() {
                     className={`relative overflow-hidden p-8 rounded-3xl flex flex-col h-full transition-all duration-500 hover:-translate-y-1 ${
                       isFeatured
                         ? 'bg-[#39471D] border border-[#39471D] shadow-[0_2px_6px_rgba(57,71,29,0.35),0_10px_28px_-4px_rgba(57,71,29,0.55)]'
-                        : 'bg-gray-50/60 border border-gray-200 hover:border-[#55672E]/20'
+                        : 'bg-gray-50/60 border border-gray-200 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] hover:border-[#55672E]/20'
                     }`}
                   >
                     {isFeatured && (
@@ -437,43 +437,22 @@ export default function ServicesPage() {
       </section>
 
       {/* ── CTA, with the enquiry form inside it ──────────────────────────── */}
-      <section className="bg-white py-20 2xl:py-24 border-b border-gray-100" id="enquiry">
-        <div className="max-w-[1440px] mx-auto px-6 w-full">
-          <div className="relative overflow-hidden rounded-[28px] px-8 py-12 sm:px-14 sm:py-16">
-            <img loading="lazy" decoding="async"
-              src="/thallo-digital/cta-bg-services.webp"
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
-              style={{ zIndex: 0 }}
-            />
-            {/* The form sits in the empty right half of the photograph rather
-                than in a section of its own: the ask and the means to answer it
-                belong in the same object. */}
-            <div className="relative z-[2] grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-16">
-              <div>
-                <Eyebrow tone="light" className="mb-5">Ready?</Eyebrow>
-                <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-white leading-[1.05] mb-6 font-sans">
-                  Start with a clear look at where you stand.
-                </h2>
-                <p className="text-[#CBD0AC] font-medium text-base sm:text-lg leading-relaxed max-w-[44ch]">
-                  {addons.length > 0
-                    ? `Your plan: ${planSummary}. Send it over and we'll confirm scope.`
-                    : "Book an AI visibility audit. Clear, fixed scope, and a roadmap you keep either way."}
-                </p>
-              </div>
-
-              {/* Whatever was built above — base plan plus any add-ons —
-                  arrives pre-ticked, so the selection travels into the
-                  enquiry rather than resetting here. */}
-              <PlanEnquiryForm
-                plans={[SERVICES[0].title, SERVICES[1].title, ...SERVICES[2].deliverables]}
-                activePlans={builtPlan}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Whatever was built above — base plan plus any add-ons — arrives
+          pre-ticked, so the selection travels into the enquiry rather than
+          resetting here. This page is the only one that has a builder to feed
+          it; everywhere else the form opens on the three plans. */}
+      <AuditCTA
+        image="/thallo-digital/cta-bg-services.webp"
+        eyebrow="Ready?"
+        heading="Start with a clear look at where you stand."
+        copy={
+          addons.length > 0
+            ? `Your plan: ${planSummary}. Send it over and we'll confirm scope.`
+            : 'Book an AI visibility audit. Clear, fixed scope, and a roadmap you keep either way.'
+        }
+        plans={[SERVICES[0].title, SERVICES[1].title, ...SERVICES[2].deliverables]}
+        activePlans={builtPlan}
+      />
 
       {/* ── FAQ (centered) ────────────────────────────────────────────────── */}
       <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
