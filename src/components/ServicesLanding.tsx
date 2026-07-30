@@ -321,9 +321,10 @@ export default function ServicesPage() {
             </p>
           </div>
 
-          <div className="relative pt-32">
-            <SpinFlower className="absolute top-0 left-1/2 hidden h-[88px] w-[88px] -translate-x-1/2 lg:block" />
-
+          {/* The pt-32 here existed only to clear a flower floating above the
+              panel. The flower now marks the plan it is about, so the space
+              goes back. */}
+          <div className="relative">
             <div className="grid overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] lg:grid-cols-[300px_1fr]">
               {/* Left: base plan picker */}
               <div className="flex flex-col gap-2 border-b border-gray-100 bg-[#FAFAF8] p-3 lg:border-b-0 lg:border-r">
@@ -331,8 +332,8 @@ export default function ServicesPage() {
                   const svc = SERVICES[i];
                   const active = basePlan === i;
                   return (
+                    <div key={svc.idx} className="relative">
                     <button
-                      key={svc.idx}
                       type="button"
                       onClick={() => setBasePlan(i as 0 | 1)}
                       aria-pressed={active}
@@ -355,6 +356,16 @@ export default function ServicesPage() {
                       <div className="text-lg font-semibold">{svc.title}</div>
                       <div className={`mt-1 text-xs font-medium ${active ? 'text-[#CBD0AC]' : 'text-gray-400'}`}>{svc.price}</div>
                     </button>
+
+                    {/* Sits on the seam beside the Authority Engine, marking the
+                        plan most people choose. pointer-events-none because half
+                        of it lies over the button — a decorative mark must never
+                        eat a click on the control it is decorating. It keeps
+                        spinning; it just cannot be dragged here. */}
+                    {i === 1 && (
+                      <SpinFlower className="pointer-events-none absolute top-1/2 right-0 hidden h-[68px] w-[68px] -translate-y-1/2 translate-x-1/2 lg:block" />
+                    )}
+                    </div>
                   );
                 })}
 
