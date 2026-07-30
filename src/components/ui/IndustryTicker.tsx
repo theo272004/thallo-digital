@@ -67,6 +67,13 @@ export default function IndustryTicker() {
           animation: industry-ticker 32s linear infinite;
           will-change: transform;
         }
+        /* Hovering to read a name should not mean chasing it. */
+        .industry-ticker-shell:hover .industry-ticker-track {
+          animation-play-state: paused;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .industry-ticker-track { animation: none; }
+        }
         .industry-ticker-item {
           color: #374151;
           cursor: default;
@@ -80,6 +87,7 @@ export default function IndustryTicker() {
       `}</style>
 
       <div
+        className="industry-ticker-shell"
         style={{
           width: '420px',
           maxWidth: '100%',

@@ -1,7 +1,7 @@
 import React from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
-import IndustryCarousel from '@/components/ui/IndustryCarousel';
+import IndustryTicker from '@/components/ui/IndustryTicker';
 
 export default function About() {
   return (
@@ -27,12 +27,18 @@ export default function About() {
             the channels change. A senior team, deliberately small, focused on doing a few things exceptionally well.
           </p>
 
-          {/* The industry carousel, restored here where it first lived. It is
-              deliberately narrow: at xl+ this text block is absolutely centred
-              and the laptop/phone photographs are pinned relative to it, so
-              extra height here pushes that composition around. */}
-          <div className="mt-8 flex justify-center">
-            <IndustryCarousel />
+          {/* Mobile: in normal flow */}
+          <div className="mt-8 xl:hidden">
+            <IndustryTicker />
+          </div>
+
+          {/* Desktop: absolutely positioned below the text block — does NOT add to block height,
+              so the flex-centering and image position stay exactly as before */}
+          <div
+            className="hidden xl:block absolute left-1/2 -translate-x-1/2"
+            style={{ top: '100%', marginTop: '28px' }}
+          >
+            <IndustryTicker />
           </div>
         </div>
       </div>

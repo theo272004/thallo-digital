@@ -3,7 +3,10 @@ import React, { useState } from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
 
-// Floating panel — lifts on card hover via group-hover
+// Floating panel — lifts on card hover via group-hover.
+// One panel per card, alternating above and below down the grid (1 above,
+// 2 below, 3 above…). Two panels per card read as clutter and the pair
+// competed with each other for the same glance.
 const fp =
   'absolute z-20 bg-white border border-[#ececec] rounded-[16px] ' +
   'shadow-[0_4px_16px_rgba(0,0,0,0.08)] pointer-events-none ' +
@@ -101,13 +104,6 @@ export default function Industries() {
               <div className="h-[5px] rounded-full bg-[#CBD0AC] mb-1.5 w-3/4" />
               <div className="h-[5px] rounded-full bg-[#e8e8e3] w-1/2" />
             </div>
-            <div className={panel('-bottom-4 right-5 px-3 py-2.5 flex items-center gap-2')}>
-              <Check />
-              <div>
-                <p className="text-[10px] font-bold text-gray-900 leading-none">Thallo</p>
-                <p className="text-[9px] font-medium text-gray-400 mt-0.5">cited in AI overview</p>
-              </div>
-            </div>
           </Card>
 
           {/* ── Fintech ──────────────────────────────────────────────────── */}
@@ -116,21 +112,6 @@ export default function Industries() {
             title="Fintech"
             body="Where a wrong vendor is costly to unwind, and credibility clears the shortlist."
           >
-            <div className={panel('-top-8 left-1/2 -translate-x-1/2 w-[148px] p-3')}>
-              <p className="text-[9px] font-bold tracking-[0.15em] uppercase text-gray-400 mb-2">Buyer shortlist</p>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="w-[18px] h-[18px] rounded-full bg-[#39471D] text-white text-[8px] font-bold flex items-center justify-center flex-shrink-0">1</span>
-                <span className="text-[10px] font-bold text-gray-900">Thallo</span>
-              </div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="w-[18px] h-[18px] rounded-full bg-gray-100 text-gray-400 text-[8px] font-bold flex items-center justify-center flex-shrink-0">2</span>
-                <div className="h-[4px] rounded-full bg-[#e8e8e3] flex-1" />
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-[18px] h-[18px] rounded-full bg-gray-100 text-gray-400 text-[8px] font-bold flex items-center justify-center flex-shrink-0">3</span>
-                <div className="h-[4px] rounded-full bg-[#e8e8e3] flex-1 w-2/3" />
-              </div>
-            </div>
             <div className={panel('-bottom-4 right-4 p-3')}>
               <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-2">Decision factors</p>
               <div className="flex gap-1.5">
@@ -154,15 +135,6 @@ export default function Industries() {
               <div className="h-[5px] rounded-full bg-[#39471D] w-1/2 mb-1.5" />
               <p className="text-[9px] font-bold text-[#39471D]">Thallo</p>
             </div>
-            <div className={panel('-bottom-4 right-5 px-3 py-2.5 flex items-center gap-2')}>
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#39471D" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
-              <div>
-                <p className="text-[10px] font-bold text-gray-900 leading-none">Recommended</p>
-                <p className="text-[9px] font-medium text-gray-400 mt-0.5">by AI</p>
-              </div>
-            </div>
           </Card>
 
           {/* ── Professional services ────────────────────────────────────── */}
@@ -171,16 +143,6 @@ export default function Industries() {
             title="Professional services"
             body="Expertise businesses that live or die on reputation and referral."
           >
-            <div className={panel('-top-4 -right-3 w-[148px] p-3')}>
-              <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-1">Reputation score</p>
-              <p className="text-[18px] font-bold text-gray-900 leading-tight">
-                92 <span className="text-[10px] font-medium text-gray-400">/100</span>
-              </p>
-              <svg viewBox="0 0 110 30" width="110" height="30" className="mt-1">
-                <polyline points="0,26 20,21 40,17 60,12 80,7 100,4 110,2" fill="none" stroke="#39471D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="110" cy="2" r="2.5" fill="#39471D" />
-              </svg>
-            </div>
             <div className={panel('-bottom-4 left-1/2 -translate-x-1/2 px-4 py-2.5 flex items-center gap-2.5')}>
               <div className="w-6 h-6 rounded-full bg-[#39471D]/10 flex items-center justify-center flex-shrink-0">
                 <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#39471D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -211,21 +173,6 @@ export default function Industries() {
                 <p className="text-[9px] font-medium text-gray-500 leading-snug">Deep research<br />before decision</p>
               </div>
             </div>
-            <div className={panel('-bottom-4 left-1/2 -translate-x-1/2 px-3 py-2.5 flex items-center gap-2')}>
-              {/* Search · document · shield, as path data rather than JSX in an
-                  array — every shape now carries its own key. */}
-              {[
-                ['M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z', 'M21 21l-4.35-4.35'],
-                ['M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z', 'M14 2v6h6'],
-                ['M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'],
-              ].map((paths, i) => (
-                <div key={i} className="w-7 h-7 rounded-full border border-[#e8e8e3] flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#39471D" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    {paths.map((d) => <path key={d} d={d} />)}
-                  </svg>
-                </div>
-              ))}
-            </div>
           </Card>
 
           {/* ── Benefits & claims ────────────────────────────────────────── */}
@@ -234,25 +181,6 @@ export default function Industries() {
             title="Benefits & claims"
             body="Complex, confusing choices where the clear, trusted guide wins."
           >
-            <div className={panel('-top-4 -right-3 w-[152px] p-3')}>
-              <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-2">Complex decisions</p>
-              <div className="flex items-center gap-2 mb-1.5">
-                <div className="w-[14px] h-[14px] rounded-[4px] bg-[#39471D] flex items-center justify-center flex-shrink-0">
-                  <svg viewBox="0 0 10 10" width="7" height="7" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round"><path d="M1.5 5L3.5 7.5L8.5 2" /></svg>
-                </div>
-                <div className="h-[4px] rounded-full bg-[#39471D] flex-1" />
-              </div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <div className="w-[14px] h-[14px] rounded-[4px] bg-[#CBD0AC] flex items-center justify-center flex-shrink-0">
-                  <svg viewBox="0 0 10 10" width="7" height="7" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round"><path d="M1.5 5L3.5 7.5L8.5 2" /></svg>
-                </div>
-                <div className="h-[4px] rounded-full bg-[#CBD0AC] flex-1 w-3/4" />
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-[14px] h-[14px] rounded-[4px] border border-[#e8e8e3] flex-shrink-0" />
-                <div className="h-[4px] rounded-full bg-[#e8e8e3] flex-1 w-1/2" />
-              </div>
-            </div>
             <div className={panel('-bottom-4 right-5 px-3 py-2.5 flex items-center gap-2')}>
               <Check />
               <div>

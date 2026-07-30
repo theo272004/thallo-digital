@@ -54,23 +54,26 @@ export default function ResultsDashboard() {
 
   return (
     <section
-      className="bg-[#F4FAF5] py-16 2xl:py-20 border-b border-gray-100"
+      className="bg-[#F4FAF5] py-20 2xl:py-24 border-b border-gray-100"
       id="results"
       ref={containerRef}
     >
-      {/* Charts read best in a narrower measure than the 1440 marketing grid. */}
-      <div className="max-w-[1200px] mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-[28%_1fr] gap-8 lg:gap-10 items-start">
+      {/* The 1440 grid, the 64px gap and the lg:pt-10 below are the original
+          composition — the copy column is optically aligned to the dashboard
+          card, not to the top of the grid. Narrowing or tightening them pulls
+          the heading off the card and the section stops reading as one object. */}
+      <div className="max-w-[1440px] mx-auto px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[28%_1fr] gap-16 items-start">
 
           {/* ── Left: copy ─────────────────────────────────────────────── */}
-          <div className="lg:pt-2">
-            <Eyebrow className="mb-4">Track Authority</Eyebrow>
+          <div className="lg:pt-10">
+            <Eyebrow className="mb-5">Track Authority</Eyebrow>
             <SplitReveal
               as="h2"
-              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-4 font-sans"
+              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
               html="Visualizing authority compounding."
             />
-            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[42ch]">
+            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[30ch]">
               We track the signals that matter across leading AI platforms—so you can see your visibility
               grow, not just feel it.
             </p>
