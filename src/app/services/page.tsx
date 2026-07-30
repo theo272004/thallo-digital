@@ -5,12 +5,12 @@ import ServicesLanding from '@/components/ServicesLanding';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Services',
+  title: 'Our Plans',
   description:
     'AI Visibility Audits, the Authority Engine and flagship projects — the work that makes brands the answer ChatGPT, Perplexity and Google AI give first.',
   alternates: { canonical: 'https://theo272004.github.io/thallo-digital/services/' },
   openGraph: {
-    title: 'Services · Thallo Digital',
+    title: 'Our Plans · Thallo Digital',
     description:
       'AI Visibility Audits, the Authority Engine and flagship projects — the work that makes brands the answer AI gives first.',
     url: 'https://theo272004.github.io/thallo-digital/services/',

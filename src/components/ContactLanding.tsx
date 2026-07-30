@@ -35,12 +35,12 @@ const ROUTES = [
   },
   {
     href: '/thallo-digital/services/',
-    label: 'Services',
+    label: 'Our Plans',
     copy: 'The audit, the engine, and the flagship work.',
   },
   {
     href: '/thallo-digital/results/',
-    label: 'Results',
+    label: 'Case Studies',
     copy: 'What the work looked like for a real client.',
   },
 ];

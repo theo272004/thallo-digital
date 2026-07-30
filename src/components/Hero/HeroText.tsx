@@ -39,11 +39,13 @@ export default function HeroText() {
             <ArrowUpRight className="text-[11px] group-hover:translate-x-0.5 transition-transform" />
           </a>
         </Magnetic>
+        {/* Points at the approach section: the plans teaser this used to scroll
+            to no longer lives on the home page. */}
         <a
-          href="#services"
+          href="#approach"
           onClick={(e) => {
             e.preventDefault();
-            scrollToEl('#services');
+            scrollToEl('#approach');
           }}
           className="px-6 py-3.5 rounded-full text-xs font-bold text-gray-800 border border-gray-200 bg-white hover:border-gray-400 transition-all flex items-center gap-2"
         >

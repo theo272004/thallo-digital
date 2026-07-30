@@ -4,7 +4,6 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import TheProblem from '@/components/TheProblem';
-import Services from '@/components/Services';
 import HowItWorks from '@/components/HowItWorks';
 import ResultsDashboard from '@/components/ResultsDashboard';
 import Testimonials from '@/components/Testimonials';
@@ -24,14 +23,16 @@ export default function Home() {
       <Navbar />
       <main className="flex-grow">
         <Hero />
-        <About />
         <TheProblem />
+        <About />
         <HowItWorks />
         <Industries />
         <ResultsDashboard />
-        <Testimonials />
+        {/* Video runs before the resources library, so the film introduces the
+            writing rather than following it. */}
         <VideoSection />
-        <Services />
+        {/* The resources library, despite the file name. */}
+        <Testimonials />
         {/* "In their words" — the testimonial carousel, despite the file name.
             The proof runs immediately before the ask. */}
         <BlogSection />

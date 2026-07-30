@@ -1,5 +1,10 @@
 import React from 'react';
+import Eyebrow from '@/components/ui/Eyebrow';
 
+/* Despite the file name, this is the resources library — the review carousel
+   lives in BlogSection.tsx. The cards deliberately surface only category,
+   title and read time; `date` and `desc` stay in the data for the day these
+   become real posts with their own routes. */
 const ARTICLES = [
   {
     badge: 'GEO',
@@ -26,68 +31,48 @@ const ARTICLES = [
 
 export default function Testimonials() {
   return (
-    <section className="bg-white py-28 border-b border-gray-100" id="testimonials">
+    /* id="blog" is the target the navbar and footer have always pointed at. */
+    <section className="bg-[#F4FAF5] py-20 2xl:py-24 border-b border-gray-100" id="blog">
       <div className="max-w-[1440px] mx-auto px-6">
 
-        {/* ── Single row: image (40%) + three cards side-by-side (60%) ─ */}
-        <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 items-stretch">
-
-          {/* Featured card — heading lives inside the image */}
-          <div className="relative overflow-hidden rounded-[28px] bg-[#171A10] min-h-[380px] lg:min-h-0 lg:w-[40%] lg:flex-shrink-0">
-            <img loading="lazy" decoding="async"
-              src="/thallo-digital/notebook-desk.webp"
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black/40" />
-
-            {/* Eyebrow — top-left */}
-            <div className="absolute top-8 sm:top-10 left-8 sm:left-10 z-10 flex items-center gap-2.5">
-              <span className="w-5 h-px bg-white/40 flex-shrink-0" />
-              <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/50">
-                From the field
-              </span>
-            </div>
-
-            {/* Heading — bottom-left */}
-            <div className="absolute bottom-8 sm:bottom-10 left-8 sm:left-10 right-8 sm:right-10 z-10">
-              <h2 className="text-2xl sm:text-[2rem] font-bold text-white leading-tight">
-                Notes on getting found,<br />and trusted.
-              </h2>
-            </div>
-          </div>
-
-          {/* Three editorial cards — horizontal row, equal widths */}
-          <div className="flex flex-col sm:flex-row gap-6 flex-1">
-            {ARTICLES.map((a) => (
-              <div
-                key={a.title}
-                className="flex-1 border border-gray-100 rounded-3xl p-7 bg-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.06)] transition-shadow duration-300 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-5 gap-2 flex-wrap">
-                    <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#39471D] bg-[#39471D]/10 px-2.5 py-1 rounded-full whitespace-nowrap">
-                      {a.badge}
-                    </span>
-                    <span className="text-[11px] text-gray-400 font-medium whitespace-nowrap">
-                      {a.date} · {a.read}
-                    </span>
-                  </div>
-                  <h3 className="text-base font-bold text-gray-900 leading-snug mb-2">{a.title}</h3>
-                  <p className="text-sm text-gray-500 font-medium leading-relaxed">{a.desc}</p>
-                </div>
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
-                  className="mt-6 inline-flex items-center gap-1.5 text-xs font-bold text-[#39471D]"
-                >
-                  Read →
-                </a>
-              </div>
-            ))}
-          </div>
-
+        <div className="flex flex-col items-center text-center mb-12">
+          <Eyebrow center className="mb-5 justify-center">Resources</Eyebrow>
+          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans max-w-2xl">
+            Notes on getting found,<br />and trusted.
+          </h2>
         </div>
+
+        {/* A library, not a feed: one row of equal cards, no thumbnails. */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {ARTICLES.map((a) => (
+            <article
+              key={a.title}
+              data-reveal
+              className="border border-gray-100 rounded-3xl p-8 bg-white flex flex-col items-center text-center hover:shadow-[0_8px_32px_rgba(0,0,0,0.06)] transition-shadow duration-300"
+            >
+              <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#39471D] bg-[#39471D]/10 px-2.5 py-1 rounded-full">
+                {a.badge}
+              </span>
+
+              <h3 className="mt-5 text-lg font-bold text-gray-900 leading-snug text-balance">
+                {a.title}
+              </h3>
+
+              <span className="mt-3 font-mono text-[11px] font-bold tracking-[0.12em] uppercase text-gray-400">
+                {a.read} read
+              </span>
+
+              <a
+                href="#"
+                onClick={(e) => e.preventDefault()}
+                className="mt-6 inline-flex items-center gap-1.5 text-xs font-bold text-[#39471D]"
+              >
+                Read →
+              </a>
+            </article>
+          ))}
+        </div>
+
       </div>
     </section>
   );

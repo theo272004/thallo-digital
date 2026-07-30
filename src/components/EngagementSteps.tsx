@@ -337,7 +337,7 @@ export default function EngagementSteps() {
                     {s.period}
                   </p>
                   <h3 className="text-base font-bold text-gray-900 mb-2">{s.title}</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>
+                  <p className="text-[15px] text-gray-500 leading-relaxed">{s.desc}</p>
 
                   {/* mt-auto pins every laptop to the bottom of its column, so
                       the four line up however long the copy above them runs.

@@ -122,8 +122,16 @@ export default function ResultsLanding() {
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="bg-white pt-44 pb-16 2xl:pt-56 2xl:pb-28 border-b border-gray-100">
+      <section className="bg-white pt-32 pb-14 2xl:pt-40 2xl:pb-20 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
+          {/* This page used to BE /results/; it now sits under it, so it needs a
+              way back up to the index that lists it. */}
+          <a
+            href="/thallo-digital/results/"
+            className="mb-5 inline-flex items-center gap-1.5 text-sm font-semibold text-gray-400 transition-colors hover:text-[#39471D]"
+          >
+            <span aria-hidden="true">&larr;</span> All case studies
+          </a>
           <Eyebrow center className="mb-5">Case study</Eyebrow>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-2xl">
             {/* Emphasis by colour, not by swapping typeface mid-sentence. */}
@@ -139,10 +147,10 @@ export default function ResultsLanding() {
       </section>
 
       {/* ── Headline figures, on the photo panel ─────────────────────────── */}
-      <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
-        <div className="max-w-[1440px] mx-auto px-6">
+      <section className="bg-[#F4FAF5] py-16 2xl:py-20 border-b border-gray-100">
+        <div className="max-w-[1200px] mx-auto px-6">
           <div
-            className="relative overflow-hidden rounded-[28px] px-10 py-14 sm:px-16 sm:py-20"
+            className="relative overflow-hidden rounded-[28px] px-10 py-12 sm:px-16 sm:py-14"
             style={{
               backgroundImage: 'url(/thallo-digital/measured-bg.webp)',
               backgroundSize: 'cover',
@@ -162,7 +170,7 @@ export default function ResultsLanding() {
               className="absolute inset-0 bg-gradient-to-r from-[#171A10]/55 via-[#171A10]/20 to-transparent"
             />
 
-            <div className="relative max-w-lg mb-14">
+            <div className="relative max-w-lg mb-10">
               <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white leading-[1.05] font-sans">
                 Six months, measured.
               </h2>
@@ -192,13 +200,13 @@ export default function ResultsLanding() {
       </section>
 
       {/* ── The six-month trajectory ─────────────────────────────────────── */}
-      <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
-        <div className="max-w-[1440px] mx-auto px-6">
-          <div className="max-w-2xl mb-16">
-            <Eyebrow className="mb-5">Trajectory</Eyebrow>
+      <section className="bg-white py-16 2xl:py-20 border-b border-gray-100">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <div className="max-w-2xl mb-10">
+            <Eyebrow className="mb-4">Trajectory</Eyebrow>
             <SplitReveal
               as="h2"
-              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 font-sans leading-[1.05]"
+              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-4 font-sans leading-[1.05]"
               html="The six-month trajectory."
             />
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch]">
@@ -313,18 +321,18 @@ export default function ResultsLanding() {
       </section>
 
       {/* ── The compounding effect ───────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-white py-16 2xl:py-28 border-b border-gray-100">
-        <div className="max-w-[1440px] mx-auto px-6">
-          <div className="max-w-2xl mb-16">
-            <Eyebrow className="mb-5">Why it worked</Eyebrow>
+      <section className="relative overflow-hidden bg-[#F4FAF5] py-16 2xl:py-20 border-b border-gray-100">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <div className="max-w-2xl mb-10">
+            <Eyebrow className="mb-4">Why it worked</Eyebrow>
             <SplitReveal
               as="h2"
-              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 font-sans leading-[1.05]"
+              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-4 font-sans leading-[1.05]"
               html="The compounding effect."
             />
           </div>
 
-          <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:gap-20">
+          <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:gap-14">
             {/* Prose — no box around it any more; the sheet is the object here */}
             <div data-reveal>
               <p className="text-gray-500 font-medium text-base leading-relaxed mb-5">
@@ -378,7 +386,7 @@ export default function ResultsLanding() {
           </div>
 
           {/* Provenance — the figures are real, so say where they come from. */}
-          <p className="mt-12 text-xs leading-relaxed text-gray-400 max-w-[80ch]">
+          <p className="mt-8 text-xs leading-relaxed text-gray-400 max-w-[80ch]">
             Source: Google Search Console, January–July 2026. Client identity withheld for
             confidentiality. Figures reflect one engagement over a defined period and are not a
             guarantee of future results — outcomes vary by market, competition and site.

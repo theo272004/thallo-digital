@@ -15,7 +15,9 @@ export default function Eyebrow({ children, center = false, tone = 'dark', class
   return (
     <div className={`flex items-center gap-3 ${center ? 'justify-center' : ''} ${className}`}>
       <span className={`h-px w-7 ${line}`} />
-      <span className={`font-mono text-[11px] font-bold tracking-[0.2em] uppercase ${text}`}>{children}</span>
+      {/* 12px, not 11: uppercase mono at 0.2em tracking is the hardest thing on
+          the page to read, and it labels every section. */}
+      <span className={`font-mono text-[12px] font-bold tracking-[0.2em] uppercase ${text}`}>{children}</span>
     </div>
   );
 }

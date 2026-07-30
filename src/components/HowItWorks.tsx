@@ -127,7 +127,7 @@ export default function HowItWorks() {
 
   return (
     <section
-      className="bg-white border-b border-gray-100 pt-[5.5rem] lg:pt-0 pb-[5.5rem]"
+      className="bg-[#F4FAF5] border-b border-gray-100 pt-[5.5rem] lg:pt-0 pb-[5.5rem]"
       id="approach"
       ref={sectionRef}
     >
@@ -262,7 +262,7 @@ export default function HowItWorks() {
               </div>
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Expert content</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
+                <p className="text-[15px] text-gray-500 leading-relaxed">
                   Deeply researched, original work built on real expertise and
                   your own data, the content people cite and return to.
                 </p>
@@ -279,7 +279,7 @@ export default function HowItWorks() {
               </div>
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Technical infrastructure</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
+                <p className="text-[15px] text-gray-500 leading-relaxed">
                   A site search engines and AI can read, understand, and cite,
                   structured to answer the questions buyers actually ask.
                 </p>
@@ -296,7 +296,7 @@ export default function HowItWorks() {
               </div>
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Distribution</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
+                <p className="text-[15px] text-gray-500 leading-relaxed">
                   We carry the work to where buyers already research, so authority
                   is met in the places that shape opinion.
                 </p>
@@ -313,7 +313,7 @@ export default function HowItWorks() {
               </div>
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Coherence</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">
+                <p className="text-[15px] text-gray-500 leading-relaxed">
                   One narrative, one standard of quality, repeated across every
                   channel and every month until it becomes reputation.
                 </p>

@@ -66,6 +66,10 @@ html, body {
 body {
   font-family: var(--font-sans);
   background-color: #FFFFFF;
+  /* Prose sits on 1.6 rather than Tailwind's 1.5 default: at the 16px base that
+     is a 24px rhythm, which holds together better over a long paragraph.
+     Anything setting its own `leading-*` still wins, so headings are untouched. */
+  line-height: 1.6;
 }
 
 @keyframes fadeUp {

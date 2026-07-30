@@ -54,22 +54,23 @@ export default function ResultsDashboard() {
 
   return (
     <section
-      className="bg-gray-50/50 py-28 pb-36 border-b border-gray-100"
+      className="bg-[#F4FAF5] py-16 2xl:py-20 border-b border-gray-100"
       id="results"
       ref={containerRef}
     >
-      <div className="max-w-[1440px] mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-[28%_1fr] gap-16 items-start">
+      {/* Charts read best in a narrower measure than the 1440 marketing grid. */}
+      <div className="max-w-[1200px] mx-auto px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-[28%_1fr] gap-8 lg:gap-10 items-start">
 
           {/* ── Left: copy ─────────────────────────────────────────────── */}
-          <div className="lg:pt-10">
-            <Eyebrow className="mb-5">Track Authority</Eyebrow>
+          <div className="lg:pt-2">
+            <Eyebrow className="mb-4">Track Authority</Eyebrow>
             <SplitReveal
               as="h2"
-              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
+              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-4 font-sans"
               html="Visualizing authority compounding."
             />
-            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[30ch]">
+            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[42ch]">
               We track the signals that matter across leading AI platforms—so you can see your visibility
               grow, not just feel it.
             </p>
