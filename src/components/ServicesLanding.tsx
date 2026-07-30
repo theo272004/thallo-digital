@@ -63,17 +63,6 @@ const PROCESS = [
   { idx: '04', period: 'When you are ready', title: 'Accelerate',         desc: 'Flagship projects, proprietary studies, digital PR, and interactive tools that put you on the map for good.' },
 ];
 
-const COMPARE = [
-  { feature: 'AI visibility benchmark',      audit: true,  engine: true,       flagship: false },
-  { feature: 'Technical AI-readiness build', audit: false, engine: true,       flagship: false },
-  { feature: 'Original, researched content', audit: false, engine: 'Monthly',  flagship: 'Deep' },
-  { feature: 'Distribution & publishing',    audit: false, engine: true,       flagship: false },
-  { feature: 'Proprietary data studies',     audit: false, engine: false,      flagship: true },
-  { feature: 'Digital PR & podcasts',        audit: false, engine: false,      flagship: true },
-  { feature: 'Monthly outcome reporting',    audit: false, engine: true,       flagship: false },
-  { feature: 'Best for',                     audit: 'Getting clarity', engine: 'Compounding growth', flagship: 'Big moves' },
-];
-
 const FAQS = [
   { q: 'What if AI says something wrong about us?',              a: 'It happens, and there is no edit button. No AI company lets you log in and correct it. What you can do is make the accurate version of your story the strongest, most consistent signal across the places AI reads, so the correct answer becomes the one it repeats. Getting that right is a large part of our work, and it is why precision matters to us more than volume.' },
   { q: 'Can you prove it is working?',                           a: 'Yes, with honesty about what is measurable and what is not. We track how often you appear in AI answers for the questions your buyers ask, the sources citing you, and the pipeline your presence influences. What no one can promise is perfect click-by-click attribution; AI search is newer and messier than Google. We report the real signals, not a vanity dashboard, and we are straight about the limits.' },
@@ -95,41 +84,6 @@ function Check({ featured }: { featured: boolean }) {
   );
 }
 
-const OLIVE_TEXT = new Set(['Monthly', 'Deep', 'Compounding growth']);
-
-function CompareCell({ val }: { val: boolean | string }) {
-  if (val === true) return (
-    <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#EEF2E4', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#445A20" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="4 12 9 17 20 7" />
-      </svg>
-    </div>
-  );
-  if (val === false) return (
-    <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#F6F6F6', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-      <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#BFC3C8" strokeWidth="2" strokeLinecap="round">
-        <line x1="5" y1="5" x2="19" y2="19" /><line x1="19" y1="5" x2="5" y2="19" />
-      </svg>
-    </div>
-  );
-  return <span style={{ fontSize: 13, fontWeight: 700, color: OLIVE_TEXT.has(val as string) ? '#445A20' : '#111827', textAlign: 'center' as const }}>{val}</span>;
-}
-
-function CompareIcon({ feature }: { feature: string }) {
-  const p = { viewBox: '0 0 24 24', width: 20, height: 20, fill: 'none' as const, stroke: '#445A20', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
-  const map: Record<string, React.ReactNode> = {
-    'AI visibility benchmark':       <svg {...p}><line x1="18" y1="20" x2="18" y2="9"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="13"/><line x1="2" y1="20" x2="22" y2="20"/></svg>,
-    'Technical AI-readiness build':  <svg {...p}><rect x="7" y="7" width="10" height="10" rx="1"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/><rect x="2" y="2" width="20" height="20" rx="3"/></svg>,
-    'Original, researched content':  <svg {...p}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
-    'Distribution & publishing':     <svg {...p}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>,
-    'Proprietary data studies':      <svg {...p}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
-    'Digital PR & podcasts':         <svg {...p}><path d="M12 2a3 3 0 00-3 3v7a3 3 0 006 0V5a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>,
-    'Monthly outcome reporting':     <svg {...p}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>,
-    'Best for':                      <svg {...p}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
-  };
-  return <>{map[feature] ?? null}</>;
-}
-
 // visual order: active card → middle, others fill left/right in their natural sequence
 function getOrder(cardIdx: number, active: number): number {
   if (cardIdx === active) return 2;
@@ -142,6 +96,35 @@ function getOrder(cardIdx: number, active: number): number {
 export default function ServicesPage() {
   const [activeService, setActiveService] = useState(1);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  // Plan builder: pick one base plan (Audit or Authority Engine), then layer on
+  // any Flagship items as optional add-ons.
+  const [basePlan, setBasePlan] = useState<0 | 1>(1);
+  const [addons, setAddons] = useState<string[]>([]);
+
+  function toggleAddon(item: string) {
+    setAddons(prev => prev.includes(item) ? prev.filter(a => a !== item) : [...prev, item]);
+  }
+
+  const basePlanData = SERVICES[basePlan];
+  const planSummary = addons.length > 0
+    ? `${basePlanData.title} + ${addons.length} add-on${addons.length > 1 ? 's' : ''}`
+    : basePlanData.title;
+
+  const planMailto = (() => {
+    const lines = [
+      'Hi Thallo team,',
+      '',
+      "I'd like to move forward with this plan:",
+      '',
+      `Base plan: ${basePlanData.title}`,
+      addons.length > 0 ? `Add-ons: ${addons.join(', ')}` : 'Add-ons: none yet',
+      '',
+      'Please reach out to confirm scope and next steps.',
+    ];
+    const subject = `AI Visibility Plan Request — ${basePlanData.title}`;
+    return `mailto:hello@thallo.co?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
+  })();
 
   const wrapperRefs = useRef<(HTMLDivElement | null)[]>([]);
   const savedRects = useRef<(DOMRect | null)[]>([]);
@@ -274,6 +257,11 @@ export default function ServicesPage() {
                             Most chosen
                           </span>
                         )}
+                        {i === 2 && (
+                          <span className="font-mono text-[11px] font-bold tracking-widest uppercase text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                            Optional add-on
+                          </span>
+                        )}
                       </div>
 
                       <h3 className={`text-2xl font-semibold mb-3 transition-colors duration-500 ${isFeatured ? 'text-white' : 'text-gray-900'}`}>
@@ -372,74 +360,119 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* ── Compare ───────────────────────────────────────────────────────── */}
+      {/* ── Compare / Plan builder ───────────────────────────────────────── */}
       <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="max-w-2xl mb-14">
-            <Eyebrow className="mb-5">Compare</Eyebrow>
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans">
-              What is in each.
+            <Eyebrow className="mb-5">Build your plan</Eyebrow>
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans mb-5">
+              Choose a plan, add what you need.
             </h2>
+            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[58ch]">
+              The Audit and the Authority Engine are the two plans you start with. Flagship Projects are optional add-ons — pick any of them to layer onto your plan.
+            </p>
           </div>
 
-          {/* Outer: space above card for the floating badge */}
-          <div style={{ position: 'relative', paddingTop: 28 }}>
+          <div
+            className="grid lg:grid-cols-[300px_1fr] rounded-[30px] overflow-hidden"
+            style={{ border: '1px solid #ECE9E2', boxShadow: '0 18px 55px rgba(32,32,24,.06)' }}
+          >
+            {/* Left: base plan picker */}
+            <div className="bg-[#FAFAF8] border-b lg:border-b-0 lg:border-r border-[#ECE9E2] p-3 flex flex-col gap-2">
+              {[0, 1].map((i) => {
+                const svc = SERVICES[i];
+                const active = basePlan === i;
+                return (
+                  <button
+                    key={svc.idx}
+                    onClick={() => setBasePlan(i as 0 | 1)}
+                    className={`w-full text-left p-5 rounded-2xl transition-all duration-300 ${
+                      active
+                        ? 'bg-[#39471D] text-white shadow-[0_10px_25px_-8px_rgba(57,71,29,0.5)]'
+                        : 'bg-transparent text-gray-700 hover:bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1.5 gap-2">
+                      <span className={`font-mono text-[10px] font-bold tracking-[0.16em] uppercase ${active ? 'text-white/60' : 'text-gray-400'}`}>
+                        {svc.idx} / Base plan
+                      </span>
+                      {i === 1 && (
+                        <span className={`font-mono text-[9px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full whitespace-nowrap ${active ? 'text-[#39471D] bg-[#CBD0AC]' : 'text-[#39471D] bg-[#EEF2E3]'}`}>
+                          Most chosen
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-lg font-semibold">{svc.title}</div>
+                    <div className={`text-xs font-medium mt-1 ${active ? 'text-[#CBD0AC]' : 'text-gray-400'}`}>{svc.price}</div>
+                  </button>
+                );
+              })}
 
-            {/* Floating flower badge — centered on Authority Engine col (42+19+10 = 71%) */}
-            <div style={{
-              position: 'absolute', top: 0, left: '71%', transform: 'translateX(-50%)',
-              zIndex: 20, width: 56, height: 56, borderRadius: '50%',
-              background: '#445A20', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 10px 25px rgba(0,0,0,.12)',
-            }}>
-              <img loading="lazy" decoding="async" src="/thallo-digital/flower.webp" alt="" aria-hidden style={{ width: 28, height: 28, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+              <div className="p-5 rounded-2xl border border-dashed border-gray-200 mt-1">
+                <span className="font-mono text-[10px] font-bold tracking-[0.16em] uppercase text-gray-400">
+                  03 / Optional add-on
+                </span>
+                <div className="text-base font-semibold text-gray-900 mt-1.5">Flagship Projects</div>
+                <p className="text-xs text-gray-400 font-medium mt-1 leading-relaxed">Not a plan on its own — pick any items to add, on the right →</p>
+              </div>
             </div>
 
-            {/* Card */}
-            <div style={{ background: '#FFFFFF', border: '1px solid #ECE9E2', borderRadius: 30, boxShadow: '0 18px 55px rgba(32,32,24,.06)', overflow: 'hidden' }}>
-              <div style={{ overflowX: 'auto' }}>
-                <div style={{ minWidth: 720 }}>
+            {/* Right: selected plan detail + add-on picker */}
+            <div className="p-8 lg:p-10 bg-white">
+              <span className="font-mono text-[11px] font-bold tracking-[0.18em] uppercase text-[#445A20]">
+                {basePlanData.title} includes
+              </span>
+              <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-3 mt-4">
+                {basePlanData.deliverables.map((item, j) => (
+                  <li key={j} className="flex items-start gap-2.5 text-sm font-medium text-gray-700">
+                    <Check featured={false} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
 
-                  {/* Header row */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '42fr 19fr 20fr 19fr' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', minHeight: 64, paddingLeft: 24, paddingRight: 16, borderBottom: '1px solid #F2F1ED' }}>
-                      <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#9CA3AF', whiteSpace: 'nowrap' }}>Feature</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 64, borderBottom: '1px solid #F2F1ED', borderLeft: '1px solid #F2F1ED' }}>
-                      <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#6B7280', whiteSpace: 'nowrap' }}>Audit</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 64, background: '#445A20', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
-                      <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#FFFFFF', whiteSpace: 'nowrap' }}>Authority Engine</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 64, borderBottom: '1px solid #F2F1ED', borderLeft: '1px solid #F2F1ED' }}>
-                      <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' as const, color: '#6B7280', whiteSpace: 'nowrap' }}>Flagship</span>
-                    </div>
-                  </div>
-
-                  {/* Data rows */}
-                  {COMPARE.map((row, i) => (
-                    <div
-                      key={i}
-                      className="group"
-                      style={{ display: 'grid', gridTemplateColumns: '42fr 19fr 20fr 19fr', borderTop: '1px solid #F2F1ED' }}
-                    >
-                      <div className="group-hover:bg-[#FAFAF8]" style={{ display: 'flex', alignItems: 'center', minHeight: 58, paddingLeft: 24, paddingRight: 16, gap: 14, transition: 'background 150ms' }}>
-                        <CompareIcon feature={row.feature} />
-                        <span style={{ fontSize: 14, fontWeight: 600, color: '#111827', lineHeight: 1.35 }}>{row.feature}</span>
-                      </div>
-                      <div className="group-hover:bg-[#FAFAF8]" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 58, borderLeft: '1px solid #F2F1ED', transition: 'background 150ms' }}>
-                        <CompareCell val={row.audit} />
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 58, background: '#FBFCF7', borderLeft: '1px solid #edf0e8', borderRight: '1px solid #edf0e8' }}>
-                        <CompareCell val={row.engine} />
-                      </div>
-                      <div className="group-hover:bg-[#FAFAF8]" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 58, borderLeft: '1px solid #F2F1ED', transition: 'background 150ms' }}>
-                        <CompareCell val={row.flagship} />
-                      </div>
-                    </div>
-                  ))}
-
+              <div className="pt-8 mt-8 border-t border-gray-100">
+                <div className="flex items-center justify-between mb-4 gap-3">
+                  <span className="font-mono text-[11px] font-bold tracking-[0.18em] uppercase text-gray-400">
+                    Add flagship items
+                  </span>
+                  <span className="text-xs font-medium text-gray-400 whitespace-nowrap">{addons.length} selected</span>
                 </div>
+                <div className="flex flex-wrap gap-2.5">
+                  {SERVICES[2].deliverables.map((item) => {
+                    const selected = addons.includes(item);
+                    return (
+                      <button
+                        key={item}
+                        onClick={() => toggleAddon(item)}
+                        className={`inline-flex items-center gap-2 pl-2.5 pr-4 py-2 rounded-full text-sm font-semibold border transition-all duration-200 ${
+                          selected
+                            ? 'bg-[#39471D] border-[#39471D] text-white'
+                            : 'bg-white border-gray-200 text-gray-700 hover:border-[#55672E]/40'
+                        }`}
+                      >
+                        <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[12px] leading-none flex-shrink-0 ${selected ? 'bg-white/20' : 'bg-[#EEF2E3] text-[#445A20]'}`}>
+                          {selected ? '✓' : '+'}
+                        </span>
+                        {item}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Live summary of the plan being built */}
+              <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl bg-[#FBFCF7] border border-[#edf0e8] px-6 py-5">
+                <div>
+                  <span className="block text-[11px] font-bold tracking-[0.18em] uppercase text-gray-400 mb-1">Your plan</span>
+                  <span className="text-base font-semibold text-gray-900">{planSummary}</span>
+                </div>
+                <a
+                  href={planMailto}
+                  className="px-5 py-2.5 bg-[#39471D] border border-[#39471D] rounded-full text-sm font-semibold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all whitespace-nowrap"
+                >
+                  Request this plan &#x2197;
+                </a>
               </div>
             </div>
           </div>
@@ -463,13 +496,15 @@ export default function ServicesPage() {
                 Start with a clear look at where you stand.
               </h2>
               <p className="text-[#CBD0AC] font-medium text-base sm:text-lg leading-relaxed max-w-[44ch] mb-8">
-                Book an AI visibility audit. Clear, fixed scope, and a roadmap you keep either way.
+                {addons.length > 0
+                  ? `Your plan: ${planSummary}. Send it over and we'll confirm scope.`
+                  : 'Book an AI visibility audit. Clear, fixed scope, and a roadmap you keep either way.'}
               </p>
               <a
-                href="mailto:hello@thallo.co?subject=AI Visibility Audit Request"
+                href={planMailto}
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#39471D] rounded-full text-sm font-semibold hover:bg-[#CBD0AC] transition-colors"
               >
-                Book your audit &#x2197;
+                {addons.length > 0 ? 'Send my plan' : 'Book your audit'} &#x2197;
               </a>
             </div>
           </div>
