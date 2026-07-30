@@ -61,17 +61,6 @@ const SERVICES = [
   },
 ];
 
-const COMPARE = [
-  { feature: 'AI visibility benchmark',      audit: true,  engine: true,       flagship: false },
-  { feature: 'Technical AI-readiness build', audit: false, engine: true,       flagship: false },
-  { feature: 'Original, researched content', audit: false, engine: 'Monthly',  flagship: 'Deep' },
-  { feature: 'Distribution & publishing',    audit: false, engine: true,       flagship: false },
-  { feature: 'Proprietary data studies',     audit: false, engine: false,      flagship: true },
-  { feature: 'Digital PR & podcasts',        audit: false, engine: false,      flagship: true },
-  { feature: 'Monthly outcome reporting',    audit: false, engine: true,       flagship: false },
-  { feature: 'Best for',                     audit: 'Getting clarity', engine: 'Compounding growth', flagship: 'Big moves' },
-];
-
 const FAQS = [
   { q: 'What if AI says something wrong about us?',              a: 'It happens, and there is no edit button. No AI company lets you log in and correct it. What you can do is make the accurate version of your story the strongest, most consistent signal across the places AI reads, so the correct answer becomes the one it repeats. Getting that right is a large part of our work, and it is why precision matters to us more than volume.' },
   { q: 'Can you prove it is working?',                           a: 'Yes, with honesty about what is measurable and what is not. We track how often you appear in AI answers for the questions your buyers ask, the sources citing you, and the pipeline your presence influences. What no one can promise is perfect click-by-click attribution; AI search is newer and messier than Google. We report the real signals, not a vanity dashboard, and we are straight about the limits.' },
@@ -91,63 +80,6 @@ function Check({ featured }: { featured: boolean }) {
       <path d="M20 6 9 17l-5-5" />
     </svg>
   );
-}
-
-const OLIVE_TEXT = new Set(['Monthly', 'Deep', 'Compounding growth']);
-
-/**
- * Yes is loud, no is quiet. Both marks used to be a pale disc with a pale glyph
- * inside, so the table read as one even texture and you had to stop and look to
- * find what was included. A filled olive disc against a bare dash separates
- * them at a glance — and absence should not draw the eye anyway.
- * The mark alone says nothing aloud, so each carries its word.
- */
-function CompareCell({ val }: { val: boolean | string }) {
-  if (val === true) return (
-    /* Disc and tick are one SVG, and that is the point. The disc used to be a
-       CSS border-radius with the tick as a separate SVG centred on top, and the
-       columns are percentage-width — so a disc lands on a fractional pixel
-       (717.92, 961.14, 1204.36) and the two shapes round their antialiasing
-       independently. At 26px that reads as a tick sitting slightly off centre,
-       differently in every column. Drawn together they cannot disagree. */
-    <span className="mx-auto block h-[26px] w-[26px]">
-      <svg viewBox="0 0 26 26" className="h-full w-full" aria-hidden="true">
-        <circle cx="13" cy="13" r="13" fill="#39471D" />
-        <polyline
-          points="8.7 13 11.4 15.7 17.3 10.3"
-          fill="none" stroke="#FFFFFF" strokeWidth="1.7"
-          strokeLinecap="round" strokeLinejoin="round"
-        />
-      </svg>
-      <span className="sr-only">Included</span>
-    </span>
-  );
-  if (val === false) return (
-    <span className="mx-auto flex h-[26px] w-[26px] items-center justify-center">
-      <span className="block h-[2px] w-[11px] rounded-full bg-gray-300" aria-hidden="true" />
-      <span className="sr-only">Not included</span>
-    </span>
-  );
-  return (
-    <span className={`text-[13px] font-bold ${OLIVE_TEXT.has(val as string) ? 'text-[#39471D]' : 'text-gray-900'}`}>
-      {val}
-    </span>
-  );
-}
-
-function CompareIcon({ feature }: { feature: string }) {
-  const p = { viewBox: '0 0 24 24', width: 20, height: 20, fill: 'none' as const, stroke: '#39471D', strokeWidth: 1.8, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
-  const map: Record<string, React.ReactNode> = {
-    'AI visibility benchmark':       <svg {...p}><line x1="18" y1="20" x2="18" y2="9"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="13"/><line x1="2" y1="20" x2="22" y2="20"/></svg>,
-    'Technical AI-readiness build':  <svg {...p}><rect x="7" y="7" width="10" height="10" rx="1"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/><rect x="2" y="2" width="20" height="20" rx="3"/></svg>,
-    'Original, researched content':  <svg {...p}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
-    'Distribution & publishing':     <svg {...p}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>,
-    'Proprietary data studies':      <svg {...p}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
-    'Digital PR & podcasts':         <svg {...p}><path d="M12 2a3 3 0 00-3 3v7a3 3 0 006 0V5a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>,
-    'Monthly outcome reporting':     <svg {...p}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>,
-    'Best for':                      <svg {...p}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
-  };
-  return <>{map[feature] ?? null}</>;
 }
 
 /**
@@ -175,6 +107,22 @@ function orderClasses(cardIdx: number, active: number): string {
 export default function ServicesPage() {
   const [activeService, setActiveService] = useState(1);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  // Plan builder: pick one base plan (Audit or Authority Engine), then layer
+  // on any Flagship items as optional add-ons. Flagship is never a base plan
+  // on its own — it only exists to be added to one of the other two.
+  const [basePlan, setBasePlan] = useState<0 | 1>(1);
+  const [addons, setAddons] = useState<string[]>([]);
+
+  function toggleAddon(item: string) {
+    setAddons(prev => prev.includes(item) ? prev.filter(a => a !== item) : [...prev, item]);
+  }
+
+  const basePlanData = SERVICES[basePlan];
+  const planSummary = addons.length > 0
+    ? `${basePlanData.title} + ${addons.length} add-on${addons.length > 1 ? 's' : ''}`
+    : basePlanData.title;
+  const builtPlan = [basePlanData.title, ...addons];
 
   const wrapperRefs = useRef<(HTMLDivElement | null)[]>([]);
   const savedRects = useRef<(DOMRect | null)[]>([]);
@@ -305,6 +253,11 @@ export default function ServicesPage() {
                             Most chosen
                           </span>
                         )}
+                        {i === 2 && (
+                          <span className="font-mono text-[11px] font-bold tracking-widest uppercase text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                            Optional add-on
+                          </span>
+                        )}
                       </div>
 
                       <h3 className={`text-2xl font-semibold mb-3 transition-colors duration-500 ${isFeatured ? 'text-white' : 'text-gray-900'}`}>
@@ -355,110 +308,128 @@ export default function ServicesPage() {
       {/* ── Process ───────────────────────────────────────────────────────── */}
       <EngagementSteps />
 
-      {/* ── Compare ───────────────────────────────────────────────────────── */}
+      {/* ── Compare / plan builder ───────────────────────────────────────── */}
       <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
-          {/* Barely any margin here: the 128px above the table that gives the
-              spinning mark its room already separates this from the panel, and
-              mb-14 on top of it left the heading stranded. */}
           <div className="max-w-2xl mb-1">
-            <Eyebrow className="mb-5">Compare</Eyebrow>
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans">
-              What is in each.
+            <Eyebrow className="mb-5">Build your plan</Eyebrow>
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans mb-5">
+              Choose a plan, add what you need.
             </h2>
+            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[58ch]">
+              The Audit and the Authority Engine are the two plans you start with. Flagship Projects are optional add-ons — pick any of them to layer onto your plan.
+            </p>
           </div>
 
-          {/* The mark sits above the recommended column, clear of it — the
-              padding here is what keeps it off the header this time, rather
-              than a badge overlapping the type. Centred on the Authority Engine
-              column (42 + 19 + 10 = 71%), and hidden below lg, where the table
-              scrolls inside its panel and 71% of the panel stops being 71% of
-              the table. */}
-          {/* 88px of mark inside 128px of padding. The clearance has to beat the
-              mark's rotated bounding box, not its width — a spinning square
-              sweeps out to about 1.41x itself at 45°, so 88 reaches 124 and
-              hangs 18px below where it looks like it ends. */}
           <div className="relative pt-32">
-            <SpinFlower className="absolute top-0 left-[71%] hidden h-[88px] w-[88px] -translate-x-1/2 lg:block" />
+            <SpinFlower className="absolute top-0 left-1/2 hidden h-[88px] w-[88px] -translate-x-1/2 lg:block" />
 
-            {/* A real table now, matched to the trajectory panel on /results/ —
-                same shell, same hairlines, same heading type. It was a grid of
-                divs, which read to a screen reader as a pile of unrelated text
-                rather than a comparison. */}
-            <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)]">
-              {/* A phone gets two clean screens rather than one and a sliver of
-                  the next. The table is exactly twice the panel wide below sm,
-                  so the feature column fills the first screenful on its own and
-                  the three plans divide the second — swipe across and you get
-                  the whole comparison, not a column and a half of it.
-
-                  Which also means the feature column must NOT be pinned here:
-                  at full width it would cover the plans it is meant to let you
-                  read. It pins from sm up, where the table is 720px and the
-                  overhang is small enough for that to help instead. */}
-              <div className="overflow-x-auto overflow-y-hidden">
-                {/* table-fixed below sm, or the split is not a split: with the
-                    default auto layout the "Authority Engine" header claims the
-                    width it wants and takes it out of the feature column, which
-                    then stops short of the panel edge and lets the next column
-                    peek in. Fixed makes the colgroup the last word. */}
-                <table className="w-full min-w-[200%] table-fixed sm:min-w-[720px] sm:table-auto border-collapse text-left">
-                  <caption className="sr-only">What each engagement includes</caption>
-                  <colgroup>
-                    <col className="w-1/2 sm:w-[42%]" />
-                    <col className="w-[16.6667%] sm:w-[19%]" />
-                    <col className="w-[16.6667%] sm:w-[20%]" />
-                    <col className="w-[16.6667%] sm:w-[19%]" />
-                  </colgroup>
-                  <thead>
-                    <tr>
-                      <th scope="col" className="sm:sticky sm:left-0 sm:z-10 bg-white border-b border-gray-100 px-5 sm:px-7 py-4 text-xs font-medium text-gray-400">
-                        Feature
-                      </th>
-                      <th scope="col" className="border-b border-gray-100 px-4 py-4 text-center text-xs font-medium text-gray-400">
-                        Audit
-                      </th>
-                      {/* A cap, not a bubble — 20px of radius on a 44px header
-                          read as a floating pill sitting on the table. */}
-                      <th scope="col" className="rounded-t-lg bg-[#39471D] px-4 py-4 text-center text-xs font-semibold text-white">
-                        Authority Engine
-                      </th>
-                      <th scope="col" className="border-b border-gray-100 px-4 py-4 text-center text-xs font-medium text-gray-400">
-                        Flagship
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {COMPARE.map((row) => (
-                      <tr key={row.feature} className="group border-b border-gray-50 last:border-0">
-                        {/* Pinned from sm up, so it needs an opaque background
-                            of its own — the cells sliding under it would show
-                            through. The icons come back on phones now that the
-                            column has the full width to itself. */}
-                        <th scope="row" className="sm:sticky sm:left-0 sm:z-10 bg-white px-5 sm:px-7 py-5 text-left transition-colors group-hover:bg-[#F7F8F3]">
-                          <span className="flex items-center gap-3 sm:gap-3.5">
-                            <span className="flex shrink-0"><CompareIcon feature={row.feature} /></span>
-                            <span className="text-sm font-semibold text-gray-900">{row.feature}</span>
+            <div className="grid overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] lg:grid-cols-[300px_1fr]">
+              {/* Left: base plan picker */}
+              <div className="flex flex-col gap-2 border-b border-gray-100 bg-[#FAFAF8] p-3 lg:border-b-0 lg:border-r">
+                {[0, 1].map((i) => {
+                  const svc = SERVICES[i];
+                  const active = basePlan === i;
+                  return (
+                    <button
+                      key={svc.idx}
+                      type="button"
+                      onClick={() => setBasePlan(i as 0 | 1)}
+                      aria-pressed={active}
+                      className={`w-full rounded-2xl p-5 text-left transition-all duration-300 ${
+                        active
+                          ? 'bg-[#39471D] text-white shadow-[0_10px_25px_-8px_rgba(57,71,29,0.5)]'
+                          : 'bg-transparent text-gray-700 hover:bg-white'
+                      }`}
+                    >
+                      <div className="mb-1.5 flex items-center justify-between gap-2">
+                        <span className={`font-mono text-[10px] font-bold tracking-[0.16em] uppercase ${active ? 'text-white/60' : 'text-gray-400'}`}>
+                          {svc.idx} / Base plan
+                        </span>
+                        {i === 1 && (
+                          <span className={`whitespace-nowrap rounded-full px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest ${active ? 'bg-[#CBD0AC] text-[#39471D]' : 'bg-[#EEF2E3] text-[#39471D]'}`}>
+                            Most chosen
                           </span>
-                        </th>
-                        <td className="px-4 py-5 text-center transition-colors group-hover:bg-[#F7F8F3]">
-                          <CompareCell val={row.audit} />
-                        </td>
-                        {/* White, like every other column. The tint here was
-                            #F7F8F3 — a near-white laid over white, which does
-                            not read as a highlight, it reads as a smudge. The
-                            olive rules down both sides carry the column
-                            instead, cleanly. */}
-                        <td className="border-x border-[#39471D]/20 px-4 py-5 text-center transition-colors group-hover:bg-[#F7F8F3]">
-                          <CompareCell val={row.engine} />
-                        </td>
-                        <td className="px-4 py-5 text-center transition-colors group-hover:bg-[#F7F8F3]">
-                          <CompareCell val={row.flagship} />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                        )}
+                      </div>
+                      <div className="text-lg font-semibold">{svc.title}</div>
+                      <div className={`mt-1 text-xs font-medium ${active ? 'text-[#CBD0AC]' : 'text-gray-400'}`}>{svc.price}</div>
+                    </button>
+                  );
+                })}
+
+                <div className="mt-1 rounded-2xl border border-dashed border-gray-200 p-5">
+                  <span className="font-mono text-[10px] font-bold tracking-[0.16em] uppercase text-gray-400">
+                    03 / Optional add-on
+                  </span>
+                  <div className="mt-1.5 text-base font-semibold text-gray-900">Flagship Projects</div>
+                  <p className="mt-1 text-xs font-medium leading-relaxed text-gray-400">Not a plan on its own — pick any items to add, on the right →</p>
+                </div>
+              </div>
+
+              {/* Right: selected plan detail + add-on picker */}
+              <div className="bg-white p-8 lg:p-10">
+                <span className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#39471D]">
+                  {basePlanData.title} includes
+                </span>
+                <ul className="mt-4 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+                  {basePlanData.deliverables.map((item, j) => (
+                    <li key={j} className="flex items-start gap-2.5 text-sm font-medium text-gray-700">
+                      <Check featured={false} />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-8 border-t border-gray-100 pt-8">
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <span className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">
+                      Add flagship items
+                    </span>
+                    <span className="whitespace-nowrap text-xs font-medium text-gray-400">{addons.length} selected</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2.5">
+                    {SERVICES[2].deliverables.map((item) => {
+                      const selected = addons.includes(item);
+                      return (
+                        <button
+                          key={item}
+                          type="button"
+                          onClick={() => toggleAddon(item)}
+                          aria-pressed={selected}
+                          className={`inline-flex items-center gap-2 rounded-full border py-2 pl-2.5 pr-4 text-sm font-semibold transition-all duration-200 ${
+                            selected
+                              ? 'border-[#39471D] bg-[#39471D] text-white'
+                              : 'border-gray-200 bg-white text-gray-700 hover:border-[#55672E]/40'
+                          }`}
+                        >
+                          <span className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-[12px] leading-none ${selected ? 'bg-white/20' : 'bg-[#EEF2E3] text-[#39471D]'}`}>
+                            {selected ? '✓' : '+'}
+                          </span>
+                          {item}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Live summary of the plan being built — feeds the enquiry
+                    form below, so the plan travels with the visitor rather
+                    than resetting at the CTA. */}
+                <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-[#edf0e8] bg-[#FBFCF7] px-6 py-5">
+                  <div>
+                    <span className="mb-1 block text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">Your plan</span>
+                    <span className="text-base font-semibold text-gray-900">{planSummary}</span>
+                  </div>
+                  <Magnetic>
+                    <a
+                      href="#enquiry"
+                      className="inline-flex items-center whitespace-nowrap rounded-full border border-[#39471D] bg-[#39471D] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:border-[#55672E] hover:bg-[#55672E]"
+                    >
+                      Request this plan <ArrowUpRight className="ml-0.5" />
+                    </a>
+                  </Magnetic>
+                </div>
               </div>
             </div>
           </div>
@@ -486,14 +457,18 @@ export default function ServicesPage() {
                   Start with a clear look at where you stand.
                 </h2>
                 <p className="text-[#CBD0AC] font-medium text-base sm:text-lg leading-relaxed max-w-[44ch]">
-                  Book an AI visibility audit. Clear, fixed scope, and a roadmap you keep either way.
+                  {addons.length > 0
+                    ? `Your plan: ${planSummary}. Send it over and we'll confirm scope.`
+                    : "Book an AI visibility audit. Clear, fixed scope, and a roadmap you keep either way."}
                 </p>
               </div>
 
-              {/* The plan you were last reading arrives pre-ticked. */}
+              {/* Whatever was built above — base plan plus any add-ons —
+                  arrives pre-ticked, so the selection travels into the
+                  enquiry rather than resetting here. */}
               <PlanEnquiryForm
-                plans={SERVICES.map((s) => s.title)}
-                activePlan={SERVICES[activeService]?.title}
+                plans={[SERVICES[0].title, SERVICES[1].title, ...SERVICES[2].deliverables]}
+                activePlans={builtPlan}
               />
             </div>
           </div>
