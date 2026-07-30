@@ -283,10 +283,12 @@ export default function EngagementSteps() {
 
   return (
     <section className="bg-white py-16 2xl:py-24 border-b border-gray-100">
-      <div className="max-w-[1440px] mx-auto px-6">
-        {/* Horizontal padding drops to match what the columns now carry, so the
-            outer copy still starts 56px in from the card edge. */}
-        <div className="rounded-[32px] border border-gray-100 bg-white p-7 sm:p-10 lg:px-7 lg:py-14">
+      {/* No card around the steps, and a wider measure than the 1440 marketing
+          grid: the four columns were losing most of their width to a panel
+          inset plus dead margin, which is the one place on the page that can
+          afford to run nearly edge to edge. */}
+      <div className="max-w-[1800px] mx-auto px-6 sm:px-10">
+        <div>
 
           <div className="max-w-2xl mx-auto text-center mb-12 lg:mb-16">
             <Eyebrow center className="mb-5">How an engagement runs</Eyebrow>
@@ -328,16 +330,16 @@ export default function EngagementSteps() {
                   )}
 
                   <div className="relative mb-6 flex">
-                    <span className="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-semibold bg-[#39471D] border border-[#39471D] text-white transition-colors duration-300 group-hover:bg-[#55672E] group-hover:border-[#55672E]">
+                    <span className="inline-flex items-center rounded-full px-3.5 py-1 text-[12px] font-semibold bg-[#39471D] border border-[#39471D] text-white transition-colors duration-300 group-hover:bg-[#55672E] group-hover:border-[#55672E]">
                       Step {i + 1}
                     </span>
                   </div>
 
-                  <p className="font-mono text-[10px] font-bold tracking-[0.16em] uppercase text-[#55672E] mb-2">
+                  <p className="font-mono text-[11px] font-bold tracking-[0.16em] uppercase text-[#55672E] mb-2">
                     {s.period}
                   </p>
-                  <h3 className="text-base font-bold text-gray-900 mb-2">{s.title}</h3>
-                  <p className="text-[15px] text-gray-500 leading-relaxed">{s.desc}</p>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2.5">{s.title}</h3>
+                  <p className="text-base text-gray-500 leading-relaxed">{s.desc}</p>
 
                   {/* mt-auto pins every laptop to the bottom of its column, so
                       the four line up however long the copy above them runs.

@@ -465,33 +465,10 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* ── Enquiry ───────────────────────────────────────────────────────── */}
-      <section className="bg-[#F4FAF5] py-16 2xl:py-24 border-b border-gray-100" id="enquiry">
-        <div className="max-w-[1200px] mx-auto px-6">
-          <div className="max-w-2xl mb-10">
-            <Eyebrow className="mb-4">Tell us what you need</Eyebrow>
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-4 font-sans leading-[1.05]">
-              Start the conversation here.
-            </h2>
-            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch]">
-              Tick what you are weighing up and we will come back with scope and
-              timing — no obligation either way.
-            </p>
-          </div>
-
-          {/* The plan you were last reading arrives pre-ticked. */}
-          <PlanEnquiryForm
-            plans={SERVICES.map((s) => s.title)}
-            extras={SERVICES[2].deliverables}
-            activePlan={SERVICES[activeService]?.title}
-          />
-        </div>
-      </section>
-
-      {/* ── CTA ───────────────────────────────────────────────────────────── */}
-      <section className="bg-white py-28 border-b border-gray-100">
+      {/* ── CTA, with the enquiry form inside it ──────────────────────────── */}
+      <section className="bg-white py-20 2xl:py-24 border-b border-gray-100" id="enquiry">
         <div className="max-w-[1440px] mx-auto px-6 w-full">
-          <div className="relative overflow-hidden rounded-[28px] px-12 py-20 sm:px-20 sm:py-28">
+          <div className="relative overflow-hidden rounded-[28px] px-8 py-12 sm:px-14 sm:py-16">
             <img loading="lazy" decoding="async"
               src="/thallo-digital/cta-bg-services.webp"
               alt=""
@@ -499,20 +476,25 @@ export default function ServicesPage() {
               className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
               style={{ zIndex: 0 }}
             />
-            <div className="relative z-[2] max-w-xl">
-              <Eyebrow tone="light" className="mb-6">Ready?</Eyebrow>
-              <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-8 font-sans">
-                Start with a clear look at where you stand.
-              </h2>
-              <p className="text-[#CBD0AC] font-medium text-base sm:text-lg leading-relaxed max-w-[44ch] mb-8">
-                Book an AI visibility audit. Clear, fixed scope, and a roadmap you keep either way.
-              </p>
-              <a
-                href="/thallo-digital/contact/"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#39471D] rounded-full text-sm font-semibold hover:bg-[#CBD0AC] transition-colors"
-              >
-                Book your audit <ArrowUpRight className="ml-0.5" />
-              </a>
+            {/* The form sits in the empty right half of the photograph rather
+                than in a section of its own: the ask and the means to answer it
+                belong in the same object. */}
+            <div className="relative z-[2] grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-16">
+              <div>
+                <Eyebrow tone="light" className="mb-5">Ready?</Eyebrow>
+                <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-white leading-[1.05] mb-6 font-sans">
+                  Start with a clear look at where you stand.
+                </h2>
+                <p className="text-[#CBD0AC] font-medium text-base sm:text-lg leading-relaxed max-w-[44ch]">
+                  Book an AI visibility audit. Clear, fixed scope, and a roadmap you keep either way.
+                </p>
+              </div>
+
+              {/* The plan you were last reading arrives pre-ticked. */}
+              <PlanEnquiryForm
+                plans={SERVICES.map((s) => s.title)}
+                activePlan={SERVICES[activeService]?.title}
+              />
             </div>
           </div>
         </div>

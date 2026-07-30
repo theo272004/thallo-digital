@@ -36,7 +36,7 @@ export default function Testimonials() {
       <div className="max-w-[1440px] mx-auto px-6">
 
         <div className="flex flex-col items-center text-center mb-12">
-          <Eyebrow center className="mb-5 justify-center">Resources</Eyebrow>
+          <Eyebrow center className="mb-5 justify-center">Blog</Eyebrow>
           <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans max-w-2xl">
             Notes on getting found,<br />and trusted.
           </h2>

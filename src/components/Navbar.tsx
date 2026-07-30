@@ -13,9 +13,8 @@ import { Magnetic } from '@/components/motion';
 const LINKS = [
   { label: 'Our Plans', href: '/thallo-digital/services/', page: '/services' },
   { label: 'Industries', href: '/thallo-digital/industries/', page: '/industries' },
-  { label: 'Our Approach', href: '/thallo-digital/#approach' },
   { label: 'Case Studies', href: '/thallo-digital/results/', page: '/results' },
-  { label: 'Resources', href: '/thallo-digital/#blog' },
+  { label: 'Blog', href: '/thallo-digital/#blog' },
 ];
 
 export default function Navbar() {
