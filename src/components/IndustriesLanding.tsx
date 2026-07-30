@@ -203,8 +203,12 @@ export default function IndustriesPage() {
                       <p className="text-sm text-gray-500 font-medium leading-snug mt-2 max-w-[28ch]">{ind.meaning}</p>
                       <p className="font-mono text-[10px] font-bold tracking-[0.12em] uppercase text-gray-400 mt-1.5">{ind.src}</p>
                     </div>
+                    {/* The industry name is the thing you are meant to leave
+                        with, and in near-black under a 3rem figure it was the
+                        quietest line on the card. Olive on the light cards,
+                        white on the olive ones — the same job, inverted. */}
                     <div className="mt-auto pt-5 border-t border-gray-200/70">
-                      <h3 className="text-base font-bold text-gray-900 mb-1">{ind.name}</h3>
+                      <h3 className="text-base font-bold text-[#39471D] mb-1">{ind.name}</h3>
                       <p className="text-sm text-gray-500 font-medium leading-relaxed">{ind.line}</p>
                     </div>
                   </>
