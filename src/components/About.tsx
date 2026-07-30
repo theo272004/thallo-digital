@@ -2,6 +2,7 @@ import React from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
 import IndustryTicker from '@/components/ui/IndustryTicker';
+import SpinFlower from '@/components/ui/SpinFlower';
 
 export default function About() {
   return (
@@ -15,6 +16,22 @@ export default function About() {
       {/* Text — normal flow on small screens, absolute-centered on xl+ */}
       <div className="xl:absolute xl:inset-0 flex items-center justify-center px-6" style={{ zIndex: 10 }}>
         <div className="max-w-3xl text-center relative">
+          {/* Mobile: in normal flow above the label */}
+          <div className="mb-6 flex justify-center xl:hidden">
+            <SpinFlower alt="Thallo" className="block w-16 h-16 opacity-80" />
+          </div>
+
+          {/* Desktop: out of flow above the text block, for the same reason the
+              ticker sits out of flow below it — this block is absolutely centred
+              at xl+, so anything that adds height here drags the laptop and
+              phone photographs along with it. */}
+          <div
+            className="hidden xl:block absolute left-1/2 -translate-x-1/2"
+            style={{ bottom: '100%', marginBottom: '24px' }}
+          >
+            <SpinFlower alt="Thallo" className="block w-16 h-16 opacity-80" />
+          </div>
+
           <Eyebrow center className="mb-5 justify-center">About Thallo</Eyebrow>
           <SplitReveal
             as="h2"

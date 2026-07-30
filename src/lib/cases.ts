@@ -40,9 +40,11 @@ export const CASES: CaseStudy[] = [
   },
 
   /* ── Upcoming ──────────────────────────────────────────────────────────────
-     No slug of these resolves to a page, and no figure is invented. The copy
-     describes the publishing rule rather than a result, so nothing here can be
-     mistaken for a claim about work already done. ─────────────────────────── */
+     Two, so the published case and the two in preparation fill one row of
+     three rather than spilling a lone card onto a second row. No slug here
+     resolves to a page and no figure is invented: the copy describes the
+     publishing rule rather than a result, so nothing can be mistaken for a
+     claim about work already done. ──────────────────────────────────────── */
   {
     slug: 'fintech-authority',
     industry: 'Fintech',
@@ -61,16 +63,6 @@ export const CASES: CaseStudy[] = [
     timeframe: 'In preparation',
     blurb:
       'A clinical category where a claim has to survive scrutiny. We will publish the detail when the write-up has been through the same review the content was.',
-    status: 'placeholder',
-  },
-  {
-    slug: 'professional-services-authority',
-    industry: 'Professional services',
-    headline: 'Case study in preparation',
-    metric: 'Figures not yet published',
-    timeframe: 'In preparation',
-    blurb:
-      'Reputation-led buying, long cycles, and referrals that need to survive a search. The write-up follows once the period it covers is complete.',
     status: 'placeholder',
   },
 ];
