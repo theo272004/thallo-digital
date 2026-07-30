@@ -21,22 +21,23 @@ type Status = 'idle' | 'sending' | 'sent' | 'mail' | 'error';
 
 export default function PlanEnquiryForm({
   plans,
-  activePlan,
+  activePlans,
 }: {
   plans: string[];
-  /* The plan the visitor is currently reading about, so the form opens with
-     their place in the page already ticked rather than empty. */
-  activePlan?: string;
+  /* Whatever the visitor has already put together elsewhere on the page (a
+     base plan, plus any add-ons ticked in the builder), so the form opens
+     with their selection already checked rather than empty. */
+  activePlans?: string[];
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const [status, setStatus] = useState<Status>('idle');
 
   /* null means the visitor has not touched the chips, so the selection simply
-     mirrors the plan tab they were reading. The moment they pick one we hold
-     their choice — derived rather than synced, so there is no effect racing
-     the tabs above and overwriting them. */
+     mirrors the plan/add-ons built above. The moment they pick one here we
+     hold their choice — derived rather than synced, so there is no effect
+     racing the builder above and overwriting them. */
   const [planChoice, setPlanChoice] = useState<string[] | null>(null);
-  const selectedPlans = planChoice ?? (activePlan ? [activePlan] : []);
+  const selectedPlans = planChoice ?? (activePlans ?? []);
 
   const togglePlan = (value: string) =>
     setPlanChoice(
