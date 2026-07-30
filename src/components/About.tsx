@@ -8,7 +8,7 @@ export default function About() {
     /* minHeight: 45vw keeps section height fixed regardless of photo size
        (matches what the section was when photo was 90% wide at 2:1 ratio) */
     <section
-      className="relative bg-white border-b border-gray-100 py-24 xl:py-0 xl:min-h-[45vw]"
+      className="relative bg-[#F7F8F9] border-b border-gray-100 py-24 xl:py-0 xl:min-h-[45vw]"
       id="about"
     >
 

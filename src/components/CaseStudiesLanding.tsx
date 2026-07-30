@@ -127,7 +127,7 @@ export default function CaseStudiesLanding() {
       </section>
 
       {/* ── Introduction ─────────────────────────────────────────────────── */}
-      <section className="bg-[#F3F4F6] py-16 2xl:py-24 border-b border-gray-100">
+      <section className="bg-[#F7F8F9] py-16 2xl:py-24 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] lg:gap-16">
             <div>

@@ -23,8 +23,11 @@ export default function Home() {
       <Navbar />
       <main className="flex-grow">
         <Hero />
-        <TheProblem />
+        {/* Who Thallo is comes straight off the hero; the shift in how buyers
+            search follows it. About carries the grey band so the alternation
+            still starts on a tint here. */}
         <About />
+        <TheProblem />
         <HowItWorks />
         <Industries />
         <ResultsDashboard />

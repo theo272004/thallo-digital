@@ -127,7 +127,7 @@ export default function HowItWorks() {
 
   return (
     <section
-      className="bg-[#F3F4F6] border-b border-gray-100 pt-[5.5rem] lg:pt-0 pb-[5.5rem]"
+      className="bg-[#F7F8F9] border-b border-gray-100 pt-[5.5rem] lg:pt-0 pb-[5.5rem]"
       id="approach"
       ref={sectionRef}
     >

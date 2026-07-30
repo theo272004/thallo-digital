@@ -147,7 +147,7 @@ export default function ResultsLanding() {
       </section>
 
       {/* ── Headline figures, on the photo panel ─────────────────────────── */}
-      <section className="bg-[#F3F4F6] py-16 2xl:py-20 border-b border-gray-100">
+      <section className="bg-[#F7F8F9] py-16 2xl:py-20 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
           <div
             className="relative overflow-hidden rounded-[28px] px-10 py-12 sm:px-16 sm:py-14"
@@ -321,7 +321,7 @@ export default function ResultsLanding() {
       </section>
 
       {/* ── The compounding effect ───────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#F3F4F6] py-16 2xl:py-20 border-b border-gray-100">
+      <section className="relative overflow-hidden bg-[#F7F8F9] py-16 2xl:py-20 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="max-w-2xl mb-10">
             <Eyebrow className="mb-4">Why it worked</Eyebrow>

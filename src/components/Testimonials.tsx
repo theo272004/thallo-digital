@@ -32,7 +32,7 @@ const ARTICLES = [
 export default function Testimonials() {
   return (
     /* id="blog" is the target the navbar and footer have always pointed at. */
-    <section className="bg-[#F3F4F6] py-20 2xl:py-24 border-b border-gray-100" id="blog">
+    <section className="bg-[#F7F8F9] py-20 2xl:py-24 border-b border-gray-100" id="blog">
       <div className="max-w-[1440px] mx-auto px-6">
 
         <div className="flex flex-col items-center text-center mb-12">

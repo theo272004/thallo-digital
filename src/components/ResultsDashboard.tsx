@@ -54,7 +54,7 @@ export default function ResultsDashboard() {
 
   return (
     <section
-      className="bg-[#F3F4F6] py-20 2xl:py-24 border-b border-gray-100"
+      className="bg-[#F7F8F9] py-20 2xl:py-24 border-b border-gray-100"
       id="results"
       ref={containerRef}
     >

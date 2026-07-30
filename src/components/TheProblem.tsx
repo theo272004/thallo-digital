@@ -48,7 +48,7 @@ export default function TheProblem() {
   }, []);
 
   return (
-    <section className="bg-[#F3F4F6] py-20 2xl:py-24 border-b border-gray-100" id="shift">
+    <section className="bg-white py-20 2xl:py-24 border-b border-gray-100" id="shift">
       <div className="max-w-[1440px] mx-auto px-6">
 
         {/* ── Feature card — panoramic, full-width, dark image-backed ── */}
