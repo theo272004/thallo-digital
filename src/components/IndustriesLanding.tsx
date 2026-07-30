@@ -208,7 +208,10 @@ export default function IndustriesPage() {
                         quietest line on the card. Olive on the light cards,
                         white on the olive ones — the same job, inverted. */}
                     <div className="mt-auto pt-5 border-t border-gray-200/70">
-                      <h3 className="text-base font-bold text-[#39471D] mb-1">{ind.name}</h3>
+                      {/* 20px against the 14px line under it. At 16px bold it
+                          was only two points clear of its own description, so
+                          the eye finished on the figure above and stopped. */}
+                      <h3 className="text-xl font-bold tracking-tight leading-snug text-[#39471D] mb-1.5">{ind.name}</h3>
                       <p className="text-sm text-gray-500 font-medium leading-relaxed">{ind.line}</p>
                     </div>
                   </>
@@ -218,7 +221,7 @@ export default function IndustriesPage() {
                       {ind.phrase}
                     </p>
                     <div className="pt-5 border-t border-white/15">
-                      <h3 className="text-base font-bold text-white">{ind.name}</h3>
+                      <h3 className="text-xl font-bold tracking-tight leading-snug text-white">{ind.name}</h3>
                     </div>
                   </>
                 )}
