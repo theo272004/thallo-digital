@@ -304,15 +304,21 @@ export default function ResultsLanding() {
               lift; z-10 keeps them on top whatever the paint order. */}
           <div className="relative z-10 -mt-4 flex flex-wrap gap-3 md:justify-end">
             {CALLOUTS.map((c) => (
+              /* Same bubble as the floating card on the home dashboard, down to
+                 the sans figure and the tracked-out grey label — these used to
+                 be a serif figure over near-black at a heavier shadow, which
+                 read as a different object doing the same job. */
               <div
                 key={c.lbl}
                 data-tile
-                className="min-w-[150px] flex-1 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-[0_14px_34px_-12px_rgba(20,20,18,0.22)] md:flex-none"
+                className="flex min-w-[150px] flex-1 flex-col gap-1 rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] md:flex-none"
               >
-                <div className="whitespace-nowrap font-serif text-2xl font-bold leading-none text-[#39471D] tabular-nums">
+                <span className="whitespace-nowrap text-[22px] font-bold leading-none text-[#39471D] tabular-nums">
                   {c.fig}{c.suffix}
-                </div>
-                <p className="mt-1.5 text-[11px] font-bold text-gray-900">{c.lbl}</p>
+                </span>
+                <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-gray-400">
+                  {c.lbl}
+                </span>
               </div>
             ))}
           </div>
