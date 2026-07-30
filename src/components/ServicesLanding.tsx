@@ -311,7 +311,7 @@ export default function ServicesPage() {
       {/* ── Compare / plan builder ───────────────────────────────────────── */}
       <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
-          <div className="max-w-2xl mb-1">
+          <div className="max-w-2xl mb-12">
             <Eyebrow className="mb-5">Build your plan</Eyebrow>
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans mb-5">
               Choose a plan, add what you need.
@@ -321,13 +321,13 @@ export default function ServicesPage() {
             </p>
           </div>
 
-          {/* The pt-32 here existed only to clear a flower floating above the
-              panel. The flower now marks the plan it is about, so the space
-              goes back. */}
+          {/* No overflow-hidden on the panel: the flower hangs off its left
+              edge, and clipping is what a rounded corner needs from the
+              columns themselves, not from the whole grid. */}
           <div className="relative">
-            <div className="grid overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] lg:grid-cols-[300px_1fr]">
+            <div className="grid rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] lg:grid-cols-[300px_1fr]">
               {/* Left: base plan picker */}
-              <div className="flex flex-col gap-2 border-b border-gray-100 bg-[#FAFAF8] p-3 lg:border-b-0 lg:border-r">
+              <div className="flex flex-col gap-2 rounded-t-3xl border-b border-gray-100 bg-[#FAFAF8] p-3 lg:rounded-l-3xl lg:rounded-tr-none lg:border-b-0 lg:border-r">
                 {[0, 1].map((i) => {
                   const svc = SERVICES[i];
                   const active = basePlan === i;
@@ -357,25 +357,23 @@ export default function ServicesPage() {
                       <div className={`mt-1 text-xs font-medium ${active ? 'text-[#CBD0AC]' : 'text-gray-400'}`}>{svc.price}</div>
                     </button>
 
-                    {/* Sits on the seam beside the Authority Engine, marking the
-                        plan most people choose. pointer-events-none because half
-                        of it lies over the button — a decorative mark must never
-                        eat a click on the control it is decorating. It keeps
-                        spinning; it just cannot be dragged here. */}
+                    {/* Hangs off the panel's outer left edge, level with the
+                        Authority Engine — outside the table rather than on the
+                        seam between its columns. pointer-events-none because it
+                        overlaps the button, and a decorative mark must never eat
+                        a click on the control it decorates. It still spins; it
+                        just cannot be dragged from here. */}
                     {i === 1 && (
-                      <SpinFlower className="pointer-events-none absolute top-1/2 right-0 hidden h-[68px] w-[68px] -translate-y-1/2 translate-x-1/2 lg:block" />
+                      <SpinFlower className="pointer-events-none absolute top-1/2 left-0 z-10 hidden h-[68px] w-[68px] -translate-x-1/2 -translate-y-1/2 lg:block" />
                     )}
                     </div>
                   );
                 })}
 
-                <div className="mt-1 rounded-2xl border border-dashed border-gray-200 p-5">
-                  <span className="font-mono text-[11px] font-bold tracking-[0.16em] uppercase text-gray-400">
-                    03 / Optional add-on
-                  </span>
-                  <div className="mt-1.5 text-base font-semibold text-gray-900">Flagship Projects</div>
-                  <p className="mt-1 text-xs font-medium leading-relaxed text-gray-400">Not a plan on its own — pick any items to add, on the right →</p>
-                </div>
+                {/* No Flagship card here. This column is the base plans, and
+                    the Flagship items are the add-ons picked on the right — a
+                    third card announcing them only restated the paragraph
+                    above and made the column look like three choices. */}
               </div>
 
               {/* Right: selected plan detail + add-on picker */}
@@ -427,7 +425,10 @@ export default function ServicesPage() {
                 {/* Live summary of the plan being built — feeds the enquiry
                     form below, so the plan travels with the visitor rather
                     than resetting at the CTA. */}
-                <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-[#edf0e8] bg-[#FBFCF7] px-6 py-5">
+                {/* Grey, not the green tint it was: the tinted bands on this
+                    site are #F7F8F9 now, and a lone greenish panel in here
+                    read as a colour we no longer use. */}
+                <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-[#F7F8F9] px-6 py-5">
                   <div>
                     <span className="mb-1 block text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">Your plan</span>
                     <span className="text-base font-semibold text-gray-900">{planSummary}</span>
@@ -463,7 +464,10 @@ export default function ServicesPage() {
             ? `Your plan: ${planSummary}. Send it over and we'll confirm scope.`
             : 'Book an AI visibility audit. Clear, fixed scope, and a roadmap you keep either way.'
         }
-        plans={[SERVICES[0].title, SERVICES[1].title, ...SERVICES[2].deliverables]}
+        /* The three plans, same as every other enquiry form on the site. The
+           builder's add-ons still travel via activePlans — they just do not
+           each get a chip of their own here, which turned three options into
+           eight. */
         activePlans={builtPlan}
       />
 
