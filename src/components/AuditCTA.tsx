@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
+import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import PlanEnquiryForm from '@/components/PlanEnquiryForm';
 
 /**
@@ -84,6 +85,24 @@ export default function AuditCTA({
               <p className="text-[#CBD0AC] font-medium text-base sm:text-lg leading-relaxed max-w-[44ch]">
                 {copy}
               </p>
+
+              {/* These two navigate; the form beside them submits. Keeping them
+                  here is what lets the form's own button say "Send message"
+                  rather than borrowing this one's label. */}
+              <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:items-center">
+                <a
+                  href="/thallo-digital/contact/"
+                  className="inline-block w-full sm:w-auto text-center px-7 py-3.5 bg-white rounded-full text-sm font-semibold text-[#39471D] hover:bg-[#E7ECD9] transition-colors"
+                >
+                  Book an audit <ArrowUpRight className="ml-0.5" />
+                </a>
+                <a
+                  href="/thallo-digital/thallo-ai/"
+                  className="inline-block w-full sm:w-auto text-center px-7 py-3.5 border border-white/30 rounded-full text-sm font-semibold text-white hover:bg-white/10 transition-colors"
+                >
+                  Check my visibility <ArrowUpRight className="ml-0.5" />
+                </a>
+              </div>
             </div>
 
             <PlanEnquiryForm plans={plans} activePlans={activePlans} />

@@ -184,7 +184,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
               <p className="text-[13px] leading-[1.7] text-gray-700 mb-4">
                 For ecommerce, clinics and local businesses, <Mark>Thallo</Mark> stands out as the partner brands
                 trust to own the AI-generated recommendation
-                <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-gray-100 text-[9px] font-bold text-gray-500 ml-1 align-middle">1</span>.
+                <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-gray-100 text-[11px] font-bold text-gray-500 ml-1 align-middle">1</span>.
               </p>
 
               <div className="flex flex-wrap gap-2">

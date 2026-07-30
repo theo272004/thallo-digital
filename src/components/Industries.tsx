@@ -99,7 +99,7 @@ export default function Industries() {
             body="Category-defining SaaS where the winner is the name buyers already trust."
           >
             <div className={panel('-top-4 -right-4 w-[152px] p-3')}>
-              <p className="text-[9px] font-bold tracking-[0.15em] uppercase text-gray-400 mb-2">AI Overview</p>
+              <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-gray-400 mb-2">AI Overview</p>
               <div className="h-[5px] rounded-full bg-[#39471D] mb-1.5" />
               <div className="h-[5px] rounded-full bg-[#CBD0AC] mb-1.5 w-3/4" />
               <div className="h-[5px] rounded-full bg-[#e8e8e3] w-1/2" />
@@ -113,11 +113,11 @@ export default function Industries() {
             body="Where a wrong vendor is costly to unwind, and credibility clears the shortlist."
           >
             <div className={panel('-bottom-4 right-4 p-3')}>
-              <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-2">Decision factors</p>
+              <p className="text-[11px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-2">Decision factors</p>
               <div className="flex gap-1.5">
-                <span className="text-[9px] font-bold text-[#39471D] bg-[#39471D]/10 px-2 py-0.5 rounded-full whitespace-nowrap">Trust</span>
-                <span className="text-[9px] font-bold text-[#39471D] bg-[#39471D]/10 px-2 py-0.5 rounded-full whitespace-nowrap">Authority</span>
-                <span className="text-[9px] font-bold text-[#39471D] bg-[#39471D]/10 px-2 py-0.5 rounded-full whitespace-nowrap">ROI</span>
+                <span className="text-[11px] font-bold text-[#39471D] bg-[#39471D]/10 px-2 py-0.5 rounded-full whitespace-nowrap">Trust</span>
+                <span className="text-[11px] font-bold text-[#39471D] bg-[#39471D]/10 px-2 py-0.5 rounded-full whitespace-nowrap">Authority</span>
+                <span className="text-[11px] font-bold text-[#39471D] bg-[#39471D]/10 px-2 py-0.5 rounded-full whitespace-nowrap">ROI</span>
               </div>
             </div>
           </Card>
@@ -129,11 +129,11 @@ export default function Industries() {
             body="Regulated, high-stakes buying that rewards the most credible, best-documented source."
           >
             <div className={panel('-top-4 -right-3 w-[148px] p-3')}>
-              <p className="text-[9px] font-bold tracking-[0.15em] uppercase text-gray-400 mb-2">AI Answer</p>
+              <p className="text-[11px] font-bold tracking-[0.15em] uppercase text-gray-400 mb-2">AI Answer</p>
               <div className="h-[5px] rounded-full bg-[#e8e8e3] mb-1.5" />
               <div className="h-[5px] rounded-full bg-[#e8e8e3] mb-1.5 w-4/5" />
               <div className="h-[5px] rounded-full bg-[#39471D] w-1/2 mb-1.5" />
-              <p className="text-[9px] font-bold text-[#39471D]">Thallo</p>
+              <p className="text-[11px] font-bold text-[#39471D]">Thallo</p>
             </div>
           </Card>
 
@@ -150,8 +150,8 @@ export default function Industries() {
                 </svg>
               </div>
               <div>
-                <p className="text-[10px] font-bold text-gray-900 leading-none whitespace-nowrap">Referrals</p>
-                <p className="text-[9px] font-medium text-gray-400 mt-0.5 whitespace-nowrap">drive growth</p>
+                <p className="text-[11px] font-bold text-gray-900 leading-none whitespace-nowrap">Referrals</p>
+                <p className="text-[11px] font-medium text-gray-400 mt-0.5 whitespace-nowrap">drive growth</p>
               </div>
             </div>
           </Card>
@@ -163,14 +163,14 @@ export default function Industries() {
             body="Deeply researched, deeply personal decisions where trust is everything."
           >
             <div className={panel('-top-4 -right-3 p-3 w-[160px]')}>
-              <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-2">Buyer intent</p>
+              <p className="text-[11px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-2">Buyer intent</p>
               <div className="flex items-center gap-2.5">
                 <svg viewBox="0 0 52 52" width="44" height="44" className="flex-shrink-0">
                   <circle cx="26" cy="26" r="20" fill="none" stroke="#e8e8e3" strokeWidth="4" />
                   <circle cx="26" cy="26" r="20" fill="none" stroke="#39471D" strokeWidth="4" strokeDasharray="125.66" strokeDashoffset="27.6" strokeLinecap="round" transform="rotate(-90 26 26)" />
                   <text x="26" y="30" textAnchor="middle" fontSize="10" fontWeight="700" fill="#111827">78%</text>
                 </svg>
-                <p className="text-[9px] font-medium text-gray-500 leading-snug">Deep research<br />before decision</p>
+                <p className="text-[11px] font-medium text-gray-500 leading-snug">Deep research<br />before decision</p>
               </div>
             </div>
           </Card>
@@ -184,8 +184,8 @@ export default function Industries() {
             <div className={panel('-bottom-4 right-5 px-3 py-2.5 flex items-center gap-2')}>
               <Check />
               <div>
-                <p className="text-[10px] font-bold text-gray-900 leading-none">Clear guidance</p>
-                <p className="text-[9px] font-medium text-gray-400 mt-0.5">wins confidence</p>
+                <p className="text-[11px] font-bold text-gray-900 leading-none">Clear guidance</p>
+                <p className="text-[11px] font-medium text-gray-400 mt-0.5">wins confidence</p>
               </div>
             </div>
           </Card>

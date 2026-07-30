@@ -343,11 +343,11 @@ export default function ServicesPage() {
                       }`}
                     >
                       <div className="mb-1.5 flex items-center justify-between gap-2">
-                        <span className={`font-mono text-[10px] font-bold tracking-[0.16em] uppercase ${active ? 'text-white/60' : 'text-gray-400'}`}>
+                        <span className={`font-mono text-[11px] font-bold tracking-[0.16em] uppercase ${active ? 'text-white/60' : 'text-gray-400'}`}>
                           {svc.idx} / Base plan
                         </span>
                         {i === 1 && (
-                          <span className={`whitespace-nowrap rounded-full px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest ${active ? 'bg-[#CBD0AC] text-[#39471D]' : 'bg-[#EEF2E3] text-[#39471D]'}`}>
+                          <span className={`whitespace-nowrap rounded-full px-2 py-0.5 font-mono text-[11px] font-bold uppercase tracking-widest ${active ? 'bg-[#CBD0AC] text-[#39471D]' : 'bg-[#EEF2E3] text-[#39471D]'}`}>
                             Most chosen
                           </span>
                         )}
@@ -359,7 +359,7 @@ export default function ServicesPage() {
                 })}
 
                 <div className="mt-1 rounded-2xl border border-dashed border-gray-200 p-5">
-                  <span className="font-mono text-[10px] font-bold tracking-[0.16em] uppercase text-gray-400">
+                  <span className="font-mono text-[11px] font-bold tracking-[0.16em] uppercase text-gray-400">
                     03 / Optional add-on
                   </span>
                   <div className="mt-1.5 text-base font-semibold text-gray-900">Flagship Projects</div>

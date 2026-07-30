@@ -4,6 +4,9 @@ import React, { useRef, useState } from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import SpinFlower from '@/components/ui/SpinFlower';
+import PlanChips from '@/components/ui/PlanChips';
+import ConsentCheck from '@/components/ui/ConsentCheck';
+import { ENQUIRY_PLANS } from '@/components/AuditCTA';
 import { SplitReveal, Magnetic, useRevealBatch } from '@/components/motion';
 
 /**
@@ -48,6 +51,12 @@ const ROUTES = [
 export default function ContactLanding() {
   const formRef = useRef<HTMLFormElement>(null);
   const [status, setStatus] = useState<Status>('idle');
+  const [selectedPlans, setSelectedPlans] = useState<string[]>([]);
+
+  const togglePlan = (plan: string) =>
+    setSelectedPlans((prev) =>
+      prev.includes(plan) ? prev.filter((p) => p !== plan) : [...prev, plan],
+    );
 
   // The page owns no other reveal batch — run it here so [data-reveal] animates.
   useRevealBatch('contact');
@@ -68,6 +77,11 @@ export default function ContactLanding() {
       company: String(data.get('company') || ''),
       email: String(data.get('email') || ''),
       message: String(data.get('message') || ''),
+      plans: selectedPlans,
+      /* The tick is required, so reaching here means it was given. Recorded
+         with the enquiry rather than assumed, since consent you cannot show
+         is not much use later. */
+      consent: data.get('consent') === 'on',
     };
 
     if (!FORM_ENDPOINT) {
@@ -76,6 +90,8 @@ export default function ContactLanding() {
         `Name: ${payload.name}`,
         `Business: ${payload.company || '—'}`,
         `Email: ${payload.email}`,
+        `Plans of interest: ${payload.plans.length ? payload.plans.join(', ') : '—'}`,
+        `Consent given: ${payload.consent ? 'yes' : 'no'}`,
         '',
         payload.message,
       ].join('\n');
@@ -248,11 +264,27 @@ export default function ContactLanding() {
                       />
                     </div>
 
+                    {/* The same field the enquiry form in the closing panels
+                        carries, so an enquiry arriving here is not missing what
+                        one arriving from a plans page would have. */}
+                    <div className="mt-5">
+                      <PlanChips
+                        plans={ENQUIRY_PLANS}
+                        selected={selectedPlans}
+                        onToggle={togglePlan}
+                        labelClassName={labelCls}
+                      />
+                    </div>
+
                     {/* Honeypot — hidden from people, irresistible to bots */}
                     <input
                       type="text" name="website_url" tabIndex={-1} autoComplete="off"
                       aria-hidden="true" className="hidden"
                     />
+
+                    <div className="mt-6">
+                      <ConsentCheck id="c-consent" />
+                    </div>
 
                     <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-5">
                       <Magnetic>

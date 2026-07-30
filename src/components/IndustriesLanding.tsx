@@ -201,7 +201,7 @@ export default function IndustriesPage() {
                     <div>
                       <p className="text-[3rem] font-bold tracking-tight leading-none text-[#39471D] font-sans">{ind.metric}</p>
                       <p className="text-sm text-gray-500 font-medium leading-snug mt-2 max-w-[28ch]">{ind.meaning}</p>
-                      <p className="font-mono text-[10px] font-bold tracking-[0.12em] uppercase text-gray-400 mt-1.5">{ind.src}</p>
+                      <p className="font-mono text-[11px] font-bold tracking-[0.12em] uppercase text-gray-400 mt-1.5">{ind.src}</p>
                     </div>
                     {/* The industry name is the thing you are meant to leave
                         with, and in near-black under a 3rem figure it was the
@@ -260,7 +260,7 @@ export default function IndustriesPage() {
                 {/* Attribution */}
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-[#39471D]/10 flex items-center justify-center flex-shrink-0">
-                    <span className="text-[10px] font-bold text-[#39471D]">{q.initials}</span>
+                    <span className="text-[11px] font-bold text-[#39471D]">{q.initials}</span>
                   </div>
                   <div>
                     <p className="text-[12px] font-bold text-gray-900 leading-none">{q.role}</p>

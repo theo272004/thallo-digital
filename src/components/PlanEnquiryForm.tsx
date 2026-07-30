@@ -2,6 +2,8 @@
 
 import React, { useRef, useState } from 'react';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
+import PlanChips from '@/components/ui/PlanChips';
+import ConsentCheck from '@/components/ui/ConsentCheck';
 
 /* Same arrangement as the contact form: with no endpoint set we fall back to a
    mailto so an enquiry is never silently swallowed. Fill this in and the fetch
@@ -15,7 +17,7 @@ const INBOX = 'hello@thallo.co';
 const fieldCls =
   'w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm font-medium text-gray-900 placeholder:text-gray-400 outline-none transition-colors duration-200 focus:border-[#39471D] focus:ring-2 focus:ring-[#39471D]/15 hover:border-gray-300';
 const labelCls =
-  'block text-[10px] font-bold text-gray-500 tracking-wider uppercase mb-1.5';
+  'block text-[11px] font-bold text-gray-500 tracking-wider uppercase mb-1.5';
 
 type Status = 'idle' | 'sending' | 'sent' | 'mail' | 'error';
 
@@ -67,6 +69,9 @@ export default function PlanEnquiryForm({
       website: String(data.get('website') ?? ''),
       message: String(data.get('message') ?? ''),
       plans: selectedPlans,
+      /* Required, so reaching here means it was given — recorded rather than
+         assumed, since consent you cannot show is not much use later. */
+      consent: data.get('consent') === 'on',
     };
 
     const lines = [
@@ -75,6 +80,7 @@ export default function PlanEnquiryForm({
       `Email: ${payload.email}`,
       `Website: ${payload.website || '—'}`,
       `Plans of interest: ${payload.plans.length ? payload.plans.join(', ') : '—'}`,
+      `Consent given: ${payload.consent ? 'yes' : 'no'}`,
       '',
       payload.message,
     ].join('\n');
@@ -160,32 +166,14 @@ export default function PlanEnquiryForm({
         </div>
       </div>
 
-      <fieldset className="mb-3">
-        <legend className={labelCls}>Plan of interest</legend>
-        <div className="flex flex-wrap gap-2">
-          {plans.map((plan) => {
-            const on = selectedPlans.includes(plan);
-            return (
-              <label
-                key={plan}
-                className={`cursor-pointer rounded-lg border px-2.5 py-1.5 text-[12px] font-semibold transition-colors ${
-                  on
-                    ? 'border-[#39471D] bg-[#39471D] text-white'
-                    : 'border-gray-200 text-gray-600 hover:border-gray-300'
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={on}
-                  onChange={() => togglePlan(plan)}
-                  className="sr-only"
-                />
-                {plan}
-              </label>
-            );
-          })}
-        </div>
-      </fieldset>
+      <div className="mb-3">
+        <PlanChips
+          plans={plans}
+          selected={selectedPlans}
+          onToggle={togglePlan}
+          labelClassName={labelCls}
+        />
+      </div>
 
       <div className="mb-4">
         <label className={labelCls} htmlFor="pe-message">What are you trying to achieve?</label>
@@ -208,12 +196,20 @@ export default function PlanEnquiryForm({
         className="hidden"
       />
 
+      <div className="mb-4">
+        <ConsentCheck id="pe-consent" />
+      </div>
+
+      {/* "Send message", not "Book your audit": this button submits what you
+          typed. The audit button lives beside the heading and navigates, and
+          when the two carried the same label it read as though the form were
+          just another way to the contact page. */}
       <button
         type="submit"
         disabled={status === 'sending'}
         className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#39471D] border border-[#39471D] px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-[#55672E] hover:border-[#55672E] disabled:opacity-60"
       >
-        {status === 'sending' ? 'Sending…' : <>Book your audit <ArrowUpRight className="ml-0.5" /></>}
+        {status === 'sending' ? 'Sending…' : <>Send message <ArrowUpRight className="ml-0.5" /></>}
       </button>
 
       {status === 'error' && (

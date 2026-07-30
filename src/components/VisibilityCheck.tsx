@@ -179,17 +179,17 @@ const GRID: React.CSSProperties = {
 const CARD: React.CSSProperties = { boxShadow: '0 18px 44px -26px rgba(23,26,16,.66)' };
 
 const BTN_DARK =
-  'inline-flex items-center justify-center gap-2 rounded-lg bg-[#171A10] px-5 py-3 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#39471D] disabled:cursor-not-allowed disabled:opacity-40';
+  'inline-flex items-center justify-center gap-2 rounded-lg bg-[#171A10] px-5 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#39471D] disabled:cursor-not-allowed disabled:opacity-40';
 
 const BTN_GHOST =
-  'inline-flex items-center justify-center gap-2 rounded-lg border border-[#39471D]/25 px-5 py-3 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#39471D] transition-colors hover:bg-[#E7ECD9]';
+  'inline-flex items-center justify-center gap-2 rounded-lg border border-[#39471D]/25 px-5 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#39471D] transition-colors hover:bg-[#E7ECD9]';
 
 const FIELD =
   'rounded-lg border border-gray-200 bg-white px-3.5 py-2.5 text-sm font-medium text-gray-900 placeholder-gray-400 transition-colors focus:border-[#55672E] focus:outline-none';
 
 /** Mono micro-label. Every readout on the console is captioned with one. */
 const Micro = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <span className={`font-mono text-[10px] font-bold uppercase tracking-[0.18em] ${className}`}>{children}</span>
+  <span className={`font-mono text-[11px] font-bold uppercase tracking-[0.18em] ${className}`}>{children}</span>
 );
 
 function Meter({ pct }: { pct: number }) {

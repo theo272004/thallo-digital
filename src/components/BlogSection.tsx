@@ -124,7 +124,7 @@ export default function BlogSection() {
                 {/* Author */}
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-[#39471D]/10 flex items-center justify-center flex-shrink-0">
-                    <span className="text-[10px] font-bold text-[#39471D]">{r.initials}</span>
+                    <span className="text-[11px] font-bold text-[#39471D]">{r.initials}</span>
                   </div>
                   <div>
                     <p className="text-[12px] font-bold text-gray-900 leading-none">{r.name}</p>

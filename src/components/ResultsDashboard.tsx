@@ -100,7 +100,7 @@ export default function ResultsDashboard() {
 
                 {/* ── Left panel: Recharts line chart ───────────────────── */}
                 <div className="p-7 lg:p-9">
-                  <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-1">
+                  <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-1">
                     AI Visibility Growth
                   </p>
                   <p className="text-[11px] text-gray-400 font-medium leading-none mb-1">Mentions</p>
@@ -122,7 +122,7 @@ export default function ResultsDashboard() {
 
                 {/* ── Right panel: platform bars + average position ──────── */}
                 <div className="p-7 lg:p-9 flex flex-col">
-                  <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-5">
+                  <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-5">
                     Top AI Platforms
                   </p>
 
@@ -148,7 +148,7 @@ export default function ResultsDashboard() {
 
                   {/* Divider + Average Position */}
                   <div className="mt-6 pt-5 border-t border-gray-100">
-                    <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-2">
+                    <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-2">
                       Average Position
                     </p>
                     <div>

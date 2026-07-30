@@ -113,7 +113,7 @@ function Tag({ children, tone }: { children: React.ReactNode; tone: string }) {
   : tone === 'mid' ? 'bg-[#E7ECD9] text-[#39471D]'
   :                  'bg-white text-gray-400 border border-gray-200';
   return (
-    <span className={`font-mono text-[10px] font-bold uppercase tracking-[0.12em] px-2.5 py-1 rounded-full whitespace-nowrap shrink-0 ${s}`}>
+    <span className={`font-mono text-[11px] font-bold uppercase tracking-[0.12em] px-2.5 py-1 rounded-full whitespace-nowrap shrink-0 ${s}`}>
       {children}
     </span>
   );
@@ -406,7 +406,7 @@ export default function ThalloAIPage() {
                   </span>
                   <span>
                     <Label>Priority</Label>
-                    <span className={`block mt-2 font-mono text-[10px] font-bold uppercase tracking-[0.12em] px-2.5 py-1 rounded-full text-center ${a.p === 'High' ? 'bg-[#39471D] text-white' : 'bg-[#E7ECD9] text-[#39471D]'}`}>
+                    <span className={`block mt-2 font-mono text-[11px] font-bold uppercase tracking-[0.12em] px-2.5 py-1 rounded-full text-center ${a.p === 'High' ? 'bg-[#39471D] text-white' : 'bg-[#E7ECD9] text-[#39471D]'}`}>
                       {a.p}
                     </span>
                   </span>

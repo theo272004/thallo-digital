@@ -141,7 +141,7 @@ export default function HeroPhoneScene({ active, burst = false }: { active: bool
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-[10.5px] font-bold text-gray-800 leading-tight">{r.name}</div>
-                  <div className="text-[10px] text-gray-500 leading-snug mt-0.5 line-clamp-2">{r.snippet}</div>
+                  <div className="text-[11px] text-gray-500 leading-snug mt-0.5 line-clamp-2">{r.snippet}</div>
                 </div>
               </div>
             ))}

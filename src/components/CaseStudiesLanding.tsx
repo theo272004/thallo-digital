@@ -22,13 +22,13 @@ function CaseCard({ c }: { c: CaseStudy }) {
   const body = (
     <>
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#39471D] bg-[#39471D]/10 px-2.5 py-1 rounded-full">
+        <span className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#39471D] bg-[#39471D]/10 px-2.5 py-1 rounded-full">
           {c.industry}
         </span>
         {/* The status is stated on the card itself, not implied by the styling
             alone — a muted card is easy to miss, a pill is not. */}
         {!live && (
-          <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">
+          <span className="text-[11px] font-bold tracking-[0.15em] uppercase text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">
             Coming soon
           </span>
         )}
@@ -60,7 +60,7 @@ function CaseCard({ c }: { c: CaseStudy }) {
       </p>
 
       <div className="mt-auto pt-6 flex items-center justify-between gap-4">
-        <span className="font-mono text-[10px] font-bold tracking-[0.12em] uppercase text-gray-400">
+        <span className="font-mono text-[11px] font-bold tracking-[0.12em] uppercase text-gray-400">
           {c.timeframe}
         </span>
         {live ? (

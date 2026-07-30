@@ -50,7 +50,7 @@ export default function Testimonials() {
               data-reveal
               className="border border-gray-200 rounded-3xl p-8 bg-white flex flex-col items-center text-center shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] hover:shadow-[0_16px_40px_-14px_rgba(23,26,16,0.22)] transition-shadow duration-300"
             >
-              <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#39471D] bg-[#39471D]/10 px-2.5 py-1 rounded-full">
+              <span className="text-[11px] font-bold tracking-[0.15em] uppercase text-[#39471D] bg-[#39471D]/10 px-2.5 py-1 rounded-full">
                 {a.badge}
               </span>
 

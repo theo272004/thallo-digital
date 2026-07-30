@@ -236,10 +236,10 @@ export default function ResultsLanding() {
                 </caption>
                 <thead>
                   <tr className="border-b border-gray-100">
-                    <th scope="col" className="px-7 py-4 text-xs font-medium text-gray-400">Month</th>
-                    <th scope="col" className="px-7 py-4 text-right text-xs font-medium text-gray-400">Organic clicks</th>
-                    <th scope="col" className="px-7 py-4 text-right text-xs font-medium text-gray-400">Impressions</th>
-                    <th scope="col" className="px-7 py-4 text-right text-xs font-medium text-gray-400">Avg. position</th>
+                    <th scope="col" className="px-7 py-4 text-[13px] font-semibold text-gray-500">Month</th>
+                    <th scope="col" className="px-7 py-4 text-right text-[13px] font-semibold text-gray-500">Organic clicks</th>
+                    <th scope="col" className="px-7 py-4 text-right text-[13px] font-semibold text-gray-500">Impressions</th>
+                    <th scope="col" className="px-7 py-4 text-right text-[13px] font-semibold text-gray-500">Avg. position</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -258,7 +258,7 @@ export default function ResultsLanding() {
                       }`}
                     >
                       <th scope="row" className="whitespace-nowrap px-7 py-5 align-middle">
-                        <span className="text-sm font-bold text-gray-900">{r.m}</span>
+                        <span className="text-base font-bold text-gray-900">{r.m}</span>
                         {r.projected && (
                           <span className="ml-2 text-xs font-medium text-[#55672E]">Projected</span>
                         )}
@@ -283,10 +283,10 @@ export default function ResultsLanding() {
                           />
                         </span>
                       </td>
-                      <td className="whitespace-nowrap px-7 py-5 text-right align-middle text-sm font-medium text-gray-500 tabular-nums">
+                      <td className="whitespace-nowrap px-7 py-5 text-right align-middle text-base font-medium text-gray-500 tabular-nums">
                         <span data-to={imprTo} data-prefix={imprPrefix}>{r.impr}</span>
                       </td>
-                      <td className="px-7 py-5 text-right align-middle text-sm font-semibold text-gray-900 tabular-nums">
+                      <td className="px-7 py-5 text-right align-middle text-base font-semibold text-gray-900 tabular-nums">
                         <span data-to={r.pos} data-decimals="1">{r.pos}</span>
                       </td>
                     </tr>
