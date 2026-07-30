@@ -1,7 +1,7 @@
 import React from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
-import IndustryTicker from '@/components/ui/IndustryTicker';
+import IndustryCarousel from '@/components/ui/IndustryCarousel';
 
 export default function About() {
   return (
@@ -19,7 +19,7 @@ export default function About() {
           <SplitReveal
             as="h2"
             className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
-            html="Premium authority, without the premium agency price."
+            html="Premium authority, built for compounding growth."
           />
           <p className="text-gray-500 font-medium text-base sm:text-lg leading-relaxed">
             Thallo builds authority for companies in high-consideration industries. We combine strong fundamentals with
@@ -27,7 +27,13 @@ export default function About() {
             the channels change. A senior team, deliberately small, focused on doing a few things exceptionally well.
           </p>
 
-          {/* IndustryTicker hidden provisionally */}
+          {/* The industry carousel, restored here where it first lived. It is
+              deliberately narrow: at xl+ this text block is absolutely centred
+              and the laptop/phone photographs are pinned relative to it, so
+              extra height here pushes that composition around. */}
+          <div className="mt-8 flex justify-center">
+            <IndustryCarousel />
+          </div>
         </div>
       </div>
 
@@ -65,8 +71,8 @@ export default function About() {
         }}
       />
 
-      {/* Laptop — RIGHT, slightly above center to align with "without the" (heading line 1).
-          Moved left so leading edge nearly touches the 'e' of "the". */}
+      {/* Laptop — RIGHT, slightly above center to align with "built for" (heading line 1).
+          Moved left so leading edge nearly touches the last word of that line. */}
       <img loading="lazy" decoding="async"
         src="/thallo-digital/pc-about.webp"
         alt=""

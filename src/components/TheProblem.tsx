@@ -48,7 +48,7 @@ export default function TheProblem() {
   }, []);
 
   return (
-    <section className="bg-white py-28 border-b border-gray-100" id="shift">
+    <section className="bg-[#F4FAF5] py-20 2xl:py-24 border-b border-gray-100" id="shift">
       <div className="max-w-[1440px] mx-auto px-6">
 
         {/* ── Feature card — panoramic, full-width, dark image-backed ── */}
@@ -87,8 +87,8 @@ export default function TheProblem() {
               >
                 {s.val}{s.suffix}
               </div>
-              <p className="text-[11px] font-bold tracking-wider uppercase text-gray-900 mb-2">{s.label}</p>
-              <p className="text-sm text-gray-500 leading-relaxed font-medium">{s.copy}</p>
+              <p className="text-[12px] font-bold tracking-wider uppercase text-gray-900 mb-2">{s.label}</p>
+              <p className="text-[15px] text-gray-500 leading-relaxed font-medium">{s.copy}</p>
             </div>
           ))}
         </div>

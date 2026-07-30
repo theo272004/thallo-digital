@@ -5,6 +5,7 @@ import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import SpinFlower from '@/components/ui/SpinFlower';
 import EngagementSteps from '@/components/EngagementSteps';
+import PlanEnquiryForm from '@/components/PlanEnquiryForm';
 import { Magnetic } from '@/components/motion';
 
 // ─── Data ────────────────────────────────────────────────────────────────────
@@ -24,7 +25,7 @@ const SERVICES = [
       'Prioritized 90-day roadmap',
       'Competitor teardown',
     ],
-    price: 'One-time · no lock-in',
+    price: 'From $800 · one-time · no lock-in',
   },
   {
     idx: '02',
@@ -40,7 +41,7 @@ const SERVICES = [
       'Consistent brand narrative',
       'Monthly outcome reporting',
     ],
-    price: 'Ongoing · monthly partnership',
+    price: 'From $2,500 / month · 6-month term',
   },
   {
     idx: '03',
@@ -56,7 +57,7 @@ const SERVICES = [
       'Signature research',
       'Launch strategy',
     ],
-    price: 'Per project · scoped to you',
+    price: 'From $600 · priced by scope',
   },
 ];
 
@@ -76,7 +77,7 @@ const FAQS = [
   { q: 'Can you prove it is working?',                           a: 'Yes, with honesty about what is measurable and what is not. We track how often you appear in AI answers for the questions your buyers ask, the sources citing you, and the pipeline your presence influences. What no one can promise is perfect click-by-click attribution; AI search is newer and messier than Google. We report the real signals, not a vanity dashboard, and we are straight about the limits.' },
   { q: 'Will this bring us more customers?',                     a: 'We build the preference, visibility, and pipeline that make you far more likely to win, and keep you on the shortlist. What we will not do is promise a fixed number of sales. In a long, multi-person buying decision, anyone who does is guessing.' },
   { q: 'How fast will we see results?',                          a: 'Faster than old-school SEO. Because AI reads and cites fresh content in real time, early movement — first mentions and first citations — can show up within weeks, not the long months traditional search used to demand. The deeper, compounding authority builds from there.' },
-  { q: 'Where do we start, and how much do we have to commit?', a: 'You start small. Almost everyone begins with the audit: fixed scope, no lock-in, and you walk away with a clear picture and a roadmap you keep whether or not you continue. It is the lowest-risk way to see where you stand before committing to anything bigger.' },
+  { q: 'Where do we start, and how much do we have to commit?', a: 'Almost everyone begins with the audit: fixed scope, no lock-in, and you walk away with a clear picture and a roadmap you keep whether or not you continue. It is the fastest way to see exactly where you stand, and what the opportunity is worth, before committing to anything bigger.' },
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -216,9 +217,9 @@ export default function ServicesPage() {
     <>
 
       {/* ── Hero (centered) ───────────────────────────────────────────────── */}
-      <section className="bg-white pt-44 pb-16 2xl:pt-56 2xl:pb-28 border-b border-gray-100">
+      <section className="bg-white pt-32 pb-14 2xl:pt-40 2xl:pb-20 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
-          <Eyebrow center className="mb-5">Services</Eyebrow>
+          <Eyebrow center className="mb-5">Our Plans</Eyebrow>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-2xl">
             One engine to make you<br />the answer.
           </h1>
@@ -335,13 +336,13 @@ export default function ServicesPage() {
             })}
           </div>
 
-          {/* The ask under the three plans. It was small enough to read as a
-              footnote, and it was the last "Book an audit" still pointing at
-              the mailto — every other one goes to /contact/. */}
-          <div className="mt-16 flex justify-center">
+          {/* The ask under the three plans. Now that the enquiry form lives on
+              this page, it hands off there instead of to /contact/ — the plan
+              you were reading arrives pre-ticked. */}
+          <div className="mt-14 flex justify-center">
             <Magnetic>
               <a
-                href="/thallo-digital/contact/"
+                href="#enquiry"
                 className="inline-block px-9 py-4 bg-[#39471D] border border-[#39471D] rounded-full text-base font-semibold text-white shadow-[0_18px_36px_-16px_rgba(57,71,29,0.55)] hover:bg-[#55672E] hover:border-[#55672E] transition-all"
               >
                 Book an audit <ArrowUpRight className="ml-0.5" />
@@ -461,6 +462,29 @@ export default function ServicesPage() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── Enquiry ───────────────────────────────────────────────────────── */}
+      <section className="bg-[#F4FAF5] py-16 2xl:py-24 border-b border-gray-100" id="enquiry">
+        <div className="max-w-[1200px] mx-auto px-6">
+          <div className="max-w-2xl mb-10">
+            <Eyebrow className="mb-4">Tell us what you need</Eyebrow>
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-4 font-sans leading-[1.05]">
+              Start the conversation here.
+            </h2>
+            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch]">
+              Tick what you are weighing up and we will come back with scope and
+              timing — no obligation either way.
+            </p>
+          </div>
+
+          {/* The plan you were last reading arrives pre-ticked. */}
+          <PlanEnquiryForm
+            plans={SERVICES.map((s) => s.title)}
+            extras={SERVICES[2].deliverables}
+            activePlan={SERVICES[activeService]?.title}
+          />
         </div>
       </section>
 

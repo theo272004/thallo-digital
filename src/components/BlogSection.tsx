@@ -53,7 +53,7 @@ export default function BlogSection() {
   const track = [...REVIEWS, ...REVIEWS];
 
   return (
-    <section className="bg-gray-100/60 py-28 border-b border-gray-100 overflow-hidden" id="reviews">
+    <section className="bg-white py-20 2xl:py-24 border-b border-gray-100 overflow-hidden" id="reviews">
       <style>{`
         @keyframes review-scroll {
           from { transform: translateX(0); }
@@ -85,12 +85,12 @@ export default function BlogSection() {
         {/* Left fade */}
         <div
           className="absolute left-0 top-0 bottom-0 w-24 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(to right, #f9fafb, transparent)' }}
+          style={{ background: 'linear-gradient(to right, #FFFFFF, transparent)' }}
         />
         {/* Right fade */}
         <div
           className="absolute right-0 top-0 bottom-0 w-24 z-10 pointer-events-none"
-          style={{ background: 'linear-gradient(to left, #f9fafb, transparent)' }}
+          style={{ background: 'linear-gradient(to left, #FFFFFF, transparent)' }}
         />
 
         {/* Scrolling track — py-5 gives room for the float amplitude */}

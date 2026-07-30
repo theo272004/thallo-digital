@@ -11,10 +11,10 @@ import { Magnetic } from '@/components/motion';
  * marking them would claim you are somewhere you are not.
  */
 const LINKS = [
-  { label: 'Services', href: '/thallo-digital/services/', page: '/services' },
+  { label: 'Our Plans', href: '/thallo-digital/services/', page: '/services' },
   { label: 'Industries', href: '/thallo-digital/industries/', page: '/industries' },
   { label: 'Our Approach', href: '/thallo-digital/#approach' },
-  { label: 'Results', href: '/thallo-digital/results/', page: '/results' },
+  { label: 'Case Studies', href: '/thallo-digital/results/', page: '/results' },
   { label: 'Resources', href: '/thallo-digital/#blog' },
 ];
 

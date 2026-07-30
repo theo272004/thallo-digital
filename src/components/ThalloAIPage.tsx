@@ -3,7 +3,7 @@
 import React from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
-import { SplitReveal } from '@/components/motion';
+import { SplitReveal, scrollToEl } from '@/components/motion';
 
 /* Guidelines, section 8 — one soft olive-tinted shadow. Elevation is only ever
    suggested; it never defines the component. */
@@ -28,6 +28,16 @@ const PlatformMark = ({ src, name }: { src?: string; name: string }) => (
     <span className="sr-only">{name}</span>
   </span>
 );
+
+/* The three inputs a run takes, described rather than mocked up. There used to
+   be a fake form here — read-only pills and a <div> dressed as a button — which
+   now competes with the working console at the top of the page. One live
+   control per job. */
+const SETUP: [string, string][] = [
+  ['Brand name', 'The name you want an assistant to reach for.'],
+  ['Industry / target query', 'The category buyers actually type, not the internal label for it.'],
+  ['Website URL', 'Optional in the preview; a commissioned audit reads it for technical readiness.'],
+];
 
 const ANALYZE = [
   'AI Recommendations (ChatGPT, Google AI, Perplexity)',
@@ -130,18 +140,22 @@ export default function ThalloAIPage() {
 
   return (
     <>
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="bg-white pt-44 pb-16 2xl:pt-56 2xl:pb-28 border-b border-gray-100">
+      {/* ── Intro ────────────────────────────────────────────────────────────
+          The page h1 belongs to the console above this now, so this heading
+          steps down to h2 — and to the standard section rhythm with it, since
+          it is no longer clearing the fixed navbar. */}
+      <section className="bg-white py-16 2xl:py-24 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
           <Eyebrow center className="mb-5">Thallo AI Visibility Engine</Eyebrow>
-          {/* text-balance rather than a hard break — a <br/> here strands "you,"
-              on its own line at mid widths. */}
-          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-3xl text-balance">
-            See how AI answers describe you, end to end.
-          </h1>
+          {/* text-balance rather than a hard break — a <br/> here strands the
+              last word on its own line at mid widths. */}
+          <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-3xl text-balance">
+            What a commissioned audit looks like, end to end.
+          </h2>
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[56ch] mb-8">
-            Six stages, from the question you type to the plan you act on. Below is the full journey
-            of a Thallo visibility audit, shown exactly as it runs.
+            The console above returns a worked example in a few seconds. Below is the whole journey
+            of a Thallo visibility audit — six stages, from the question you type to the plan you
+            act on.
           </p>
           <span className="inline-flex items-center gap-2.5 rounded-full border border-gray-200 px-4 py-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[#55672E]" />
@@ -157,33 +171,29 @@ export default function ThalloAIPage() {
           <div className="grid grid-cols-1 md:grid-cols-2">
             <div className="p-8 sm:p-10 md:border-r border-gray-100">
               <Label>Audit parameters</Label>
-              <div className="mt-7">
-                {[
-                  ['Brand name', 'e.g. Ledgerly', false],
-                  ['Industry / target query', 'Fintech', true],
-                  ['Website URL (optional)', 'e.g. https://ledgerly.co', false],
-                ].map(([l, p, filled]) => (
-                  <div key={l as string} className="mb-5">
-                    <span className="block font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-2">{l as string}</span>
-                    <div className={`rounded-2xl border border-gray-200 px-4 py-3.5 text-sm font-medium flex items-center justify-between ${filled ? 'text-gray-900' : 'text-gray-400'}`}>
-                      {p as string}
-                      {filled ? <span className="text-gray-400">⌄</span> : null}
-                    </div>
+              <p className="mt-6 text-sm font-medium leading-relaxed text-gray-500 max-w-[38ch]">
+                Three inputs decide the whole run. The console above takes the first two; a
+                commissioned audit takes all three, and the competitor set with them.
+              </p>
+              <dl className="mt-7">
+                {SETUP.map(([term, def]) => (
+                  <div key={term} className="mb-5 last:mb-0">
+                    <dt className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-1.5">{term}</dt>
+                    <dd className="text-sm font-medium leading-relaxed text-gray-900 max-w-[38ch]">{def}</dd>
                   </div>
                 ))}
-              </div>
-              <div className="mt-7 rounded-full bg-[#39471D] py-3.5 text-center text-sm font-semibold text-white">
-                Start AI Visibility Audit
-              </div>
-              <div className="mt-5 rounded-2xl bg-gray-50/60 p-4 flex gap-3">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#39471D" strokeWidth="1.8" className="mt-0.5 shrink-0">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                </svg>
-                <p className="text-[11px] font-semibold leading-relaxed text-gray-500">
-                  No signup required · Results in under 30 seconds.<br />
-                  Powered by ChatGPT, Google AI &amp; Perplexity.
-                </p>
-              </div>
+              </dl>
+              <a
+                href="#tool"
+                onClick={(e) => { e.preventDefault(); scrollToEl('#tool'); }}
+                className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-[#39471D] hover:text-[#55672E] transition-colors"
+              >
+                Run the free preview <ArrowUpRight className="text-[11px]" />
+              </a>
+              <p className="mt-6 rounded-2xl bg-gray-50/60 p-4 text-[11px] font-semibold leading-relaxed text-gray-500">
+                No signup. One free preview per browser, with illustrative figures — the
+                commissioned audit queries ChatGPT, Google AI and Perplexity properly.
+              </p>
             </div>
 
             <div className="p-8 sm:p-10 relative overflow-hidden">

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
+import VisibilityCheck from '@/components/VisibilityCheck';
 import ThalloAIPage from '@/components/ThalloAIPage';
 import Footer from '@/components/Footer';
 
@@ -22,6 +23,9 @@ export default function ThalloAI() {
     <div className="flex flex-col min-h-screen bg-white">
       <Navbar />
       <main className="flex-grow">
+        {/* The working tool first, on its own dark-green ground — the walkthrough
+            below explains what a commissioned audit adds to it. */}
+        <VisibilityCheck />
         <ThalloAIPage />
       </main>
       <Footer />

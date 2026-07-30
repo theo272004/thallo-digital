@@ -1,173 +1,181 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 
+/* Icons are drawn at 24px on a 1.7 stroke and inherit `currentColor`, so the
+   card can tint them without six separate colour literals. */
 const INDUSTRIES = [
   {
     title: 'Specialized software',
     desc: 'Category-defining SaaS where the winner is the name buyers already trust.',
     icon: (
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#39471D" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="4" width="18" height="14" rx="2" />
-        <path d="M8 20h8M9 8l-2 3 2 3M15 8l2 3-2 3" />
-      </svg>
+      <>
+        <rect x="2.5" y="4" width="19" height="13" rx="2.5" />
+        <path d="M9 20.5h6M12 17v3.5M9.5 8.5 7.5 10.5l2 2M14.5 8.5l2 2-2 2" />
+      </>
     ),
   },
   {
     title: 'Fintech',
     desc: 'Where a wrong vendor is costly to unwind, and credibility clears the shortlist.',
     icon: (
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#39471D" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="1" y="5" width="22" height="14" rx="2" />
-        <path d="M1 10h22" />
-      </svg>
+      <>
+        <path d="M3 9.5 12 4l9 5.5" />
+        <path d="M5 9.5v9M19 9.5v9M9.5 12.5v6M14.5 12.5v6M3 20.5h18" />
+      </>
     ),
   },
   {
     title: 'Health tech',
-    desc: 'Regulated, high-stakes buying that rewards the most credible, best-documented source.',
+    desc: 'Regulated, high-stakes buying that rewards the best-documented source.',
     icon: (
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#39471D" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-      </svg>
+      <>
+        <path d="M3 12.5h3.5l2-4.5 3 9 2.5-6 1.5 3h5.5" />
+      </>
     ),
   },
   {
     title: 'Professional services',
     desc: 'Expertise businesses that live or die on reputation and referral.',
     icon: (
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#39471D" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="7" width="20" height="14" rx="2" />
-        <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-      </svg>
+      <>
+        <rect x="2.5" y="7.5" width="19" height="12.5" rx="2.5" />
+        <path d="M8.5 7.5V6a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v1.5M2.5 13h19" />
+      </>
     ),
   },
   {
     title: 'Health & recovery',
     desc: 'Deeply researched, deeply personal decisions where trust is everything.',
     icon: (
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#39471D" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2a10 10 0 0 1 0 20" />
-        <path d="M12 2a10 10 0 0 0 0 20" />
-        <path d="M12 6c-2 2-3 4-3 6s1 4 3 6" />
-        <path d="M12 6c2 2 3 4 3 6s-1 4-3 6" />
-        <path d="M2 12h20" />
-      </svg>
+      <>
+        <path d="M12 20.5C8 17.5 4 14.8 4 10.9A4.4 4.4 0 0 1 12 8a4.4 4.4 0 0 1 8 2.9c0 3.9-4 6.6-8 9.6z" />
+      </>
     ),
   },
   {
     title: 'Benefits & claims',
     desc: 'Complex, confusing choices where the clear, trusted guide wins.',
     icon: (
-      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#39471D" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      </svg>
+      <>
+        <path d="M12 20.5s7.5-3.7 7.5-9.3V5.4L12 2.8 4.5 5.4v5.8c0 5.6 7.5 9.3 7.5 9.3z" />
+        <path d="M9 11.5l2.2 2.2L15 10" />
+      </>
     ),
   },
 ];
 
+/* 5.5s a card: long enough to finish reading the description, which the old
+   3s rotation did not allow. */
+const DWELL_MS = 5500;
+const FADE_MS = 420;
+
 export default function IndustryCarousel() {
   const [current, setCurrent] = useState(0);
   const [visible, setVisible] = useState(true);
+  const [paused, setPaused] = useState(false);
+  const fadeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const advance = useCallback(() => {
+  /* Cross-fade out, swap, fade back in. */
+  const goTo = useCallback((next: number | ((prev: number) => number)) => {
     setVisible(false);
-    setTimeout(() => {
-      setCurrent((prev) => (prev + 1) % INDUSTRIES.length);
+    if (fadeTimer.current) clearTimeout(fadeTimer.current);
+    fadeTimer.current = setTimeout(() => {
+      setCurrent((prev) =>
+        typeof next === 'function' ? next(prev) : next,
+      );
       setVisible(true);
-    }, 300);
+    }, FADE_MS);
   }, []);
 
   useEffect(() => {
-    const id = setInterval(advance, 3000);
+    /* Readers who asked for less motion get a static first card, not a
+       slideshow they cannot stop. */
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced || paused) return;
+
+    const id = setInterval(
+      () => goTo((prev) => (prev + 1) % INDUSTRIES.length),
+      DWELL_MS,
+    );
     return () => clearInterval(id);
-  }, [advance]);
+  }, [goTo, paused]);
+
+  useEffect(() => () => {
+    if (fadeTimer.current) clearTimeout(fadeTimer.current);
+  }, []);
 
   const item = INDUSTRIES[current];
 
   return (
-    <div className="flex flex-col items-center gap-3 my-7">
-      {/* Card */}
-      <div
-        style={{
-          width: '100%',
-          maxWidth: '400px',
-          background: '#ffffff',
-          borderRadius: '20px',
-          border: '1px solid #ECECEC',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
-          padding: '18px 22px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '16px',
-          minHeight: '84px',
-        }}
-      >
-        {/* Icon */}
+    <div
+      className="flex flex-col items-center gap-3.5"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={() => setPaused(false)}
+    >
+      <div className="w-full max-w-[420px] min-h-[84px] flex items-center gap-4 rounded-[20px] border border-gray-100 bg-white px-5 py-4 text-left shadow-[0_10px_36px_-16px_rgba(23,26,16,0.22)]">
         <div
+          className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-[#E7ECD9] text-[#39471D] transition-[opacity,transform] duration-[420ms] ease-out"
           style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '12px',
-            background: '#F7F8F3',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            transition: 'opacity 300ms ease, transform 300ms ease',
+            opacity: visible ? 1 : 0,
+            transform: visible ? 'translateY(0)' : 'translateY(8px)',
+          }}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            width="22"
+            height="22"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            {item.icon}
+          </svg>
+        </div>
+
+        {/* aria-live so the rotation is announced rather than silently swapping. */}
+        <div
+          className="flex-1 transition-[opacity,transform] duration-[420ms] ease-out"
+          style={{
             opacity: visible ? 1 : 0,
             transform: visible ? 'translateY(0)' : 'translateY(10px)',
           }}
+          aria-live="polite"
         >
-          {item.icon}
-        </div>
-
-        {/* Text */}
-        <div
-          style={{
-            flex: 1,
-            transition: 'opacity 300ms ease, transform 300ms ease',
-            opacity: visible ? 1 : 0,
-            transform: visible ? 'translateY(0)' : 'translateY(12px)',
-          }}
-        >
-          <p
-            style={{
-              fontSize: '12px',
-              fontWeight: 700,
-              color: '#111827',
-              marginBottom: '3px',
-              lineHeight: 1.3,
-            }}
-          >
+          <p className="text-[13px] font-bold leading-snug text-gray-900">
             {item.title}
           </p>
-          <p
-            style={{
-              fontSize: '11px',
-              fontWeight: 500,
-              color: '#6b7280',
-              lineHeight: 1.5,
-            }}
-          >
+          <p className="mt-0.5 text-[11px] font-medium leading-relaxed text-gray-500">
             {item.desc}
           </p>
         </div>
       </div>
 
-      {/* Dots */}
-      <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
-        {INDUSTRIES.map((_, i) => (
-          <div
-            key={i}
-            style={{
-              width: i === current ? '16px' : '5px',
-              height: '5px',
-              borderRadius: '999px',
-              background: i === current ? '#39471D' : '#CBD0AC',
-              transition: 'all 400ms ease',
-            }}
-          />
+      {/* Dots double as controls — an auto-rotation you cannot steer is a
+          nuisance on the one card you actually wanted to read. */}
+      <div className="flex items-center gap-1.5">
+        {INDUSTRIES.map((ind, i) => (
+          <button
+            key={ind.title}
+            type="button"
+            onClick={() => goTo(i)}
+            aria-label={ind.title}
+            aria-current={i === current}
+            className="h-3 px-0.5 focus-visible:outline-none"
+          >
+            <span
+              className="block h-[5px] rounded-full transition-all duration-[420ms] ease-out"
+              style={{
+                width: i === current ? 18 : 5,
+                background: i === current ? '#39471D' : '#CBD0AC',
+              }}
+            />
+          </button>
         ))}
       </div>
     </div>
