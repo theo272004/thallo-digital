@@ -71,7 +71,7 @@ export default function Services() {
               className={`relative overflow-hidden p-8 rounded-3xl flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
                 svc.featured
                   ? 'bg-[#39471D] border border-[#39471D] shadow-[0_30px_70px_-30px_rgba(57,71,29,0.6)]'
-                  : 'bg-gray-50/60 border border-gray-100 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-30px_rgba(57,71,29,0.25)]'
+                  : 'bg-gray-50/60 border border-gray-200 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-30px_rgba(57,71,29,0.25)]'
               }`}
             >
               {/* Isotipo watermark — tone-on-tone, sat on the top-right corner

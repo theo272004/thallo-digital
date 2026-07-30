@@ -346,7 +346,7 @@ export default function EngagementSteps() {
                       The grid stretches the columns to equal height, which is
                       what gives the auto margin something to push against. */}
                   <div className="mt-auto pt-7">
-                    <div className="rounded-2xl border border-gray-100 bg-white px-4 py-5">
+                    <div className="rounded-2xl border border-gray-200 bg-white px-4 py-5">
                       {s.art}
                     </div>
                   </div>

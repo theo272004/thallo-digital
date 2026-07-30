@@ -17,7 +17,7 @@ const LOGO = {
 } as const;
 
 const PlatformMark = ({ src, name }: { src?: string; name: string }) => (
-  <span className="w-8 h-8 rounded-xl bg-white border border-gray-100 flex items-center justify-center shrink-0 p-1.5">
+  <span className="w-8 h-8 rounded-xl bg-white border border-gray-200 flex items-center justify-center shrink-0 p-1.5">
     {src ? (
       <img src={src} alt="" aria-hidden="true" width={20} height={20} className="w-full h-full object-contain" />
     ) : (
@@ -118,7 +118,7 @@ function Tag({ children, tone }: { children: React.ReactNode; tone: string }) {
 }
 
 const Check = () => (
-  <span className="w-6 h-6 rounded-lg border border-gray-100 bg-white flex items-center justify-center shrink-0 mt-px">
+  <span className="w-6 h-6 rounded-lg border border-gray-200 bg-white flex items-center justify-center shrink-0 mt-px">
     <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="#39471D" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
       <path d="M20 6 9 17l-5-5" />
     </svg>
@@ -167,7 +167,7 @@ export default function ThalloAIPage() {
       {/* ── 01 · Audit setup ──────────────────────────────────────────────── */}
       <Section>
         <Rail n="01" label="Audit setup" blurb="Tell us about your brand and the category you want to be found in." />
-        <div className="rounded-[28px] border border-gray-100 bg-white overflow-hidden" style={SOFT}>
+        <div className="rounded-[28px] border border-gray-200 bg-white overflow-hidden" style={SOFT}>
           <div className="grid grid-cols-1 md:grid-cols-2">
             <div className="p-8 sm:p-10 md:border-r border-gray-100">
               <Label>Audit parameters</Label>
@@ -219,7 +219,7 @@ export default function ThalloAIPage() {
       {/* ── 02 · Scanning ─────────────────────────────────────────────────── */}
       <Section>
         <Rail n="02" label="Scanning" blurb="Our agents read how each platform answers for your category." />
-        <div className="rounded-[28px] border border-gray-100 bg-white p-8 sm:p-10" style={SOFT}>
+        <div className="rounded-[28px] border border-gray-200 bg-white p-8 sm:p-10" style={SOFT}>
           <h4 className="text-xl font-bold tracking-tight text-gray-900 mb-8">Scanning your visibility…</h4>
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-8 lg:gap-14">
             <div className="flex flex-col gap-6">
@@ -233,7 +233,7 @@ export default function ThalloAIPage() {
               ))}
             </div>
 
-            <div className="rounded-3xl bg-gray-50/60 border border-gray-100 p-7">
+            <div className="rounded-3xl bg-gray-50/60 border border-gray-200 p-7">
               <Label>Live progress</Label>
               <p className="mt-4 text-5xl font-extrabold tracking-tight text-gray-900 leading-none mb-2">
                 2 <span className="text-2xl font-bold text-gray-400">/ 4</span>
@@ -252,7 +252,7 @@ export default function ThalloAIPage() {
       <Section>
         <Rail n="03" label="Results overview" blurb="How the brand performs across every AI platform we check." />
         <div className="flex flex-col gap-5">
-          <div className="rounded-[28px] border border-gray-100 bg-white overflow-hidden" style={SOFT}>
+          <div className="rounded-[28px] border border-gray-200 bg-white overflow-hidden" style={SOFT}>
             <div className="grid grid-cols-1 lg:grid-cols-3">
               <div className="p-8 sm:p-10 lg:border-r border-gray-100">
                 <Label>AI visibility score</Label>
@@ -275,7 +275,7 @@ export default function ThalloAIPage() {
                 <Label>AI platform presence</Label>
                 <div className="mt-6 flex flex-col gap-3">
                   {PRESENCE.map((p) => (
-                    <div key={p.name} className="rounded-2xl border border-gray-100 p-4 flex items-center gap-3">
+                    <div key={p.name} className="rounded-2xl border border-gray-200 p-4 flex items-center gap-3">
                       <PlatformMark src={p.logo} name={p.name} />
                       <span className="min-w-0 flex-1">
                         <span className="block text-[13px] font-bold text-gray-900 truncate">{p.name}</span>
@@ -308,7 +308,7 @@ export default function ThalloAIPage() {
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
             {TILES.map((t) => (
-              <div key={t.l} className="rounded-3xl bg-gray-50/60 border border-gray-100 px-7 py-7">
+              <div key={t.l} className="rounded-3xl bg-gray-50/60 border border-gray-200 px-7 py-7">
                 <p className="text-4xl font-extrabold tracking-tight text-gray-900 leading-none mb-3">{t.n}</p>
                 <Label>{t.l}</Label>
               </div>
@@ -320,7 +320,7 @@ export default function ThalloAIPage() {
       {/* ── 04 · Detailed report ──────────────────────────────────────────── */}
       <Section>
         <Rail n="04" label="Detailed report" blurb="Deeper insight across every category we score." />
-        <div className="rounded-[28px] border border-gray-100 bg-white overflow-hidden" style={SOFT}>
+        <div className="rounded-[28px] border border-gray-200 bg-white overflow-hidden" style={SOFT}>
           <div className="px-8 sm:px-10 pt-7 border-b border-gray-100 flex flex-wrap items-center gap-x-9 gap-y-3 justify-between">
             <div className="flex flex-wrap gap-x-9 gap-y-3">
               {['AI visibility', 'Authority', 'Content', 'Technical', 'Comparisons'].map((t, i) => (
@@ -377,14 +377,14 @@ export default function ThalloAIPage() {
       {/* ── 05 · Priority actions ─────────────────────────────────────────── */}
       <Section>
         <Rail n="05" label="Priority actions" blurb="A plan, ordered by what moves the needle first." />
-        <div className="rounded-[28px] border border-gray-100 bg-white p-8 sm:p-10" style={SOFT}>
+        <div className="rounded-[28px] border border-gray-200 bg-white p-8 sm:p-10" style={SOFT}>
           <h4 className="text-xl font-bold tracking-tight text-gray-900 mb-2">Recommended next steps</h4>
           <p className="text-sm font-medium text-gray-500 mb-8">Actionable steps to improve AI visibility.</p>
 
           <div className="flex flex-col gap-4">
             {ACTIONS.map((a) => (
-              <div key={a.t} className="rounded-3xl border border-gray-100 p-6 flex flex-col sm:flex-row sm:items-center gap-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,.20)]">
-                <span className="w-10 h-10 rounded-xl bg-gray-50/60 border border-gray-100 flex items-center justify-center shrink-0">
+              <div key={a.t} className="rounded-3xl border border-gray-200 p-6 flex flex-col sm:flex-row sm:items-center gap-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,.20)]">
+                <span className="w-10 h-10 rounded-xl bg-gray-50/60 border border-gray-200 flex items-center justify-center shrink-0">
                   <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#39471D" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><path d="M14 2v6h6" />
                   </svg>
@@ -420,9 +420,9 @@ export default function ThalloAIPage() {
       {/* ── 06 · Stay ahead ───────────────────────────────────────────────── */}
       <Section>
         <Rail n="06" label="Stay ahead" blurb="Track progress and improve over time." />
-        <div className="rounded-[28px] border border-gray-100 bg-white p-8 sm:p-10" style={SOFT}>
+        <div className="rounded-[28px] border border-gray-200 bg-white p-8 sm:p-10" style={SOFT}>
           <div className="flex flex-col lg:flex-row lg:items-center gap-7">
-            <span className="w-11 h-11 rounded-xl bg-gray-50/60 border border-gray-100 flex items-center justify-center shrink-0">
+            <span className="w-11 h-11 rounded-xl bg-gray-50/60 border border-gray-200 flex items-center justify-center shrink-0">
               <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#39471D" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m2 7 10 6 10-6" />
               </svg>

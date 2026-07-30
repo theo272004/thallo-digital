@@ -48,7 +48,7 @@ export default function TheProblem() {
   }, []);
 
   return (
-    <section className="bg-[#F4FAF5] py-20 2xl:py-24 border-b border-gray-100" id="shift">
+    <section className="bg-[#F3F4F6] py-20 2xl:py-24 border-b border-gray-100" id="shift">
       <div className="max-w-[1440px] mx-auto px-6">
 
         {/* ── Feature card — panoramic, full-width, dark image-backed ── */}
@@ -80,7 +80,7 @@ export default function TheProblem() {
         {/* ── Stat cards — three equal columns below the image ─────── */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-8">
           {STATS.map((s, i) => (
-            <div key={s.label} className="p-8 sm:p-10 bg-white border border-gray-100 rounded-3xl flex flex-col">
+            <div key={s.label} className="p-8 sm:p-10 bg-white border border-gray-200 rounded-3xl flex flex-col">
               <div
                 className="text-5xl lg:text-6xl font-serif text-[#39471D] font-bold mb-3 tabular-nums"
                 ref={(el) => { numRefs.current[i] = el; }}

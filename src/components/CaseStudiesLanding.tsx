@@ -79,7 +79,7 @@ function CaseCard({ c }: { c: CaseStudy }) {
     return (
       <div
         aria-disabled="true"
-        className="flex h-full min-h-[300px] flex-col border border-gray-100 rounded-3xl p-8 bg-gray-50/60"
+        className="flex h-full min-h-[300px] flex-col border border-gray-200 rounded-3xl p-8 bg-gray-50/60"
       >
         {body}
       </div>
@@ -89,7 +89,7 @@ function CaseCard({ c }: { c: CaseStudy }) {
   return (
     <a
       href={`/thallo-digital/results/${c.slug}/`}
-      className="group flex h-full min-h-[300px] flex-col border border-gray-100 rounded-3xl p-8 bg-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.06)] transition-shadow duration-300"
+      className="group flex h-full min-h-[300px] flex-col border border-gray-200 rounded-3xl p-8 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] hover:shadow-[0_16px_40px_-14px_rgba(23,26,16,0.22)] transition-shadow duration-300"
     >
       {body}
     </a>
@@ -127,7 +127,7 @@ export default function CaseStudiesLanding() {
       </section>
 
       {/* ── Introduction ─────────────────────────────────────────────────── */}
-      <section className="bg-[#F4FAF5] py-16 2xl:py-24 border-b border-gray-100">
+      <section className="bg-[#F3F4F6] py-16 2xl:py-24 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] lg:gap-16">
             <div>

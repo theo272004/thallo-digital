@@ -32,7 +32,7 @@ const ARTICLES = [
 export default function Testimonials() {
   return (
     /* id="blog" is the target the navbar and footer have always pointed at. */
-    <section className="bg-[#F4FAF5] py-20 2xl:py-24 border-b border-gray-100" id="blog">
+    <section className="bg-[#F3F4F6] py-20 2xl:py-24 border-b border-gray-100" id="blog">
       <div className="max-w-[1440px] mx-auto px-6">
 
         <div className="flex flex-col items-center text-center mb-12">
@@ -48,7 +48,7 @@ export default function Testimonials() {
             <article
               key={a.title}
               data-reveal
-              className="border border-gray-100 rounded-3xl p-8 bg-white flex flex-col items-center text-center hover:shadow-[0_8px_32px_rgba(0,0,0,0.06)] transition-shadow duration-300"
+              className="border border-gray-200 rounded-3xl p-8 bg-white flex flex-col items-center text-center shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] hover:shadow-[0_16px_40px_-14px_rgba(23,26,16,0.22)] transition-shadow duration-300"
             >
               <span className="text-[10px] font-bold tracking-[0.15em] uppercase text-[#39471D] bg-[#39471D]/10 px-2.5 py-1 rounded-full">
                 {a.badge}

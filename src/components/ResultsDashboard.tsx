@@ -54,7 +54,7 @@ export default function ResultsDashboard() {
 
   return (
     <section
-      className="bg-[#F4FAF5] py-20 2xl:py-24 border-b border-gray-100"
+      className="bg-[#F3F4F6] py-20 2xl:py-24 border-b border-gray-100"
       id="results"
       ref={containerRef}
     >
@@ -83,7 +83,7 @@ export default function ResultsDashboard() {
           <div className="relative">
 
             {/* Dashboard card */}
-            <div className="bg-white border border-gray-100 rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.05)]">
+            <div className="bg-white border border-gray-200 rounded-3xl shadow-[0_20px_60px_-16px_rgba(23,26,16,0.16)]">
 
               {/* Chrome bar */}
               <div className="border-b border-gray-50 px-6 py-4 flex items-center gap-2 bg-gray-50/40 rounded-t-3xl">
@@ -165,7 +165,7 @@ export default function ResultsDashboard() {
             {/* Floating card — peeks out below-left of dashboard */}
             <div
               ref={floatRef}
-              className="absolute -left-3 -bottom-8 bg-white border border-gray-100 px-5 py-4 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] z-20 flex flex-col gap-1 pointer-events-none"
+              className="absolute -left-3 -bottom-8 bg-white border border-gray-200 px-5 py-4 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.08)] z-20 flex flex-col gap-1 pointer-events-none"
             >
               <span className="text-[22px] font-bold text-[#39471D] leading-none">+420%</span>
               <span className="text-[11px] font-bold tracking-[0.14em] uppercase text-gray-400">

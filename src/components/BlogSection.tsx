@@ -101,7 +101,7 @@ export default function BlogSection() {
             return (
               <div
                 key={i}
-                className="w-[300px] flex-shrink-0 bg-white border border-gray-100 rounded-3xl p-8 flex flex-col gap-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]"
+                className="w-[300px] flex-shrink-0 bg-white border border-gray-200 rounded-3xl p-8 flex flex-col gap-5 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)]"
                 style={{
                   animation: `card-float ${FLOAT_S}s ease-in-out infinite`,
                   animationDelay: `${delay}s`,

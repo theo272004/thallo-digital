@@ -193,7 +193,7 @@ export default function IndustriesPage() {
                 className={`relative overflow-hidden rounded-3xl p-8 flex flex-col gap-5 transition-all duration-300 min-h-[240px] ${
                   ind.type === 'phrase'
                     ? 'bg-[#39471D] border border-[#39471D] hover:-translate-y-1 hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,0.55)]'
-                    : 'bg-gray-50/60 border border-gray-100 hover:-translate-y-1 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-30px_rgba(57,71,29,0.2)]'
+                    : 'bg-gray-50/60 border border-gray-200 hover:-translate-y-1 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-30px_rgba(57,71,29,0.2)]'
                 }`}
               >
                 {ind.type === 'metric' ? (
@@ -236,7 +236,7 @@ export default function IndustriesPage() {
                    rises while they fall and vice versa. A NEGATIVE delay of
                    half the duration starts it already mid-cycle — a positive
                    one would hold all three still for three seconds first. */
-                className={`quote-float bg-white border border-gray-100 rounded-3xl p-8 flex flex-col gap-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]`}
+                className={`quote-float bg-white border border-gray-200 rounded-3xl p-8 flex flex-col gap-5 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)]`}
                 style={{ animationDelay: i === 1 ? '-3s' : '0s' }}
               >
                 {/* Stars — olive and 13px, matching the home carousel */}

@@ -276,7 +276,7 @@ export default function ServicesPage() {
                     className={`relative overflow-hidden p-8 rounded-3xl flex flex-col h-full transition-all duration-500 hover:-translate-y-1 ${
                       isFeatured
                         ? 'bg-[#39471D] border border-[#39471D] shadow-[0_2px_6px_rgba(57,71,29,0.35),0_10px_28px_-4px_rgba(57,71,29,0.55)]'
-                        : 'bg-gray-50/60 border border-gray-100 hover:border-[#55672E]/20'
+                        : 'bg-gray-50/60 border border-gray-200 hover:border-[#55672E]/20'
                     }`}
                   >
                     {isFeatured && (
@@ -385,7 +385,7 @@ export default function ServicesPage() {
                 same shell, same hairlines, same heading type. It was a grid of
                 divs, which read to a screen reader as a pile of unrelated text
                 rather than a comparison. */}
-            <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_2px_14px_rgba(20,20,18,0.05)]">
+            <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)]">
               {/* A phone gets two clean screens rather than one and a sliver of
                   the next. The table is exactly twice the panel wide below sm,
                   so the feature column fills the first screenful on its own and

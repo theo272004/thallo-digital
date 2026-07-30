@@ -147,7 +147,7 @@ export default function ResultsLanding() {
       </section>
 
       {/* ── Headline figures, on the photo panel ─────────────────────────── */}
-      <section className="bg-[#F4FAF5] py-16 2xl:py-20 border-b border-gray-100">
+      <section className="bg-[#F3F4F6] py-16 2xl:py-20 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
           <div
             className="relative overflow-hidden rounded-[28px] px-10 py-12 sm:px-16 sm:py-14"
@@ -224,7 +224,7 @@ export default function ResultsLanding() {
           {/* The panel and its totals animate as one arrival, so they share a
               scope and a single ScrollTrigger. */}
           <div ref={tableRef}>
-          <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-[0_2px_14px_rgba(20,20,18,0.05)]">
+          <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)]">
             {/* Wide content scrolls inside its own panel, never the page.
                 overflow-y-hidden is not redundant: setting one axis to `auto`
                 computes the other from `visible` to `auto` too, so the 12px the
@@ -307,7 +307,7 @@ export default function ResultsLanding() {
               <div
                 key={c.lbl}
                 data-tile
-                className="min-w-[150px] flex-1 rounded-2xl border border-gray-100 bg-white px-4 py-3 shadow-[0_14px_34px_-12px_rgba(20,20,18,0.22)] md:flex-none"
+                className="min-w-[150px] flex-1 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-[0_14px_34px_-12px_rgba(20,20,18,0.22)] md:flex-none"
               >
                 <div className="whitespace-nowrap font-serif text-2xl font-bold leading-none text-[#39471D] tabular-nums">
                   {c.fig}{c.suffix}
@@ -321,7 +321,7 @@ export default function ResultsLanding() {
       </section>
 
       {/* ── The compounding effect ───────────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#F4FAF5] py-16 2xl:py-20 border-b border-gray-100">
+      <section className="relative overflow-hidden bg-[#F3F4F6] py-16 2xl:py-20 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="max-w-2xl mb-10">
             <Eyebrow className="mb-4">Why it worked</Eyebrow>
@@ -355,7 +355,7 @@ export default function ResultsLanding() {
                 over a name and a label. */}
             <div data-reveal>
               <div className="relative">
-                <div className="relative overflow-hidden rounded-[28px] border border-gray-100 bg-white p-7 sm:p-9 shadow-[0_40px_90px_-40px_rgba(23,26,16,0.35)]">
+                <div className="relative overflow-hidden rounded-[28px] border border-gray-200 bg-white p-7 sm:p-9 shadow-[0_40px_90px_-40px_rgba(23,26,16,0.35)]">
                   {/* The mark, the way the reference carries its own */}
                   <div className="mb-8 flex items-center gap-3">
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#39471D]">

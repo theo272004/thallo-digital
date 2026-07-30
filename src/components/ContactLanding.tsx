@@ -305,7 +305,7 @@ export default function ContactLanding() {
                 key={r.href}
                 href={r.href}
                 data-reveal
-                className="group rounded-[28px] border border-gray-100 bg-white p-8 transition-all duration-300
+                className="group rounded-[28px] border border-gray-200 bg-white p-8 transition-all duration-300
                            hover:border-[#39471D]/25 hover:shadow-[0_28px_60px_-40px_rgba(57,71,29,0.5)]"
               >
                 <p className="text-lg font-bold text-gray-900 mb-2">{r.label}</p>
