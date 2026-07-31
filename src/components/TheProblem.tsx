@@ -80,7 +80,7 @@ export default function TheProblem() {
         {/* ── Stat cards — three equal columns below the image ─────── */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-8">
           {STATS.map((s, i) => (
-            <div key={s.label} className="p-8 sm:p-10 bg-white border border-gray-200 rounded-3xl flex flex-col">
+            <div key={s.label} className="p-8 sm:p-10 bg-white border border-gray-200 rounded-3xl shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] flex flex-col">
               <div
                 className="text-5xl lg:text-6xl font-serif text-[#39471D] font-bold mb-3 tabular-nums"
                 ref={(el) => { numRefs.current[i] = el; }}

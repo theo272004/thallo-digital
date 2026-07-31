@@ -256,9 +256,9 @@ export default function HowItWorks() {
               <div
                 ref={circle1Ref}
                 className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
-                style={{ backgroundColor: '#E7ECD9', transform: 'scale(0)', opacity: 0 }}
+                style={{ backgroundColor: '#39471D', transform: 'scale(0)', opacity: 0 }}
               >
-                <span className="text-[11px] font-semibold" style={{ color: '#39471D' }}>01</span>
+                <span className="text-[11px] font-semibold text-white">01</span>
               </div>
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Expert content</h3>
@@ -273,9 +273,9 @@ export default function HowItWorks() {
               <div
                 ref={circle2Ref}
                 className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
-                style={{ backgroundColor: '#E7ECD9', transform: 'scale(0)', opacity: 0 }}
+                style={{ backgroundColor: '#39471D', transform: 'scale(0)', opacity: 0 }}
               >
-                <span className="text-[11px] font-semibold" style={{ color: '#39471D' }}>02</span>
+                <span className="text-[11px] font-semibold text-white">02</span>
               </div>
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Technical infrastructure</h3>
@@ -290,9 +290,9 @@ export default function HowItWorks() {
               <div
                 ref={circle3Ref}
                 className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
-                style={{ backgroundColor: '#E7ECD9', transform: 'scale(0)', opacity: 0 }}
+                style={{ backgroundColor: '#39471D', transform: 'scale(0)', opacity: 0 }}
               >
-                <span className="text-[11px] font-semibold" style={{ color: '#39471D' }}>03</span>
+                <span className="text-[11px] font-semibold text-white">03</span>
               </div>
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Distribution</h3>
@@ -307,9 +307,9 @@ export default function HowItWorks() {
               <div
                 ref={circle4Ref}
                 className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
-                style={{ backgroundColor: '#E7ECD9', transform: 'scale(0)', opacity: 0 }}
+                style={{ backgroundColor: '#39471D', transform: 'scale(0)', opacity: 0 }}
               >
-                <span className="text-[11px] font-semibold" style={{ color: '#39471D' }}>04</span>
+                <span className="text-[11px] font-semibold text-white">04</span>
               </div>
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Coherence</h3>
