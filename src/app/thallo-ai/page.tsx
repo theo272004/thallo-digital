@@ -9,12 +9,12 @@ export const metadata: Metadata = {
   title: 'Check my visibility',
   description:
     'Free AI visibility scan. We ask ChatGPT, Claude and Gemini the questions your buyers ask and count how often your brand is named — with every question and result shown.',
-  alternates: { canonical: 'https://theo272004.github.io/thallo-digital/thallo-ai/' },
+  alternates: { canonical: 'https://thallodigital.com/thallo-ai/' },
   openGraph: {
     title: 'Check my visibility · Thallo Digital',
     description:
       'Free AI visibility scan. We ask ChatGPT, Claude and Gemini the questions your buyers ask and count how often your brand is named.',
-    url: 'https://theo272004.github.io/thallo-digital/thallo-ai/',
+    url: 'https://thallodigital.com/thallo-ai/',
   },
 };
 

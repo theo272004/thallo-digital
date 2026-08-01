@@ -21,12 +21,12 @@ export const metadata: Metadata = {
   title: 'How the AI visibility scan works',
   description:
     'The method behind the Thallo visibility scan: the fifteen questions, the models, the scoring weights, and what the scan cannot tell you.',
-  alternates: { canonical: 'https://theo272004.github.io/thallo-digital/thallo-ai/method/' },
+  alternates: { canonical: 'https://thallodigital.com/thallo-ai/method/' },
   openGraph: {
     title: 'How the AI visibility scan works · Thallo Digital',
     description:
       'The fifteen questions, the models, the scoring weights, and what the scan cannot tell you.',
-    url: 'https://theo272004.github.io/thallo-digital/thallo-ai/method/',
+    url: 'https://thallodigital.com/thallo-ai/method/',
   },
 };
 

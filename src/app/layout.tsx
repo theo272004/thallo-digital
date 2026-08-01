@@ -21,7 +21,7 @@ const spaceMono = Space_Mono({
   subsets: ["latin"],
 });
 
-const SITE_URL = "https://theo272004.github.io/thallo-digital";
+const SITE_URL = "https://thallodigital.com";
 const DESCRIPTION =
   "We make brands the default citation and recommendation in conversational LLM search answers — ChatGPT, Perplexity, Google AI and Claude.";
 

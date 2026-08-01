@@ -10,12 +10,12 @@ export const metadata: Metadata = {
   title: 'Case Studies',
   description:
     'Engagements written up from platform exports over a named period — what changed, how long it took, and the industries we build authority in.',
-  alternates: { canonical: 'https://theo272004.github.io/thallo-digital/results/' },
+  alternates: { canonical: 'https://thallodigital.com/results/' },
   openGraph: {
     title: 'Case Studies · Thallo Digital',
     description:
       'Engagements written up from platform exports over a named period — what changed, and how long it took.',
-    url: 'https://theo272004.github.io/thallo-digital/results/',
+    url: 'https://thallodigital.com/results/',
   },
 };
 

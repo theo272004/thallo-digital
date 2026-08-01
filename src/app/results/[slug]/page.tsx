@@ -6,7 +6,7 @@ import Footer from '@/components/Footer';
 import ResultsLanding from '@/components/ResultsLanding';
 import { LIVE_CASES, getCaseStudy } from '@/lib/cases';
 
-const SITE_URL = 'https://theo272004.github.io/thallo-digital';
+const SITE_URL = 'https://thallodigital.com';
 
 type Params = { slug: string };
 

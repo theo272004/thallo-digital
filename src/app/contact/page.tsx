@@ -8,12 +8,12 @@ export const metadata: Metadata = {
   title: 'Contact',
   description:
     'Tell us where you want to be found. One conversation is enough to know how AI describes your business today — and what it takes to become the answer it gives first.',
-  alternates: { canonical: 'https://theo272004.github.io/thallo-digital/contact/' },
+  alternates: { canonical: 'https://thallodigital.com/contact/' },
   openGraph: {
     title: 'Contact · Thallo Digital',
     description:
       'Tell us where you want to be found. One conversation is enough to know how AI describes your business today.',
-    url: 'https://theo272004.github.io/thallo-digital/contact/',
+    url: 'https://thallodigital.com/contact/',
   },
 };
 

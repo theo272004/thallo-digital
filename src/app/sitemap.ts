@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { LIVE_CASES } from '@/lib/cases';
 
-const SITE_URL = 'https://theo272004.github.io/thallo-digital';
+const SITE_URL = 'https://thallodigital.com';
 
 // Required by `output: export` — the sitemap is baked at build time.
 export const dynamic = 'force-static';

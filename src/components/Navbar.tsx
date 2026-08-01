@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import { Magnetic } from '@/components/motion';
-import { BASE } from '@/lib/site';
+import { BASE, BLOG_URL } from '@/lib/site';
 
 /**
  * `page` is the route this link owns, when it owns one. The two anchors point
@@ -15,7 +15,8 @@ const LINKS = [
   { label: 'Our Plans', href: `${BASE}/services/`, page: '/services' },
   { label: 'Industries', href: `${BASE}/industries/`, page: '/industries' },
   { label: 'Case Studies', href: `${BASE}/results/`, page: '/results' },
-  { label: 'Blog', href: `${BASE}/#blog` },
+  // WordPress, not a section of this site — so an absolute URL. See BLOG_URL.
+  { label: 'Blog', href: BLOG_URL },
 ];
 
 export default function Navbar() {

@@ -17,3 +17,21 @@
  * anyone having to set up a .env file first.
  */
 export const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? '/thallo-digital';
+
+/**
+ * The canonical home of this site.
+ *
+ * Always the real domain, including in the GitHub Pages build. Pages is a
+ * mirror we use for review; pointing its canonicals at itself would invite
+ * Google to index the mirror and split the site's authority in two.
+ */
+export const SITE_URL = 'https://thallodigital.com';
+
+/**
+ * The blog.
+ *
+ * WordPress, in a subfolder of the same domain — so it is absolute rather than
+ * `${BASE}/blog/`. On the GitHub Pages build there is no /blog/ to link to, and
+ * a relative path would 404 there; the blog only ever exists at one address.
+ */
+export const BLOG_URL = `${SITE_URL}/blog/`;
