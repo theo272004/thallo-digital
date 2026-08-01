@@ -64,6 +64,41 @@ const Label = ({ children }: { children: React.ReactNode }) => (
   <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">{children}</span>
 );
 
+/**
+ * The category the sample questions are rendered with.
+ *
+ * A real one, not a stand-in. The templates read "the best {industry}
+ * companies", so dropping the words "your category" in produced "the best your
+ * category companies" — ungrammatical, and it made a page about precision look
+ * careless. Substituting a genuine category reads the way the prompt actually
+ * reads when it is sent, and highlighting the swapped words shows the mechanism
+ * better than a placeholder ever did.
+ */
+const SAMPLE_CATEGORY = 'fintech & payments';
+
+/** Renders a template with the category filled in and marked. */
+function Filled({ template }: { template: string }) {
+  const parts = template.split('{industry}');
+  return (
+    <>
+      {parts.map((part, i) => (
+        <React.Fragment key={i}>
+          {part}
+          {/* Underlined rather than a filled chip: a chip needs horizontal
+              padding, and that padding renders as a gap in front of the "?"
+              whenever the phrase wraps. An underline marks the substitution
+              just as clearly and sits flush against the punctuation. */}
+          {i < parts.length - 1 && (
+            <span className="font-semibold text-[#39471D] underline decoration-[#CBD0AC] decoration-2 underline-offset-[3px]">
+              {SAMPLE_CATEGORY}
+            </span>
+          )}
+        </React.Fragment>
+      ))}
+    </>
+  );
+}
+
 /** Section shell — white ground, the site's vertical rhythm, hairline divider. */
 const Section = ({ children }: { children: React.ReactNode }) => (
   <section className="border-b border-gray-100 bg-white py-16 2xl:py-28">
@@ -138,6 +173,10 @@ export default function ThalloAIPage() {
 
             <div className="relative overflow-hidden bg-gray-50/60 p-8 sm:p-10">
               <Label>The questions, in full</Label>
+              <p className="mt-5 text-[13px] font-medium leading-relaxed text-gray-500">
+                Shown for <span className="font-bold text-[#39471D]">{SAMPLE_CATEGORY}</span>. Whichever category you
+                pick is swapped into the highlighted words — the rest is sent exactly as written.
+              </p>
               <ol className="relative z-10 mt-6 flex flex-col gap-2.5">
                 {QUESTION_TEMPLATES.map((q, i) => (
                   <li key={q} className="flex gap-3">
@@ -145,7 +184,7 @@ export default function ThalloAIPage() {
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <span className="text-[13px] font-medium leading-snug text-gray-700">
-                      {q.replace('{industry}', 'your category')}
+                      <Filled template={q} />
                     </span>
                   </li>
                 ))}
