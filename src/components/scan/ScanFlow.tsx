@@ -10,6 +10,8 @@ import FullReport from './FullReport';
 import { GRID, GROUND, Micro } from './ui';
 import { IS_LIVE, initialSession, startScan, unlockScan } from '@/lib/scan/engine';
 import { QUESTION_COUNT } from '@/lib/scan/questions';
+import { LIMITS } from '@/lib/scan/limits';
+import { BASE } from '@/lib/site';
 import type { ScanInput, ScanSession } from '@/lib/scan/types';
 
 type Stage = 'setup' | 'scanning' | 'results' | 'report';
@@ -156,8 +158,45 @@ export default function ScanFlow() {
             <FullReport phase1={session.phase1} phase2={session.phase2} />
           )}
         </div>
+
+        <Limits />
       </div>
     </section>
+  );
+}
+
+/**
+ * The honesty strip, kept on the tool itself.
+ *
+ * The full method lives on its own page now, because six sections of
+ * explanation under a working console made the page read as a brochure about a
+ * tool rather than as the tool. But the limits are not explanation — they are
+ * part of the reading. Someone who runs a scan and walks away with a number
+ * should have seen what the number does not cover, without having to click
+ * through to find out.
+ */
+function Limits() {
+  return (
+    <div className="mt-10 border-t border-[#E7ECD9]/15 pt-7">
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <Micro className="text-[#CBD0AC]">What this cannot tell you</Micro>
+        <a
+          href={`${BASE}/thallo-ai/method/`}
+          className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#CBD0AC] underline-offset-4 transition-colors hover:text-white hover:underline"
+        >
+          Read the full method →
+        </a>
+      </div>
+
+      <ul className="mt-5 grid grid-cols-1 gap-x-10 gap-y-3.5 sm:grid-cols-2">
+        {LIMITS.map((l) => (
+          <li key={l} className="flex items-start gap-2.5">
+            <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[#55672E]" />
+            <span className="text-[12px] font-medium leading-relaxed text-[#CBD0AC]">{l}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

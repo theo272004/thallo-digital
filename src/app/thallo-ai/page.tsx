@@ -2,7 +2,7 @@ import React from 'react';
 import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
 import ScanFlow from '@/components/scan/ScanFlow';
-import ThalloAIPage from '@/components/ThalloAIPage';
+
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
@@ -63,11 +63,15 @@ export default function ThalloAI() {
         }}
       />
       <Navbar />
+      {/* The tool, and nothing else.
+          The six-section walkthrough that used to sit under here now lives at
+          /thallo-ai/method/. Stacked, it made this page read as a brochure
+          about a tool rather than as the tool: someone who came to run a scan
+          had to scroll past an explanation of the scan to leave. The limits
+          strip inside the console carries the part that is genuinely part of
+          reading the result. */}
       <main className="flex-grow">
-        {/* The working tool first, on its own dark-green ground — the method
-            below explains what it measures and what it cannot. */}
         <ScanFlow />
-        <ThalloAIPage />
       </main>
       <Footer />
     </div>

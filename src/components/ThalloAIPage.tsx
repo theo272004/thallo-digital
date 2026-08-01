@@ -3,9 +3,10 @@
 import React from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
-import { SplitReveal, scrollToEl } from '@/components/motion';
+import { SplitReveal } from '@/components/motion';
 import AuditCTA from '@/components/AuditCTA';
 import { QUESTION_TEMPLATES } from '@/lib/scan/questions';
+import { LIMITS } from '@/lib/scan/limits';
 import { BASE } from '@/lib/site';
 
 /* The site-wide card shadow — one edge, one shadow, everywhere. */
@@ -38,13 +39,6 @@ const SIGNALS: [string, number, string][] = [
   ['Structured FAQ schema', 10, 'A marked-up answer can be lifted whole; a paragraph gets paraphrased away.'],
   ['HTTPS', 5, 'Table stakes, scored because its absence is disqualifying.'],
   ['llms.txt', 0, 'Listed and deliberately not scored — no major AI system is known to read it, so its absence costs nothing.'],
-];
-
-const LIMITS = [
-  'Models are asked once each, on the day you run it. Answers drift week to week, so a single scan is a snapshot rather than a trend.',
-  'We ask in English, from our servers. A model that personalises by location or account history may answer your buyers differently.',
-  'A brand sharing its name with something more famous will pick up mentions that are not about you. The audit trail is there so you can see when that has happened.',
-  'Google AI Overview is read through a search-results provider, not an API Google publishes. It is reported as not measured rather than guessed at when that lookup is unavailable.',
 ];
 
 /* ── Primitives ─────────────────────────────────────────────────────────── */
@@ -118,25 +112,21 @@ export default function ThalloAIPage() {
   return (
     <>
       {/* ── Intro ────────────────────────────────────────────────────────── */}
-      <section className="border-b border-gray-100 bg-white py-16 2xl:py-24">
+      <section className="border-b border-gray-100 bg-white pt-32 pb-16 2xl:pt-40 2xl:pb-24">
         <div className="mx-auto flex max-w-[1440px] flex-col items-center px-6 text-center">
           <Eyebrow center className="mb-5">
             How the scan works
           </Eyebrow>
-          <h2 className="mb-6 max-w-3xl text-balance font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
+          <h1 className="mb-6 max-w-3xl text-balance font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
             No black box. Here is exactly what it measures.
-          </h2>
+          </h1>
           <p className="mb-8 max-w-[58ch] text-base font-medium leading-relaxed text-gray-500">
             A visibility score you cannot check is a number somebody made up. Everything below describes the method —
             the questions, the models, the weights and the limits — so you can decide for yourself whether the figure
             the console gives you means anything.
           </p>
           <a
-            href="#tool"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToEl('#tool');
-            }}
+            href={`${BASE}/thallo-ai/`}
             className="inline-flex items-center gap-2 text-sm font-semibold text-[#39471D] transition-colors hover:text-[#55672E]"
           >
             Run the scan <ArrowUpRight className="text-[11px]" />
