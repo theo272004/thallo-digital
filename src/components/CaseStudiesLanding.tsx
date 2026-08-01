@@ -6,6 +6,7 @@ import SpinFlower from '@/components/ui/SpinFlower';
 import { SplitReveal, useRevealBatch } from '@/components/motion';
 import AuditCTA from '@/components/AuditCTA';
 import { CASES, CASE_INDUSTRIES, type CaseStudy } from '@/lib/cases';
+import { BASE } from '@/lib/site';
 
 /**
  * The index for /results/ — hero, introduction, the list with its industry
@@ -91,7 +92,7 @@ function CaseCard({ c }: { c: CaseStudy }) {
 
   return (
     <a
-      href={`/thallo-digital/results/${c.slug}/`}
+      href={`${BASE}/results/${c.slug}/`}
       className="group flex h-full min-h-[300px] flex-col border border-gray-200 rounded-3xl p-8 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] hover:shadow-[0_16px_40px_-14px_rgba(23,26,16,0.22)] transition-shadow duration-300"
     >
       {body}
@@ -216,7 +217,7 @@ export default function CaseStudiesLanding() {
       {/* Scrim because this photograph carries lit wood on the side the copy
           sits on, and white type has to clear AA over it. */}
       <AuditCTA
-        image="/thallo-digital/results-bg.webp"
+        image={`${BASE}/results-bg.webp`}
         scrim
         eyebrow="Your turn"
         heading="Start with the evidence."

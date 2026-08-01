@@ -7,6 +7,7 @@ import SpinFlower from '@/components/ui/SpinFlower';
 import EngagementSteps from '@/components/EngagementSteps';
 import AuditCTA from '@/components/AuditCTA';
 import { Magnetic } from '@/components/motion';
+import { BASE } from '@/lib/site';
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -298,7 +299,7 @@ export default function ServicesPage() {
                   >
                     {isFeatured && (
                       <img loading="lazy" decoding="async"
-                        src="/thallo-digital/isotipo.png"
+                        src={`${BASE}/isotipo.png`}
                         alt=""
                         aria-hidden="true"
                         /* Sat on the corner rather than tucked inside it. At
@@ -553,7 +554,7 @@ export default function ServicesPage() {
           resetting here. This page is the only one that has a builder to feed
           it; everywhere else the form opens on the three plans. */}
       <AuditCTA
-        image="/thallo-digital/cta-bg-services.webp"
+        image={`${BASE}/cta-bg-services.webp`}
         eyebrow="Ready?"
         /* Broken by hand: left to wrap it took three lines and stretched the
            panel with it. */

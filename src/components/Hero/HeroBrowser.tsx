@@ -1,4 +1,5 @@
 import React from 'react';
+import { BASE } from '@/lib/site';
 
 interface HeroBrowserProps {
   activeIndex: number; // 0 ChatGPT · 1 Google · 2 Perplexity · 3 Forbes
@@ -6,10 +7,10 @@ interface HeroBrowserProps {
 }
 
 const TABS = [
-  { key: 'chatgpt', logo: '/thallo-digital/logos/chatgpt.svg', label: 'ChatGPT', url: 'chatgpt.com' },
-  { key: 'google', logo: '/thallo-digital/logos/google.svg', label: 'Google', url: 'google.com' },
-  { key: 'perplexity', logo: '/thallo-digital/logos/perplexity.png', label: 'Perplexity', url: 'perplexity.ai' },
-  { key: 'forbes', logo: '/thallo-digital/logos/forbes.svg', label: 'Forbes', url: 'forbes.com' },
+  { key: 'chatgpt', logo: `${BASE}/logos/chatgpt.svg`, label: 'ChatGPT', url: 'chatgpt.com' },
+  { key: 'google', logo: `${BASE}/logos/google.svg`, label: 'Google', url: 'google.com' },
+  { key: 'perplexity', logo: `${BASE}/logos/perplexity.png`, label: 'Perplexity', url: 'perplexity.ai' },
+  { key: 'forbes', logo: `${BASE}/logos/forbes.svg`, label: 'Forbes', url: 'forbes.com' },
 ];
 
 /**
@@ -98,7 +99,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
               </div>
               <div className="flex gap-2.5 items-start">
                 <span className="w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center p-1 flex-shrink-0">
-                  <img src="/thallo-digital/logos/chatgpt.svg" alt="ChatGPT" className="w-full h-full object-contain" />
+                  <img src={`${BASE}/logos/chatgpt.svg`} alt="ChatGPT" className="w-full h-full object-contain" />
                 </span>
                 <div className="flex-1">
                   <div className="text-[12.5px] leading-relaxed text-gray-800">
@@ -137,7 +138,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
           <div className="w-1/4 h-full flex-shrink-0 overflow-hidden">
             <div className="p-6">
               <div className="flex items-center gap-3 mb-5">
-                <img src="/thallo-digital/logos/google.svg" alt="Google" className="h-5 w-5" />
+                <img src={`${BASE}/logos/google.svg`} alt="Google" className="h-5 w-5" />
                 <span className="text-[15px] font-bold"><span className="text-[#4285F4]">G</span><span className="text-[#EA4335]">o</span><span className="text-[#FBBC05]">o</span><span className="text-[#4285F4]">g</span><span className="text-[#34A853]">l</span><span className="text-[#EA4335]">e</span></span>
                 <div className="flex-1 h-8 rounded-full border border-gray-200 flex items-center px-3.5 text-[12px] text-gray-500 shadow-sm">best AI visibility agency for companies</div>
               </div>
@@ -163,7 +164,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
             <div className="px-7 py-6">
               <div className="flex items-center gap-2 mb-5">
                 <span className="w-5 h-5 flex items-center justify-center flex-shrink-0">
-                  <img src="/thallo-digital/logos/perplexity.png" alt="Perplexity" className="w-full h-full object-contain" />
+                  <img src={`${BASE}/logos/perplexity.png`} alt="Perplexity" className="w-full h-full object-contain" />
                 </span>
                 <span className="text-[13px] font-semibold text-gray-700">Perplexity</span>
               </div>
@@ -199,7 +200,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
           <div className="w-1/4 h-full flex-shrink-0 overflow-hidden">
             <div className="p-6">
               <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-4">
-                <img src="/thallo-digital/logos/forbes.svg" alt="Forbes" className="h-5" />
+                <img src={`${BASE}/logos/forbes.svg`} alt="Forbes" className="h-5" />
                 <div className="hidden sm:flex items-center gap-3 text-[11px] font-bold tracking-wider uppercase text-gray-400">
                   <span>Business</span>
                   <span>Innovation</span>

@@ -5,6 +5,7 @@ import SpinFlower from '@/components/ui/SpinFlower';
 import AuditCTA from '@/components/AuditCTA';
 import { SplitReveal } from '@/components/motion';
 import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
+import { BASE } from '@/lib/site';
 
 /**
  * A real engagement, anonymised. Every figure traces back to a Search Console
@@ -127,7 +128,7 @@ export default function ResultsLanding() {
           {/* This page used to BE /results/; it now sits under it, so it needs a
               way back up to the index that lists it. */}
           <a
-            href="/thallo-digital/results/"
+            href={`${BASE}/results/`}
             className="mb-5 inline-flex items-center gap-1.5 text-sm font-semibold text-gray-400 transition-colors hover:text-[#39471D]"
           >
             <span aria-hidden="true">&larr;</span> All case studies
@@ -152,7 +153,7 @@ export default function ResultsLanding() {
           <div
             className="relative overflow-hidden rounded-[28px] px-10 py-12 sm:px-16 sm:py-14"
             style={{
-              backgroundImage: 'url(/thallo-digital/measured-bg.webp)',
+              backgroundImage: `url(${BASE}/measured-bg.webp)`,
               backgroundSize: 'cover',
               // As high as the crop allows without enlarging the picture. The
               // photograph is 2.48:1 against a 2.63:1 panel, so `cover` leaves
@@ -368,7 +369,7 @@ export default function ResultsLanding() {
                       <img
                         loading="lazy"
                         decoding="async"
-                        src="/thallo-digital/isotipo.png"
+                        src={`${BASE}/isotipo.png`}
                         alt=""
                         aria-hidden="true"
                         className="h-6 w-6 object-contain select-none"
@@ -404,7 +405,7 @@ export default function ResultsLanding() {
       {/* The photograph is this page's own — cta-bg is still the home's closing
           shot — and its left edge carries lit wood, hence the scrim. */}
       <AuditCTA
-        image="/thallo-digital/results-bg.webp"
+        image={`${BASE}/results-bg.webp`}
         scrim
         eyebrow="Your turn"
         heading="See where you stand today."

@@ -1,6 +1,7 @@
 import React from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
+import { BASE } from '@/lib/site';
 
 /* Despite the file name, this is the resources library — the review carousel
    lives in BlogSection.tsx.
@@ -105,7 +106,7 @@ export default function Testimonials() {
             {/* Half on the corner, half cropped by it — the same mark placement
                 as the featured plan card, so the two read as one family. */}
             <img loading="lazy" decoding="async"
-              src="/thallo-digital/isotipo.png"
+              src={`${BASE}/isotipo.png`}
               alt=""
               aria-hidden="true"
               className="pointer-events-none absolute -top-[10.5rem] -right-[10.5rem] w-[26rem] rotate-[18deg] opacity-[0.11] select-none"

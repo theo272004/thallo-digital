@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { BASE } from '@/lib/site';
 
 export default function VideoSection() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,7 +15,7 @@ export default function VideoSection() {
               deepens while the video panel is open so the frame reads as the
               foreground instead of competing with the photo. */}
           <img loading="lazy" decoding="async"
-            src="/thallo-digital/case-film-bg.webp"
+            src={`${BASE}/case-film-bg.webp`}
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
           />

@@ -3,6 +3,7 @@ import React from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import SpinFlower from '@/components/ui/SpinFlower';
 import AuditCTA from '@/components/AuditCTA';
+import { BASE } from '@/lib/site';
 
 const STATS = [
   {
@@ -117,7 +118,7 @@ export default function IndustriesPage() {
           <div
             className="relative overflow-hidden rounded-[28px] px-10 py-14 sm:px-16 sm:py-20"
             style={{
-              backgroundImage: 'url(/thallo-digital/buyers-bg.webp)',
+              backgroundImage: `url(${BASE}/buyers-bg.webp)`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }}
@@ -280,7 +281,7 @@ export default function IndustriesPage() {
 
       {/* CTA */}
       <AuditCTA
-        image="/thallo-digital/cta-bg-industries.webp"
+        image={`${BASE}/cta-bg-industries.webp`}
         eyebrow="Your market"
         heading="Be the one they already trust."
         copy="Start with an audit tuned to your industry. See where you stand against the names winning your category."

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import { Magnetic } from '@/components/motion';
+import { BASE } from '@/lib/site';
 
 /**
  * `page` is the route this link owns, when it owns one. The two anchors point
@@ -11,10 +12,10 @@ import { Magnetic } from '@/components/motion';
  * marking them would claim you are somewhere you are not.
  */
 const LINKS = [
-  { label: 'Our Plans', href: '/thallo-digital/services/', page: '/services' },
-  { label: 'Industries', href: '/thallo-digital/industries/', page: '/industries' },
-  { label: 'Case Studies', href: '/thallo-digital/results/', page: '/results' },
-  { label: 'Blog', href: '/thallo-digital/#blog' },
+  { label: 'Our Plans', href: `${BASE}/services/`, page: '/services' },
+  { label: 'Industries', href: `${BASE}/industries/`, page: '/industries' },
+  { label: 'Case Studies', href: `${BASE}/results/`, page: '/results' },
+  { label: 'Blog', href: `${BASE}/#blog` },
 ];
 
 export default function Navbar() {
@@ -65,8 +66,8 @@ export default function Navbar() {
             : 'bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_12px_36px_-18px_rgba(57,71,29,0.22)]'
         }`}
       >
-        <a href="/thallo-digital/" className="flex items-center gap-2 group shrink-0">
-          <img src="/thallo-digital/logo.png" alt="Thallo Digital" className="h-9 sm:h-11 object-contain" />
+        <a href={`${BASE}/`} className="flex items-center gap-2 group shrink-0">
+          <img src={`${BASE}/logo.png`} alt="Thallo Digital" className="h-9 sm:h-11 object-contain" />
         </a>
 
         {/* Desktop Menu — the page you are on wears the hover colour for good */}
@@ -91,13 +92,13 @@ export default function Navbar() {
         {/* Right CTA */}
         <div className="hidden md:flex items-center gap-3 shrink-0">
           <a
-            href="/thallo-digital/thallo-ai/"
+            href={`${BASE}/thallo-ai/`}
             className="px-4 py-2 border border-gray-200 rounded-full text-sm font-semibold text-gray-800 hover:border-gray-400 hover:bg-gray-50 transition-all"
           >
             Check my visibility <ArrowUpRight className="ml-0.5" />
           </a>
           <Magnetic>
-            <a href="/thallo-digital/contact/" className="px-4 py-2 bg-[#39471D] border border-[#39471D] rounded-full text-sm font-semibold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all">
+            <a href={`${BASE}/contact/`} className="px-4 py-2 bg-[#39471D] border border-[#39471D] rounded-full text-sm font-semibold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all">
               Book an audit <ArrowUpRight className="ml-0.5" />
             </a>
           </Magnetic>
@@ -128,8 +129,8 @@ export default function Navbar() {
     {mobileMenuOpen && (
       <div className="fixed inset-0 z-[60] bg-white p-8 flex flex-col gap-8 overscroll-contain">
         <div className="flex items-start justify-between">
-          <a href="/thallo-digital/" onClick={() => setMobileMenuOpen(false)}>
-            <img src="/thallo-digital/logo.png" alt="Thallo Digital" className="h-9 object-contain" />
+          <a href={`${BASE}/`} onClick={() => setMobileMenuOpen(false)}>
+            <img src={`${BASE}/logo.png`} alt="Thallo Digital" className="h-9 object-contain" />
           </a>
           <button
             className="w-11 h-11 -mt-1 rounded-full border border-gray-200 flex items-center justify-center text-gray-800 shrink-0"
@@ -163,8 +164,8 @@ export default function Navbar() {
           })}
         </div>
         <div className="flex flex-col gap-4 mt-auto">
-          <a href="/thallo-digital/thallo-ai/" onClick={() => setMobileMenuOpen(false)} className="w-full py-3.5 border border-gray-200 rounded-full text-center text-sm font-bold text-gray-800">Check my visibility <ArrowUpRight className="ml-0.5" /></a>
-          <a href="/thallo-digital/contact/" onClick={() => setMobileMenuOpen(false)} className="w-full py-3.5 bg-[#39471D] rounded-full text-center text-sm font-bold text-white">Book an audit <ArrowUpRight className="ml-0.5" /></a>
+          <a href={`${BASE}/thallo-ai/`} onClick={() => setMobileMenuOpen(false)} className="w-full py-3.5 border border-gray-200 rounded-full text-center text-sm font-bold text-gray-800">Check my visibility <ArrowUpRight className="ml-0.5" /></a>
+          <a href={`${BASE}/contact/`} onClick={() => setMobileMenuOpen(false)} className="w-full py-3.5 bg-[#39471D] rounded-full text-center text-sm font-bold text-white">Book an audit <ArrowUpRight className="ml-0.5" /></a>
         </div>
       </div>
     )}

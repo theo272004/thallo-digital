@@ -3,6 +3,7 @@ import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
 import IndustryTicker from '@/components/ui/IndustryTicker';
 import SpinFlower from '@/components/ui/SpinFlower';
+import { BASE } from '@/lib/site';
 
 export default function About() {
   return (
@@ -79,7 +80,7 @@ export default function About() {
       {/* Phone + coffee — LEFT, lower to align with "our clients" in body paragraph.
           ~80px below section center. Right edge 6px inside text-block left edge. */}
       <img loading="lazy" decoding="async"
-        src="/thallo-digital/cel-cafe.webp"
+        src={`${BASE}/cel-cafe.webp`}
         alt=""
         aria-hidden="true"
         className="hidden xl:block absolute pointer-events-none select-none"
@@ -97,7 +98,7 @@ export default function About() {
       {/* Laptop — RIGHT, slightly above center to align with "built for" (heading line 1).
           Moved left so leading edge nearly touches the last word of that line. */}
       <img loading="lazy" decoding="async"
-        src="/thallo-digital/pc-about.webp"
+        src={`${BASE}/pc-about.webp`}
         alt=""
         aria-hidden="true"
         className="hidden xl:block absolute pointer-events-none select-none"

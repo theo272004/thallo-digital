@@ -8,6 +8,7 @@ import PlanChips from '@/components/ui/PlanChips';
 import ConsentCheck from '@/components/ui/ConsentCheck';
 import { ENQUIRY_PLANS } from '@/components/AuditCTA';
 import { SplitReveal, Magnetic, useRevealBatch } from '@/components/motion';
+import { BASE } from '@/lib/site';
 
 /**
  * Where the form posts. The site is a static export (GitHub Pages), so there is
@@ -32,17 +33,17 @@ const labelCls = 'block text-[11px] font-bold text-gray-900 tracking-wider upper
 
 const ROUTES = [
   {
-    href: '/thallo-digital/thallo-ai/',
+    href: `${BASE}/thallo-ai/`,
     label: 'Visibility Check',
     copy: 'Walk through the report we run for clients.',
   },
   {
-    href: '/thallo-digital/services/',
+    href: `${BASE}/services/`,
     label: 'Our Plans',
     copy: 'The audit, the engine, and the flagship work.',
   },
   {
-    href: '/thallo-digital/results/',
+    href: `${BASE}/results/`,
     label: 'Case Studies',
     copy: 'What the work looked like for a real client.',
   },
@@ -133,7 +134,7 @@ export default function ContactLanding() {
         className="sticky top-0 z-0 h-[100svh] -mb-[100svh] overflow-hidden pointer-events-none"
       >
         <img
-          src="/thallo-digital/contact-bg.webp"
+          src={`${BASE}/contact-bg.webp`}
           alt=""
           width={2048}
           height={1152}

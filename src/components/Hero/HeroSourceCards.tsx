@@ -2,16 +2,17 @@
 
 import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { gsap } from '@/lib/gsap';
+import { BASE } from '@/lib/site';
 
 // Resting spots pull OUT past the column edges so the cards sit clearly apart
 // from the phone/browser (which stay centered). 6% still lands inside the
 // section on laptop-width screens (the column sits ~24px in from the viewport),
 // so the right/bottom cards don't clip.
 const CARDS = [
-  { key: 'chatgpt', logo: '/thallo-digital/logos/chatgpt.svg', name: 'ChatGPT', tag: 'Recommends you', pos: 'top-0 -left-[6%]' },
-  { key: 'google', logo: '/thallo-digital/logos/google.svg', name: 'Google', tag: 'AI Overview', pos: 'top-[14%] -right-[6%]' },
-  { key: 'perplexity', logo: '/thallo-digital/logos/perplexity.png', name: 'Perplexity', tag: 'Cited ✓', pos: 'bottom-[14%] -left-[6%]' },
-  { key: 'forbes', logo: '/thallo-digital/logos/forbes.svg', name: 'Forbes', tag: 'Featured', pos: 'bottom-0 -right-[6%]' },
+  { key: 'chatgpt', logo: `${BASE}/logos/chatgpt.svg`, name: 'ChatGPT', tag: 'Recommends you', pos: 'top-0 -left-[6%]' },
+  { key: 'google', logo: `${BASE}/logos/google.svg`, name: 'Google', tag: 'AI Overview', pos: 'top-[14%] -right-[6%]' },
+  { key: 'perplexity', logo: `${BASE}/logos/perplexity.png`, name: 'Perplexity', tag: 'Cited ✓', pos: 'bottom-[14%] -left-[6%]' },
+  { key: 'forbes', logo: `${BASE}/logos/forbes.svg`, name: 'Forbes', tag: 'Featured', pos: 'bottom-0 -right-[6%]' },
 ];
 
 type CardsPhase = 'hidden' | 'burst' | 'gather';

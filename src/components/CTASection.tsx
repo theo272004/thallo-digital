@@ -1,12 +1,13 @@
 import React from 'react';
 import AuditCTA from '@/components/AuditCTA';
 import { SplitReveal } from '@/components/motion';
+import { BASE } from '@/lib/site';
 
 export default function CTASection() {
   return (
     <AuditCTA
       id="cta"
-      image="/thallo-digital/cta-bg.webp"
+      image={`${BASE}/cta-bg.webp`}
       eyebrow="Ready?"
       /* Keeps its own reveal and its italic emphasis, which the shared plain
          heading cannot carry. The home page runs useRevealBatch, so the

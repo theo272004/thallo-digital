@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+import { BASE } from '@/lib/site';
 
 /**
  * The turning isotipo, but you can grab it and flick it.
@@ -24,7 +25,7 @@ type Props = {
   alt?: string;
 };
 
-const SRC = '/thallo-digital/flower.webp';
+const SRC = `${BASE}/flower.webp`;
 
 export default function SpinFlower({ className = '', secondsPerTurn = 30, alt = '' }: Props) {
   const wrapRef = useRef<HTMLSpanElement>(null);

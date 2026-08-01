@@ -1,6 +1,7 @@
 import React from 'react';
 import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
+import { BASE } from '@/lib/site';
 
 export default function Services() {
   const list = [
@@ -78,7 +79,7 @@ export default function Services() {
                   with half of it cropped away by the card. */}
               {svc.featured && (
                 <img loading="lazy" decoding="async"
-                  src="/thallo-digital/isotipo.png"
+                  src={`${BASE}/isotipo.png`}
                   alt=""
                   aria-hidden="true"
                   className="absolute -top-[10.5rem] -right-[10.5rem] w-[26rem] rotate-[18deg] opacity-[0.11] pointer-events-none select-none"

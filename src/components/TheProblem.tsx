@@ -5,6 +5,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
+import { BASE } from '@/lib/site';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -54,7 +55,7 @@ export default function TheProblem() {
         {/* ── Feature card — panoramic, full-width, dark image-backed ── */}
         <div className="relative overflow-hidden rounded-[28px] bg-[#171A10] w-full aspect-[16/6] min-h-[360px] lg:min-h-0">
           <img loading="lazy" decoding="async"
-            src="/thallo-digital/shift.webp"
+            src={`${BASE}/shift.webp`}
             alt="Laptop with an analytics dashboard on a desk beside a sketchbook"
             className="absolute inset-0 w-full h-full object-cover"
           />
