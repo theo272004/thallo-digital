@@ -28,6 +28,21 @@ jobs:
           # the tool runs on sample data behind a "preview mode" banner.
           NEXT_PUBLIC_SCAN_API: ${{ secrets.SCAN_API_URL }}
 
+      # Fails the run before a single byte is uploaded if the destination has
+      # not been set. The default that used to sit in `server-dir` was
+      # /public_html/, which on this account belongs to a DIFFERENT website —
+      # a deploy would have published Thallo over another client's site. A
+      # missing secret must stop the run, not fall back to a plausible guess.
+      - name: Check the destination is configured
+        run: |
+          if [ -z "${{ secrets.BLUEHOST_SERVER_DIR }}" ]; then
+            echo "::error::BLUEHOST_SERVER_DIR is not set."
+            echo "Set it in Settings → Secrets and variables → Actions."
+            echo "It is the Document Root from Bluehost → Websites → Files & Access,"
+            echo "written from the FTP account's home, e.g. /public_html/website_4e8ab97a/"
+            exit 1
+          fi
+
       - name: Deploy to Bluehost via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
@@ -35,7 +50,12 @@ jobs:
           username: ${{ secrets.BLUEHOST_FTP_USERNAME }}
           password: ${{ secrets.BLUEHOST_FTP_PASSWORD }}
           local-dir: ./out/
-          server-dir: /public_html/
+          server-dir: ${{ secrets.BLUEHOST_SERVER_DIR }}
+          # WordPress lives in a subfolder of this same document root and is
+          # never part of the build output. Excluded so that no deploy can
+          # touch the blog, whatever else changes here.
           exclude: |
             **/blog/**
             **/.well-known/**
+            **/cgi-bin/**
+            **/.htaccess
