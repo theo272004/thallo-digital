@@ -23,6 +23,10 @@ jobs:
         run: npm run build
         env:
           DEPLOY_TARGET: bluehost
+          # The scan API root, e.g. https://thallodigital.com/blog/wp-json/thallo/v1
+          # This is a static export, so it is baked in at build time. Left unset,
+          # the tool runs on sample data behind a "preview mode" banner.
+          NEXT_PUBLIC_SCAN_API: ${{ secrets.SCAN_API_URL }}
 
       - name: Deploy to Bluehost via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5

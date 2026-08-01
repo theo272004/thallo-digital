@@ -1,0 +1,245 @@
+<?php
+/**
+ * The REST API the static site talks to.
+ *
+ *   POST thallo/v1/scan                 → start a scan
+ *   POST thallo/v1/scan/{id}/tick       → advance it one step
+ *   POST thallo/v1/scan/{id}/unlock     → hand over an email, open phase 2
+ *   GET  thallo/v1/scan/{id}            → read it back without advancing
+ *   GET  thallo/v1/status               → what is configured (administrators only)
+ *
+ * These endpoints are public and unauthenticated, because the visitor they
+ * serve has no account and the tool would be worthless if they needed one. What
+ * stands between them and somebody running the API bill up is: a per-visitor
+ * daily limit, a whole-site daily limit, and an unguessable scan id.
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+class Thallo_Vis_REST {
+
+	const NS = 'thallo/v1';
+
+	public static function register_routes() {
+		register_rest_route(
+			self::NS,
+			'/scan',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( __CLASS__, 'start' ),
+				'permission_callback' => '__return_true',
+				'args'                => array(
+					'brand'    => array( 'required' => true ),
+					'domain'   => array( 'required' => true ),
+					'industry' => array( 'required' => true ),
+				),
+			)
+		);
+
+		register_rest_route(
+			self::NS,
+			'/scan/(?P<id>[a-f0-9]{32})/tick',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( __CLASS__, 'tick' ),
+				'permission_callback' => '__return_true',
+			)
+		);
+
+		register_rest_route(
+			self::NS,
+			'/scan/(?P<id>[a-f0-9]{32})/unlock',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( __CLASS__, 'unlock' ),
+				'permission_callback' => '__return_true',
+				'args'                => array( 'email' => array( 'required' => true ) ),
+			)
+		);
+
+		register_rest_route(
+			self::NS,
+			'/scan/(?P<id>[a-f0-9]{32})',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( __CLASS__, 'read' ),
+				'permission_callback' => '__return_true',
+			)
+		);
+
+		register_rest_route(
+			self::NS,
+			'/status',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( __CLASS__, 'status' ),
+				'permission_callback' => static function () {
+					// Which keys exist is not the public's business.
+					return current_user_can( 'manage_options' );
+				},
+			)
+		);
+
+		self::send_cors_headers();
+	}
+
+	/**
+	 * CORS.
+	 *
+	 * Not needed in the intended setup — the site sits at the domain root and
+	 * WordPress at /blog/, so the API is same-origin. It exists for local
+	 * development against a remote WordPress, and for the case where the site
+	 * ends up on a different host from the blog. Empty by default: an
+	 * `Access-Control-Allow-Origin: *` on an endpoint that spends money is not a
+	 * default anyone should inherit by accident.
+	 */
+	private static function send_cors_headers() {
+		$allowed = Thallo_Vis_Settings::allowed_origins();
+		if ( ! $allowed ) {
+			return;
+		}
+
+		add_filter(
+			'rest_pre_serve_request',
+			static function ( $served ) use ( $allowed ) {
+				$origin = get_http_origin();
+
+				if ( $origin && in_array( untrailingslashit( $origin ), $allowed, true ) ) {
+					header( 'Access-Control-Allow-Origin: ' . esc_url_raw( $origin ) );
+					header( 'Access-Control-Allow-Methods: POST, GET, OPTIONS' );
+					header( 'Access-Control-Allow-Headers: Content-Type' );
+					header( 'Vary: Origin', false );
+				}
+
+				return $served;
+			}
+		);
+	}
+
+	public static function start( WP_REST_Request $request ) {
+		$brand    = trim( sanitize_text_field( (string) $request->get_param( 'brand' ) ) );
+		$domain   = self::clean_domain( (string) $request->get_param( 'domain' ) );
+		$industry = trim( sanitize_text_field( (string) $request->get_param( 'industry' ) ) );
+
+		if ( '' === $brand || mb_strlen( $brand ) > 80 ) {
+			return new WP_Error( 'bad_brand', __( 'Enter the brand name buyers would search for.', 'thallo-visibility' ), array( 'status' => 400 ) );
+		}
+
+		if ( ! preg_match( '/^[a-z0-9-]+(\.[a-z0-9-]+)+$/', $domain ) ) {
+			return new WP_Error( 'bad_domain', __( 'Enter a valid website, for example yourcompany.com', 'thallo-visibility' ), array( 'status' => 400 ) );
+		}
+
+		if ( '' === $industry || mb_strlen( $industry ) > 120 ) {
+			return new WP_Error( 'bad_industry', __( 'Choose the category you want to be found in.', 'thallo-visibility' ), array( 'status' => 400 ) );
+		}
+
+		$limited = self::check_limits();
+		if ( is_wp_error( $limited ) ) {
+			return $limited;
+		}
+
+		$session = Thallo_Vis_Runner::start( $brand, $domain, $industry );
+
+		return is_wp_error( $session ) ? $session : rest_ensure_response( $session );
+	}
+
+	public static function tick( WP_REST_Request $request ) {
+		$session = Thallo_Vis_Runner::tick( $request->get_param( 'id' ) );
+
+		return is_wp_error( $session ) ? $session : rest_ensure_response( $session );
+	}
+
+	public static function unlock( WP_REST_Request $request ) {
+		$email = sanitize_email( (string) $request->get_param( 'email' ) );
+
+		if ( ! is_email( $email ) ) {
+			return new WP_Error( 'bad_email', __( 'That email address does not look right.', 'thallo-visibility' ), array( 'status' => 400 ) );
+		}
+
+		$session = Thallo_Vis_Runner::unlock( $request->get_param( 'id' ), $email );
+
+		return is_wp_error( $session ) ? $session : rest_ensure_response( $session );
+	}
+
+	public static function read( WP_REST_Request $request ) {
+		$session = Thallo_Vis_Runner::read( $request->get_param( 'id' ) );
+
+		return is_wp_error( $session ) ? $session : rest_ensure_response( $session );
+	}
+
+	/** A diagnostics endpoint for whoever installs this. Never reveals a key. */
+	public static function status() {
+		$serp = Thallo_Vis_Settings::get( 'serp_provider' );
+
+		return rest_ensure_response(
+			array(
+				'version'      => THALLO_VIS_VERSION,
+				'demo'         => Thallo_Vis_Settings::is_demo(),
+				'mode'         => Thallo_Vis_Settings::get( 'provider_mode' ),
+				'models'       => array(
+					'chatgpt'    => Thallo_Vis_Settings::has_model( 'chatgpt' ),
+					'claude'     => Thallo_Vis_Settings::has_model( 'claude' ),
+					'gemini'     => Thallo_Vis_Settings::has_model( 'gemini' ),
+					'perplexity' => Thallo_Vis_Settings::has_model( 'perplexity' ),
+				),
+				'aiOverview'   => 'none' !== $serp ? $serp : false,
+				'questions'    => (int) Thallo_Vis_Settings::get( 'questions' ),
+				'scansToday'   => Thallo_Vis_DB::count_recent_total( gmdate( 'Y-m-d H:i:s', time() - DAY_IN_SECONDS ) ),
+				'dailyLimit'   => (int) Thallo_Vis_Settings::get( 'rate_global' ),
+				'perIpLimit'   => (int) Thallo_Vis_Settings::get( 'rate_per_ip' ),
+			)
+		);
+	}
+
+	private static function clean_domain( $raw ) {
+		$raw = strtolower( trim( $raw ) );
+		$raw = preg_replace( '#^https?://#', '', $raw );
+		$raw = preg_replace( '/^www\./', '', $raw );
+		$raw = preg_replace( '#[/?\#].*$#', '', $raw );
+
+		return $raw;
+	}
+
+	/**
+	 * Two ceilings.
+	 *
+	 * The per-visitor one keeps one person from sitting on the button; the
+	 * whole-site one is the actual protection, because the per-visitor count is
+	 * keyed on an address and addresses are cheap. Neither is security — they
+	 * are a cap on how large a surprise the API bill can be.
+	 */
+	private static function check_limits() {
+		$since = gmdate( 'Y-m-d H:i:s', time() - DAY_IN_SECONDS );
+
+		$per_ip = (int) Thallo_Vis_Settings::get( 'rate_per_ip', 3 );
+		if ( Thallo_Vis_DB::count_recent_for_ip( $since ) >= $per_ip ) {
+			return new WP_Error(
+				'rate_limited',
+				sprintf(
+					/* translators: %d: number of free scans allowed per day. */
+					_n(
+						'That is your free scan for today. Get in touch and we will run the full audit against your category properly.',
+						'That is your %d free scans for today. Get in touch and we will run the full audit against your category properly.',
+						$per_ip,
+						'thallo-visibility'
+					),
+					$per_ip
+				),
+				array( 'status' => 429 )
+			);
+		}
+
+		$global = (int) Thallo_Vis_Settings::get( 'rate_global', 200 );
+		if ( Thallo_Vis_DB::count_recent_total( $since ) >= $global ) {
+			return new WP_Error(
+				'busy',
+				__( 'The scanner has hit its limit for today. Please try again tomorrow, or get in touch and we will run it for you.', 'thallo-visibility' ),
+				array( 'status' => 503 )
+			);
+		}
+
+		return true;
+	}
+}
