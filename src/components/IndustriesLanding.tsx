@@ -96,7 +96,7 @@ export default function IndustriesPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-white pt-32 pb-14 2xl:pt-40 2xl:pb-20 border-b border-gray-100">
+      <section className="bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
           <Eyebrow center className="mb-5">Industries</Eyebrow>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-2xl">
@@ -110,7 +110,9 @@ export default function IndustriesPage() {
       </section>
 
       {/* How buyers decide */}
-      <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
+      {/* Top padding trimmed against the hero's own trailing whitespace — the
+          two together read as one empty screen. */}
+      <section className="bg-white pt-10 pb-16 2xl:pt-14 2xl:pb-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
           <div
             className="relative overflow-hidden rounded-[28px] px-10 py-14 sm:px-16 sm:py-20"

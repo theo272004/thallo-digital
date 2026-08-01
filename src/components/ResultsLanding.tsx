@@ -122,7 +122,7 @@ export default function ResultsLanding() {
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="bg-white pt-32 pb-14 2xl:pt-40 2xl:pb-20 border-b border-gray-100">
+      <section className="bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
           {/* This page used to BE /results/; it now sits under it, so it needs a
               way back up to the index that lists it. */}
@@ -147,7 +147,7 @@ export default function ResultsLanding() {
       </section>
 
       {/* ── Headline figures, on the photo panel ─────────────────────────── */}
-      <section className="bg-[#F7F8F9] py-16 2xl:py-20 border-b border-gray-100">
+      <section className="bg-[#F7F8F9] pt-12 pb-16 2xl:pt-16 2xl:pb-20 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
           <div
             className="relative overflow-hidden rounded-[28px] px-10 py-12 sm:px-16 sm:py-14"

@@ -114,7 +114,7 @@ export default function CaseStudiesLanding() {
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="bg-white pt-32 pb-14 2xl:pt-40 2xl:pb-20 border-b border-gray-100">
+      <section className="bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
           <Eyebrow center className="mb-5">Case studies</Eyebrow>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-4 font-sans max-w-2xl">
@@ -130,7 +130,7 @@ export default function CaseStudiesLanding() {
       </section>
 
       {/* ── Introduction ─────────────────────────────────────────────────── */}
-      <section className="bg-[#F7F8F9] py-16 2xl:py-24 border-b border-gray-100">
+      <section className="bg-[#F7F8F9] pt-12 pb-16 2xl:pt-16 2xl:pb-24 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] lg:gap-16">
             <div>
