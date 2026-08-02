@@ -114,7 +114,7 @@ export default function ScanFlow() {
           </p>
         </div>
 
-        {!IS_LIVE && <DemoNotice />}
+        {(!IS_LIVE || session.demo) && <DemoNotice configured={IS_LIVE} />}
 
         {/* Panel chrome — the strip a tool wears and a brochure does not. */}
         <div className="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[#E7ECD9]/15 px-4 py-2.5">
@@ -201,13 +201,24 @@ function Limits() {
 }
 
 /**
- * Shown for as long as no backend is configured.
+ * Shown whenever the figures are not measurements.
  *
- * The predecessor to this tool showed invented numbers as though they were
- * measured. That is the one failure mode worth a permanent, unmissable banner —
- * so it stays up until `NEXT_PUBLIC_SCAN_API` is set and the numbers are real.
+ * Two ways that happens, and for a while this only covered the first:
+ *
+ *   · no backend is configured at all, so the browser is generating samples;
+ *   · a backend IS configured and is itself returning samples, because no model
+ *     key has been saved on it yet.
+ *
+ * The second case is the dangerous one and it shipped live for an hour. Wiring
+ * the API URL made the banner disappear while the server was still answering
+ * with invented numbers — a page full of figures and nothing saying they were
+ * fiction, which is precisely the failure the tool this replaced was built on.
+ *
+ * `session.demo` comes from the server on every response, and the server is the
+ * only thing that knows whether a key was actually used. Trusting the client's
+ * own configuration to answer that question was the mistake.
  */
-function DemoNotice() {
+function DemoNotice({ configured }: { configured: boolean }) {
   return (
     <div className="mt-8 flex items-start gap-3 rounded-lg border border-[#CBD0AC]/40 bg-[#171A10]/50 px-4 py-3.5">
       <svg
@@ -223,8 +234,11 @@ function DemoNotice() {
         <path d="M12 8v5m0 3.5v.5" />
       </svg>
       <p className="text-[13px] font-medium leading-relaxed text-[#E7ECD9]">
-        <strong className="font-bold text-white">Preview mode.</strong> The model APIs are not connected yet, so the
-        figures below are sample data used to build and review the interface. Nothing here is a real measurement.
+        <strong className="font-bold text-white">Preview mode.</strong>{' '}
+        {configured
+          ? 'The scanner is reachable but has no model key saved yet, so it is returning sample data.'
+          : 'The model APIs are not connected yet, so the figures below are sample data used to build and review the interface.'}{' '}
+        Nothing here is a real measurement.
       </p>
     </div>
   );
