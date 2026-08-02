@@ -149,8 +149,19 @@ class Thallo_Vis_Runner {
 			}
 			$state['queue'] = array_values( $state['queue'] );
 
+			/* Through finish_phase1(), exactly as the live path below does.
+			   This used to return the session directly once the queue emptied,
+			   which skipped the only place the report is built and the only
+			   place the row is marked done: the response said "awaiting-email"
+			   while the stored scan still said "running" and carried no report
+			   at all. A second branch that thinks it can finish a job is a
+			   second branch that has to remember everything finishing means. */
+			if ( empty( $state['queue'] ) ) {
+				return self::finish_phase1( $state );
+			}
+
 			Thallo_Vis_DB::save_state( $state['scan_id'], $state );
-			return self::session( $state, empty( $state['queue'] ) ? null : 'running' );
+			return self::session( $state, 'running' );
 		}
 
 		$jobs  = array();
