@@ -94,24 +94,39 @@ export default function Testimonials() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1.08fr_1fr]">
 
           {/* ── Lead note ─────────────────────────────────────────────────── */}
-          {/* Olive, like the featured plan card and the recommended column —
-              the house way of saying "start here". It also gives the section a
-              focal point, which three equal white boxes never had. */}
+          {/* The photograph, not a flat olive fill — it is the one card in the
+              section that gets to look like a cover, which is what makes the
+              lead read as the lead. The olive underneath still shows while the
+              image loads, and stands in for it if it never does. */}
           <a
             href={HREF}
             onClick={(e) => e.preventDefault()}
             data-reveal
             className="group relative flex flex-col overflow-hidden rounded-3xl border border-[#39471D] bg-[#39471D] p-8 sm:p-10 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,0.55)]"
           >
-            {/* Half on the corner, half cropped by it — the same mark placement
-                as the featured plan card, so the two read as one family. */}
+            {/* No isotipo watermark on this one: the notebook in the shot is
+                already embossed with the mark, and a second copy laid over it
+                read as the same flower printed twice.
+
+                The subject sits bottom-right and the top-left of the frame is
+                near-empty — which is where the copy goes. A slow zoom on hover
+                because the whole card is one link and it should answer to the
+                cursor; scale on the image rather than the card so the corners
+                stay put. */}
             <img loading="lazy" decoding="async"
-              src={`${BASE}/isotipo.png`}
+              src={`${BASE}/blog-lead.webp`}
               alt=""
               aria-hidden="true"
-              className="pointer-events-none absolute -top-[10.5rem] -right-[10.5rem] w-[26rem] rotate-[18deg] opacity-[0.11] select-none"
-              style={{ filter: 'brightness(0) invert(1)' }}
+              className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
             />
+
+            {/* Two scrims, not one. The horizontal pass holds the type down
+                over the left of the frame; the vertical pass catches the meta
+                line and the button, which sit low where the desk is lightest.
+                A single flat overlay dark enough for both would have washed
+                the photograph out to a green rectangle. */}
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#171A10]/90 via-[#171A10]/60 to-[#171A10]/20" />
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#171A10]/75 via-transparent to-transparent" />
 
             <div className="relative flex flex-1 flex-col">
               <span className="mb-6 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#CBD0AC]">
