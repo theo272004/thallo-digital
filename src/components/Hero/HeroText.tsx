@@ -18,11 +18,10 @@ export default function HeroText() {
         html={
           '<span class="block font-sans">Become the name</span>' +
           '<span class="block font-sans mt-2">your market</span>' +
-          /* The heading face, italic and light. A serif italic here read as a
-             second voice; Inter at 300 against the 800 above it leans without
-             changing who is speaking. font-light has to be set on the span —
-             the h1 carries font-extrabold, and weight inherits. */
-          '<span class="block mt-2 font-sans font-light italic text-[#39471D]">can&rsquo;t stop citing.</span>'
+          /* No secondary face and no second weight: the heading's own type,
+             slanted. Italic is the whole of the emphasis — the line keeps the
+             h1's font-extrabold by inheritance, which is the point. */
+          '<span class="block mt-2 italic text-[#39471D]">can&rsquo;t stop citing.</span>'
         }
       />
 
