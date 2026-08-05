@@ -51,7 +51,8 @@ export default function Footer() {
         <div>
           <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Company</h4>
           <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
-            <a href={`${BASE}/`} className="hover:text-[#39471D]">About</a>
+            <a href={`${BASE}/#about`} className="hover:text-[#39471D]">About</a>
+            <a href={`${BASE}/#team`} className="hover:text-[#39471D]">The partners</a>
             <a href={BLOG_URL} className="hover:text-[#39471D]">Blog</a>
             <a href={`${BASE}/contact/`} className="hover:text-[#39471D]">Contact</a>
             <a href={`${BASE}/contact/`} className="hover:text-[#39471D]">Book an audit</a>

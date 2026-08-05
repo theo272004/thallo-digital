@@ -13,6 +13,7 @@ import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
 import Industries from '@/components/Industries';
 import About from '@/components/About';
+import Partners from '@/components/Partners';
 import { useRevealBatch } from '@/components/motion';
 
 export default function Home() {
@@ -27,6 +28,9 @@ export default function Home() {
             search follows it. About carries the grey band so the alternation
             still starts on a tint here. */}
         <About />
+        {/* Who the people are follows what the company is — the pairing Stripe's
+            review looks for, and the answer to "who am I actually hiring". */}
+        <Partners />
         <TheProblem />
         <HowItWorks />
         <Industries />
