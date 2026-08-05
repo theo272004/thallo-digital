@@ -27,5 +27,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SITE_URL}/thallo-ai/`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/thallo-ai/method/`, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/contact/`, changeFrequency: 'yearly', priority: 0.7 },
+    // Low priority but deliberately indexed: a payment processor checking the
+    // business is real should be able to find these without a crawl of the nav.
+    { url: `${SITE_URL}/terms/`, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${SITE_URL}/refund-policy/`, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${SITE_URL}/privacy/`, changeFrequency: 'yearly', priority: 0.3 },
   ];
 }

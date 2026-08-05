@@ -59,7 +59,26 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="max-w-[1440px] mx-auto px-6 border-t border-gray-50 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-mono tracking-wider text-gray-400">
+      {/* Legal strip. Its own row above the copyright rather than a fifth column:
+          a payment processor reviewing the site looks for these three in the
+          footer, and a reader looking for the refund window should not have to
+          find it among the service links. */}
+      <div className="max-w-[1440px] mx-auto px-6 border-t border-gray-100 pt-8 flex flex-wrap gap-x-7 gap-y-3">
+        <a href={`${BASE}/terms/`} className="text-[11px] font-semibold text-gray-500 hover:text-[#39471D]">
+          Terms &amp; Conditions
+        </a>
+        <a href={`${BASE}/refund-policy/`} className="text-[11px] font-semibold text-gray-500 hover:text-[#39471D]">
+          Refund Policy
+        </a>
+        <a href={`${BASE}/privacy/`} className="text-[11px] font-semibold text-gray-500 hover:text-[#39471D]">
+          Privacy Policy
+        </a>
+        <a href={`${BASE}/contact/`} className="text-[11px] font-semibold text-gray-500 hover:text-[#39471D]">
+          Contact
+        </a>
+      </div>
+
+      <div className="max-w-[1440px] mx-auto px-6 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-mono tracking-wider text-gray-400">
         <span>© 2026 Thallo Digital. All rights reserved.</span>
         <span>LinkedIn · X · hello@thallo.co</span>
       </div>
