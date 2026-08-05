@@ -11,17 +11,22 @@ export default function HeroText() {
         scroll={false}
         fade={false}
         className="hero-tagline font-extrabold text-gray-900 mb-8 2xl:mb-10 select-none"
-        style={{ fontSize: 'clamp(2.6rem, 4.2vw, 4.6rem)', lineHeight: '1.12', letterSpacing: '-0.03em' }}
+        /* Three lines now instead of two, so the type stays hero-sized on a
+           longer headline — the ceiling comes down from 4.6rem to keep the
+           column from running under the phone. */
+        style={{ fontSize: 'clamp(2.2rem, 3.7vw, 4.1rem)', lineHeight: '1.12', letterSpacing: '-0.03em' }}
         html={
-          '<span class="block font-sans">Be the name</span>' +
-          '<span class="block mt-2"><span class="font-serif italic text-[#39471D]">AI</span><span class="font-sans pl-4">recommends.</span></span>'
+          '<span class="block font-sans">Become the name</span>' +
+          '<span class="block font-sans mt-2">your market</span>' +
+          '<span class="block mt-2 font-serif italic text-[#39471D]">can&rsquo;t stop citing.</span>'
         }
       />
 
       {/* Lede */}
-      <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[36ch] mb-10 2xl:mb-12">
-        Your buyers ask ChatGPT, Perplexity, and Google before they ever ask you. Thallo makes sure the answer they get
-        is your brand, built on <strong className="text-gray-900 font-bold">authority</strong> that compounds.
+      <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[42ch] mb-10 2xl:mb-12">
+        In high-consideration industries, buyers decide who they trust long before they talk to anyone. We make sure
+        that when they research, <strong className="text-gray-900 font-bold">the name they find as the reference is
+        yours</strong>.
       </p>
 
       {/* CTAs */}

@@ -127,7 +127,9 @@ export default function HowItWorks() {
 
   return (
     <section
-      className="bg-[#F7F8F9] border-b border-gray-100 pt-[5.5rem] lg:pt-0 pb-[5.5rem]"
+      /* White ground: the approach now follows About directly, and the page's
+         grey/white alternation belongs to the slot, not to the component. */
+      className="bg-white border-b border-gray-100 pt-[5.5rem] lg:pt-0 pb-[5.5rem]"
       id="approach"
       ref={sectionRef}
     >
@@ -229,7 +231,7 @@ export default function HowItWorks() {
             <SplitReveal
               as="h2"
               className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
-              html="Authority isn't one thing. It's a few, grown well."
+              html='One team. The full <span class="font-serif italic text-[#39471D]">authority engine.</span>'
             />
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch] mx-auto lg:mx-0">
               A systematic authority building process that converts search

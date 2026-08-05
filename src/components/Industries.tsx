@@ -76,7 +76,7 @@ export default function Industries() {
   const [active, setActive] = useState(0);
 
   return (
-    <section className="bg-white py-16 2xl:py-24 min-h-[80vh] flex flex-col justify-center border-b border-gray-100" id="industries">
+    <section className="bg-[#F7F8F9] py-16 2xl:py-24 min-h-[80vh] flex flex-col justify-center border-b border-gray-100" id="industries">
       <div className="max-w-[1440px] mx-auto px-6">
         <div className="max-w-2xl mb-14">
           <Eyebrow className="mb-5">Industries</Eyebrow>

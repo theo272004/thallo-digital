@@ -23,16 +23,20 @@ export default function Home() {
       <Navbar />
       <main className="flex-grow">
         <Hero />
-        {/* Who Thallo is comes straight off the hero; the shift in how buyers
-            search follows it. About carries the grey band so the alternation
-            still starts on a tint here. */}
+        {/* Who Thallo is comes straight off the hero. About carries the grey
+            band so the alternation still starts on a tint here. */}
         <About />
         {/* The partners live on /about/ rather than here: the home is a single
             argument from hero to CTA, and a team block interrupts it. */}
-        <TheProblem />
+        {/* What we do comes before why it matters: the approach answers the
+            "who are you" the hero and About just raised, and the shift then
+            lands as the reason the work is built that way. */}
         <HowItWorks />
-        <Industries />
+        <TheProblem />
+        {/* Proof that we measure it, and the scanner that does — before the
+            categories, so the tool is met while the argument is still warm. */}
         <ResultsDashboard />
+        <Industries />
         {/* Video runs before the resources library, so the film introduces the
             writing rather than following it. */}
         <VideoSection />

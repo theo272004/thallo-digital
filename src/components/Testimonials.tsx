@@ -78,7 +78,7 @@ export default function Testimonials() {
           <div>
             <Eyebrow className="mb-5">Blog</Eyebrow>
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans max-w-xl">
-              Notes on getting found,<br />and trusted.
+              Blogs &amp; guides.
             </h2>
           </div>
           <a

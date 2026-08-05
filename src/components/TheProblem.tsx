@@ -49,7 +49,7 @@ export default function TheProblem() {
   }, []);
 
   return (
-    <section className="bg-white py-20 2xl:py-24 border-b border-gray-100" id="shift">
+    <section className="bg-[#F7F8F9] py-20 2xl:py-24 border-b border-gray-100" id="shift">
       <div className="max-w-[1440px] mx-auto px-6">
 
         {/* ── Feature card — panoramic, full-width, dark image-backed ── */}
@@ -69,11 +69,11 @@ export default function TheProblem() {
             <SplitReveal
               as="h2"
               className="text-3xl sm:text-5xl font-bold tracking-tight text-white leading-[1.08] mb-6 font-sans"
-              html="Buying now starts with a question typed into a machine."
+              html="Search no longer sends buyers to websites. It answers for them."
             />
             <p className="text-gray-300 font-medium text-sm sm:text-base leading-relaxed max-w-[46ch]">
-              Search results pages of ten blue links are fading. Conversational AIs formulate
-              recommendations directly. The brand it names first is the one that wins.
+              The brand cited in that answer is the one buyers trust. Before anyone makes a call,
+              sends an email, or books a demo.
             </p>
           </div>
         </div>
