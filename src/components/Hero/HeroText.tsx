@@ -18,7 +18,10 @@ export default function HeroText() {
         html={
           '<span class="block font-sans">Become the name</span>' +
           '<span class="block font-sans mt-2">your market</span>' +
-          '<span class="block mt-2 font-serif italic text-[#39471D]">can&rsquo;t stop citing.</span>'
+          /* 1.08em: Spectral's x-height is about 8% shorter than Inter's, so
+             at a shared font-size the italic line reads smaller than the two
+             above it rather than as their equal. */
+          '<span class="block mt-2 font-serif italic text-[1.08em] text-[#39471D]">can&rsquo;t stop citing.</span>'
         }
       />
 

@@ -2,10 +2,13 @@
  * Console chrome, shared by every screen of the scan.
  *
  * Deliberately not the language of the marketing pages. Those use a white
- * ground, 28px radii, pill buttons and grey hairlines. The console uses a deep
- * green ground, 8–16px radii, square dark buttons, mono readouts and roughly
- * half the padding — because a tool that looks like the brochure around it never
- * reads as a tool.
+ * ground, 28px radii and grey hairlines. The console uses a deep green ground,
+ * 8–16px radii, mono readouts and roughly half the padding — because a tool
+ * that looks like the brochure around it never reads as a tool.
+ *
+ * The buttons are the exception, and not a matter of taste: Thallo's buttons
+ * are fully rounded everywhere, on the tool as much as on the brochure. The
+ * square ones that used to live here were a house-style break, not a signal.
  *
  * Contrast, checked rather than assumed. Both ends of the ground gradient carry
  * white well past AA (#39471D → 10.0:1, #171A10 → 17.6:1) and #E7ECD9 past it
@@ -35,10 +38,10 @@ export const GRID: React.CSSProperties = {
 export const CARD: React.CSSProperties = { boxShadow: '0 18px 44px -26px rgba(23,26,16,.66)' };
 
 export const BTN_DARK =
-  'inline-flex items-center justify-center gap-2 rounded-lg bg-[#171A10] px-5 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#39471D] disabled:cursor-not-allowed disabled:opacity-40';
+  'inline-flex items-center justify-center gap-2 rounded-full bg-[#171A10] px-6 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#39471D] disabled:cursor-not-allowed disabled:opacity-40';
 
 export const BTN_GHOST =
-  'inline-flex items-center justify-center gap-2 rounded-lg border border-[#39471D]/25 px-5 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#39471D] transition-colors hover:bg-[#E7ECD9] disabled:cursor-not-allowed disabled:opacity-40';
+  'inline-flex items-center justify-center gap-2 rounded-full border border-[#39471D]/25 px-6 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#39471D] transition-colors hover:bg-[#E7ECD9] disabled:cursor-not-allowed disabled:opacity-40';
 
 export const FIELD =
   'w-full rounded-lg border border-gray-200 bg-white px-3.5 py-2.5 text-sm font-medium text-gray-900 placeholder-gray-400 transition-colors focus:border-[#55672E] focus:outline-none';

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Instrument_Serif, Space_Mono } from "next/font/google";
+import { Inter, Spectral, Space_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/motion/SmoothScrollProvider";
 
@@ -8,9 +8,20 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const instrumentSerif = Instrument_Serif({
+/**
+ * The secondary face — the italic that carries "can't stop citing", "authority
+ * engine" and the serif figures.
+ *
+ * This was Instrument Serif, whose italic is a display italic: high contrast,
+ * steeply slanted, calligraphic. Read as handwriting rather than as emphasis.
+ * Spectral's italic is a true text italic — sturdy, close to upright, low
+ * contrast — so the words still lean without looking scripted. It also carries
+ * real weights, which Instrument Serif did not: the serif figures in The Shift
+ * were being faux-bolded by the browser.
+ */
+const spectral = Spectral({
   variable: "--font-serif",
-  weight: ["400"],
+  weight: ["400", "700"],
   style: ["normal", "italic"],
   subsets: ["latin"],
 });
@@ -74,7 +85,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${instrumentSerif.variable} ${spaceMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${spectral.variable} ${spaceMono.variable} h-full antialiased`}
       style={{ scrollBehavior: 'smooth' }}
     >
       <body className="min-h-full flex flex-col font-sans bg-white text-gray-900">

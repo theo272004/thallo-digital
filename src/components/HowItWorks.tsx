@@ -231,7 +231,9 @@ export default function HowItWorks() {
             <SplitReveal
               as="h2"
               className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
-              html='One team. The full <span class="font-serif italic text-[#39471D]">authority engine.</span>'
+              /* text-[1.08em] on the serif: see the hero — Spectral sets a
+                 little smaller than Inter at the same size. */
+              html='One team. The full <span class="font-serif italic text-[1.08em] text-[#39471D]">authority engine.</span>'
             />
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch] mx-auto lg:mx-0">
               A systematic authority building process that converts search

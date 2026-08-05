@@ -36,12 +36,12 @@ export default function About() {
           <Eyebrow center className="mb-5 justify-center">About Thallo</Eyebrow>
           <SplitReveal
             as="h2"
-            /* The measure is capped and the wrapping left alone. This headline
-               is long enough to reach the devices: text-balance and text-pretty
-               both even it out by making its widest line LONGER, which at 1440
-               runs it into the laptop photograph. Greedy wrapping inside 19ch
-               keeps every line clear of both the laptop and the phone. */
-            className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-[19ch] mx-auto"
+            /* Balanced onto three lines. Greedy wrapping broke this headline
+               into four, with "building." alone on the last — and a capped
+               measure only made the ragging worse. Balancing evens the three
+               lines out; the widest lands at roughly the width the paragraph
+               below already runs to, so it clears the devices the same way. */
+            className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans text-balance"
             html="AI made content infinite. That made real authority the only thing worth building."
           />
           <p className="text-gray-500 font-medium text-base sm:text-lg leading-relaxed">
