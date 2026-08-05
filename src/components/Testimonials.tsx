@@ -1,5 +1,4 @@
 import React from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import { BASE } from '@/lib/site';
 
@@ -76,7 +75,6 @@ export default function Testimonials() {
             asymmetry is the first signal that this one is a library. */}
         <div className="mb-10 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <Eyebrow className="mb-5">Blog</Eyebrow>
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans max-w-xl">
               Blogs &amp; guides.
             </h2>

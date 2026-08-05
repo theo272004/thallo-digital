@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useRef, useLayoutEffect } from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import SpinFlower from '@/components/ui/SpinFlower';
 import EngagementSteps from '@/components/EngagementSteps';
@@ -233,7 +232,6 @@ export default function ServicesPage() {
       {/* ── Hero (centered) ───────────────────────────────────────────────── */}
       <section className="bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
-          <Eyebrow center className="mb-5">Our Plans</Eyebrow>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-2xl">
             One engine to make you<br />the answer.
           </h1>
@@ -382,7 +380,6 @@ export default function ServicesPage() {
       <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="max-w-2xl mb-12">
-            <Eyebrow className="mb-5">Build your plan</Eyebrow>
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans mb-5">
               Choose a plan, add what you need.
             </h2>
@@ -555,7 +552,6 @@ export default function ServicesPage() {
           it; everywhere else the form opens on the three plans. */}
       <AuditCTA
         image={`${BASE}/cta-bg-services.webp`}
-        eyebrow="Ready?"
         /* Broken by hand: left to wrap it took three lines and stretched the
            panel with it. */
         heading={<>Start with a clear look<br />at where you stand.</>}
@@ -575,7 +571,6 @@ export default function ServicesPage() {
       <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="text-center mb-14">
-            <Eyebrow center className="mb-5">Questions</Eyebrow>
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans">
               The honest answers.
             </h2>

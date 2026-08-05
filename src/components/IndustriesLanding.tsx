@@ -1,6 +1,5 @@
 'use client';
 import React from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 import SpinFlower from '@/components/ui/SpinFlower';
 import AuditCTA from '@/components/AuditCTA';
 import { BASE } from '@/lib/site';
@@ -99,7 +98,6 @@ export default function IndustriesPage() {
       {/* Hero */}
       <section className="bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
-          <Eyebrow center className="mb-5">Industries</Eyebrow>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-2xl">
             Built for high-consideration<br />industries.
           </h1>
@@ -181,7 +179,6 @@ export default function IndustriesPage() {
       <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="max-w-2xl mb-14">
-            <Eyebrow className="mb-5">Where we work</Eyebrow>
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans mb-4">
               Industries we build authority for.
             </h2>
@@ -237,7 +234,6 @@ export default function IndustriesPage() {
       {/* Testimonials */}
       <section className="bg-gray-50/50 py-16 2xl:py-28 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
-          <Eyebrow center className="mb-12 justify-center">What clients say</Eyebrow>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {QUOTES.map((q, i) => (
               <div
@@ -282,7 +278,6 @@ export default function IndustriesPage() {
       {/* CTA */}
       <AuditCTA
         image={`${BASE}/cta-bg-industries.webp`}
-        eyebrow="Your market"
         heading="Be the one they already trust."
         copy="Start with an audit tuned to your industry. See where you stand against the names winning your category."
       />

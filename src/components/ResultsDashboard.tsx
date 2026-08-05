@@ -4,7 +4,6 @@ import React, { useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import { SplitReveal } from '@/components/motion';
 import { GRID, GROUND } from '@/components/scan/ui';
@@ -97,7 +96,6 @@ export default function ResultsDashboard() {
 
           {/* ── Left: copy ─────────────────────────────────────────────── */}
           <div className="lg:pt-10">
-            <Eyebrow className="mb-5">Track Authority</Eyebrow>
             <SplitReveal
               as="h2"
               className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"

@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import PlanEnquiryForm from '@/components/PlanEnquiryForm';
 import { BASE } from '@/lib/site';
@@ -29,7 +28,6 @@ export const ENQUIRY_PLANS = [
 type Props = {
   id?: string;
   image?: string;
-  eyebrow: string;
   /** Plain heading; accepts JSX so a page can force its own line breaks. */
   heading?: React.ReactNode;
   /** For a heading that carries emphasis or its own reveal animation. */
@@ -45,7 +43,6 @@ type Props = {
 export default function AuditCTA({
   id = 'enquiry',
   image = `${BASE}/cta-bg.webp`,
-  eyebrow,
   heading,
   headingSlot,
   copy,
@@ -83,7 +80,6 @@ export default function AuditCTA({
               wrapped to a third line carrying a single word. */}
           <div className="relative z-[2] grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)] lg:gap-14">
             <div>
-              <Eyebrow tone="light" className="mb-6">{eyebrow}</Eyebrow>
               {headingSlot ?? (
                 <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-8 font-sans">
                   {heading}

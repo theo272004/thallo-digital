@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
 
 const REVIEWS = [
@@ -71,7 +70,6 @@ export default function BlogSection() {
 
       <div className="max-w-[1440px] mx-auto px-6">
         <div className="max-w-2xl mb-14">
-          <Eyebrow className="mb-5">In their words</Eyebrow>
           <SplitReveal
             as="h2"
             className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans"

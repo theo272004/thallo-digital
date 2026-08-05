@@ -1,5 +1,4 @@
 import React from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
 import { BASE } from '@/lib/site';
 
@@ -53,7 +52,6 @@ export default function Services() {
     <section className="bg-white py-16 2xl:py-28 min-h-[80vh] flex flex-col justify-center border-b border-gray-100" id="services">
       <div className="max-w-[1440px] mx-auto px-6">
         <div className="max-w-2xl mb-16">
-          <Eyebrow className="mb-5">Our Plans</Eyebrow>
           <SplitReveal
             as="h2"
             className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 font-sans leading-[1.05]"

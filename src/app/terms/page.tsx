@@ -24,7 +24,6 @@ export default function TermsPage() {
       <Navbar />
       <main className="flex-grow">
         <LegalDoc
-          eyebrow="Legal"
           title="Terms and Conditions"
           summary="These terms govern the services Thallo Digital provides and the free visibility scan on this site. By engaging us or using the scan, you agree to them."
         >

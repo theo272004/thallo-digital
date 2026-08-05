@@ -1,6 +1,5 @@
 'use client';
 import React, { useRef } from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 import SpinFlower from '@/components/ui/SpinFlower';
 import AuditCTA from '@/components/AuditCTA';
 import { SplitReveal } from '@/components/motion';
@@ -133,7 +132,6 @@ export default function ResultsLanding() {
           >
             <span aria-hidden="true">&larr;</span> All case studies
           </a>
-          <Eyebrow center className="mb-5">Case study</Eyebrow>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-2xl">
             {/* Emphasis by colour, not by swapping typeface mid-sentence. */}
             From page two to page one,<br />in <span className="text-[#39471D]">six months.</span>
@@ -204,7 +202,6 @@ export default function ResultsLanding() {
       <section className="bg-white py-16 2xl:py-20 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="max-w-2xl mb-10">
-            <Eyebrow className="mb-4">Trajectory</Eyebrow>
             <SplitReveal
               as="h2"
               className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-4 font-sans leading-[1.05]"
@@ -331,7 +328,6 @@ export default function ResultsLanding() {
       <section className="relative overflow-hidden bg-[#F7F8F9] py-16 2xl:py-20 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="max-w-2xl mb-10">
-            <Eyebrow className="mb-4">Why it worked</Eyebrow>
             <SplitReveal
               as="h2"
               className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-4 font-sans leading-[1.05]"
@@ -407,7 +403,6 @@ export default function ResultsLanding() {
       <AuditCTA
         image={`${BASE}/results-bg.webp`}
         scrim
-        eyebrow="Your turn"
         heading="See where you stand today."
         copy="Start with an AI visibility audit. Fixed scope, and a roadmap you keep either way."
       />

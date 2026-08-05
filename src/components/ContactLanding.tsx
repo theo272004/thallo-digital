@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import SpinFlower from '@/components/ui/SpinFlower';
 import PlanChips from '@/components/ui/PlanChips';
@@ -169,7 +168,6 @@ export default function ContactLanding() {
 
               {/* ── Left — the invitation ────────────────────────────────────── */}
               <div className="lg:pt-2">
-                <Eyebrow className="mb-6">Contact</Eyebrow>
                 <SplitReveal
                   as="h1"
                   className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans text-balance"

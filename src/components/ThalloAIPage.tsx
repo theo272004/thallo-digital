@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import { SplitReveal } from '@/components/motion';
 import AuditCTA from '@/components/AuditCTA';
@@ -114,9 +113,6 @@ export default function ThalloAIPage() {
       {/* ── Intro ────────────────────────────────────────────────────────── */}
       <section className="border-b border-gray-100 bg-white pt-32 pb-16 2xl:pt-40 2xl:pb-24">
         <div className="mx-auto flex max-w-[1440px] flex-col items-center px-6 text-center">
-          <Eyebrow center className="mb-5">
-            How the scan works
-          </Eyebrow>
           <h1 className="mb-6 max-w-3xl text-balance font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
             No black box. Here is exactly what it measures.
           </h1>
@@ -363,7 +359,6 @@ export default function ThalloAIPage() {
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
       <AuditCTA
         image={`${BASE}/cta-bg.webp`}
-        eyebrow="Your brand"
         headingSlot={
           <SplitReveal
             as="h2"

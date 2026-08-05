@@ -3,7 +3,6 @@
 import React, { useEffect, useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
 import { BASE } from '@/lib/site';
 
@@ -65,7 +64,6 @@ export default function TheProblem() {
 
           {/* Copy */}
           <div className="relative z-10 p-8 sm:p-12 lg:p-16 max-w-[640px]">
-            <Eyebrow tone="light" className="mb-6">The Shift</Eyebrow>
             <SplitReveal
               as="h2"
               className="text-3xl sm:text-5xl font-bold tracking-tight text-white leading-[1.08] mb-6 font-sans"

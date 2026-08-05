@@ -8,7 +8,6 @@ export default function CTASection() {
     <AuditCTA
       id="cta"
       image={`${BASE}/cta-bg.webp`}
-      eyebrow="Ready?"
       /* Keeps its own reveal and its italic emphasis, which the shared plain
          heading cannot carry. The home page runs useRevealBatch, so the
          animation has something to drive it here. */

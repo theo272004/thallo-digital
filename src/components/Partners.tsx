@@ -1,5 +1,4 @@
 import React from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
 import { PARTNERS, PARTNERS_READY, filledPartners, initials, type Partner } from '@/lib/team';
 import { BASE } from '@/lib/site';
@@ -20,9 +19,6 @@ export default function Partners() {
     <section className="bg-white border-b border-gray-100 py-24 2xl:py-28" id="team">
       <div className="mx-auto max-w-[1440px] px-6">
         <div className="mx-auto mb-14 max-w-2xl text-center">
-          <Eyebrow center className="mb-5 justify-center">
-            The partners
-          </Eyebrow>
           <SplitReveal
             as="h2"
             className="mb-6 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl"

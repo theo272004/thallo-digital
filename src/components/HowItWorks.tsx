@@ -3,7 +3,6 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
 
 if (typeof window !== 'undefined') {
@@ -227,7 +226,6 @@ export default function HowItWorks() {
             two-column layout that isn't there. Centred, it stands on its own. */}
         <div className="flex flex-col gap-14 2xl:gap-20 lg:pt-[5.5rem] text-center lg:text-left">
           <div>
-            <Eyebrow className="mb-5 justify-center lg:justify-start">Our approach</Eyebrow>
             <SplitReveal
               as="h2"
               className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"

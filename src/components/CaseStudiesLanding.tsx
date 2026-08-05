@@ -1,6 +1,5 @@
 'use client';
 import React, { useState } from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import SpinFlower from '@/components/ui/SpinFlower';
 import { SplitReveal, useRevealBatch } from '@/components/motion';
@@ -117,7 +116,6 @@ export default function CaseStudiesLanding() {
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
-          <Eyebrow center className="mb-5">Case studies</Eyebrow>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-4 font-sans max-w-2xl">
             {/* Emphasis by colour, as everywhere else on the site. */}
             The work, and what<br />it <span className="text-[#39471D]">moved.</span>
@@ -135,7 +133,6 @@ export default function CaseStudiesLanding() {
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] lg:gap-16">
             <div>
-              <Eyebrow className="mb-4">How to read these</Eyebrow>
               <SplitReveal
                 as="h2"
                 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-4 font-sans"
@@ -167,7 +164,6 @@ export default function CaseStudiesLanding() {
               start of a longer column, and a left-aligned header over it left
               the row looking as though a fourth were missing. */}
           <div className="max-w-2xl mx-auto mb-10 text-center" data-reveal>
-            <Eyebrow center className="mb-4 justify-center">Selected engagements</Eyebrow>
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-4 font-sans">
               The cases, by industry.
             </h2>
@@ -219,7 +215,6 @@ export default function CaseStudiesLanding() {
       <AuditCTA
         image={`${BASE}/results-bg.webp`}
         scrim
-        eyebrow="Your turn"
         heading="Start with the evidence."
         copy="An AI visibility audit shows how your category looks today, where the authority sits, and what it takes to move. Fixed scope, and a roadmap you keep either way."
       />

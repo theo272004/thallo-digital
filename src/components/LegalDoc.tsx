@@ -1,5 +1,4 @@
 import React from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 import { LEGAL } from '@/lib/legal';
 import { BASE } from '@/lib/site';
 
@@ -12,12 +11,10 @@ import { BASE } from '@/lib/site';
  * window, and by whoever at Stripe is checking the business is real.
  */
 export default function LegalDoc({
-  eyebrow,
   title,
   summary,
   children,
 }: {
-  eyebrow: string;
   title: string;
   /** One sentence in plain language, before the clauses start. */
   summary: string;
@@ -26,7 +23,6 @@ export default function LegalDoc({
   return (
     <section className="bg-white pt-32 pb-24 2xl:pt-40">
       <div className="mx-auto max-w-[760px] px-6">
-        <Eyebrow className="mb-5">{eyebrow}</Eyebrow>
 
         <h1 className="mb-5 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
           {title}

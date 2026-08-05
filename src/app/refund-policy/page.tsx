@@ -43,7 +43,6 @@ export default function RefundPolicyPage() {
       <Navbar />
       <main className="flex-grow">
         <LegalDoc
-          eyebrow="Legal"
           title="Refund Policy"
           summary="We sell professional services delivered by people. This page says plainly when a payment is refundable, when it is not, and how to ask — so nobody has to guess."
         >

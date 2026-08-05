@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 
 /**
  * "How an engagement runs" — four steps laid along a dotted rule, each with its
@@ -291,7 +290,6 @@ export default function EngagementSteps() {
         <div>
 
           <div className="max-w-2xl mx-auto text-center mb-12 lg:mb-16">
-            <Eyebrow center className="mb-5">How an engagement runs</Eyebrow>
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans text-balance">
               What working together looks like.
             </h2>

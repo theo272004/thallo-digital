@@ -41,7 +41,6 @@ export default function PrivacyPage() {
       <Navbar />
       <main className="flex-grow">
         <LegalDoc
-          eyebrow="Legal"
           title="Privacy Policy"
           summary="What we collect, why we collect it, who else sees it, how long we keep it, and how to make us delete it. Written to be read, not to be survived."
         >

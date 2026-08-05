@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useCallback, useRef, useState } from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
 import ScanSetup from './ScanSetup';
 import ScanProgress from './ScanProgress';
@@ -91,16 +90,15 @@ export default function ScanFlow() {
           : 'Full report';
 
   return (
-    <section id="tool" className="relative isolate overflow-hidden pt-28 pb-16 2xl:pt-36 2xl:pb-24" style={GROUND}>
+    /* pt-32 rather than pt-28: the label above the heading is gone, and at the
+       old padding the h1 came within 26px of the floating navbar. */
+    <section id="tool" className="relative isolate overflow-hidden pt-32 pb-16 2xl:pt-40 2xl:pb-24" style={GROUND}>
       <div aria-hidden className="pointer-events-none absolute inset-0" style={GRID} />
 
       <div className="relative mx-auto max-w-[1440px] px-6">
         {/* Outside the flow on purpose — the prerendered HTML still says what
             this page is, whatever the console resolves to. */}
         <div className="max-w-[58ch]">
-          <Eyebrow tone="light" className="mb-5">
-            Thallo visibility engine
-          </Eyebrow>
           <SplitReveal
             as="h1"
             scroll={false}

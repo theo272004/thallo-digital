@@ -1,5 +1,4 @@
 import React from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 import SpinFlower from '@/components/ui/SpinFlower';
 import Partners from '@/components/Partners';
 import AuditCTA from '@/components/AuditCTA';
@@ -48,9 +47,6 @@ export default function AboutLanding() {
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="border-b border-gray-100 bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12">
         <div className="mx-auto flex max-w-[1440px] flex-col items-center px-6 text-center">
-          <Eyebrow center className="mb-5">
-            About Thallo
-          </Eyebrow>
           <h1 className="mb-6 max-w-2xl font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
             The agency for the way
             <br />
@@ -105,9 +101,6 @@ export default function AboutLanding() {
       <section className="border-b border-gray-100 bg-gray-50/50 py-20 2xl:py-28">
         <div className="mx-auto max-w-[1440px] px-6">
           <div className="mx-auto mb-12 max-w-2xl text-center">
-            <Eyebrow center className="mb-5 justify-center">
-              What we do
-            </Eyebrow>
             <h2 className="font-sans text-3xl font-bold leading-[1.1] tracking-tight text-gray-900 sm:text-4xl">
               Authority isn&rsquo;t one thing. It&rsquo;s a few, grown well.
             </h2>
@@ -136,7 +129,6 @@ export default function AboutLanding() {
 
       <AuditCTA
         image={`${BASE}/cta-bg.webp`}
-        eyebrow="Work with us"
         heading="Start with the evidence."
         copy="An AI visibility audit shows how your category looks today, where the authority sits, and what it takes to move. Fixed scope, and a roadmap you keep either way."
       />

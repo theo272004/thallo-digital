@@ -1,5 +1,4 @@
 import React from 'react';
-import Eyebrow from '@/components/ui/Eyebrow';
 import { SplitReveal } from '@/components/motion';
 import IndustryTicker from '@/components/ui/IndustryTicker';
 import SpinFlower from '@/components/ui/SpinFlower';
@@ -33,7 +32,6 @@ export default function About() {
             <SpinFlower alt="Thallo" className="block w-16 h-16 opacity-80" />
           </div>
 
-          <Eyebrow center className="mb-5 justify-center">About Thallo</Eyebrow>
           <SplitReveal
             as="h2"
             /* Balanced onto three lines. Greedy wrapping broke this headline
