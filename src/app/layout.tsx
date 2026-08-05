@@ -1,27 +1,34 @@
 import type { Metadata } from "next";
-import { Inter, Spectral, Space_Mono } from "next/font/google";
+import { Inter, Instrument_Serif, Space_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/motion/SmoothScrollProvider";
 
+/**
+ * Italic is loaded on purpose.
+ *
+ * The display italics — "can't stop citing", "authority engine" — are Inter
+ * now, set light against the extrabold around them. Without the italic file the
+ * browser would fake the slant by shearing the upright, which at 57px shows.
+ */
 const inter = Inter({
   variable: "--font-sans",
+  style: ["normal", "italic"],
   subsets: ["latin"],
 });
 
 /**
- * The secondary face — the italic that carries "can't stop citing", "authority
- * engine" and the serif figures.
+ * The serif is the figures face now, and only that.
  *
- * This was Instrument Serif, whose italic is a display italic: high contrast,
- * steeply slanted, calligraphic. Read as handwriting rather than as emphasis.
- * Spectral's italic is a true text italic — sturdy, close to upright, low
- * contrast — so the words still lean without looking scripted. It also carries
- * real weights, which Instrument Serif did not: the serif figures in The Shift
- * were being faux-bolded by the browser.
+ * It carried two jobs before: the big serif numerals (The Shift's 45% / 69% /
+ * 1, the pull quote on /industries/) and the display italics in the hero and
+ * the approach. The second job is Inter's now — a light italic of the heading
+ * face, rather than a serif leaning in beside it. What is left is the numerals,
+ * and for those Instrument Serif is the face that was always right: the swap to
+ * Spectral flattened them.
  */
-const spectral = Spectral({
+const instrumentSerif = Instrument_Serif({
   variable: "--font-serif",
-  weight: ["400", "700"],
+  weight: ["400"],
   style: ["normal", "italic"],
   subsets: ["latin"],
 });
@@ -85,7 +92,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${spectral.variable} ${spaceMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${instrumentSerif.variable} ${spaceMono.variable} h-full antialiased`}
       style={{ scrollBehavior: 'smooth' }}
     >
       <body className="min-h-full flex flex-col font-sans bg-white text-gray-900">

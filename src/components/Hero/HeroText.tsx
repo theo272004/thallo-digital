@@ -18,10 +18,11 @@ export default function HeroText() {
         html={
           '<span class="block font-sans">Become the name</span>' +
           '<span class="block font-sans mt-2">your market</span>' +
-          /* 1.08em: Spectral's x-height is about 8% shorter than Inter's, so
-             at a shared font-size the italic line reads smaller than the two
-             above it rather than as their equal. */
-          '<span class="block mt-2 font-serif italic text-[1.08em] text-[#39471D]">can&rsquo;t stop citing.</span>'
+          /* The heading face, italic and light. A serif italic here read as a
+             second voice; Inter at 300 against the 800 above it leans without
+             changing who is speaking. font-light has to be set on the span —
+             the h1 carries font-extrabold, and weight inherits. */
+          '<span class="block mt-2 font-sans font-light italic text-[#39471D]">can&rsquo;t stop citing.</span>'
         }
       />
 

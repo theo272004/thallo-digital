@@ -160,14 +160,27 @@ export default function ResultsDashboard() {
                   </div>
                 </div>
 
-                {/* ── Per-model readout ───────────────────────────────── */}
+                {/* ── Per-model readout ───────────────────────────────────
+                    Built to the same skeleton as the growth column: label,
+                    caption, headline figure, caption, then the visual. The
+                    figure used to sit in a block of its own under the meters,
+                    which left the two columns ending at different heights and
+                    a pocket of air under the chart. */}
                 <div className="flex flex-col p-6 lg:p-8">
                   <div className="flex items-baseline justify-between gap-3">
                     <Label className="text-gray-400">Share of answers</Label>
                     <Label className="text-gray-400">vs. 4 competitors</Label>
                   </div>
 
-                  <div className="mt-6 flex flex-1 flex-col justify-center gap-5">
+                  <p className="mt-4 text-[11px] font-medium leading-none text-gray-400">Answers naming you</p>
+                  <p className="mb-1 text-[38px] font-bold leading-none text-[#39471D] tabular-nums">
+                    14<span className="text-gray-300">/24</span>
+                  </p>
+                  <p className="mb-5 text-[11px] font-medium leading-relaxed text-gray-400">
+                    Across 3 models and 24 buying questions
+                  </p>
+
+                  <div className="flex flex-1 flex-col justify-center gap-5">
                     {READOUT.map((row, i) => (
                       <div key={row.name} className="flex items-center gap-2.5">
                         <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-gray-200 bg-white p-1">
@@ -192,22 +205,15 @@ export default function ResultsDashboard() {
                           />
                         </span>
                         {/* Fixed width, or the meters stop at three different
-                            places because "Rarely" is longer than "Named". */}
-                        <Label className={`w-[86px] shrink-0 rounded-full px-3 py-1.5 text-center text-[12px] ${VERDICT_TONE[row.tone]}`}>
+                            places because "Rarely" is longer than "Named".
+                            Sized to the row it labels, not to the eye: these
+                            are captions on four thin bars, and at 12px with
+                            pill padding they were outweighing the bars. */}
+                        <Label className={`w-[70px] shrink-0 rounded-full px-2 py-1 text-center text-[10px] tracking-[0.14em] ${VERDICT_TONE[row.tone]}`}>
                           {row.verdict}
                         </Label>
                       </div>
                     ))}
-                  </div>
-
-                  <div className="mt-7 flex items-end justify-between gap-4 border-t border-gray-100 pt-5">
-                    <div>
-                      <Label className="text-gray-400">Answers naming you</Label>
-                      <p className="mt-2.5 text-[34px] font-bold leading-none tracking-tight text-[#39471D] tabular-nums">
-                        14<span className="text-gray-300">/24</span>
-                      </p>
-                    </div>
-                    <p className="pb-1 text-[12px] font-medium text-gray-400">Across 3 models</p>
                   </div>
                 </div>
               </div>
