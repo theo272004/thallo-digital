@@ -79,7 +79,7 @@ export default function Footer() {
         </a>
       </div>
 
-      <div className="max-w-[1440px] mx-auto px-6 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-mono tracking-wider text-gray-400">
+      <div className="max-w-[1440px] mx-auto px-6 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-medium tracking-wider text-gray-400">
         <span>© 2026 Thallo Digital. All rights reserved.</span>
         <span>LinkedIn · X · hello@thallo.co</span>
       </div>

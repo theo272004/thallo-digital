@@ -54,7 +54,7 @@ function Rail({ n, label, blurb }: { n: string; label: string; blurb: string }) 
 }
 
 const Label = ({ children }: { children: React.ReactNode }) => (
-  <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">{children}</span>
+  <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">{children}</span>
 );
 
 /**
@@ -148,7 +148,7 @@ export default function ThalloAIPage() {
               <dl className="mt-7">
                 {ANGLES.map(([term, def]) => (
                   <div key={term} className="mb-5 last:mb-0">
-                    <dt className="mb-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">
+                    <dt className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">
                       {term}
                     </dt>
                     <dd className="max-w-[38ch] text-sm font-medium leading-relaxed text-gray-900">{def}</dd>

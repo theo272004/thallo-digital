@@ -34,7 +34,7 @@ export default function VideoSection() {
           {/* Banner row — always visible, never changes size */}
           <div className="flex items-center justify-between p-12">
             <div className="relative z-10 max-w-xl">
-              <span className="text-[11px] font-mono tracking-widest text-white/60 font-bold block mb-2">
+              <span className="text-[11px] uppercase tracking-widest text-white/60 font-bold block mb-2">
                 Case film · 2 min
               </span>
               <h3 className="text-xl sm:text-2xl font-bold tracking-tight mb-2">

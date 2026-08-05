@@ -44,17 +44,16 @@ const VERDICT_TONE: Record<'on' | 'mid' | 'off', string> = {
 };
 
 /**
- * Two label faces, and the line between them is the frame.
+ * One label face, two sizes.
  *
- * The dark strip is console chrome — Space Mono, exactly as /thallo-ai/ wears
- * it, because that strip is the tool speaking. Everything inside the white card
- * is the page speaking, and the dashboard that stood here before set its
- * micro-labels in Inter. Carrying mono across that line is what made the
- * readout look like a terminal print-out rather than a section of this site.
+ * The strip used to be set in Space Mono, as the tool's own chrome is. The
+ * typewriter face is gone from the site's labels entirely now — every one of
+ * them is Inter, uppercase and tracked — so what separates the strip from the
+ * panels is a point of size and the ground they sit on, not a second family.
  */
 function Chrome({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
-    <span className={`font-mono text-[12px] font-bold uppercase tracking-[0.2em] ${className}`}>{children}</span>
+    <span className={`text-[12px] font-bold uppercase tracking-[0.2em] ${className}`}>{children}</span>
   );
 }
 

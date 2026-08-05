@@ -125,7 +125,7 @@ export default function ScanFlow() {
               <button
                 type="button"
                 onClick={reset}
-                className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#CBD0AC] underline-offset-4 transition-colors hover:text-white hover:underline"
+                className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#CBD0AC] underline-offset-4 transition-colors hover:text-white hover:underline"
               >
                 Scan another brand
               </button>
@@ -180,7 +180,7 @@ function Limits() {
         <Micro className="text-[#CBD0AC]">What this cannot tell you</Micro>
         <a
           href={`${BASE}/thallo-ai/method/`}
-          className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#CBD0AC] underline-offset-4 transition-colors hover:text-white hover:underline"
+          className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#CBD0AC] underline-offset-4 transition-colors hover:text-white hover:underline"
         >
           Read the full method →
         </a>

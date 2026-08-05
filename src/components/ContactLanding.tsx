@@ -181,7 +181,7 @@ export default function ContactLanding() {
 
                 <div className="mt-10 h-px w-full max-w-[280px] bg-gray-100" />
 
-                <p className="mt-6 text-[11px] font-mono tracking-wider uppercase text-gray-400 mb-2">
+                <p className="mt-6 text-[11px] tracking-wider uppercase text-gray-400 mb-2">
                   Or write to us directly
                 </p>
                 <a
@@ -220,7 +220,7 @@ export default function ContactLanding() {
                     <button
                       type="button"
                       onClick={() => setStatus('idle')}
-                      className="mt-8 min-h-[44px] text-[11px] font-mono font-bold tracking-wider uppercase text-[#55672E] hover:text-[#39471D] transition-colors"
+                      className="mt-8 min-h-[44px] text-[11px] font-bold tracking-wider uppercase text-[#55672E] hover:text-[#39471D] transition-colors"
                     >
                       Send another message
                     </button>
@@ -342,7 +342,7 @@ export default function ContactLanding() {
               >
                 <p className="text-lg font-bold text-gray-900 mb-2">{r.label}</p>
                 <p className="text-sm text-gray-500 leading-relaxed mb-6">{r.copy}</p>
-                <span className="font-mono text-[11px] font-bold tracking-wider uppercase text-[#55672E] group-hover:text-[#39471D] transition-colors">
+                <span className="text-[11px] font-bold tracking-wider uppercase text-[#55672E] group-hover:text-[#39471D] transition-colors">
                   Open <ArrowUpRight className="ml-0.5" />
                 </span>
               </a>

@@ -69,7 +69,7 @@ function PartnerCard({ partner }: { partner: Partner }) {
       )}
 
       <h3 className="mb-1 font-sans text-lg font-bold tracking-tight text-gray-900">{partner.name}</h3>
-      <p className="mb-4 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-[#55672E]">{partner.role}</p>
+      <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.16em] text-[#55672E]">{partner.role}</p>
       <p className="text-[14px] font-medium leading-relaxed text-gray-500">{partner.bio}</p>
 
       {partner.linkedin && (
@@ -77,7 +77,7 @@ function PartnerCard({ partner }: { partner: Partner }) {
           href={partner.linkedin}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-5 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-gray-400 underline-offset-4 transition-colors hover:text-[#39471D] hover:underline"
+          className="mt-5 text-[11px] font-bold uppercase tracking-[0.16em] text-gray-400 underline-offset-4 transition-colors hover:text-[#39471D] hover:underline"
         >
           LinkedIn ↗
         </a>
@@ -96,11 +96,11 @@ function PartnerCard({ partner }: { partner: Partner }) {
 function TemplateCard({ n }: { n: number }) {
   return (
     <div className="flex flex-col items-center rounded-3xl border border-dashed border-gray-300 bg-gray-50/40 p-8 text-center">
-      <span className="mb-5 flex h-20 w-20 items-center justify-center rounded-full border border-dashed border-gray-300 bg-white font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-gray-300">
+      <span className="mb-5 flex h-20 w-20 items-center justify-center rounded-full border border-dashed border-gray-300 bg-white text-[10px] font-bold uppercase tracking-[0.12em] text-gray-300">
         Photo
       </span>
 
-      <span className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-gray-300">
+      <span className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-gray-300">
         Partner {n}
       </span>
 

@@ -60,7 +60,7 @@ function CaseCard({ c }: { c: CaseStudy }) {
       </p>
 
       <div className="mt-auto pt-6 flex items-center justify-between gap-4">
-        <span className="font-mono text-[11px] font-bold tracking-[0.12em] uppercase text-gray-400">
+        <span className="text-[11px] font-bold tracking-[0.12em] uppercase text-gray-400">
           {c.timeframe}
         </span>
         {live ? (

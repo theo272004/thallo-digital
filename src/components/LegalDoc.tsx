@@ -30,7 +30,7 @@ export default function LegalDoc({
 
         <p className="mb-8 text-base font-medium leading-relaxed text-gray-500">{summary}</p>
 
-        <p className="mb-12 border-y border-gray-100 py-4 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-gray-400">
+        <p className="mb-12 border-y border-gray-100 py-4 text-[11px] font-bold uppercase tracking-[0.16em] text-gray-400">
           Last updated · {LEGAL.lastUpdated}
         </p>
 
@@ -105,7 +105,7 @@ function Identity() {
 
   return (
     <div className="mt-14 rounded-2xl border border-gray-200 bg-gray-50/60 p-7">
-      <h2 className="mb-5 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-gray-400">
+      <h2 className="mb-5 text-[11px] font-bold uppercase tracking-[0.16em] text-gray-400">
         Who you are contracting with
       </h2>
       <dl className="flex flex-col gap-3">

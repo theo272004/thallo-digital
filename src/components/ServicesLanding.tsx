@@ -313,16 +313,16 @@ export default function ServicesPage() {
 
                     <div className="relative flex-1">
                       <div className="flex items-center justify-between gap-3 mb-6">
-                        <span className={`font-mono text-[11px] font-bold tracking-[0.18em] uppercase transition-colors duration-500 ${isFeatured ? 'text-white/70' : 'text-gray-400'}`}>
+                        <span className={`text-[11px] font-bold tracking-[0.18em] uppercase transition-colors duration-500 ${isFeatured ? 'text-white/70' : 'text-gray-400'}`}>
                           {svc.idx} / {svc.kicker}
                         </span>
                         {i === 1 && (
-                          <span className="font-mono text-[11px] font-bold tracking-widest uppercase text-[#39471D] bg-[#CBD0AC] px-2 py-1 rounded-full">
+                          <span className="text-[11px] font-bold tracking-widest uppercase text-[#39471D] bg-[#CBD0AC] px-2 py-1 rounded-full">
                             Most chosen
                           </span>
                         )}
                         {i === 2 && (
-                          <span className="font-mono text-[11px] font-bold tracking-widest uppercase text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                          <span className="text-[11px] font-bold tracking-widest uppercase text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
                             Optional add-on
                           </span>
                         )}
@@ -411,11 +411,11 @@ export default function ServicesPage() {
                       }`}
                     >
                       <div className="mb-1.5 flex items-center justify-between gap-2">
-                        <span className={`font-mono text-[11px] font-bold tracking-[0.16em] uppercase ${active ? 'text-white/60' : 'text-gray-400'}`}>
+                        <span className={`text-[11px] font-bold tracking-[0.16em] uppercase ${active ? 'text-white/60' : 'text-gray-400'}`}>
                           {svc.idx} / Base plan
                         </span>
                         {i === 1 && (
-                          <span className={`whitespace-nowrap rounded-full px-2 py-0.5 font-mono text-[11px] font-bold uppercase tracking-widest ${active ? 'bg-[#CBD0AC] text-[#39471D]' : 'bg-[#EEF2E3] text-[#39471D]'}`}>
+                          <span className={`whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-bold uppercase tracking-widest ${active ? 'bg-[#CBD0AC] text-[#39471D]' : 'bg-[#EEF2E3] text-[#39471D]'}`}>
                             Most chosen
                           </span>
                         )}
@@ -461,7 +461,7 @@ export default function ServicesPage() {
 
               {/* Right: selected plan detail + add-on picker */}
               <div className="bg-white p-8 lg:p-10">
-                <span className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#39471D]">
+                <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#39471D]">
                   {basePlanData.title} includes
                 </span>
                 {/* Tick, then the line's own glyph, then the words. The tick
@@ -481,7 +481,7 @@ export default function ServicesPage() {
 
                 <div className="mt-8 border-t border-gray-100 pt-8">
                   <div className="mb-4 flex items-center justify-between gap-3">
-                    <span className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">
+                    <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">
                       Add flagship items
                     </span>
                     <span className="whitespace-nowrap text-xs font-medium text-gray-400">{addons.length} selected</span>

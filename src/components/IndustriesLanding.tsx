@@ -201,7 +201,7 @@ export default function IndustriesPage() {
                     <div>
                       <p className="text-[3rem] font-bold tracking-tight leading-none text-[#39471D] font-sans">{ind.metric}</p>
                       <p className="text-sm text-gray-500 font-medium leading-snug mt-2 max-w-[28ch]">{ind.meaning}</p>
-                      <p className="font-mono text-[11px] font-bold tracking-[0.12em] uppercase text-gray-400 mt-1.5">{ind.src}</p>
+                      <p className="text-[11px] font-bold tracking-[0.12em] uppercase text-gray-400 mt-1.5">{ind.src}</p>
                     </div>
                     {/* The industry name is the thing you are meant to leave
                         with, and in near-black under a 3rem figure it was the

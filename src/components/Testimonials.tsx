@@ -46,7 +46,7 @@ const HREF = '#';
 function Meta({ a, tone = 'dark' }: { a: typeof ARTICLES[number]; tone?: 'dark' | 'light' }) {
   const dim = tone === 'light' ? 'text-[#CBD0AC]' : 'text-gray-400';
   return (
-    <span className={`flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[11px] font-bold uppercase tracking-[0.12em] ${dim}`}>
+    <span className={`flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11px] font-bold uppercase tracking-[0.12em] ${dim}`}>
       <span className={
         tone === 'light'
           ? 'rounded-full bg-white/15 px-2.5 py-1 text-white'
@@ -127,7 +127,7 @@ export default function Testimonials() {
             <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#171A10]/75 via-transparent to-transparent" />
 
             <div className="relative flex flex-1 flex-col">
-              <span className="mb-6 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-[#CBD0AC]">
+              <span className="mb-6 text-[10px] font-bold uppercase tracking-[0.2em] text-[#CBD0AC]">
                 Latest note
               </span>
 

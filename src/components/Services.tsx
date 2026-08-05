@@ -86,11 +86,11 @@ export default function Services() {
               )}
               <div className="relative">
                 <div className="flex items-center justify-between mb-6">
-                  <span className={`font-mono text-[11px] font-bold tracking-[0.18em] uppercase ${svc.featured ? 'text-white/70' : 'text-gray-400'}`}>
+                  <span className={`text-[11px] font-bold tracking-[0.18em] uppercase ${svc.featured ? 'text-white/70' : 'text-gray-400'}`}>
                     {svc.idx} / {svc.kicker}
                   </span>
                   {svc.featured && (
-                    <span className="font-mono text-[11px] font-bold tracking-widest uppercase text-[#39471D] bg-[#CBD0AC] px-2 py-1 rounded-full">
+                    <span className="text-[11px] font-bold tracking-widest uppercase text-[#39471D] bg-[#CBD0AC] px-2 py-1 rounded-full">
                       Most chosen
                     </span>
                   )}

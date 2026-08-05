@@ -333,7 +333,7 @@ export default function EngagementSteps() {
                     </span>
                   </div>
 
-                  <p className="font-mono text-[11px] font-bold tracking-[0.16em] uppercase text-[#55672E] mb-2">
+                  <p className="text-[11px] font-bold tracking-[0.16em] uppercase text-[#55672E] mb-2">
                     {s.period}
                   </p>
                   <h3 className="text-lg font-bold text-gray-900 mb-2.5">{s.title}</h3>
