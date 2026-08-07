@@ -87,6 +87,7 @@ class Thallo_Vis_DB {
 			brand VARCHAR(190) NOT NULL,
 			domain VARCHAR(190) NOT NULL,
 			industry VARCHAR(190) NOT NULL,
+			market VARCHAR(12) NOT NULL DEFAULT 'en-US',
 			sov_pct SMALLINT NOT NULL DEFAULT 0,
 			grade CHAR(1) NOT NULL DEFAULT '',
 			ip_hash CHAR(64) NOT NULL DEFAULT '',

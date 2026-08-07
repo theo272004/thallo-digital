@@ -170,6 +170,17 @@ class Thallo_Vis_Questions {
 		return isset( self::MARKETS[ $market ] ) ? self::MARKETS[ $market ]['country'] : 'the United States';
 	}
 
+	/**
+	 * The country as a search-results provider wants it.
+	 *
+	 * DataForSEO takes a bare `location_name` — "Colombia", not "the United
+	 * States" — and the article that makes the system prompt read as English is
+	 * exactly what breaks the lookup. Same fact, two audiences.
+	 */
+	public static function serp_location_of( $market ) {
+		return preg_replace( '/^the /', '', self::country_of( $market ) );
+	}
+
 	/** The category label as it should read inside a question in `$market`. */
 	public static function industry_label( $industry, $market ) {
 		$industry = strtolower( trim( $industry ) );
@@ -182,6 +193,53 @@ class Thallo_Vis_Questions {
 		return isset( self::INDUSTRIES[ $industry ][ $lang ] )
 			? strtolower( self::INDUSTRIES[ $industry ][ $lang ] )
 			: $industry;
+	}
+
+	/**
+	 * The search a buyer in this market would actually type.
+	 *
+	 * Google generates a different AI Overview — often none at all — for the
+	 * translated query, so searching in English for a Spanish-language market
+	 * would answer a question nobody in that market asked.
+	 */
+	public static function serp_query( $industry, $market ) {
+		$label = self::industry_label( $industry, $market );
+
+		switch ( self::language_of( $market ) ) {
+			case 'es':
+				return sprintf( 'mejores empresas de %s', $label );
+			case 'pt':
+				return sprintf( 'melhores empresas de %s', $label );
+			default:
+				return sprintf( 'best %s companies', $label );
+		}
+	}
+
+	/**
+	 * The one-line brief a grounded model gets alongside a retrieval question.
+	 *
+	 * Perplexity answers in the language it is asked in, and an answer in
+	 * Spanish is the correct answer for a Spanish market — the brand-matching
+	 * downstream works on company names, which the prompt tells it to leave
+	 * alone.
+	 */
+	public static function retrieval_prompt( $kind, $market ) {
+		$lang = self::language_of( $market );
+
+		$briefs = array(
+			'category' => array(
+				'en' => 'Answer briefly and name specific companies. Cite your sources.',
+				'es' => 'Responde brevemente y nombra empresas concretas. Cita tus fuentes. No traduzcas los nombres de las empresas.',
+				'pt' => 'Responda brevemente e cite empresas específicas. Cite suas fontes. Não traduza os nomes das empresas.',
+			),
+			'brand'    => array(
+				'en' => 'Answer briefly using sources you can cite. If you cannot find information about this company, say so plainly.',
+				'es' => 'Responde brevemente usando fuentes que puedas citar. Si no encuentras información sobre esta empresa, dilo claramente.',
+				'pt' => 'Responda brevemente usando fontes que possa citar. Se não encontrar informações sobre esta empresa, diga isso claramente.',
+			),
+		);
+
+		return isset( $briefs[ $kind ][ $lang ] ) ? $briefs[ $kind ][ $lang ] : $briefs[ $kind ]['en'];
 	}
 
 	/**

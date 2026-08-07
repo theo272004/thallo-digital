@@ -41,6 +41,183 @@ class Thallo_Vis_Admin {
 			'thallo-visibility-leads',
 			array( __CLASS__, 'leads_page' )
 		);
+
+		add_submenu_page(
+			'thallo-visibility',
+			__( 'Monitoring', 'thallo-visibility' ),
+			__( 'Monitoring', 'thallo-visibility' ),
+			'manage_options',
+			'thallo-visibility-monitors',
+			array( __CLASS__, 'monitors_page' )
+		);
+	}
+
+	/**
+	 * Every monitoring action arrives here.
+	 *
+	 * One handler rather than four, because they share the whole preamble —
+	 * capability, nonce, id — and four copies of that is four places for one of
+	 * them to be forgotten. Each of these changes what the site spends money on,
+	 * so none of them is a GET anybody can be linked into.
+	 */
+	public static function handle_monitor_action() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You are not allowed to do that.', 'thallo-visibility' ) );
+		}
+
+		check_admin_referer( 'thallo_monitor_action' );
+
+		$action = isset( $_POST['monitor_action'] ) ? sanitize_key( wp_unslash( $_POST['monitor_action'] ) ) : '';
+		$id     = isset( $_POST['monitor_id'] ) ? (int) $_POST['monitor_id'] : 0;
+
+		switch ( $action ) {
+			case 'enrol':
+				$lead_id = isset( $_POST['lead_id'] ) ? (int) $_POST['lead_id'] : 0;
+				$lead    = Thallo_Vis_Leads::get( $lead_id );
+
+				if ( $lead ) {
+					Thallo_Vis_Monitors::add(
+						$lead['brand'],
+						$lead['domain'],
+						$lead['industry'],
+						isset( $lead['market'] ) ? $lead['market'] : Thallo_Vis_Questions::DEFAULT_MARKET,
+						$lead['email'],
+						isset( $_POST['frequency'] ) ? sanitize_key( wp_unslash( $_POST['frequency'] ) ) : 'weekly'
+					);
+				}
+				break;
+
+			case 'pause':
+				Thallo_Vis_Monitors::set_active( $id, false );
+				break;
+
+			case 'resume':
+				Thallo_Vis_Monitors::set_active( $id, true );
+				break;
+
+			case 'remove':
+				Thallo_Vis_Monitors::remove( $id );
+				break;
+		}
+
+		wp_safe_redirect(
+			add_query_arg(
+				'thallo_done',
+				$action,
+				admin_url( 'admin.php?page=thallo-visibility-monitors' )
+			)
+		);
+		exit;
+	}
+
+	public static function monitors_page() {
+		$monitors = Thallo_Vis_Monitors::all();
+		$enabled  = Thallo_Vis_Settings::get( 'monitoring_enabled' );
+		$cap      = (int) Thallo_Vis_Settings::get( 'monitor_daily_cap', 20 );
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Scheduled monitoring', 'thallo-visibility' ); ?></h1>
+
+			<p style="max-width:46em">
+				<?php esc_html_e( 'A monitor re-runs one brand\'s scan on a schedule and adds a point to its history. A single scan tells a client where they stand; the line is what a retainer is for.', 'thallo-visibility' ); ?>
+			</p>
+
+			<?php if ( ! $enabled ) : ?>
+				<div class="notice notice-warning">
+					<p>
+						<strong><?php esc_html_e( 'Monitoring is switched off.', 'thallo-visibility' ); ?></strong>
+						<?php esc_html_e( 'Nothing below will run. This is the only part of the tool that spends money with nobody watching, so it stays off until you turn it on under Settings.', 'thallo-visibility' ); ?>
+					</p>
+				</div>
+			<?php else : ?>
+				<div class="notice notice-success">
+					<p>
+						<?php
+						printf(
+							/* translators: 1: scans run in the last day, 2: the daily ceiling. */
+							esc_html__( 'Running. %1$d of a maximum %2$d scheduled scans in the last 24 hours.', 'thallo-visibility' ),
+							(int) Thallo_Vis_Monitors::ran_today(),
+							(int) $cap
+						);
+						?>
+					</p>
+				</div>
+			<?php endif; ?>
+
+			<table class="widefat striped">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Brand', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'Website', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'Market', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'Every', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'Last run', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'Next run', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'State', 'thallo-visibility' ); ?></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php if ( empty( $monitors ) ) : ?>
+						<tr><td colspan="8"><?php esc_html_e( 'Nothing is being monitored. Add one from the Leads screen.', 'thallo-visibility' ); ?></td></tr>
+					<?php else : ?>
+						<?php foreach ( $monitors as $monitor ) : ?>
+							<tr>
+								<td><strong><?php echo esc_html( $monitor['brand'] ); ?></strong></td>
+								<td><?php echo esc_html( $monitor['domain'] ); ?></td>
+								<td><code><?php echo esc_html( $monitor['market'] ); ?></code></td>
+								<td><?php echo esc_html( $monitor['frequency'] ); ?></td>
+								<td><?php echo esc_html( $monitor['last_run_at'] ? $monitor['last_run_at'] : '—' ); ?></td>
+								<td><?php echo esc_html( $monitor['next_run_at'] ); ?></td>
+								<td>
+									<?php if ( ! $monitor['active'] ) : ?>
+										<?php esc_html_e( 'Paused', 'thallo-visibility' ); ?>
+									<?php elseif ( '' !== $monitor['running_scan_id'] ) : ?>
+										<?php esc_html_e( 'Scanning now', 'thallo-visibility' ); ?>
+									<?php else : ?>
+										<?php esc_html_e( 'Scheduled', 'thallo-visibility' ); ?>
+									<?php endif; ?>
+									<?php if ( '' !== $monitor['last_error'] ) : ?>
+										<br><span style="color:#b32d2e"><?php echo esc_html( $monitor['last_error'] ); ?></span>
+									<?php endif; ?>
+								</td>
+								<td>
+									<?php
+									self::action_button(
+										$monitor['active'] ? 'pause' : 'resume',
+										$monitor['active'] ? __( 'Pause', 'thallo-visibility' ) : __( 'Resume', 'thallo-visibility' ),
+										array( 'monitor_id' => $monitor['id'] )
+									);
+									self::action_button( 'remove', __( 'Remove', 'thallo-visibility' ), array( 'monitor_id' => $monitor['id'] ) );
+									?>
+								</td>
+							</tr>
+						<?php endforeach; ?>
+					<?php endif; ?>
+				</tbody>
+			</table>
+		</div>
+		<?php
+	}
+
+	/**
+	 * A one-button POST form.
+	 *
+	 * Inline rather than a link because every one of these spends money or stops
+	 * money being spent, and a GET can be prefetched, crawled or linked into.
+	 */
+	private static function action_button( $action, $label, array $fields = array() ) {
+		?>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline">
+			<?php wp_nonce_field( 'thallo_monitor_action' ); ?>
+			<input type="hidden" name="action" value="thallo_monitor_action">
+			<input type="hidden" name="monitor_action" value="<?php echo esc_attr( $action ); ?>">
+			<?php foreach ( $fields as $key => $value ) : ?>
+				<input type="hidden" name="<?php echo esc_attr( $key ); ?>" value="<?php echo esc_attr( $value ); ?>">
+			<?php endforeach; ?>
+			<button type="submit" class="button button-small"><?php echo esc_html( $label ); ?></button>
+		</form>
+		<?php
 	}
 
 	public static function settings_page() {
@@ -137,10 +314,11 @@ class Thallo_Vis_Admin {
 					self::password_field( $name, 'serpapi_key', $s, __( 'SerpApi key', 'thallo-visibility' ) );
 					self::text_field( $name, 'dataforseo_login', $s, __( 'DataForSEO login', 'thallo-visibility' ) );
 					self::password_field( $name, 'dataforseo_password', $s, __( 'DataForSEO password', 'thallo-visibility' ) );
-					self::text_field( $name, 'serp_location', $s, __( 'Search location', 'thallo-visibility' ), __( 'Google shows a different AI Overview by country. This is the market the lookup is performed in.', 'thallo-visibility' ) );
-					self::text_field( $name, 'serp_language', $s, __( 'Search language', 'thallo-visibility' ), __( 'Two-letter code, e.g. en or es.', 'thallo-visibility' ) );
 					?>
 				</table>
+				<p class="description">
+					<?php esc_html_e( 'The country and language of the lookup are taken from the market the visitor chose for that scan, not set here — a single site-wide locale could only ever be right for one of the markets on offer.', 'thallo-visibility' ); ?>
+				</p>
 
 				<h2><?php esc_html_e( 'Limits and behaviour', 'thallo-visibility' ); ?></h2>
 				<table class="form-table" role="presentation">
@@ -177,6 +355,17 @@ class Thallo_Vis_Admin {
 							<p class="description"><?php esc_html_e( 'They gave an address in exchange for the report, so sending it is the deal. Needs working outbound mail — on Bluehost, an SMTP plugin.', 'thallo-visibility' ); ?></p>
 						</td>
 					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Scheduled monitoring', 'thallo-visibility' ); ?></th>
+						<td>
+							<label>
+								<input type="checkbox" name="<?php echo esc_attr( $name ); ?>[monitoring_enabled]" value="1" <?php checked( $s['monitoring_enabled'], 1 ); ?>>
+								<?php esc_html_e( 'Re-run monitored brands automatically', 'thallo-visibility' ); ?>
+							</label>
+							<p class="description"><?php esc_html_e( 'The only thing here that spends money with nobody present. Off until you switch it on. Choose which brands under Visibility → Monitoring.', 'thallo-visibility' ); ?></p>
+						</td>
+					</tr>
+					<?php self::number_field( $name, 'monitor_daily_cap', $s, __( 'Scheduled scans per day', 'thallo-visibility' ), 1, 500, __( 'A separate ceiling from the site-wide one. That protects you from a stranger; this protects you from twenty monitors falling due on the same morning.', 'thallo-visibility' ) ); ?>
 					<tr>
 						<th scope="row"><?php esc_html_e( 'Allowed origins', 'thallo-visibility' ); ?></th>
 						<td>
@@ -216,11 +405,12 @@ class Thallo_Vis_Admin {
 						<th><?php esc_html_e( 'Category', 'thallo-visibility' ); ?></th>
 						<th><?php esc_html_e( 'Share of voice', 'thallo-visibility' ); ?></th>
 						<th><?php esc_html_e( 'Grade', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'Monitor', 'thallo-visibility' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php if ( empty( $leads ) ) : ?>
-						<tr><td colspan="7"><?php esc_html_e( 'Nobody has unlocked a report yet.', 'thallo-visibility' ); ?></td></tr>
+						<tr><td colspan="8"><?php esc_html_e( 'Nobody has unlocked a report yet.', 'thallo-visibility' ); ?></td></tr>
 					<?php else : ?>
 						<?php foreach ( $leads as $lead ) : ?>
 							<tr>
@@ -231,6 +421,22 @@ class Thallo_Vis_Admin {
 								<td><?php echo esc_html( $lead['industry'] ); ?></td>
 								<td><?php echo esc_html( $lead['sov_pct'] . '%' ); ?></td>
 								<td><?php echo esc_html( $lead['grade'] ? $lead['grade'] : '—' ); ?></td>
+								<td>
+									<?php
+									$market   = isset( $lead['market'] ) ? $lead['market'] : Thallo_Vis_Questions::DEFAULT_MARKET;
+									$existing = Thallo_Vis_Monitors::find( $lead['domain'], $market );
+
+									if ( $existing && $existing['active'] ) {
+										esc_html_e( 'Monitored', 'thallo-visibility' );
+									} else {
+										self::action_button(
+											'enrol',
+											__( 'Monitor weekly', 'thallo-visibility' ),
+											array( 'lead_id' => $lead['id'], 'frequency' => 'weekly' )
+										);
+									}
+									?>
+								</td>
 							</tr>
 						<?php endforeach; ?>
 					<?php endif; ?>

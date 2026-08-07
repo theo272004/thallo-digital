@@ -187,25 +187,35 @@ DEPLOY_TARGET=bluehost npm run build # → href="/services/"
 
 ---
 
-## 6. What still needs a decision before launch
+## 6. What is still outstanding
 
-These are outside the tool itself, but they block the domain going live.
+**1. No API key is saved.** This is the only thing between the tool as built and
+the tool as a product. Checked against production on 7 August 2026: the site is
+deployed, the plugin is installed, the REST namespace answers, and the built
+bundle has `NEXT_PUBLIC_SCAN_API` in it — and `POST /scan` still returns
+`"demo": true`, so every visitor is seeing sample data behind the banner. It is
+a settings-screen task, not a code task. See section 3.
 
-1. **The canonical URL is still GitHub Pages.** `src/app/layout.tsx`,
-   `src/app/sitemap.ts` and each page's metadata hardcode
-   `https://theo272004.github.io/thallo-digital`. Every canonical, `og:url`, and
-   the JSON-LD organisation block will point at the wrong host until that is
-   changed to the real domain. It is one constant in each file.
-2. **The navbar "Blog" link points at `/#blog`,** an anchor on the home page.
-   Once WordPress is at `/blog/`, that should become `/blog/`
-   (`src/components/Navbar.tsx`).
-3. **Outbound email.** "Send the report to the person who unlocked it" needs
-   working `wp_mail`. Bluehost's default PHP mail lands in spam; install an SMTP
-   plugin and send through a real mailbox before switching it on.
-4. **A privacy policy.** The consent tick on the forms says what the details are
-   used for but has nothing to link to (`src/components/ui/ConsentCheck.tsx`
-   says so in a comment). A tick without a policy behind it is a courtesy, not
-   compliance.
+Re-check it at any time without an admin login:
+
+```bash
+curl -s -X POST https://thallodigital.com/blog/wp-json/thallo/v1/scan \
+  -H "Content-Type: application/json" \
+  -d '{"brand":"x","domain":"example.com","industry":"Professional services"}'
+```
+
+**2. Outbound email.** "Send the report to the person who unlocked it" needs
+working `wp_mail`, and it is now load-bearing twice over — a monitored brand's
+whole value is the email that arrives without anyone asking. Bluehost's default
+PHP mail lands in spam; install an SMTP plugin and send through a real mailbox
+before switching either on.
+
+**3. No SERP provider,** so the AI Overview reads as "not measured". Deliberate
+and honest, but it is an empty box in a paid deliverable. See section 3.
+
+Settled since this document was first written: the canonicals point at
+`thallodigital.com`, the navbar "Blog" link points at the WordPress install, and
+the consent tick links to `/privacy/`.
 
 ---
 
@@ -240,43 +250,115 @@ handed it over in good faith and we still owe them the report.
 
 ---
 
-## 9. Is this enough to sell as an AEO/GEO offer?
+## 9. Markets, history and monitoring
 
-Broadly yes, with one gap and one honest caveat.
+These three arrived together, because they are one idea: a measurement is only
+meaningful for a stated market, and only useful as a series.
+
+### Markets
+
+Every scan carries a **market** — a language and a country. `es-CO` and `en-US`
+are different measurements of the same brand, and both can be correct.
+
+The fifteen questions exist in English, Spanish and Portuguese, written out
+rather than machine-translated on the way to the model. A translation call per
+question would cost money, drift between runs, and make two scans a fortnight
+apart incomparable — which would destroy the only thing a history series is for.
+The category label is translated with the question, and the country goes into
+the system prompt as who is asking.
+
+Phase 2 follows the market too. Perplexity is asked in the market's language;
+the AI Overview lookup uses the market's search terms, `hl`/`gl` and DataForSEO
+location. There is deliberately **no site-wide search location setting any
+more** — it could only ever have been right for one market and silently wrong
+for the rest.
+
+Adding a market is two edits: `MARKETS` and `TEMPLATES` in
+`src/lib/scan/markets.ts` and in `includes/class-thallo-questions.php`. The
+plugin's copy is authoritative; the site's exists so the setup screen can
+preview the prompt before anything is spent.
+
+### History
+
+`wp_thallo_history` keeps a handful of numbers per run, forever. It is separate
+from the scan precisely so the scan can still be pruned at fourteen days without
+throwing away the trend.
+
+- Keyed on **domain + market**, not brand. The same company gets typed
+  "Ledgerly", "Ledgerly Inc" and "ledgerly" across three runs; three spellings
+  would become three series with one point each.
+- **One point per day per series.** Re-running four times in an afternoon does
+  not turn a trend into a sawtooth; the day's last run stands.
+- Written at the **end of phase 1**, so a visitor who never hands over an email
+  still leaves a real measurement behind. Phase 2 fills in the grade.
+- **Demo runs write nothing.** This table is the one place in the system that is
+  meant to be a record; invented numbers here would outlive every banner saying
+  they were invented.
+
+The report renders the series as a chart pinned to 0–100, and refuses to draw a
+line through a single point.
+
+### Monitoring
+
+**Visibility → Monitoring** lists the brands being re-scanned on a schedule.
+Enrol one with the button on the Leads screen; pause or remove it here.
+
+It is **off by default** — this is the only part of the system that spends money
+with nobody present — and has its own daily ceiling, separate from the
+visitor-facing one. That cap protects the bill from a stranger; this one
+protects it from twenty monitors falling due on the same morning.
+
+Mechanically: an hourly sweep starts up to three due monitors, then a chain of
+single cron events ticks each scan forward one step at a time. Same reason a
+visitor's scan ticks — forty-five calls do not fit in one PHP request, and
+WP-Cron is a PHP request like any other. A scan that stops responding for two
+hours is released rather than pinning its monitor forever, and a run that fails
+still moves the schedule forward so a structurally broken target is not retried
+twenty-four times a day at your expense.
+
+Note that WP-Cron fires on traffic. On a quiet blog, add a real cron job hitting
+`wp-cron.php` if you want the schedule kept to the hour.
+
+## 10. Is this enough to sell as an AEO/GEO offer?
 
 **What it covers.** Share of voice across three models with the brand's name
 kept out of the questions; rank, not just presence; the competitor set that is
 being recommended instead; grounded retrieval as a separate reading from memory;
-and a technical scorecard weighted so that the two things that actually move
-(crawler access and third-party citations) carry half the points between them.
+a technical scorecard weighted so that the two things that actually move
+(crawler access and third-party citations) carry half the points between them;
+per-market measurement; and a trend line once a brand has been scanned twice.
 The audit trail — every question, every result — is what makes it defensible in
 a sales conversation, and it is the thing most competing tools do not show.
 
-**The gap: it is a snapshot, not a trend.** The commercial version of this
-product is a chart going up and to the right over months. That means storing
-each run against a brand and scheduling repeats, which the current schema does
-not do (scans are pruned after fourteen days). It is the obvious next build, and
-the natural thing to charge a retainer for.
+**Against the market.** HubSpot's AI Search Grader is the free competitor and it
+is a single English snapshot. The paid tools — Profound, Peec, Otterly — start
+around $29/month and run to $499; multi-market tracking is a premium tier
+everywhere it exists at all. What they have that this does not is **sentiment**
+(how a model talks about you, not just whether it names you) and **citation
+analytics over time** (which sources feed the answers). Sentiment is the
+cheapest of those to add, because the model's answer is already being read.
 
 **The caveat: model answers drift.** Ask the same question a week apart and you
 will get different companies. Say so — it is in the "What it does not do"
-section on the page — and the drift itself becomes the argument for monitoring
-rather than a one-off check.
+section on the page — and the drift is itself the argument for monitoring rather
+than a one-off check.
 
 ---
 
-## 10. File map
+## 11. File map
 
 ```
 src/lib/scan/types.ts        The contract. Every shape the UI renders.
-src/lib/scan/questions.ts    The 15 questions (mirrors the plugin's copy).
+src/lib/scan/markets.ts      The markets, and the 15 questions in each language.
+src/lib/scan/questions.ts    The narrow view of markets.ts the site consumes.
 src/lib/scan/engine.ts       Start, tick, unlock. Falls back to demo.ts.
 src/lib/scan/demo.ts         Sample data, used only when no API is configured.
 src/lib/site.ts              The basePath prefix for hand-written paths.
 src/components/scan/         ScanFlow → Setup → Progress → Results → FullReport.
+  TrendChart.tsx             Share of voice over time, and its empty state.
 
 wordpress-plugin/thallo-visibility/
-  thallo-visibility.php      Bootstrap.
+  thallo-visibility.php      Bootstrap, cron registration.
   includes/
     class-thallo-rest.php    Routes, validation, rate limits, CORS.
     class-thallo-runner.php  The job: start, tick, unlock, serialise.
@@ -284,10 +366,19 @@ wordpress-plugin/thallo-visibility/
     class-thallo-retrieval.php  Perplexity, and AI Overview via SerpApi/DataForSEO.
     class-thallo-tech.php    The crawl: robots.txt, schema, about, freshness.
     class-thallo-analysis.php  Brand matching, competitors, scoring, the plan.
-    class-thallo-questions.php  The authoritative prompt set.
+    class-thallo-questions.php  The authoritative prompt set, and the markets.
+    class-thallo-monitors.php   Scheduled re-scans: the sweep and the cron chain.
     class-thallo-http.php    Parallel requests, with a sequential fallback.
-    class-thallo-db.php      Two tables, and the pruning.
+    class-thallo-db.php      Four tables, and the pruning.
     class-thallo-settings.php  Defaults and validation.
     class-thallo-leads.php   Storage, notification, the report email, CSV.
-    class-thallo-admin.php   The two admin screens.
+    class-thallo-admin.php   The three admin screens.
+
+wordpress-plugin/tests/test-logic.php   Runs on any PHP 7.4+, no WordPress.
+```
+
+Run the plugin's tests with:
+
+```bash
+php wordpress-plugin/tests/test-logic.php
 ```

@@ -278,6 +278,80 @@ check(
 	true
 );
 
+/*
+ * Markets.
+ *
+ * The property worth protecting here is that the question actually changes with
+ * the market — a selector that silently sends English either way would be worse
+ * than not having one, because the report would carry a market label it did not
+ * honour.
+ */
+echo "=== markets ===\n";
+
+check( 'known market', Thallo_Vis_Questions::is_market( 'es-CO' ), true );
+check( 'unknown market', Thallo_Vis_Questions::is_market( 'xx-ZZ' ), false );
+check( 'language of a market', Thallo_Vis_Questions::language_of( 'pt-BR' ), 'pt' );
+check( 'language of nonsense falls back', Thallo_Vis_Questions::language_of( 'xx-ZZ' ), 'en' );
+
+/* The article belongs in the sentence, not in the API call. */
+check( 'country reads in a sentence', Thallo_Vis_Questions::country_of( 'en-US' ), 'the United States' );
+check( 'serp location drops the article', Thallo_Vis_Questions::serp_location_of( 'en-US' ), 'United States' );
+check( 'serp location without one is unchanged', Thallo_Vis_Questions::serp_location_of( 'es-CO' ), 'Colombia' );
+
+check(
+	'category translated into the question',
+	Thallo_Vis_Questions::industry_label( 'Fintech & payments', 'es-MX' ),
+	'fintech y pagos'
+);
+check(
+	'unknown category passes through rather than failing',
+	Thallo_Vis_Questions::industry_label( 'Underwater basket weaving', 'es-MX' ),
+	'underwater basket weaving'
+);
+check(
+	'English market lowercases and leaves alone',
+	Thallo_Vis_Questions::industry_label( 'Legal tech', 'en-GB' ),
+	'legal tech'
+);
+
+$en = Thallo_Vis_Questions::build( 'Legal tech', 15, 'en-US' );
+$es = Thallo_Vis_Questions::build( 'Legal tech', 15, 'es-CO' );
+$pt = Thallo_Vis_Questions::build( 'Legal tech', 15, 'pt-BR' );
+
+check( 'every language has the full set', array( count( $en ), count( $es ), count( $pt ) ), array( 15, 15, 15 ) );
+check( 'Spanish is not English', $en[0] === $es[0], false );
+check( 'Spanish question is in Spanish', strpos( $es[0], '¿Cuáles son las mejores empresas' ) === 0, true );
+check( 'Portuguese question is in Portuguese', strpos( $pt[0], 'Quais são as melhores empresas' ) === 0, true );
+check( 'the translated label is inside the question', strpos( $es[0], 'tecnología legal' ) !== false, true );
+
+/* A shortened run has to keep the angles, not three phrasings of one. The
+   templates are grouped in threes, so the first three are one angle — trimming
+   to three is the boundary case that proves the slice is from the front. */
+check( 'a shortened run trims from the end', Thallo_Vis_Questions::build( 'Legal tech', 3, 'es-CO' ), array_slice( $es, 0, 3 ) );
+check( 'count is clamped to what exists', count( Thallo_Vis_Questions::build( 'Legal tech', 99, 'en-US' ) ), 15 );
+check( 'zero is not a valid run', count( Thallo_Vis_Questions::build( 'Legal tech', 0, 'en-US' ) ), 1 );
+
+/* An unrecognised market must degrade to English rather than to an empty
+   question set — the REST layer already coerces it, and this is the second
+   line of defence for anything that reaches the builder another way. */
+check( 'nonsense market still produces questions', Thallo_Vis_Questions::build( 'Legal tech', 15, 'xx-ZZ' ), $en );
+
+echo "=== serp query ===\n";
+check( 'English search', Thallo_Vis_Questions::serp_query( 'Legal tech', 'en-US' ), 'best legal tech companies' );
+check( 'Spanish search', Thallo_Vis_Questions::serp_query( 'Legal tech', 'es-ES' ), 'mejores empresas de tecnología legal' );
+check( 'Portuguese search', Thallo_Vis_Questions::serp_query( 'Legal tech', 'pt-BR' ), 'melhores empresas de tecnologia jurídica' );
+
+echo "=== system prompt ===\n";
+$prompt_us = Thallo_Vis_Questions::system_prompt( 'en-US' );
+$prompt_co = Thallo_Vis_Questions::system_prompt( 'es-CO' );
+
+check( 'the country is in the prompt', strpos( $prompt_co, 'Colombia' ) !== false, true );
+check( 'the JSON contract survives translation', strpos( $prompt_co, '{"companies"' ) !== false, true );
+/* Without this the model helpfully translates "Arbor Systems", the brand match
+   fails, and the visitor is told they were not named when they were. */
+check( 'non-English asks for names to be left alone', strpos( $prompt_co, 'Never translate or localise a company name' ) !== false, true );
+check( 'English does not need that line', strpos( $prompt_us, 'Never translate' ) !== false, false );
+
 echo "\n" . str_repeat( '─', 50 ) . "\n";
 printf( "%d passed, %d failed\n", $pass, $fail );
 exit( $fail > 0 ? 1 : 0 );

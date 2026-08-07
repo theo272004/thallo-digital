@@ -50,11 +50,17 @@ class Thallo_Vis_Settings {
 			'serpapi_key'         => '',
 			'dataforseo_login'    => '',
 			'dataforseo_password' => '',
-			/* Google shows a different AI Overview by country and language, and
-			   the answer for a Bogotá buyer is not the answer for a Boston one.
-			   These are what the lookup is performed as. */
-			'serp_location'       => 'United States',
-			'serp_language'       => 'en',
+
+			/*
+			 * There is deliberately no search location or language here any more.
+			 * Google shows a different AI Overview by country and language, and
+			 * the answer for a Bogotá buyer is not the answer for a Boston one —
+			 * which means the locale belongs to the scan, not to the
+			 * installation. It now comes from the market the visitor chose, in
+			 * `Thallo_Vis_Questions`. A site-wide setting could only ever have
+			 * been right for one of the markets on offer, and silently wrong for
+			 * the rest.
+			 */
 
 			'questions'           => 15,
 			'jobs_per_tick'       => 5,
@@ -67,6 +73,19 @@ class Thallo_Vis_Settings {
 			'allowed_origins'     => '',
 			'notify_email'        => '',
 			'send_report_to_lead' => 1,
+
+			/*
+			 * Scheduled re-scans. Off by default, and deliberately so: this is
+			 * the only part of the system that spends money with nobody present.
+			 * Everything under Visibility → Monitoring is inert until this is on.
+			 */
+			'monitoring_enabled'  => 0,
+			/*
+			 * Its own ceiling, separate from `rate_global`. That one protects the
+			 * bill from a stranger; this one protects it from us — from twenty
+			 * monitors quietly falling due on the same morning.
+			 */
+			'monitor_daily_cap'   => 20,
 
 			/* Forces sample data even when keys are present, so the front end can
 			   be demonstrated without spending anything. The API reports it, and
@@ -122,8 +141,6 @@ class Thallo_Vis_Settings {
 			'serpapi_key',
 			'dataforseo_login',
 			'dataforseo_password',
-			'serp_location',
-			'serp_language',
 		);
 
 		foreach ( $text_keys as $key ) {
@@ -155,7 +172,10 @@ class Thallo_Vis_Settings {
 			? sanitize_email( $input['notify_email'] )
 			: '';
 
+		$out['monitor_daily_cap'] = self::clamp_int( $input, 'monitor_daily_cap', 1, 500, $defaults['monitor_daily_cap'] );
+
 		$out['send_report_to_lead'] = empty( $input['send_report_to_lead'] ) ? 0 : 1;
+		$out['monitoring_enabled']  = empty( $input['monitoring_enabled'] ) ? 0 : 1;
 		$out['demo_mode']           = empty( $input['demo_mode'] ) ? 0 : 1;
 
 		return $out;

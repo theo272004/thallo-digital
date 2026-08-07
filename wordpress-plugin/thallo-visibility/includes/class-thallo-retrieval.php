@@ -33,17 +33,38 @@ class Thallo_Vis_Retrieval {
 	 *
 	 * @return array{result: array, citation_hosts: string[], known: bool}
 	 */
-	public static function perplexity( $brand, $domain, $industry ) {
+	public static function perplexity( $brand, $domain, $industry, $market = Thallo_Vis_Questions::DEFAULT_MARKET ) {
+		$label   = Thallo_Vis_Questions::industry_label( $industry, $market );
+		$country = Thallo_Vis_Questions::country_of( $market );
+
+		/* Asked in the market's own language, like phase 1 — the whole point of
+		   a grounded reading is that it retrieves what a real buyer's search
+		   retrieves, and a Spanish-speaking buyer does not search in English. */
+		switch ( Thallo_Vis_Questions::language_of( $market ) ) {
+			case 'es':
+				$category_q = sprintf( '¿Qué empresas de %s recomendarías? Nombra empresas concretas.', $label );
+				$brand_q    = sprintf( '¿Qué es %s (%s)? ¿Quién escribe sobre ellos y qué dicen esas fuentes?', $brand, $domain );
+				break;
+			case 'pt':
+				$category_q = sprintf( 'Que empresas de %s você recomendaria? Cite empresas específicas.', $label );
+				$brand_q    = sprintf( 'O que é %s (%s)? Quem escreve sobre eles e o que essas fontes dizem?', $brand, $domain );
+				break;
+			default:
+				$category_q = sprintf( 'Which companies would you recommend in %s? Name the specific companies.', $label );
+				$brand_q    = sprintf( 'What is %s (%s)? Who writes about them, and what do those sources say?', $brand, $domain );
+		}
+
 		$job_category = Thallo_Vis_LLM::build_job(
 			'perplexity',
-			sprintf( 'Which companies would you recommend in %s? Name the specific companies.', strtolower( $industry ) ),
-			'Answer briefly and name specific companies. Cite your sources.'
+			$category_q,
+			Thallo_Vis_Questions::retrieval_prompt( 'category', $market )
+				. sprintf( ' The buyer is in %s.', $country )
 		);
 
 		$job_brand = Thallo_Vis_LLM::build_job(
 			'perplexity',
-			sprintf( 'What is %s (%s)? Who writes about them, and what do those sources say?', $brand, $domain ),
-			'Answer briefly using sources you can cite. If you cannot find information about this company, say so plainly.'
+			$brand_q,
+			Thallo_Vis_Questions::retrieval_prompt( 'brand', $market )
 		);
 
 		if ( ! $job_category || ! $job_brand ) {
@@ -125,14 +146,20 @@ class Thallo_Vis_Retrieval {
 	 *
 	 * @return array{result: array, citation_hosts: string[]}
 	 */
-	public static function ai_overview( $brand, $domain, $industry ) {
+	public static function ai_overview( $brand, $domain, $industry, $market = Thallo_Vis_Questions::DEFAULT_MARKET ) {
 		$provider = Thallo_Vis_Settings::get( 'serp_provider', 'none' );
-		$query    = sprintf( 'best %s companies', strtolower( $industry ) );
+
+		/* Query, language and location all come from the market rather than from
+		   a global setting. Google shows a different AI Overview — frequently
+		   none at all — per country and language, so a lookup performed as a US
+		   English search and reported as a Colombian reading would be a finding
+		   about somebody else's search results with this brand's name on it. */
+		$query = Thallo_Vis_Questions::serp_query( $industry, $market );
 
 		if ( 'serpapi' === $provider ) {
-			$data = self::serpapi( $query );
+			$data = self::serpapi( $query, $market );
 		} elseif ( 'dataforseo' === $provider ) {
-			$data = self::dataforseo( $query );
+			$data = self::dataforseo( $query, $market );
 		} else {
 			return array(
 				'result'         => array(
@@ -199,7 +226,7 @@ class Thallo_Vis_Retrieval {
 	 * SerpApi. The overview sometimes comes back inline and sometimes as a token
 	 * to fetch it with, so both paths are handled.
 	 */
-	private static function serpapi( $query ) {
+	private static function serpapi( $query, $market = Thallo_Vis_Questions::DEFAULT_MARKET ) {
 		$key = Thallo_Vis_Settings::get( 'serpapi_key' );
 		if ( '' === $key ) {
 			return array( 'error' => 'no API key' );
@@ -209,7 +236,11 @@ class Thallo_Vis_Retrieval {
 			array(
 				'engine'  => 'google',
 				'q'       => rawurlencode( $query ),
-				'hl'      => Thallo_Vis_Settings::get( 'serp_language', 'en' ),
+				'hl'      => Thallo_Vis_Questions::language_of( $market ),
+				/* The country half of the market. `hl` alone sets the interface
+				   language; `gl` is what decides which country's results Google
+				   returns, and the AI Overview differs by both. */
+				'gl'      => strtolower( substr( $market, -2 ) ),
 				'api_key' => $key,
 			),
 			'https://serpapi.com/search.json'
@@ -261,7 +292,7 @@ class Thallo_Vis_Retrieval {
 	}
 
 	/** DataForSEO. The overview arrives as one item among the SERP items. */
-	private static function dataforseo( $query ) {
+	private static function dataforseo( $query, $market = Thallo_Vis_Questions::DEFAULT_MARKET ) {
 		$login    = Thallo_Vis_Settings::get( 'dataforseo_login' );
 		$password = Thallo_Vis_Settings::get( 'dataforseo_password' );
 
@@ -279,8 +310,8 @@ class Thallo_Vis_Retrieval {
 				array(
 					array(
 						'keyword'       => $query,
-						'language_code' => Thallo_Vis_Settings::get( 'serp_language', 'en' ),
-						'location_name' => Thallo_Vis_Settings::get( 'serp_location', 'United States' ),
+						'language_code' => Thallo_Vis_Questions::language_of( $market ),
+						'location_name' => Thallo_Vis_Questions::serp_location_of( $market ),
 						'device'        => 'desktop',
 					),
 				)

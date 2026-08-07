@@ -34,7 +34,14 @@ class Thallo_Vis_Runner {
 	// Starting
 	// -----------------------------------------------------------------------
 
-	public static function start( $brand, $domain, $industry, $market = Thallo_Vis_Questions::DEFAULT_MARKET ) {
+	/**
+	 * @param string $source 'visitor' for somebody on the site, 'monitor' for a
+	 *                       scheduled re-run. It decides whether the email gate
+	 *                       creates a lead — a monitored brand already handed
+	 *                       theirs over, and a duplicate row every week would
+	 *                       turn the leads table into a log.
+	 */
+	public static function start( $brand, $domain, $industry, $market = Thallo_Vis_Questions::DEFAULT_MARKET, $source = 'visitor' ) {
 		$count     = (int) Thallo_Vis_Settings::get( 'questions', 15 );
 		$questions = Thallo_Vis_Questions::build( $industry, $count, $market );
 		$demo      = Thallo_Vis_Settings::is_demo();
@@ -70,6 +77,7 @@ class Thallo_Vis_Runner {
 			'domain'         => $domain,
 			'industry'       => $industry,
 			'market'         => $market,
+			'source'         => $source,
 			'created_at'     => gmdate( 'c' ),
 			'questions'      => $questions,
 			'models'         => $models,
@@ -281,7 +289,12 @@ class Thallo_Vis_Runner {
 		$state['phase2_queue'] = array( 'perplexity', 'ai-overview', 'technical' );
 		$state['email']        = $email;
 
-		Thallo_Vis_Leads::record( $state, $email );
+		/* A scheduled re-run opens phase 2 with an address that is already in
+		   the leads table — it is where the monitor got it. Recording it again
+		   every week would turn a list of people into a list of weeks. */
+		if ( 'monitor' !== ( isset( $state['source'] ) ? $state['source'] : 'visitor' ) ) {
+			Thallo_Vis_Leads::record( $state, $email );
+		}
 		Thallo_Vis_DB::save_state( $scan_id, $state, 'unlocking', $email );
 
 		return self::session( $state, 'unlocking' );
@@ -309,7 +322,7 @@ class Thallo_Vis_Runner {
 					break;
 				}
 
-				$run                      = Thallo_Vis_Retrieval::perplexity( $state['brand'], $state['domain'], $state['industry'] );
+				$run                      = Thallo_Vis_Retrieval::perplexity( $state['brand'], $state['domain'], $state['industry'], self::market_of( $state ) );
 				$state['retrieval'][]     = $run['result'];
 				$state['citation_hosts']  = array_values( array_unique( array_merge( $state['citation_hosts'], $run['citation_hosts'] ) ) );
 				$state['citations_known'] = $run['known'];
@@ -325,7 +338,7 @@ class Thallo_Vis_Runner {
 					break;
 				}
 
-				$run                     = Thallo_Vis_Retrieval::ai_overview( $state['brand'], $state['domain'], $state['industry'] );
+				$run                     = Thallo_Vis_Retrieval::ai_overview( $state['brand'], $state['domain'], $state['industry'], self::market_of( $state ) );
 				$state['retrieval'][]    = $run['result'];
 				$state['citation_hosts'] = array_values( array_unique( array_merge( $state['citation_hosts'], $run['citation_hosts'] ) ) );
 				break;

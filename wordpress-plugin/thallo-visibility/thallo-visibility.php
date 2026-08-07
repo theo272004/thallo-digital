@@ -53,6 +53,7 @@ require_once THALLO_VIS_DIR . 'includes/class-thallo-tech.php';
 require_once THALLO_VIS_DIR . 'includes/class-thallo-analysis.php';
 require_once THALLO_VIS_DIR . 'includes/class-thallo-runner.php';
 require_once THALLO_VIS_DIR . 'includes/class-thallo-leads.php';
+require_once THALLO_VIS_DIR . 'includes/class-thallo-monitors.php';
 require_once THALLO_VIS_DIR . 'includes/class-thallo-rest.php';
 require_once THALLO_VIS_DIR . 'includes/class-thallo-admin.php';
 
@@ -77,6 +78,18 @@ add_action( 'rest_api_init', array( 'Thallo_Vis_REST', 'register_routes' ) );
 add_action( 'admin_menu', array( 'Thallo_Vis_Admin', 'menu' ) );
 add_action( 'admin_init', array( 'Thallo_Vis_Settings', 'register' ) );
 add_action( 'admin_post_thallo_export_leads', array( 'Thallo_Vis_Leads', 'export_csv' ) );
+add_action( 'admin_post_thallo_monitor_action', array( 'Thallo_Vis_Admin', 'handle_monitor_action' ) );
+
+/**
+ * Scheduled monitoring.
+ *
+ * The sweep finds what is due and starts it; each advance ticks one scan and
+ * schedules the next. Both are registered unconditionally — the setting is
+ * checked inside `sweep()`, so switching monitoring off stops the work without
+ * leaving an orphaned event that fires into a hook nobody is listening on.
+ */
+add_action( 'thallo_vis_monitor_sweep', array( 'Thallo_Vis_Monitors', 'sweep' ) );
+add_action( 'thallo_vis_monitor_advance', array( 'Thallo_Vis_Monitors', 'advance' ) );
 
 /**
  * Housekeeping. Scan rows are working state, not records — the lead is the
@@ -91,15 +104,34 @@ add_action(
 		if ( ! wp_next_scheduled( 'thallo_vis_cleanup' ) ) {
 			wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', 'thallo_vis_cleanup' );
 		}
+
+		/* Hourly rather than daily. A monitor is due on a date, and the sweep
+		   only starts three at a time — checking once a day would mean a fourth
+		   monitor waits until tomorrow. It costs nothing when there is nothing
+		   due: `sweep()` returns on the setting before it touches the database. */
+		if ( ! wp_next_scheduled( 'thallo_vis_monitor_sweep' ) ) {
+			wp_schedule_event( time() + ( 5 * MINUTE_IN_SECONDS ), 'hourly', 'thallo_vis_monitor_sweep' );
+		}
 	}
 );
 
+/**
+ * Deactivation clears the recurring events.
+ *
+ * The single `thallo_vis_monitor_advance` events are deliberately left alone.
+ * They carry a scan id, they fire once, and one of them may be mid-chain on a
+ * scan that has already been paid for — killing those would abandon work in
+ * progress. When they fire into a deactivated plugin nothing is listening and
+ * they simply expire.
+ */
 register_deactivation_hook(
 	__FILE__,
 	static function () {
-		$timestamp = wp_next_scheduled( 'thallo_vis_cleanup' );
-		if ( $timestamp ) {
-			wp_unschedule_event( $timestamp, 'thallo_vis_cleanup' );
+		foreach ( array( 'thallo_vis_cleanup', 'thallo_vis_monitor_sweep' ) as $hook ) {
+			$timestamp = wp_next_scheduled( $hook );
+			if ( $timestamp ) {
+				wp_unschedule_event( $timestamp, $hook );
+			}
 		}
 	}
 );

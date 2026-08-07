@@ -25,6 +25,11 @@ class Thallo_Vis_Leads {
 				'brand'      => $state['brand'],
 				'domain'     => $state['domain'],
 				'industry'   => $state['industry'],
+				/* Stored on the lead because it is what a monitor needs to
+				   re-run this exact scan, and because a share of voice without
+				   the market it was measured in is not a number anybody can act
+				   on six weeks later. */
+				'market'     => isset( $state['market'] ) ? $state['market'] : Thallo_Vis_Questions::DEFAULT_MARKET,
 				'sov_pct'    => isset( $state['phase1']['sovPct'] ) ? (int) $state['phase1']['sovPct'] : 0,
 				'ip_hash'    => Thallo_Vis_DB::ip_hash(),
 				'created_at' => current_time( 'mysql', true ),
@@ -167,6 +172,15 @@ class Thallo_Vis_Leads {
 			sprintf( 'Your AI visibility scan — %s', $state['brand'] ),
 			implode( "\n", $lines )
 		);
+	}
+
+	/** One lead, by row id. What the "monitor this brand" button acts on. */
+	public static function get( $id ) {
+		global $wpdb;
+		$table = Thallo_Vis_DB::leads_table();
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is not user input.
+		return $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table WHERE id = %d", (int) $id ), ARRAY_A );
 	}
 
 	public static function all( $limit = 200 ) {
