@@ -122,6 +122,7 @@ class Thallo_Vis_REST {
 		$brand    = trim( sanitize_text_field( (string) $request->get_param( 'brand' ) ) );
 		$domain   = self::clean_domain( (string) $request->get_param( 'domain' ) );
 		$industry = trim( sanitize_text_field( (string) $request->get_param( 'industry' ) ) );
+		$market   = trim( sanitize_text_field( (string) $request->get_param( 'market' ) ) );
 
 		if ( '' === $brand || mb_strlen( $brand ) > 80 ) {
 			return new WP_Error( 'bad_brand', __( 'Enter the brand name buyers would search for.', 'thallo-visibility' ), array( 'status' => 400 ) );
@@ -135,12 +136,20 @@ class Thallo_Vis_REST {
 			return new WP_Error( 'bad_industry', __( 'Choose the category you want to be found in.', 'thallo-visibility' ), array( 'status' => 400 ) );
 		}
 
+		/* Not an error when it is missing or unknown. `market` is newer than the
+		   deployed front end, and a cached bundle that predates it must keep
+		   working — it was asking in English, and en-US is what it was asking.
+		   A rejected scan would be a worse answer than the right default. */
+		if ( ! Thallo_Vis_Questions::is_market( $market ) ) {
+			$market = Thallo_Vis_Questions::DEFAULT_MARKET;
+		}
+
 		$limited = self::check_limits();
 		if ( is_wp_error( $limited ) ) {
 			return $limited;
 		}
 
-		$session = Thallo_Vis_Runner::start( $brand, $domain, $industry );
+		$session = Thallo_Vis_Runner::start( $brand, $domain, $industry, $market );
 
 		return is_wp_error( $session ) ? $session : rest_ensure_response( $session );
 	}
@@ -185,6 +194,7 @@ class Thallo_Vis_REST {
 					'perplexity' => Thallo_Vis_Settings::has_model( 'perplexity' ),
 				),
 				'aiOverview'   => 'none' !== $serp ? $serp : false,
+				'markets'      => Thallo_Vis_Questions::market_ids(),
 				'questions'    => (int) Thallo_Vis_Settings::get( 'questions' ),
 				'scansToday'   => Thallo_Vis_DB::count_recent_total( gmdate( 'Y-m-d H:i:s', time() - DAY_IN_SECONDS ) ),
 				'dailyLimit'   => (int) Thallo_Vis_Settings::get( 'rate_global' ),

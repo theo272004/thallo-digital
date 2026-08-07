@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { BTN_DARK, FIELD, Micro, Notice, Panel } from './ui';
-import { QUESTION_COUNT } from '@/lib/scan/questions';
+import { QUESTION_COUNT, buildQuestions } from '@/lib/scan/questions';
+import { DEFAULT_MARKET, MARKETS, marketById } from '@/lib/scan/markets';
 import { INDUSTRIES, cleanDomain, isDomain, type ScanInput } from '@/lib/scan/types';
 
 const WILL_ANALYZE = [
@@ -18,7 +19,14 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
   const [brand, setBrand] = useState('');
   const [industry, setIndustry] = useState<string>(INDUSTRIES[0]);
   const [domain, setDomain] = useState('');
+  const [market, setMarket] = useState<string>(DEFAULT_MARKET);
   const [error, setError] = useState('');
+
+  /* The first of the fifteen, in the language the scan will actually use.
+     Showing it here rather than only in the audit trail afterwards means the
+     market control demonstrates what it does before anything is spent, and it
+     is the fastest way to see that a Spanish scan really does ask in Spanish. */
+  const samplePrompt = buildQuestions(industry, market)[0];
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +39,7 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
     if (!isDomain(host)) return setError('Enter a valid website, e.g. yourcompany.com');
 
     setError('');
-    onStart({ brand: name, domain: host, industry });
+    onStart({ brand: name, domain: host, industry, market });
   };
 
   return (
@@ -65,6 +73,20 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
                 ))}
               </select>
               <span className="text-[11px] font-medium text-gray-400">Sets the buying questions we ask</span>
+            </label>
+
+            <label className="flex flex-col gap-2">
+              <Micro className="text-gray-900">Market</Micro>
+              <select value={market} onChange={(e) => setMarket(e.target.value)} className={FIELD}>
+                {MARKETS.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.languageLabel} · {m.country.replace(/^the /, '')}
+                  </option>
+                ))}
+              </select>
+              <span className="text-[11px] font-medium text-gray-400">
+                The language buyers ask in, and the country they ask from
+              </span>
             </label>
 
             <label className="flex flex-col gap-2">
@@ -111,7 +133,21 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
           ))}
         </ul>
 
-        <div className="mt-auto pt-7">
+        <div className="mt-auto flex flex-col gap-3 pt-7">
+          <div className="rounded-lg border border-gray-100 p-4 sm:p-5">
+            <Micro className="text-gray-400">First of {QUESTION_COUNT}, as it will be sent</Micro>
+            <p
+              lang={marketById(market).language}
+              className="mt-2.5 font-mono text-[12.5px] leading-relaxed text-gray-700"
+            >
+              {samplePrompt}
+            </p>
+            <p className="mt-3 text-[11px] font-medium text-gray-400">
+              Asked in {marketById(market).languageLabel}, on behalf of a buyer in{' '}
+              {marketById(market).country.replace(/^the /, '')}.
+            </p>
+          </div>
+
           <div className="rounded-lg bg-[#F4FAF5] p-4 sm:p-5">
             <Micro className="text-[#39471D]">How it is measured</Micro>
             <p className="mt-2.5 text-[13px] font-medium leading-relaxed text-gray-600">

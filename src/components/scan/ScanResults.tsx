@@ -5,6 +5,7 @@ import ConsentCheck from '@/components/ui/ConsentCheck';
 import AuditTrail from './AuditTrail';
 import ScoreRing from './ScoreRing';
 import { BTN_DARK, FIELD, Meter, Micro, Notice, Panel, ProviderMark, Spinner, Stat, Verdict, type Tone } from './ui';
+import { marketLabel } from '@/lib/scan/markets';
 import { PROVIDER_LABEL, type ProviderResult, type ScanPhase1 } from '@/lib/scan/types';
 
 const LOCKED = [
@@ -55,8 +56,13 @@ export default function ScanResults({
       <Panel>
         <div className="flex flex-wrap items-baseline justify-between gap-2 pb-5">
           <p className="max-w-[32ch] truncate text-[15px] font-bold tracking-tight text-gray-900">{phase1.brand}</p>
+          {/* The market belongs on the dateline, not in a footnote. A share of
+              voice is only a finding about a brand once you know which market
+              it was measured in — the same brand can be 40% in one and 0% in
+              the next, and both readings are correct. */}
           <Micro className="text-gray-400">
-            {phase1.industry} · {new Date(phase1.scannedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+            {phase1.industry} · {marketLabel(phase1.market)} ·{' '}
+            {new Date(phase1.scannedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
           </Micro>
         </div>
 

@@ -4,6 +4,7 @@ import React from 'react';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import AuditTrail from './AuditTrail';
 import ScoreRing from './ScoreRing';
+import TrendChart from './TrendChart';
 import { BTN_DARK, BTN_GHOST, Meter, Micro, Panel, ProviderMark, Stat, Verdict, type Tone } from './ui';
 import { PROVIDER_LABEL, type ScanPhase1, type ScanPhase2, type RetrievalResult, type TechSignal } from '@/lib/scan/types';
 import { BASE } from '@/lib/site';
@@ -67,6 +68,16 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
             </div>
           </div>
         </div>
+      </Panel>
+
+      {/* ── Trend ────────────────────────────────────────────────────────── */}
+      <Panel>
+        <Micro className="text-gray-400">Share of voice over time</Micro>
+        <p className="mt-4 mb-6 max-w-[62ch] text-[13px] font-medium leading-relaxed text-gray-500">
+          Every scan of {phase1.domain} in this market, oldest first. A single scan tells you where you stand; only
+          the series tells you whether anything you changed worked.
+        </p>
+        <TrendChart history={phase2.history ?? []} brand={phase1.brand} />
       </Panel>
 
       {/* ── Recommended instead of you ───────────────────────────────────── */}

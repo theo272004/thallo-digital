@@ -34,9 +34,9 @@ class Thallo_Vis_Runner {
 	// Starting
 	// -----------------------------------------------------------------------
 
-	public static function start( $brand, $domain, $industry ) {
+	public static function start( $brand, $domain, $industry, $market = Thallo_Vis_Questions::DEFAULT_MARKET ) {
 		$count     = (int) Thallo_Vis_Settings::get( 'questions', 15 );
-		$questions = Thallo_Vis_Questions::build( $industry, $count );
+		$questions = Thallo_Vis_Questions::build( $industry, $count, $market );
 		$demo      = Thallo_Vis_Settings::is_demo();
 		$scan_id   = Thallo_Vis_DB::new_scan_id();
 
@@ -69,6 +69,7 @@ class Thallo_Vis_Runner {
 			'brand'          => $brand,
 			'domain'         => $domain,
 			'industry'       => $industry,
+			'market'         => $market,
 			'created_at'     => gmdate( 'c' ),
 			'questions'      => $questions,
 			'models'         => $models,
@@ -88,6 +89,20 @@ class Thallo_Vis_Runner {
 		}
 
 		return self::session( $state, 'running' );
+	}
+
+	/**
+	 * The market a stored scan was started in.
+	 *
+	 * Scans created before markets existed have no `market` key in their state,
+	 * and one of them can still be mid-flight when this code deploys. They were
+	 * asked in English, so that is what they fall back to — reading the key
+	 * directly would make every one of them fatal on its next tick.
+	 */
+	private static function market_of( array $state ) {
+		return isset( $state['market'] ) && Thallo_Vis_Questions::is_market( $state['market'] )
+			? $state['market']
+			: Thallo_Vis_Questions::DEFAULT_MARKET;
 	}
 
 	private static function model_id( $provider, $demo ) {
@@ -167,8 +182,14 @@ class Thallo_Vis_Runner {
 		$jobs  = array();
 		$shape = 'openai';
 
+		/* Built once per tick rather than per job: it is the same string for
+		   every question in the batch, and it is what carries the market — the
+		   language the question is in is only half the measurement, the other
+		   half is telling the model who is asking. */
+		$system = Thallo_Vis_Questions::system_prompt( self::market_of( $state ) );
+
 		foreach ( $batch as $position => $item ) {
-			$job = Thallo_Vis_LLM::build_job( $item['p'], $state['questions'][ $item['q'] ] );
+			$job = Thallo_Vis_LLM::build_job( $item['p'], $state['questions'][ $item['q'] ], $system );
 
 			if ( ! $job ) {
 				// The key was removed between starting and ticking.
@@ -223,6 +244,13 @@ class Thallo_Vis_Runner {
 			Thallo_Vis_DB::save_state( $state['scan_id'], $state, 'failed' );
 			return self::session( $state, 'failed' );
 		}
+
+		/* Recorded here rather than at the end of phase 2, so that a visitor who
+		   never hands over an email still leaves a point behind. The free half is
+		   a real measurement; a series with a hole in it every time somebody
+		   declined to pay would be a worse record than no series at all. Phase 2
+		   updates the same row with the grade if it ever runs. */
+		Thallo_Vis_DB::record_history( $state, isset( $state['source'] ) ? $state['source'] : 'visitor' );
 
 		Thallo_Vis_DB::save_state( $state['scan_id'], $state, 'awaiting-email' );
 		return self::session( $state, 'awaiting-email' );
@@ -357,7 +385,18 @@ class Thallo_Vis_Runner {
 			'grade'       => Thallo_Vis_Analysis::grade_for( $combined ),
 			'keyInsight'  => Thallo_Vis_Analysis::key_insight( $phase1, $signals, $retrieval ),
 			'actions'     => Thallo_Vis_Analysis::actions( $signals, $phase1, $competitors ),
+			'history'     => array(),
 		);
+
+		/* Written before it is read, so the grade lands on today's row and the
+		   series the report renders includes the run being reported. A chart that
+		   stopped one point short of the number printed above it would read as a
+		   bug in the chart. In demo mode nothing was written, so nothing comes
+		   back and the report falls through to the sample series. */
+		Thallo_Vis_DB::record_history( $state, isset( $state['source'] ) ? $state['source'] : 'visitor' );
+		$state['phase2']['history'] = empty( $state['demo'] )
+			? Thallo_Vis_DB::history_for( $state['domain'], self::market_of( $state ) )
+			: self::demo_history( $phase1 );
 
 		Thallo_Vis_DB::save_state( $state['scan_id'], $state, 'complete' );
 		Thallo_Vis_Leads::after_complete( $state );
@@ -517,6 +556,38 @@ class Thallo_Vis_Runner {
 			'companies' => array_values( $companies ),
 			'error'     => '',
 		);
+	}
+
+	/**
+	 * A sample series, so the trend is visible before any brand has a second run.
+	 *
+	 * Nothing was written to the history table for a demo scan — see
+	 * `Thallo_Vis_DB::record_history()`, which refuses — so this is assembled for
+	 * the response and thrown away. It only ever travels with `demo: true` and
+	 * the banner that comes with it.
+	 *
+	 * It walks backwards from the figure the rest of the demo already reported,
+	 * and it does not always climb. A sample chart that goes up and to the right
+	 * every time is a sales mock, and this tool does not ship those.
+	 */
+	private static function demo_history( array $phase1 ) {
+		$out  = array();
+		$seed = crc32( $phase1['brand'] . $phase1['domain'] );
+
+		for ( $weeks_ago = 4; $weeks_ago >= 0; $weeks_ago-- ) {
+			$drift = ( ( $seed >> ( $weeks_ago * 3 ) ) % 11 ) - 5;
+			$value = 0 === $weeks_ago
+				? (int) $phase1['sovPct']
+				: max( 0, min( 100, (int) $phase1['sovPct'] - ( $drift * $weeks_ago ) ) );
+
+			$out[] = array(
+				'date'        => gmdate( 'Y-m-d', time() - ( $weeks_ago * 7 * DAY_IN_SECONDS ) ),
+				'sovPct'      => $value,
+				'avgPosition' => $phase1['avgPosition'],
+			);
+		}
+
+		return $out;
 	}
 
 	private static function demo_tech() {

@@ -187,6 +187,7 @@ class Thallo_Vis_Analysis {
 			'brand'        => $state['brand'],
 			'domain'       => $state['domain'],
 			'industry'     => $state['industry'],
+			'market'       => isset( $state['market'] ) ? $state['market'] : Thallo_Vis_Questions::DEFAULT_MARKET,
 			'scannedAt'    => $state['created_at'],
 			'questions'    => $questions,
 			'providers'    => $providers,

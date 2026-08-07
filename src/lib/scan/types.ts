@@ -83,6 +83,9 @@ export interface ScanPhase1 {
   brand: string;
   domain: string;
   industry: string;
+  /** The market it was run in. Printed beside the date, because a share of
+      voice without the market it was measured in is not a finding. */
+  market: string;
   /** ISO timestamp — shown to the user; a scan without a date is not an audit. */
   scannedAt: string;
   /** The exact prompts sent. Surfaced in the UI; this is what makes it auditable. */
@@ -137,6 +140,23 @@ export interface ActionItem {
 
 export type Grade = 'A' | 'B' | 'C' | 'D' | 'F';
 
+/**
+ * One earlier run of the same brand, in the same market.
+ *
+ * Working scan data is pruned after fourteen days; these rows are not. They are
+ * small on purpose — the headline numbers and nothing else — so that keeping
+ * them forever costs nothing and a brand accumulates a trend rather than a pile
+ * of snapshots. A scan tells you where you stand; only the series tells you
+ * whether anything you did worked.
+ */
+export interface HistoryPoint {
+  /** ISO date, `YYYY-MM-DD`. Chart axis and dedupe key. */
+  date: string;
+  sovPct: number;
+  avgPosition: number | null;
+  grade?: Grade;
+}
+
 /** Unlocked by the email gate. */
 export interface ScanPhase2 {
   competitors: Competitor[];
@@ -149,6 +169,10 @@ export interface ScanPhase2 {
   grade: Grade;
   keyInsight: string;
   actions: ActionItem[];
+  /** Every run of this brand in this market, oldest first, including the one
+      just finished. A single-point series is the normal first-scan case and the
+      chart says so rather than drawing a line through one dot. */
+  history: HistoryPoint[];
 }
 
 // ---------------------------------------------------------------------------
@@ -195,6 +219,10 @@ export interface ScanInput {
   brand: string;
   domain: string;
   industry: string;
+  /** A `Market` id from `./markets.ts` — the language asked in and the country
+      asked from. Separate markets are separate measurements, and separate
+      history series, because they are separate answers. */
+  market: string;
 }
 
 /** The shape of the steps before the server has said anything about them.

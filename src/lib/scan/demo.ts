@@ -49,7 +49,7 @@ const MODEL_IDS: Record<string, string> = {
 
 export function demoPhase1(input: ScanInput): ScanPhase1 {
   const rand = seeded(input.brand + input.domain);
-  const questions = buildQuestions(input.industry);
+  const questions = buildQuestions(input.industry, input.market);
 
   const providers: ProviderResult[] = MEMORY_PROVIDERS.map((provider) => {
     const rate = rand() * 0.5;
@@ -83,6 +83,7 @@ export function demoPhase1(input: ScanInput): ScanPhase1 {
     brand: input.brand,
     domain: input.domain,
     industry: input.industry,
+    market: input.market,
     scannedAt: new Date().toISOString(),
     questions,
     providers,
@@ -185,12 +186,31 @@ export function demoPhase2(phase1: ScanPhase1): ScanPhase2 {
   const serpScore = -1;
   const combined = Math.round((phase1.sovPct + techScore) / 2);
 
+  /* A sample series, so the trend chart can be shown before any brand has a
+     real second run. It is invented in exactly the way every other number on
+     this screen is invented, and it is only ever reachable with `demo: true`
+     set and the banner up. It walks backwards from the demo's own share of
+     voice rather than to some flattering shape — a demo that always goes up and
+     to the right is a sales mock, not sample data. */
+  const history = Array.from({ length: 5 }, (_, i) => {
+    const weeksAgo = 4 - i;
+    const date = new Date();
+    date.setDate(date.getDate() - weeksAgo * 7);
+    const drift = Math.round((rand() - 0.45) * 14);
+    return {
+      date: date.toISOString().slice(0, 10),
+      sovPct: weeksAgo === 0 ? phase1.sovPct : Math.max(0, Math.min(100, phase1.sovPct - drift * weeksAgo)),
+      avgPosition: phase1.avgPosition,
+    };
+  });
+
   const gaps = [...signals].filter((s) => s.weight > 0 && s.status !== 'pass').sort((a, b) => b.weight - a.weight);
   const remedyFor = (i: number) => (gaps[i] ? REMEDY[gaps[i].id] ?? REMEDY.default : null);
   const named = phase1.providers.filter((p) => p.mentions > 0);
   const absent = phase1.providers.filter((p) => p.mentions === 0);
 
   return {
+    history,
     competitors,
     /* Reported as unavailable rather than as a status, because that is the
        truth of it: with no backend there is nothing to retrieve from. Showing
