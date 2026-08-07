@@ -2,6 +2,7 @@ import React from 'react';
 import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
 import ScanFlow from '@/components/scan/ScanFlow';
+import ToolPresentation from '@/components/scan/ToolPresentation';
 
 import Footer from '@/components/Footer';
 
@@ -63,14 +64,16 @@ export default function ThalloAI() {
         }}
       />
       <Navbar />
-      {/* The tool, and nothing else.
-          The six-section walkthrough that used to sit under here now lives at
-          /thallo-ai/method/. Stacked, it made this page read as a brochure
-          about a tool rather than as the tool: someone who came to run a scan
-          had to scroll past an explanation of the scan to leave. The limits
-          strip inside the console carries the part that is genuinely part of
-          reading the result. */}
+      {/* Demonstration, then the tool.
+          The page used to open straight onto the form, which is efficient for
+          somebody who already knows what this is and opaque to everybody else.
+          The full method still lives at /thallo-ai/method/ — what sits above
+          the console now is not that: it is the report itself, playing, so the
+          decision to run a scan is made by someone who has seen the output.
+          The limits strip inside the console carries the part that is genuinely
+          part of reading the result. */}
       <main className="flex-grow">
+        <ToolPresentation />
         <ScanFlow />
       </main>
       <Footer />

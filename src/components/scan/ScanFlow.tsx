@@ -97,10 +97,15 @@ export default function ScanFlow() {
 
       <div className="relative mx-auto max-w-[1440px] px-6">
         {/* Outside the flow on purpose — the prerendered HTML still says what
-            this page is, whatever the console resolves to. */}
+            this page is, whatever the console resolves to.
+
+            An h2, not an h1: the presentation above owns the page's heading
+            now. Two h1s would have left the document with no single answer to
+            "what is this page", on a page whose whole subject is being legible
+            to machines. */}
         <div className="max-w-[58ch]">
           <SplitReveal
-            as="h1"
+            as="h2"
             scroll={false}
             fade={false}
             className="mb-4 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl"

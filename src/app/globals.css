@@ -77,6 +77,14 @@ body {
   to   { opacity: 1; transform: none; }
 }
 
+/* The tool page's demo panel advances when this finishes — it is the clock, not
+   a decoration alongside one. Width rather than transform: the bar is 2px tall
+   and scaling it would blur the cap. */
+@keyframes frame-fill {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
 /* The isotipo that turns on the heroes is driven from SpinFlower now, not from
    a keyframe here — a CSS animation can be watched but not pushed, and this one
    takes a flick. The rate at rest is unchanged: 30s a turn, linear. */
