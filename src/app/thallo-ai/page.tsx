@@ -1,7 +1,6 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
-import ScanFlow from '@/components/scan/ScanFlow';
 import ToolPresentation from '@/components/scan/ToolPresentation';
 
 import Footer from '@/components/Footer';
@@ -74,7 +73,6 @@ export default function ThalloAI() {
           part of reading the result. */}
       <main className="flex-grow">
         <ToolPresentation />
-        <ScanFlow />
       </main>
       <Footer />
     </div>

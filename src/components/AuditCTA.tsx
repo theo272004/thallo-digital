@@ -100,7 +100,7 @@ export default function AuditCTA({
                   Book an audit <ArrowUpRight className="ml-0.5" />
                 </a>
                 <a
-                  href={`${BASE}/thallo-ai/`}
+                  href={`${BASE}/thallo-ai/scan/`}
                   className="inline-block w-full sm:w-auto text-center px-7 py-3.5 border border-white/30 rounded-full text-sm font-semibold text-white hover:bg-white/10 transition-colors"
                 >
                   Check my visibility <ArrowUpRight className="ml-0.5" />
