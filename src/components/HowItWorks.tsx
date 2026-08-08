@@ -230,11 +230,11 @@ export default function HowItWorks() {
               as="h2"
               className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
               /* Inter, italic and light, as in the hero — see HeroText. */
-              html='One team. The full <span class="italic whitespace-nowrap text-[#39471D]">authority engine.</span>'
+              html='The <span class="italic whitespace-nowrap text-[#39471D]">Authority Engine.</span>'
             />
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch] mx-auto lg:mx-0">
-              A systematic authority building process that converts search
-              queries into revenue-generating recommendations.
+              Four phases, run as one operation. It starts by measuring where you actually
+              stand, and ends with you being the source that gets named.
             </p>
           </div>
 
@@ -262,11 +262,19 @@ export default function HowItWorks() {
                 <span className="text-[11px] font-semibold text-white">01</span>
               </div>
               <div>
-                <h3 className="text-base font-bold text-gray-900 mb-2">Expert content</h3>
+                <h3 className="text-base font-bold text-gray-900 mb-2">Diagnose</h3>
                 <p className="text-[15px] text-gray-500 leading-relaxed">
-                  Deeply researched, original work built on real expertise and
-                  your own data, the content people cite and return to.
+                  We scan how the models describe you today, which questions your category already owns, and where your
+                  competitors are being named instead of you.
                 </p>
+                {/* What the phase hands over. Named deliverables rather than
+                    adjectives — a phase you cannot point at the output of is a
+                    phase nobody can tell you finished. */}
+                <div className="flex flex-wrap gap-1.5 mt-3.5">
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Visibility baseline</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Competitor citation gap</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Question map</span>
+                </div>
               </div>
             </div>
 
@@ -279,11 +287,17 @@ export default function HowItWorks() {
                 <span className="text-[11px] font-semibold text-white">02</span>
               </div>
               <div>
-                <h3 className="text-base font-bold text-gray-900 mb-2">Technical infrastructure</h3>
+                <h3 className="text-base font-bold text-gray-900 mb-2">Build the work</h3>
                 <p className="text-[15px] text-gray-500 leading-relaxed">
-                  A site search engines and AI can read, understand, and cite,
-                  structured to answer the questions buyers actually ask.
+                  Original research and expert content built on your own data. The kind of thing a machine
+                  can&rsquo;t produce, because it requires knowing something nobody else knows.
                 </p>
+                <div className="flex flex-wrap gap-1.5 mt-3.5">
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Data studies</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Research reports</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Whitepapers</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Definitive guides</span>
+                </div>
               </div>
             </div>
 
@@ -296,11 +310,16 @@ export default function HowItWorks() {
                 <span className="text-[11px] font-semibold text-white">03</span>
               </div>
               <div>
-                <h3 className="text-base font-bold text-gray-900 mb-2">Distribution</h3>
+                <h3 className="text-base font-bold text-gray-900 mb-2">Make it readable</h3>
                 <p className="text-[15px] text-gray-500 leading-relaxed">
-                  We carry the work to where buyers already research, so authority
-                  is met in the places that shape opinion.
+                  A site that search engines and AI models can parse, understand, and cite. Structured around the
+                  questions your buyers actually type, not the keywords a tool suggested.
                 </p>
+                <div className="flex flex-wrap gap-1.5 mt-3.5">
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Technical SEO</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Pillar pages</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Generative Engine Optimization</span>
+                </div>
               </div>
             </div>
 
@@ -313,11 +332,17 @@ export default function HowItWorks() {
                 <span className="text-[11px] font-semibold text-white">04</span>
               </div>
               <div>
-                <h3 className="text-base font-bold text-gray-900 mb-2">Coherence</h3>
+                <h3 className="text-base font-bold text-gray-900 mb-2">Carry it out</h3>
                 <p className="text-[15px] text-gray-500 leading-relaxed">
-                  One narrative, one standard of quality, repeated across every
-                  channel and every month until it becomes reputation.
+                  Publishing isn&rsquo;t reaching. We take the work to where opinions get formed, which is also where
+                  the models go looking for sources.
                 </p>
+                <div className="flex flex-wrap gap-1.5 mt-3.5">
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">LinkedIn</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Communities</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Podcasts</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Newsletters</span>
+                </div>
               </div>
             </div>
 

@@ -15,10 +15,39 @@ if (typeof window !== 'undefined') {
 // (static export pre-render) React warns about it, so fall back there.
 const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
+/**
+ * Three figures, each with the study it came from.
+ *
+ * The attribution is not decoration. This is a page arguing that citing your
+ * sources is what makes a brand quotable; three unsourced percentages on it
+ * would be the argument failing on its own page. Where a figure cannot be
+ * attributed it does not belong here — which is why the third card is now a
+ * measured number about buyer behaviour rather than the "one recommendation
+ * instead of ten blue links" line, which was a characterisation with a "1" set
+ * in front of it as though it were data.
+ */
 const STATS = [
-  { val: 45, suffix: '%', label: 'AI Evaluation',           copy: 'of buyers used AI during a recent purchase to evaluate vendors.' },
-  { val: 69, suffix: '%', label: 'Zero-Click Searches',     copy: 'of search queries now end directly inside conversational responses.' },
-  { val: 1,  suffix: '',  label: 'Primary Recommendation',  copy: 'AI engines increasingly return one synthesized recommendation instead of ten blue links.' },
+  {
+    val: 45,
+    suffix: '%',
+    label: 'AI evaluation',
+    copy: 'of B2B buyers used AI during a recent purchase to evaluate vendors.',
+    src: 'Gartner, survey of 646 buyers, 2026',
+  },
+  {
+    val: 68,
+    suffix: '%',
+    label: 'Zero-click searches',
+    copy: 'of US Google searches now end without a single click to any website.',
+    src: 'SparkToro / Similarweb, 2026',
+  },
+  {
+    val: 85,
+    suffix: '%',
+    label: 'Day-one shortlists',
+    copy: 'of B2B buyers purchase from the vendors they already had in mind before searching.',
+    src: 'Bain & Company',
+  },
 ];
 
 export default function TheProblem() {
@@ -70,8 +99,8 @@ export default function TheProblem() {
               html="Search no longer sends buyers to websites. It answers for them."
             />
             <p className="text-gray-300 font-medium text-sm sm:text-base leading-relaxed max-w-[46ch]">
-              The brand cited in that answer is the one buyers trust. Before anyone makes a call,
-              sends an email, or books a demo.
+              And whoever isn&rsquo;t in that answer doesn&rsquo;t get considered. Publishing more stopped working when
+              publishing stopped costing anything. What AI can&rsquo;t fabricate is research only you could have done.
             </p>
           </div>
         </div>
@@ -88,6 +117,10 @@ export default function TheProblem() {
               </div>
               <p className="text-[12px] font-bold tracking-wider uppercase text-gray-900 mb-2">{s.label}</p>
               <p className="text-[15px] text-gray-500 leading-relaxed font-medium">{s.copy}</p>
+              {/* The source, in the muted green the site uses for secondary
+                  marks. Set small and last so it is available to anyone
+                  checking without competing with the figure it supports. */}
+              <p className="mt-3.5 text-[11.5px] font-medium text-[#8FA88A]">{s.src}</p>
             </div>
           ))}
         </div>

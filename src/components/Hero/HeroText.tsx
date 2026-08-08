@@ -1,6 +1,7 @@
 import React from 'react';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import { SplitReveal, Magnetic, scrollToEl } from '@/components/motion';
+import { BASE } from '@/lib/site';
 
 export default function HeroText() {
   return (
@@ -34,21 +35,19 @@ export default function HeroText() {
 
       {/* CTAs */}
       <div className="flex items-center gap-4">
+        {/* The scan, not the audit form.
+            The primary action off the hero is the thing that costs the reader
+            nothing and answers the question the headline just raised. Booking
+            is further down the page, once they have a reason to. */}
         <Magnetic>
           <a
-            href="#cta"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToEl('#cta');
-            }}
+            href={`${BASE}/thallo-ai/`}
             className="px-6 py-3.5 rounded-full text-xs font-bold text-white bg-[#39471D] border border-[#39471D] hover:bg-[#55672E] hover:border-[#55672E] transition-all flex items-center gap-2 group shadow-sm shadow-[#55672E]/10"
           >
-            Book an AI visibility audit
+            See how AI describes you
             <ArrowUpRight className="text-[11px] group-hover:translate-x-0.5 transition-transform" />
           </a>
         </Magnetic>
-        {/* Points at the approach section: the plans teaser this used to scroll
-            to no longer lives on the home page. */}
         <a
           href="#approach"
           onClick={(e) => {
@@ -57,7 +56,7 @@ export default function HeroText() {
           }}
           className="px-6 py-3.5 rounded-full text-xs font-bold text-gray-800 border border-gray-200 bg-white hover:border-gray-400 transition-all flex items-center gap-2"
         >
-          See how it works
+          How it works
           <span className="text-[11px] text-gray-500">▷</span>
         </a>
       </div>

@@ -2,15 +2,15 @@
 
 import React from 'react';
 
+/*
+ * The five categories, in the order the page states them.
+ *
+ * Not a list of everything we would take on — a list of where the argument
+ * above them holds. "Health & recovery" and "Benefits & claims" were sitting
+ * here as consumer-side categories, which is a different business from the one
+ * this page describes.
+ */
 const ITEMS = [
-  {
-    title: 'Specialized software',
-    icon: (
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="4" width="18" height="14" rx="2" /><path d="M8 20h8M9 8l-2 3 2 3M15 8l2 3-2 3" />
-      </svg>
-    ),
-  },
   {
     title: 'Fintech',
     icon: (
@@ -28,26 +28,26 @@ const ITEMS = [
     ),
   },
   {
+    title: 'Legal tech',
+    icon: (
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 3v18M7 21h10M4 8h16M6.5 8 4 14h5zM17.5 8 15 14h5z" />
+      </svg>
+    ),
+  },
+  {
+    title: 'Specialized software',
+    icon: (
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="4" width="18" height="14" rx="2" /><path d="M8 20h8M9 8l-2 3 2 3M15 8l2 3-2 3" />
+      </svg>
+    ),
+  },
+  {
     title: 'Professional services',
     icon: (
       <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Health & recovery',
-    icon: (
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 3v18M5 8c0 4 3 6 7 6M19 8c0 4-3 6-7 6" />
-      </svg>
-    ),
-  },
-  {
-    title: 'Benefits & claims',
-    icon: (
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
       </svg>
     ),
   },

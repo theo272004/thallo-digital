@@ -28,11 +28,14 @@ export default function Home() {
         <About />
         {/* The partners live on /about/ rather than here: the home is a single
             argument from hero to CTA, and a team block interrupts it. */}
-        {/* What we do comes before why it matters: the approach answers the
-            "who are you" the hero and About just raised, and the shift then
-            lands as the reason the work is built that way. */}
-        <HowItWorks />
+        {/* Why it matters comes before what we do.
+            The shift states the problem — search answers instead of sending —
+            and the Authority Engine is then read as the response to it. The
+            other way round, which is how this ran before, the engine arrives
+            as a description of services nobody has been given a reason to
+            want yet. This is the order the approved copy runs in. */}
         <TheProblem />
+        <HowItWorks />
         {/* Proof that we measure it, and the scanner that does — before the
             categories, so the tool is met while the argument is still warm. */}
         <ResultsDashboard />

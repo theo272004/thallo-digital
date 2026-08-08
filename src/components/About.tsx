@@ -40,12 +40,13 @@ export default function About() {
                lines out; the widest lands at roughly the width the paragraph
                below already runs to, so it clears the devices the same way. */
             className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans text-balance"
-            html="AI made content infinite. That made real authority the only thing worth building."
+            html='Authority is the one asset <span class="italic text-[#39471D]">that appreciates.</span>'
           />
           <p className="text-gray-500 font-medium text-base sm:text-lg leading-relaxed">
-            Thallo builds authority for companies in high-consideration industries. We combine strong fundamentals with
-            strategies tuned to how buyers research and decide today, so our clients stay the trusted answer no matter how
-            the channels change. A senior team, deliberately small, focused on doing a few things exceptionally well.
+            Ads stop the day you stop paying. Rankings move with every update.{' '}
+            <strong className="text-gray-900 font-semibold">Authority compounds.</strong> Every study you publish, every
+            citation you earn, every room where your name comes up makes the next one easier. That&rsquo;s what we build
+            for companies in high-consideration industries.
           </p>
 
           {/* Mobile: in normal flow */}

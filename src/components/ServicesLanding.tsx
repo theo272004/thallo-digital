@@ -13,60 +13,81 @@ import { BASE } from '@/lib/site';
 const SERVICES = [
   {
     idx: '01',
-    kicker: 'Entry point',
+    kicker: 'Diagnosis',
     tab: 'Audit',
     title: 'AI Visibility Audit',
-    desc: 'See exactly where you show up when buyers ask AI, where competitors beat you, and what it takes to lead.',
+    desc: 'See exactly where you show up when buyers ask AI, where competitors beat you, and what it would take to lead.',
     deliverables: [
-      'Visibility benchmark vs. rivals',
+      'Visibility benchmark against rivals',
       'Share-of-answer scoring',
       'Technical readiness review',
-      'Content & authority gaps',
+      'Content and authority gaps',
       'Prioritized 90-day roadmap',
-      'Competitor teardown',
     ],
-    price: 'From $800 · one-time · no lock-in',
+    price: 'From $800 · one-time · no lock-in. The roadmap is yours either way.',
   },
   {
     idx: '02',
-    kicker: 'Core program',
+    kicker: 'The full program',
     tab: 'Authority Engine',
     title: 'The Authority Engine',
-    desc: 'Our monthly engine that builds, publishes, and compounds authority across search and AI, so you keep winning the research phase.',
+    desc: 'The monthly operation that builds, publishes and compounds your authority across search and AI, so you keep winning the research phase.',
     deliverables: [
-      'Deeply researched content',
+      'Deeply researched original content',
       'Technical AI-readiness build',
-      'Search & AI visibility',
+      'Search and AI visibility',
       'Distribution to buyer channels',
       'Consistent brand narrative',
       'Monthly outcome reporting',
     ],
-    price: 'From $2,500 / month · 6-month term',
+    /* Three months, not six. The FAQ below explains the reasoning and the two
+       have to agree — a page that states one term in the card and another in
+       the answer underneath it is a page nobody can quote back to you. */
+    price: 'From $2,500 / month · 3-month initial term. Scales with the size of the operation.',
   },
   {
     idx: '03',
-    kicker: 'Accelerate',
-    tab: 'Flagship',
-    title: 'Flagship Projects',
-    desc: 'High-value assets that earn citations and put you on the map — as a standalone project or layered onto your engine.',
+    kicker: 'One-off work',
+    tab: 'Projects',
+    title: 'Standalone Projects',
+    desc: 'A single high-value piece of work, built end to end. Take one on its own, or layer it onto the Engine.',
     deliverables: [
-      'Proprietary data studies',
-      'Industry reports',
-      'Digital PR & podcasts',
+      'Original research studies',
+      'Definitive guides',
+      'AI visibility build',
+      'Digital PR and podcasts',
       'Interactive tools',
-      'Signature research',
-      'Launch strategy',
     ],
-    price: 'From $600 · priced by scope',
+    price: 'Priced by scope · quoted per project. Tell us what you have in mind.',
   },
 ];
 
+/**
+ * The questions that come up at the point of choosing, not the ones about the
+ * category. Someone on this page has already accepted the argument; what they
+ * are deciding is which of the three to buy and what they are committing to.
+ */
 const FAQS = [
-  { q: 'What if AI says something wrong about us?',              a: 'It happens, and there is no edit button. No AI company lets you log in and correct it. What you can do is make the accurate version of your story the strongest, most consistent signal across the places AI reads, so the correct answer becomes the one it repeats. Getting that right is a large part of our work, and it is why precision matters to us more than volume.' },
-  { q: 'Can you prove it is working?',                           a: 'Yes, with honesty about what is measurable and what is not. We track how often you appear in AI answers for the questions your buyers ask, the sources citing you, and the pipeline your presence influences. What no one can promise is perfect click-by-click attribution; AI search is newer and messier than Google. We report the real signals, not a vanity dashboard, and we are straight about the limits.' },
-  { q: 'Will this bring us more customers?',                     a: 'We build the preference, visibility, and pipeline that make you far more likely to win, and keep you on the shortlist. What we will not do is promise a fixed number of sales. In a long, multi-person buying decision, anyone who does is guessing.' },
-  { q: 'How fast will we see results?',                          a: 'Faster than old-school SEO. Because AI reads and cites fresh content in real time, early movement — first mentions and first citations — can show up within weeks, not the long months traditional search used to demand. The deeper, compounding authority builds from there.' },
-  { q: 'Where do we start, and how much do we have to commit?', a: 'Almost everyone begins with the audit: fixed scope, no lock-in, and you walk away with a clear picture and a roadmap you keep whether or not you continue. It is the fastest way to see exactly where you stand, and what the opportunity is worth, before committing to anything bigger.' },
+  {
+    q: 'Do I have to start with the audit?',
+    a: 'No. The three plans are independent. Most people start with the audit because it costs least and tells you what you actually need, but you can go straight into the Engine or commission a single project if you already know what you are missing.',
+  },
+  {
+    q: 'Why a three-month minimum?',
+    a: 'Because nothing meaningful happens in thirty days, and we would rather say so than sell you a month and let you draw your own conclusions. Three months is the shortest window where you can judge the work fairly. Worth knowing upfront: movement in how the models describe you usually shows up between month three and month six. The first quarter builds the foundation the rest compounds on.',
+  },
+  {
+    q: 'What does a project cost?',
+    a: 'It depends entirely on scope. A focused data study and a full industry report with original survey work are different sizes of project. Tell us what you have in mind and you will get a fixed quote before anything starts.',
+  },
+  {
+    q: 'Can I add a project to the Engine later?',
+    a: 'Yes, and that is how most of them get commissioned. The engine surfaces the opportunity, you decide whether it is worth the extra scope, and it gets quoted separately.',
+  },
+  {
+    q: 'What happens if we stop?',
+    a: 'Everything we built stays yours. The research, the pages, the structure, the reports. Unlike ads, the work does not disappear the moment you stop paying, which is most of the reason it is worth doing.',
+  },
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -121,27 +142,27 @@ function FeatureIcon({ item }: { item: string }) {
   };
   const map: Record<string, React.ReactNode> = {
     // ── Audit ──
-    'Visibility benchmark vs. rivals': <svg {...p}><line x1="18" y1="20" x2="18" y2="9"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="13"/><line x1="2" y1="20" x2="22" y2="20"/></svg>,
+    'Visibility benchmark against rivals': <svg {...p}><line x1="18" y1="20" x2="18" y2="9"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="13"/><line x1="2" y1="20" x2="22" y2="20"/></svg>,
     'Share-of-answer scoring':         <svg {...p}><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10h-10z"/></svg>,
     'Technical readiness review':      <svg {...p}><rect x="7" y="7" width="10" height="10" rx="1"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/><rect x="2" y="2" width="20" height="20" rx="3"/></svg>,
-    'Content & authority gaps':        <svg {...p}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+    'Content and authority gaps':       <svg {...p}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
     'Prioritized 90-day roadmap':      <svg {...p}><polyline points="3 6 4.5 7.5 7.5 4.5"/><polyline points="3 12 4.5 13.5 7.5 10.5"/><polyline points="3 18 4.5 19.5 7.5 16.5"/><line x1="11" y1="6" x2="21" y2="6"/><line x1="11" y1="12" x2="21" y2="12"/><line x1="11" y1="18" x2="21" y2="18"/></svg>,
     'Competitor teardown':             <svg {...p}><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/></svg>,
 
     // ── Authority Engine ──
-    'Deeply researched content':       <svg {...p}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+    'Deeply researched original content': <svg {...p}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
     'Technical AI-readiness build':    <svg {...p}><rect x="7" y="7" width="10" height="10" rx="1"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/><rect x="2" y="2" width="20" height="20" rx="3"/></svg>,
-    'Search & AI visibility':          <svg {...p}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+    'Search and AI visibility':         <svg {...p}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
     'Distribution to buyer channels':  <svg {...p}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>,
     'Consistent brand narrative':      <svg {...p}><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>,
     'Monthly outcome reporting':       <svg {...p}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>,
 
-    // ── Flagship ──
-    'Proprietary data studies':        <svg {...p}><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>,
-    'Industry reports':                <svg {...p}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="13" x2="8" y2="13"/></svg>,
-    'Digital PR & podcasts':           <svg {...p}><path d="M12 2a3 3 0 00-3 3v7a3 3 0 006 0V5a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>,
+    // ── Standalone Projects ──
+    'Original research studies':        <svg {...p}><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>,
+    'Definitive guides':                <svg {...p}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="13" x2="8" y2="13"/></svg>,
+    'Digital PR and podcasts':          <svg {...p}><path d="M12 2a3 3 0 00-3 3v7a3 3 0 006 0V5a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>,
     'Interactive tools':               <svg {...p}><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>,
-    'Signature research':              <svg {...p}><circle cx="12" cy="8" r="6"/><polyline points="8.2 13.4 7 22 12 19 17 22 15.8 13.4"/></svg>,
+    'AI visibility build':              <svg {...p}><circle cx="12" cy="8" r="6"/><polyline points="8.2 13.4 7 22 12 19 17 22 15.8 13.4"/></svg>,
     'Launch strategy':                 <svg {...p}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/></svg>,
   };
   return <>{map[item] ?? null}</>;
@@ -233,10 +254,12 @@ export default function ServicesPage() {
       <section className="bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-2xl">
-            One engine to make you<br />the answer.
+            Three ways to <span className="italic text-[#39471D]">work with us.</span>
           </h1>
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mb-10">
-            Everything we do builds toward one outcome: making you the name buyers and AI trust.
+            Start with a diagnosis, commission a single project, or run the full engine.{' '}
+            <strong className="text-gray-900 font-semibold">Pick one, or combine them.</strong> None of them requires
+            the others.
           </p>
           <SpinFlower alt="Thallo" className="block w-20 h-20 opacity-80" />
         </div>
@@ -381,10 +404,11 @@ export default function ServicesPage() {
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="max-w-2xl mb-12">
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans mb-5">
-              Choose a plan, add what you need.
+              Not sure which one fits? <span className="italic text-[#39471D]">Start with the audit.</span>
             </h2>
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[58ch]">
-              The Audit and the Authority Engine are the two plans you start with. Flagship Projects are optional add-ons — pick any of them to layer onto your plan.
+              It tells you what you actually need, and you keep the roadmap whether you continue with us or not.
+              Standalone Projects can be commissioned on their own or layered onto the Engine at any point.
             </p>
           </div>
 
@@ -572,8 +596,11 @@ export default function ServicesPage() {
         <div className="max-w-[1440px] mx-auto px-6">
           <div className="text-center mb-14">
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans">
-              The honest answers.
+              Before you <span className="italic text-[#39471D]">decide.</span>
             </h2>
+            <p className="mt-5 text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mx-auto">
+              The questions that usually come up at this point.
+            </p>
           </div>
 
           <div className="max-w-3xl mx-auto">
