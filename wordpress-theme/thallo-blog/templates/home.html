@@ -1,0 +1,88 @@
+<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","style":{"spacing":{"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60"}}},"layout":{"type":"constrained","contentSize":"72rem"}} -->
+<main class="wp-block-group" style="padding-top:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--60)">
+
+<!-- wp:heading {"level":4} -->
+<h4 class="wp-block-heading">Thallo · writing</h4>
+<!-- /wp:heading -->
+
+<!-- wp:heading {"level":1,"fontSize":"xx-large","style":{"spacing":{"margin":{"top":"1.5rem","bottom":"1.5rem"}}}} -->
+<h1 class="wp-block-heading has-xx-large-font-size" style="margin-top:1.5rem;margin-bottom:1.5rem">What we have worked out, written down.</h1>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"fontSize":"large","style":{"spacing":{"margin":{"bottom":"var:preset|spacing|50"}}}} -->
+<p class="has-large-font-size" style="margin-bottom:var(--wp--preset--spacing--50)">Notes on being found when the answer is written for you — how models decide who to name, what actually moves it, and what nobody can honestly tell you yet.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:separator {"className":"is-style-wide"} -->
+<hr class="wp-block-separator has-alpha-channel-opacity is-style-wide"/>
+<!-- /wp:separator -->
+
+<!-- wp:query {"queryId":0,"query":{"perPage":12,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"style":{"spacing":{"margin":{"top":"var:preset|spacing|50"}}},"layout":{"type":"default"}} -->
+<div class="wp-block-query" style="margin-top:var(--wp--preset--spacing--50)">
+
+<!-- wp:post-template {"style":{"spacing":{"blockGap":"var:preset|spacing|50"}},"layout":{"type":"grid","columnCount":2}} -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"1rem"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group">
+
+<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/10","style":{"border":{"radius":"16px"}}} /-->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0.75rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
+<div class="wp-block-group">
+<!-- wp:post-date {"format":"j M Y","fontSize":"small"} /-->
+<!-- wp:post-terms {"term":"category","fontSize":"small"} /-->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:post-title {"level":2,"isLink":true,"fontSize":"x-large"} /-->
+
+<!-- wp:post-excerpt {"moreText":"Read the note","excerptLength":32} /-->
+
+</div>
+<!-- /wp:group -->
+
+<!-- /wp:post-template -->
+
+<!-- wp:query-no-results -->
+<!-- wp:paragraph -->
+<p>Nothing published yet. The first note is on its way.</p>
+<!-- /wp:paragraph -->
+<!-- /wp:query-no-results -->
+
+<!-- wp:query-pagination {"style":{"spacing":{"margin":{"top":"var:preset|spacing|50"}}},"layout":{"type":"flex","justifyContent":"space-between"}} -->
+<!-- wp:query-pagination-previous /-->
+<!-- wp:query-pagination-numbers /-->
+<!-- wp:query-pagination-next /-->
+<!-- /wp:query-pagination -->
+
+</div>
+<!-- /wp:query -->
+
+<!-- wp:group {"backgroundColor":"ink","style":{"spacing":{"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60","left":"var:preset|spacing|40","right":"var:preset|spacing|40"},"margin":{"top":"var:preset|spacing|60"}},"border":{"radius":"20px"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group has-ink-background-color has-background" style="border-radius:20px;margin-top:var(--wp--preset--spacing--60);padding-top:var(--wp--preset--spacing--60);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--60);padding-left:var(--wp--preset--spacing--40)">
+
+<!-- wp:heading {"level":2,"style":{"color":{"text":"#FFFFFF"}}} -->
+<h2 class="wp-block-heading" style="color:#FFFFFF">Do the models recommend you?</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#CBD0AC"}}} -->
+<p style="color:#CBD0AC">Fifteen buying questions, put to ChatGPT, Claude and Gemini. Your brand is never named in the question, and you see every question and every answer. Free, no account, about a minute.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:buttons -->
+<div class="wp-block-buttons">
+<!-- wp:button {"backgroundColor":"white","textColor":"ink"} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-ink-color has-white-background-color has-text-color has-background wp-element-button" href="https://thallodigital.com/thallo-ai/">Check my visibility</a></div>
+<!-- /wp:button -->
+</div>
+<!-- /wp:buttons -->
+
+</div>
+<!-- /wp:group -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->

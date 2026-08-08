@@ -459,6 +459,49 @@ async function site(title, description) {
   console.log(`description: ${s.description}`);
 }
 
+/**
+ * Uploads an image and, given a post, makes it that post's featured image.
+ *
+ * The index is a grid of cards and a card without an image is a line of text
+ * in a lot of white space — so this is not decoration, it is most of what the
+ * landing page looks like.
+ *
+ * Uploads are a raw body with a filename in `Content-Disposition`, not JSON,
+ * which is why this does not go through `api()`.
+ */
+async function cover(file, postId) {
+  if (!file) die('Usage: cover <image> [postId]');
+
+  const path = resolve(file);
+  if (!existsSync(path)) die(`${path} not found.`);
+
+  const bytes = readFileSync(path);
+  const name = path.split(/[\\/]/).pop();
+  const ext = name.split('.').pop().toLowerCase();
+  const type = { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' }[ext];
+  if (!type) die(`${ext} is not an image type WordPress will take here (jpg, png, webp).`);
+
+  const res = await fetch(`${API}/media`, {
+    method: 'POST',
+    headers: {
+      Authorization: auth(),
+      'Content-Type': type,
+      'Content-Disposition': `attachment; filename="${name}"`,
+    },
+    body: bytes,
+  });
+
+  const media = await res.json();
+  if (!res.ok) die(`upload → ${res.status}\n${media.message || ''}`);
+
+  console.log(`uploaded #${media.id} · ${Math.round(bytes.length / 1024)} KB · ${media.source_url}`);
+
+  if (postId) {
+    await api(`/posts/${postId}`, { method: 'POST', body: JSON.stringify({ featured_media: media.id }) });
+    console.log(`set as the featured image on #${postId}`);
+  }
+}
+
 async function trash(id) {
   if (!id) die('Usage: trash <id>');
   /* No `force=true`. This moves the post to the WordPress trash, where it can
@@ -494,10 +537,11 @@ const commands = {
   push: () => push(arg, allowPublish),
   trash: () => trash(arg),
   site: () => site(arg, arg2),
+  cover: () => cover(arg, arg2),
 };
 
 if (!commands[command]) {
-  die('Commands: list · pull <id> · push <file> [--allow-publish] · trash <id> · site [title] [tagline]');
+  die('Commands: list · pull <id> · push <file> [--allow-publish] · trash <id> · site [title] [tagline] · cover <image> [postId]');
 }
 
 try {
