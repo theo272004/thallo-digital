@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { SplitReveal } from '@/components/motion';
+import SpinFlower from '@/components/ui/SpinFlower';
 
 /**
  * The old playbook against how we work.
@@ -11,10 +12,25 @@ import { SplitReveal } from '@/components/motion';
  * stopped working, which is the objection every prospect arrives holding
  * whether or not they say it out loud.
  *
- * Two columns, and the left one is deliberately the weaker of the two
- * typographically — grey, lighter, marked with a dash rather than a dot. It is
- * the position being left behind, and setting it at equal weight would make
- * the table read as a menu of two valid options.
+ * ## The two columns are not equals
+ *
+ * The left one is deliberately the weaker of the two: grey, lighter, struck
+ * through with a hairline, marked with a dash. It is the position being left
+ * behind, and setting the two at equal weight would turn the table into a menu
+ * of two valid options — which is the opposite of the argument.
+ *
+ * The right column sits on the olive tint, so the difference is visible before
+ * a single row is read. A table where the answer is only findable by reading
+ * both halves is a table most people skim past.
+ *
+ * ## House style, not the mockup's
+ *
+ * The approved mockup is drawn in a different palette from the live site — a
+ * cooler forest green on a warm paper ground. The words are taken from it; the
+ * material is the site's own: the `#F7F8F9` tint every other banded section
+ * uses, the 28px card radius, the one house shadow, the isotipo. A section that
+ * matched the mockup's colours exactly would be the only one on the page that
+ * did.
  */
 
 const ROWS: [string, string][] = [
@@ -27,47 +43,72 @@ const ROWS: [string, string][] = [
 
 export default function PlaybookContrast() {
   return (
-    <section className="bg-[#F7F8F3] py-16 2xl:py-28 border-b border-gray-100">
+    <section className="border-b border-gray-100 bg-[#F7F8F9] py-16 2xl:py-24">
       <div className="mx-auto max-w-[1440px] px-6">
         <div
-          className="rounded-[28px] border border-gray-200 bg-white px-7 py-12 sm:px-12 sm:py-14"
+          data-reveal
+          className="relative rounded-[28px] border border-gray-200 bg-white px-6 pb-4 pt-12 sm:px-12 sm:pt-14"
           style={{ boxShadow: '0 6px 20px -8px rgba(23,26,16,0.14)' }}
         >
+          {/* The mark hangs off the card's left edge, as it does on the plans
+              page. Desktop only — at narrow widths there is no margin for it to
+              hang into and it would sit on top of the heading. */}
+          <SpinFlower
+            alt="Thallo"
+            className="absolute left-0 top-14 z-10 -ml-3 hidden h-[68px] w-[68px] -translate-x-full lg:block"
+          />
+
           <SplitReveal
             as="h2"
             className="mb-4 max-w-[20ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl"
             html='Most agencies are still selling <span class="italic text-[#39471D]">the 2019 playbook.</span>'
           />
-          <p className="mb-11 max-w-[52ch] text-base font-medium leading-relaxed text-gray-500">
+          <p className="mb-10 max-w-[54ch] text-base font-medium leading-relaxed text-gray-500">
             It was built for a search engine that sent people to websites. That&rsquo;s not the one your buyers are
             using anymore.
           </p>
 
-          {/* The column headings are hidden on a phone, where the two sides
-              stack and each row reads as a pair on its own. A sticky header for
-              a two-item list is chrome nobody needs. */}
-          <div className="hidden grid-cols-2 gap-10 border-b border-gray-200 pb-4 sm:grid">
-            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-gray-400">The old playbook</span>
-            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#39471D]">How we work</span>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-5">
+            {/* ── What everyone else still does ─────────────────────────── */}
+            <div className="rounded-[20px] bg-[#F7F8F9] p-7 sm:p-8">
+              <p className="mb-6 text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">The old playbook</p>
+              <ul className="flex flex-col">
+                {ROWS.map(([before]) => (
+                  <li
+                    key={before}
+                    className="relative border-b border-gray-200/70 py-3.5 pl-7 text-[15px] font-medium leading-snug text-gray-400 last:border-0"
+                  >
+                    <span aria-hidden className="absolute left-0 top-[15px] block h-px w-3.5 bg-gray-300" />
+                    {before}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* ── What we do instead ────────────────────────────────────── */}
+            <div className="rounded-[20px] bg-[#E7ECD9] p-7 sm:p-8">
+              <p className="mb-6 text-[11px] font-bold uppercase tracking-[0.2em] text-[#39471D]">How we work</p>
+              <ul className="flex flex-col">
+                {ROWS.map(([, after]) => (
+                  <li
+                    key={after}
+                    className="relative border-b border-[#39471D]/12 py-3.5 pl-7 text-[15px] font-semibold leading-snug text-gray-900 last:border-0"
+                  >
+                    <span
+                      aria-hidden
+                      className="absolute left-0 top-[17px] block h-[7px] w-[7px] rounded-full bg-[#39471D]"
+                    />
+                    {after}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
-          <ul>
-            {ROWS.map(([before, after]) => (
-              <li
-                key={after}
-                className="grid grid-cols-1 gap-2.5 border-b border-gray-200 py-5 last:border-0 sm:grid-cols-2 sm:gap-10"
-              >
-                <span className="relative pl-7 text-[15.5px] font-medium leading-snug text-gray-400">
-                  <span aria-hidden className="absolute left-0 top-[11px] block h-px w-3.5 bg-gray-300" />
-                  {before}
-                </span>
-                <span className="relative pl-7 text-[15.5px] font-semibold leading-snug text-gray-900">
-                  <span aria-hidden className="absolute left-0 top-[8px] block h-[7px] w-[7px] rounded-full bg-[#39471D]" />
-                  {after}
-                </span>
-              </li>
-            ))}
-          </ul>
+          {/* The two panels stack on a phone, where "the old playbook" and
+              "how we work" become two lists one after the other rather than two
+              columns to read across. The rows still pair up in order. */}
+          <div className="h-8" />
         </div>
       </div>
     </section>
