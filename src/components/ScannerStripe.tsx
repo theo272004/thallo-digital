@@ -16,16 +16,33 @@ import { QUESTION_COUNT } from '@/lib/scan/questions';
  *
  * ## The photograph
  *
- * `notebook-desk.webp` — the flower embossed on a notebook, a mug, leaves. It
- * was shot for this site and had been orphaned in `public/` since the section
- * that used it was rewritten. Every dark panel on this site is image-backed
- * (`cta-bg`, `shift`, `results-bg`, `contact-bg`); a flat ink rectangle was the
- * only one of its kind and read as unfinished next to them.
+ * `scanner-bg.webp` — the stone flower, the vase, the notepad with the isotipo
+ * blind-embossed on it. Chosen by Cami and converted from a 1.6 MB PNG to a
+ * 63 KB WebP at quality 88, which is in line with the other photographs here
+ * (50–75 KB) and high enough that the dark gradient filling most of the frame
+ * does not band — which is exactly where a cheaper encode would show.
  *
- * Like every other shot here it is composed with its subject to one side, and
- * the copy sits in the empty half. The scrim is a left-to-right gradient rather
- * than a flat overlay for the same reason: it darkens the side carrying text
- * and leaves the photograph alone where the photograph is the point.
+ * Every dark panel on this site is image-backed (`cta-bg`, `shift`,
+ * `results-bg`, `contact-bg`); a flat ink rectangle was the only one of its
+ * kind and read as unfinished beside them.
+ *
+ * ## The scrim, sized from measurements rather than from habit
+ *
+ * The left of this frame is close to black — rgb(16,16,7). Sampled across the
+ * width the text actually occupies, white lands at 18:1 at a third of the way
+ * across and is still 11.9:1 at 62%; the olive-soft the paragraph uses is
+ * 11.3:1 and 7.5:1 at the same points. All of that clears AA several times
+ * over, and most of it clears AAA, with no overlay at all.
+ *
+ * So the desktop scrim is almost nothing — a safety margin, not a fix — and it
+ * fades out well before the flower. An earlier version of this file carried a
+ * heavy gradient justified by a "roughly 4:1" figure that had been assumed
+ * rather than measured; measuring it gave 16.6:1, and the overlay had been
+ * flattening the photograph to solve a problem that was not there.
+ *
+ * Below `lg` the panel is narrow, `object-cover` crops the frame towards its
+ * middle, and the copy really can end up over the lit part of the desk. That
+ * case gets its own flat scrim.
  */
 export default function ScannerStripe() {
   return (
@@ -40,19 +57,23 @@ export default function ScannerStripe() {
             <img
               loading="lazy"
               decoding="async"
-              src={`${BASE}/notebook-desk.webp`}
+              src={`${BASE}/scanner-bg.webp`}
               alt=""
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
               style={{ zIndex: 0 }}
             />
 
-            {/* Checked rather than assumed: white on the photograph's own left
-                edge is around 4:1, which is under AA for body text. The scrim
-                takes it past 12:1 and stops before the notebook. */}
+            {/* Narrow screens: the frame is cropped towards its middle and the
+                copy can land on the lit part of the desk. Flat, and only here. */}
+            <div aria-hidden="true" className="absolute inset-0 z-[1] bg-[#171A10]/70 lg:hidden" />
+
+            {/* Wide screens: a margin, not a fix. The measurements are in the
+                note at the top of this file — the type clears AA several times
+                over unaided, so this fades out before it reaches the flower. */}
             <div
               aria-hidden="true"
-              className="absolute inset-0 z-[1] bg-gradient-to-r from-[#171A10]/92 via-[#171A10]/70 to-transparent"
+              className="absolute inset-0 z-[1] hidden bg-gradient-to-r from-[#171A10]/70 via-[#171A10]/15 to-transparent lg:block"
             />
 
             <div className="relative z-[2] grid grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14">
