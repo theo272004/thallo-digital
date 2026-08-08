@@ -150,6 +150,191 @@ function serialise(meta, body) {
   return `---\n${lines.join('\n')}\n---\n\n${body}`;
 }
 
+/* ── Markdown → Gutenberg ────────────────────────────────────────────────── */
+
+/**
+ * Splits rendered HTML into its top-level pieces.
+ *
+ * A depth counter rather than a regex. Regexes cannot count, and a list
+ * containing a nested list is exactly the case where one stops being able to
+ * tell which `</ul>` ends the outer element.
+ */
+function topLevel(html) {
+  const out = [];
+  const tag = /<(\/?)([a-z][a-z0-9]*)\b[^>]*?(\/?)>|<!--[\s\S]*?-->/gi;
+
+  let depth = 0;
+  let start = 0;
+  let m;
+
+  while ((m = tag.exec(html))) {
+    const [raw, closing, name, selfClosed] = m;
+
+    // A comment or a void element at depth 0 is a piece all by itself.
+    if (!name || selfClosed || /^(br|hr|img|input|source)$/i.test(name || '')) {
+      if (depth === 0) {
+        const before = html.slice(start, m.index).trim();
+        if (before) out.push(before);
+        out.push(raw);
+        start = m.index + raw.length;
+      }
+      continue;
+    }
+
+    if (closing) {
+      depth--;
+      if (depth === 0) {
+        out.push(html.slice(start, m.index + raw.length).trim());
+        start = m.index + raw.length;
+      }
+    } else {
+      if (depth === 0) {
+        const before = html.slice(start, m.index).trim();
+        if (before) out.push(before);
+        start = m.index;
+      }
+      depth++;
+    }
+  }
+
+  const tail = html.slice(start).trim();
+  if (tail) out.push(tail);
+
+  return out.filter(Boolean);
+}
+
+/**
+ * Wraps plain HTML in the block delimiters WordPress stores posts as.
+ *
+ * Without this a pushed post arrives as one undifferentiated lump — it renders
+ * correctly, but in the editor it is a single Classic block, so the patterns,
+ * the block settings and every normal editing gesture stop working on it. The
+ * point of writing here was never to make the post harder to edit there.
+ *
+ * Anything already in block markup is passed through untouched, which is what
+ * lets a Markdown file drop a pattern — a callout, the scanner panel — into
+ * the middle of otherwise ordinary prose.
+ */
+function toBlocks(html) {
+  return regions(html)
+    .flatMap((region) => (region.passthrough ? [region.text] : wrap(region.text)))
+    .join('\n\n');
+}
+
+/**
+ * Separates spans that are already block markup from spans that are plain HTML.
+ *
+ * A block is its opening delimiter, its markup, and its closing delimiter, and
+ * those three have to survive as one piece. Splitting on HTML tags alone tore
+ * them apart — the `<!-- wp:group -->` comment came out as one chunk and the
+ * `<div>` it introduces as another, so the div got wrapped as raw HTML and the
+ * pattern arrived in the editor as an uneditable lump. Nesting is counted,
+ * because a group contains blocks and the first `<!-- /wp: -->` encountered is
+ * usually not the one that closes it.
+ */
+function regions(html) {
+  const OPEN = /<!--\s+wp:([a-z][a-z0-9-]*(?:\/[a-z0-9-]+)?)(?:\s+\{.*?\})?\s+(\/)?-->/g;
+  const out = [];
+  let cursor = 0;
+  let m;
+
+  while ((m = OPEN.exec(html))) {
+    if (m.index < cursor) continue;
+
+    const plain = html.slice(cursor, m.index).trim();
+    if (plain) out.push({ text: plain, passthrough: false });
+
+    // A self-closing block — `<!-- wp:separator /-->` — is the whole region.
+    if (m[2]) {
+      out.push({ text: m[0], passthrough: true });
+      cursor = m.index + m[0].length;
+      OPEN.lastIndex = cursor;
+      continue;
+    }
+
+    const name = m[1];
+    const delim = new RegExp(`<!--\\s+(/)?wp:${name}(?:\\s+\\{.*?\\})?\\s+/?-->`, 'g');
+    delim.lastIndex = m.index + m[0].length;
+
+    let depth = 1;
+    let end = -1;
+    let d;
+    while ((d = delim.exec(html))) {
+      depth += d[1] ? -1 : 1;
+      if (depth === 0) {
+        end = d.index + d[0].length;
+        break;
+      }
+    }
+
+    /* An unclosed block is left to WordPress rather than guessed at: it will
+       flag it in the editor, which is more useful than this silently
+       swallowing the rest of the post into one region. */
+    if (end === -1) end = m.index + m[0].length;
+
+    out.push({ text: html.slice(m.index, end).trim(), passthrough: true });
+    cursor = end;
+    OPEN.lastIndex = cursor;
+  }
+
+  const tail = html.slice(cursor).trim();
+  if (tail) out.push({ text: tail, passthrough: false });
+
+  return out;
+}
+
+/** Wraps a span of plain HTML, element by element, in block delimiters. */
+function wrap(html) {
+  return topLevel(html)
+    .map((chunk) => {
+      if (chunk.startsWith('<!--')) return chunk;
+      const tag = (chunk.match(/^<([a-z][a-z0-9]*)/i) || [])[1]?.toLowerCase();
+
+      switch (tag) {
+        case 'h1':
+        case 'h2':
+        case 'h3':
+        case 'h4':
+        case 'h5':
+        case 'h6': {
+          const level = Number(tag[1]);
+          const attrs = level === 2 ? '' : ` {"level":${level}}`;
+          const withClass = chunk.replace(/^<h(\d)/, '<h$1 class="wp-block-heading"');
+          return `<!-- wp:heading${attrs} -->\n${withClass}\n<!-- /wp:heading -->`;
+        }
+        case 'p':
+          return `<!-- wp:paragraph -->\n${chunk}\n<!-- /wp:paragraph -->`;
+        case 'ul':
+        case 'ol': {
+          const ordered = tag === 'ol';
+          const items = chunk.replace(
+            /<li>([\s\S]*?)<\/li>/g,
+            (_, inner) => `<!-- wp:list-item -->\n<li>${inner}</li>\n<!-- /wp:list-item -->`
+          );
+          const listed = items.replace(new RegExp(`^<${tag}>`), `<${tag} class="wp-block-list">`);
+          return `<!-- wp:list${ordered ? ' {"ordered":true}' : ''} -->\n${listed}\n<!-- /wp:list -->`;
+        }
+        case 'blockquote':
+          return `<!-- wp:quote -->\n${chunk.replace('<blockquote>', '<blockquote class="wp-block-quote">')}\n<!-- /wp:quote -->`;
+        case 'pre':
+          return `<!-- wp:code -->\n${chunk.replace('<pre>', '<pre class="wp-block-code">')}\n<!-- /wp:code -->`;
+        case 'hr':
+          return `<!-- wp:separator -->\n<hr class="wp-block-separator has-alpha-channel-opacity"/>\n<!-- /wp:separator -->`;
+        case 'table':
+          return `<!-- wp:table -->\n<figure class="wp-block-table">${chunk}</figure>\n<!-- /wp:table -->`;
+        case 'figure':
+        case 'img':
+          return `<!-- wp:image -->\n${chunk}\n<!-- /wp:image -->`;
+        default:
+          /* Unknown markup goes up as an HTML block rather than being dropped
+             or guessed at. It renders, and the editor says plainly that it is
+             raw HTML rather than pretending to understand it. */
+          return `<!-- wp:html -->\n${chunk}\n<!-- /wp:html -->`;
+      }
+    })
+    .join('\n\n');
+}
+
 /* ── Commands ────────────────────────────────────────────────────────────── */
 
 async function list() {
@@ -162,12 +347,27 @@ async function list() {
   }
 }
 
-async function pull(id) {
-  if (!id) die('Usage: pull <id>');
+async function pull(id, dest) {
+  if (!id) die('Usage: pull <id> [destination.md]');
   const p = await api(`/posts/${id}?context=edit`);
 
   mkdirSync(CONTENT, { recursive: true });
-  const file = join(CONTENT, `${p.slug || 'post-' + p.id}.md`);
+  const file = dest ? resolve(dest) : join(CONTENT, `${p.slug || 'post-' + p.id}.md`);
+
+  /* A pulled post is HTML. The file it would land on may be the Markdown this
+     post was written from — same slug, same folder — and overwriting that
+     would destroy the source to replace it with the rendered output, which is
+     the one direction this conversion does not go back. */
+  if (existsSync(file)) {
+    const current = readFileSync(file, 'utf8');
+    if (!/^format:\s*html\s*$/m.test(current)) {
+      die(
+        `${file} already exists and is not a pulled file — it looks like the Markdown source.\n` +
+          `Pulling would overwrite it with HTML and lose the original.\n` +
+          `If you meant to, pull somewhere else:  npm run blog pull ${id} some/other/path.md`
+      );
+    }
+  }
 
   /* The body comes down as HTML and is written as HTML. Converting it back to
      Markdown would be a guess, and a lossy one — this file is for editing an
@@ -207,7 +407,8 @@ async function push(file, allowPublish) {
     status = 'draft';
   }
 
-  const content = meta.format === 'html' ? body : marked.parse(body, { mangle: false, headerIds: false });
+  const content =
+    meta.format === 'html' ? body : toBlocks(marked.parse(body, { mangle: false, headerIds: false }));
 
   const payload = { title: meta.title, content, status };
   if (meta.slug) payload.slug = meta.slug;
@@ -233,6 +434,31 @@ async function push(file, allowPublish) {
   }
 }
 
+/**
+ * Reads, and optionally sets, the blog's name and tagline.
+ *
+ * These are the two strings a fresh WordPress ships with placeholders for —
+ * "My Blog" and "My WordPress Blog" — and they appear in the blog's header, in
+ * its feed, and in the browser tab. Left alone they read as an unfinished site,
+ * which is a poor first impression for a page the main site links to by name.
+ */
+async function site(title, description) {
+  if (!title) {
+    const s = await api('/settings');
+    console.log(`title:       ${s.title}`);
+    console.log(`description: ${s.description}`);
+    console.log('\nTo change:  npm run blog site "New title" "New tagline"');
+    return;
+  }
+
+  const payload = { title };
+  if (description) payload.description = description;
+
+  const s = await api('/settings', { method: 'POST', body: JSON.stringify(payload) });
+  console.log(`title:       ${s.title}`);
+  console.log(`description: ${s.description}`);
+}
+
 async function trash(id) {
   if (!id) die('Usage: trash <id>');
   /* No `force=true`. This moves the post to the WordPress trash, where it can
@@ -243,23 +469,39 @@ async function trash(id) {
 
 /* ── Entry ───────────────────────────────────────────────────────────────── */
 
+/**
+ * Ends the run with a message and a non-zero status.
+ *
+ * Throws rather than calling `process.exit`. Exiting while a socket is still
+ * open aborts Node on Windows with a libuv assertion, which buries the actual
+ * explanation under a crash dump — and the explanation is the entire point of
+ * this function.
+ */
+class Handled extends Error {}
+
 function die(message) {
   console.error(message);
-  process.exit(1);
+  process.exitCode = 1;
+  throw new Handled(message);
 }
 
-const [command, arg] = process.argv.slice(2);
+const [command, arg, arg2] = process.argv.slice(2);
 const allowPublish = process.argv.includes('--allow-publish');
 
 const commands = {
   list: () => list(),
-  pull: () => pull(arg),
+  pull: () => pull(arg, arg2),
   push: () => push(arg, allowPublish),
   trash: () => trash(arg),
+  site: () => site(arg, arg2),
 };
 
 if (!commands[command]) {
-  die('Commands: list · pull <id> · push <file> [--allow-publish] · trash <id>');
+  die('Commands: list · pull <id> · push <file> [--allow-publish] · trash <id> · site [title] [tagline]');
 }
 
-await commands[command]();
+try {
+  await commands[command]();
+} catch (e) {
+  if (!(e instanceof Handled)) throw e;
+}
