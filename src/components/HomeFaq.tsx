@@ -1,0 +1,160 @@
+'use client';
+
+import React, { useState } from 'react';
+import { SplitReveal } from '@/components/motion';
+import { BASE } from '@/lib/site';
+
+/**
+ * The questions people ask before the first call.
+ *
+ * Deliberately the awkward ones — what it costs, how long it takes, what
+ * happens if it doesn't work — answered plainly and early. A page that only
+ * answers the comfortable questions leaves the others to be asked on a call,
+ * where the honest answer is more expensive to give and less likely to be
+ * believed.
+ *
+ * The plans page has its own set. That one is about choosing between three
+ * offers; this one is about whether to talk to us at all, and the two should
+ * not be the same list.
+ */
+
+const FAQS: { q: string; a: React.ReactNode }[] = [
+  {
+    q: 'How long before we see something?',
+    a: (
+      <>
+        The visibility baseline lands in the first two weeks, so you know where you stand almost immediately. Movement
+        in how the models describe you typically shows up between month three and month six, depending on how much
+        ground your category already has covered. Anyone promising results in thirty days is selling you something
+        else.
+      </>
+    ),
+  },
+  {
+    q: 'We already have a marketing team. Where do you fit?',
+    a: (
+      <>
+        Most of our clients do. The gap is rarely people, it&rsquo;s the specific combination of original research,
+        technical structure and distribution run as one operation. Your team keeps owning the brand and the demand
+        side. We own the authority engine and report into whoever you decide.
+      </>
+    ),
+  },
+  {
+    q: 'Why not just run ads?',
+    a: (
+      <>
+        <span className="block">
+          Run both if the numbers work. But they do different jobs. Ads rent attention and stop the day the card stops.
+          Authority is an asset you keep: the study you published two years ago is still being cited today, and it cost
+          you once.
+        </span>
+        <span className="mt-3 block">
+          In high-consideration categories the buyer researches for weeks before talking to anyone. Ads can reach them.
+          They rarely convince them.
+        </span>
+      </>
+    ),
+  },
+  {
+    q: 'What does it cost?',
+    a: (
+      <>
+        Engagements start at $2,500 a month plus a one-time setup for the baseline and strategy, and scale with the
+        size of the operation. Full breakdown on{' '}
+        <a href={`${BASE}/services/`} className="font-semibold text-[#39471D] underline underline-offset-2">
+          Our Plans
+        </a>
+        .
+      </>
+    ),
+  },
+  {
+    q: 'How do you measure it?',
+    a: (
+      <>
+        Two things. How often the models name you across a fixed set of buying questions in your category, tracked
+        monthly against your competitors. And what actually reached pipeline, tied back to the work that influenced it.
+      </>
+    ),
+  },
+  {
+    q: "What if it doesn't work?",
+    a: (
+      <>
+        You&rsquo;ll know early, because the baseline gives us a number to move from month one. If it isn&rsquo;t
+        moving, we tell you before you ask, and we either change the approach or tell you honestly that we&rsquo;re not
+        the right fit. We&rsquo;d rather lose a retainer than keep one that isn&rsquo;t earning its place.
+      </>
+    ),
+  },
+];
+
+export default function HomeFaq() {
+  /* The first is open on load. An accordion that starts entirely shut asks the
+     reader to guess which question is worth the click. */
+  const [open, setOpen] = useState<number | null>(0);
+
+  return (
+    <section id="faq" className="border-b border-gray-100 bg-white py-16 2xl:py-28">
+      <div className="mx-auto max-w-[1440px] px-6">
+        <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-20">
+          <div>
+            <SplitReveal
+              as="h2"
+              className="mb-4 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl"
+              html='Questions we get <span class="italic text-[#39471D]">before the first call.</span>'
+            />
+            <p className="max-w-[42ch] text-base font-medium leading-relaxed text-gray-500">
+              If yours isn&rsquo;t here, ask it in the form below and you&rsquo;ll get a straight answer.
+            </p>
+          </div>
+
+          <div className="border-t border-gray-200">
+            {FAQS.map((faq, i) => {
+              const isOpen = open === i;
+              return (
+                <div key={faq.q} className="border-b border-gray-200">
+                  <button
+                    type="button"
+                    aria-expanded={isOpen}
+                    aria-controls={`home-faq-${i}`}
+                    onClick={() => setOpen(isOpen ? null : i)}
+                    className="flex w-full items-center justify-between gap-6 py-6 text-left"
+                  >
+                    <span className="text-[17px] font-semibold tracking-[-0.01em] text-gray-900">{faq.q}</span>
+                    {/* A plus that loses its upright stroke when open. Two
+                        one-pixel rules rather than an icon font, so it stays
+                        crisp at any zoom and needs nothing loaded. */}
+                    <span aria-hidden className="relative block h-5 w-5 shrink-0">
+                      <span className="absolute left-0 top-[9px] block h-[1.5px] w-5 bg-[#39471D]" />
+                      <span
+                        className="absolute left-[9px] top-0 block h-5 w-[1.5px] bg-[#39471D] transition-all duration-300"
+                        style={{ transform: isOpen ? 'rotate(90deg)' : 'none', opacity: isOpen ? 0 : 1 }}
+                      />
+                    </span>
+                  </button>
+
+                  {/* Grid-rows rather than max-height: a max-height guess that
+                      is too small clips the longest answer, and one that is too
+                      large makes every other answer close at the wrong speed. */}
+                  <div
+                    id={`home-faq-${i}`}
+                    className="grid transition-all duration-300 ease-out"
+                    style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
+                  >
+                    <div className="overflow-hidden">
+                      <p className="max-w-[64ch] pb-7 text-[15.5px] font-medium leading-relaxed text-gray-500">
+                        {faq.a}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

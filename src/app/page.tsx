@@ -3,18 +3,35 @@
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
+import About from '@/components/About';
 import TheProblem from '@/components/TheProblem';
+import PlaybookContrast from '@/components/PlaybookContrast';
 import HowItWorks from '@/components/HowItWorks';
-import ResultsDashboard from '@/components/ResultsDashboard';
+import ScannerStripe from '@/components/ScannerStripe';
+import HomeFaq from '@/components/HomeFaq';
 import Testimonials from '@/components/Testimonials';
-import VideoSection from '@/components/VideoSection';
 import BlogSection from '@/components/BlogSection';
 import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
-import Industries from '@/components/Industries';
-import About from '@/components/About';
 import { useRevealBatch } from '@/components/motion';
 
+/**
+ * The home page, in the order of the approved copy.
+ *
+ * One argument, start to finish: who we are, what changed, what everyone else
+ * is still selling, what we do instead, a free way to check where you stand,
+ * the awkward questions answered, the writing, the proof, the ask.
+ *
+ * Three sections came off it to get there. The results dashboard and the
+ * industries panel were both saying, at length, things the sections around
+ * them now say once — and the video was a stop in the middle of an argument
+ * that reads better without one. The industries themselves did not go
+ * anywhere; they are the ticker under About, which is where the copy puts
+ * them. `/industries/` still exists for anyone who wants the long version.
+ *
+ * The testimonial carousel stays, at Cami's instruction, immediately before
+ * the ask — which is the right place for it anyway.
+ */
 export default function Home() {
   useRevealBatch('home');
 
@@ -23,27 +40,19 @@ export default function Home() {
       <Navbar />
       <main className="flex-grow">
         <Hero />
-        {/* Who Thallo is comes straight off the hero. About carries the grey
-            band so the alternation still starts on a tint here. */}
+        {/* Who we are, and the one idea the whole page rests on. */}
         <About />
-        {/* The partners live on /about/ rather than here: the home is a single
-            argument from hero to CTA, and a team block interrupts it. */}
-        {/* Why it matters comes before what we do.
-            The shift states the problem — search answers instead of sending —
-            and the Authority Engine is then read as the response to it. The
-            other way round, which is how this ran before, the engine arrives
-            as a description of services nobody has been given a reason to
-            want yet. This is the order the approved copy runs in. */}
+        {/* What changed, and the three figures that show it. */}
         <TheProblem />
+        {/* What the alternative is, and why it stopped working. */}
+        <PlaybookContrast />
+        {/* What we do instead — read as the answer to the two above it. */}
         <HowItWorks />
-        {/* Proof that we measure it, and the scanner that does — before the
-            categories, so the tool is met while the argument is still warm. */}
-        <ResultsDashboard />
-        <Industries />
-        {/* Video runs before the resources library, so the film introduces the
-            writing rather than following it. */}
-        <VideoSection />
-        {/* The resources library, despite the file name. */}
+        {/* The cheapest possible next step, offered once. */}
+        <ScannerStripe />
+        {/* The awkward questions, answered before the call rather than on it. */}
+        <HomeFaq />
+        {/* "Blogs & guides" — the writing, despite the file name. */}
         <Testimonials />
         {/* "In their words" — the testimonial carousel, despite the file name.
             The proof runs immediately before the ask. */}
