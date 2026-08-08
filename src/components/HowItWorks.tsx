@@ -269,11 +269,17 @@ export default function HowItWorks() {
                 </p>
                 {/* What the phase hands over. Named deliverables rather than
                     adjectives — a phase you cannot point at the output of is a
-                    phase nobody can tell you finished. */}
+                    phase nobody can tell you finished.
+
+                    The hover edge is the industry cards' own — `#55672E` at
+                    40%, over 300ms — so the two read as the same gesture. Only
+                    the border moves: those cards also lift and cast a shadow,
+                    and a 26px pill doing that reads as a button promising
+                    something it does not do. */}
                 <div className="flex flex-wrap gap-1.5 mt-3.5">
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Visibility baseline</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Competitor citation gap</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Question map</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 transition-colors duration-300 hover:border-[#55672E]/40">Visibility baseline</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 transition-colors duration-300 hover:border-[#55672E]/40">Competitor citation gap</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 transition-colors duration-300 hover:border-[#55672E]/40">Question map</span>
                 </div>
               </div>
             </div>
@@ -293,10 +299,10 @@ export default function HowItWorks() {
                   can&rsquo;t produce, because it requires knowing something nobody else knows.
                 </p>
                 <div className="flex flex-wrap gap-1.5 mt-3.5">
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Data studies</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Research reports</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Whitepapers</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Definitive guides</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 transition-colors duration-300 hover:border-[#55672E]/40">Data studies</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 transition-colors duration-300 hover:border-[#55672E]/40">Research reports</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 transition-colors duration-300 hover:border-[#55672E]/40">Whitepapers</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 transition-colors duration-300 hover:border-[#55672E]/40">Definitive guides</span>
                 </div>
               </div>
             </div>
@@ -316,9 +322,9 @@ export default function HowItWorks() {
                   questions your buyers actually type, not the keywords a tool suggested.
                 </p>
                 <div className="flex flex-wrap gap-1.5 mt-3.5">
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Technical SEO</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Pillar pages</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Generative Engine Optimization</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 transition-colors duration-300 hover:border-[#55672E]/40">Technical SEO</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 transition-colors duration-300 hover:border-[#55672E]/40">Pillar pages</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 transition-colors duration-300 hover:border-[#55672E]/40">Generative Engine Optimization</span>
                 </div>
               </div>
             </div>
@@ -338,10 +344,10 @@ export default function HowItWorks() {
                   the models go looking for sources.
                 </p>
                 <div className="flex flex-wrap gap-1.5 mt-3.5">
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">LinkedIn</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Communities</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Podcasts</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1">Newsletters</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 transition-colors duration-300 hover:border-[#55672E]/40">LinkedIn</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 transition-colors duration-300 hover:border-[#55672E]/40">Communities</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 transition-colors duration-300 hover:border-[#55672E]/40">Podcasts</span>
+                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 transition-colors duration-300 hover:border-[#55672E]/40">Newsletters</span>
                 </div>
               </div>
             </div>
