@@ -1,0 +1,89 @@
+/*
+Theme Name:   Thallo Blog
+Theme URI:    https://thallodigital.com/
+Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
+Author:       Thallo Digital
+Template:     twentytwentyfive
+Version:      1.0.0
+Requires at least: 6.5
+Tested up to: 6.7
+Requires PHP: 7.4
+License:      GPL-2.0-or-later
+Text Domain:  thallo-blog
+*/
+
+/*
+ * Almost everything lives in theme.json, not here.
+ *
+ * A block theme's theme.json styles the editor and the front end from one
+ * file, which is the whole reason to use one: what you type into WordPress
+ * looks like what a reader gets. CSS in this file only styles what theme.json
+ * has no vocabulary for, and every rule below is here because of that and not
+ * because it was quicker.
+ */
+
+/* The measure. theme.json's contentSize governs block width, but not the
+   reading line inside a paragraph on a very wide screen. */
+.wp-block-post-content p,
+.wp-block-post-content ul,
+.wp-block-post-content ol {
+  max-width: 68ch;
+}
+
+/* Headings keep their optical alignment with the paragraph above them rather
+   than sitting on the same baseline grid — the site sets far more space above
+   a heading than below it, so a section reads as attached to its own text. */
+.wp-block-post-content :is(h2, h3) {
+  margin-top: 2.6em;
+  margin-bottom: 0.6em;
+}
+.wp-block-post-content :is(h2, h3) + p {
+  margin-top: 0;
+}
+
+/* Links in prose. Underlined always: on a page whose subject is being quoted
+   accurately, a link you cannot see is a citation you cannot follow. */
+.wp-block-post-content a:where(:not(.wp-element-button)) {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.18s ease;
+}
+
+/* The tinted callout used by the "Thallo · callout" pattern. A group with a
+   background gets its padding from theme.json; the rule it hangs on does not
+   exist there. */
+.thallo-callout {
+  border-left: 3px solid var(--wp--preset--color--olive);
+}
+
+/* Figure captions and the audit-trail voice: the typewriter face, small, in
+   the same grey the site uses for machine output. */
+.wp-block-image figcaption,
+.wp-block-embed figcaption {
+  font-family: var(--wp--preset--font-family--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--wp--preset--color--grey-500);
+}
+
+/* Tables are wide content and must scroll inside themselves rather than
+   widening the page. */
+.wp-block-table {
+  overflow-x: auto;
+}
+.wp-block-table table {
+  border-collapse: collapse;
+  min-width: 34rem;
+}
+.wp-block-table :is(th, td) {
+  border-bottom: 1px solid var(--wp--preset--color--hairline);
+  padding: 0.85rem 1rem;
+  text-align: left;
+}
+.wp-block-table th {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--grey-500);
+}
