@@ -66,9 +66,31 @@ import { QUESTION_COUNT } from '@/lib/scan/questions';
 
 const BOARD_W = 2400;
 const BOARD_H = 1500;
-/** The design-unit window a zoom of 1 should frame. */
-const WINDOW_W = 1120;
-const WINDOW_H = 720;
+
+/**
+ * How much of the stage a shot fills.
+ *
+ * Expressed as a share of the frame rather than as a zoom multiplier, because a
+ * multiplier lands a 420-unit card and a 900-unit one at completely different
+ * apparent sizes. Asking every shot to occupy the same share of the frame is
+ * what actually keeps them consistent.
+ *
+ * A card fills a little over half. It is deliberately not more: leaving air
+ * around it keeps the neighbouring cards on screen, so you can still see where
+ * in the report you are — the reason the establishing shot exists at all.
+ */
+const CARD_FILL = 0.64;
+const BOARD_FILL = 0.86;
+
+/**
+ * The ceiling on design units → pixels.
+ *
+ * Without it, the narrow cards get enlarged until they fill their share of the
+ * frame and their type becomes enormous purely because they had room to grow.
+ * With it, body text lands between about 16 and 18 pixels on a laptop wherever
+ * the camera stops.
+ */
+const MAX_SCALE = 0.95;
 
 const OLIVE = '#39471D';
 const MID = '#55672E';
@@ -106,11 +128,6 @@ const CARDS: Card[] = [
 
 const cardById = (id: string) => CARDS.find((c) => c.id === id)!;
 
-/** The centre of a card, in design space. */
-function centre(id: string): [number, number] {
-  const c = cardById(id);
-  return [c.x + c.w / 2, c.y + c.h / 2];
-}
 
 /* ── Card chrome ─────────────────────────────────────────────────────────── */
 
@@ -386,9 +403,11 @@ function Stacked() {
     <ul className="flex flex-col gap-12">
       {CARDS.map((card, i) => (
         <li key={card.id}>
-          <Micro style={{ color: MID, fontSize: 11 }}>{CHAPTERS[i].label}</Micro>
+          {/* Offset by one: chapter 0 is the establishing shot, which has no
+              card of its own — the six cards are chapters 1 to 6. */}
+          <Micro style={{ color: MID, fontSize: 11 }}>{CHAPTERS[i + 1].label}</Micro>
           <p className="mb-5 mt-3 max-w-[52ch] text-[14px] font-medium leading-relaxed text-gray-500">
-            {CHAPTERS[i].blurb}
+            {CHAPTERS[i + 1].blurb}
           </p>
           {/* Full width and natural height — no transform. The card's design
               units are ordinary CSS pixels (19px body, 13px labels), which are
@@ -452,27 +471,40 @@ export default function ToolPresentation() {
       const boardEl = board.current;
 
       /* Design units → CSS pixels. Recomputed on every refresh so a resize
-         re-frames the shot instead of leaving the camera pointing at nothing. */
-      const fit = () => {
-        const r = stageEl.getBoundingClientRect();
-        return Math.min(r.width / WINDOW_W, r.height / WINDOW_H);
-      };
+         re-frames the shot instead of leaving the camera pointing at nothing.
 
-      /** Frame design-space (cx, cy) in the middle of the stage at `zoom`. */
-      const shot = (cx: number, cy: number, zoom: number) => () => {
+         Framing is expressed as "fill this fraction of the stage" rather than
+         as a zoom multiplier. A multiplier makes a 420-unit card and a
+         900-unit one land at wildly different apparent sizes, which is what
+         made some shots feel enormous and others small; asking each shot to
+         occupy the same share of the frame is the thing actually wanted. */
+      const box = (cx: number, cy: number, w: number, h: number, fill: number) => () => {
         const r = stageEl.getBoundingClientRect();
-        const k = fit() * zoom;
+        /* Whichever of width or height binds first, capped: without the cap a
+           narrow card is enlarged until its type is enormous just because it
+           had room to grow. */
+        const k = Math.min((r.width * fill) / w, (r.height * fill) / h, MAX_SCALE);
         return { x: r.width / 2 - cx * k, y: r.height / 2 - cy * k, scale: k };
       };
 
-      const to = (cx: number, cy: number, zoom: number) => {
-        const f = shot(cx, cy, zoom);
-        return { x: () => f().x, y: () => f().y, scale: () => f().scale };
+      const framed = (f: () => { x: number; y: number; scale: number }) => ({
+        x: () => f().x,
+        y: () => f().y,
+        scale: () => f().scale,
+      });
+
+      /** Frame one card so it occupies `fill` of the stage. */
+      const onCard = (id: string, fill = CARD_FILL) => {
+        const c = cardById(id);
+        return framed(box(c.x + c.w / 2, c.y + c.h / 2, c.w, c.h, fill));
       };
 
-      // ── Opening state ────────────────────────────────────────────────────
-      const first = to(...(centre('questions') as [number, number]), 1.05);
-      gsap.set(boardEl, { transformOrigin: '0 0', x: first.x, y: first.y, scale: first.scale });
+      /** Frame the whole board — the establishing shot, and the closing one. */
+      const onBoard = (fill = BOARD_FILL) => framed(box(BOARD_W / 2, BOARD_H / 2, BOARD_W, BOARD_H, fill));
+
+      // ── Opening state: everything at once ────────────────────────────────
+      const wide = onBoard();
+      gsap.set(boardEl, { transformOrigin: '0 0', x: wide.x, y: wide.y, scale: wide.scale });
 
       gsap.set('[data-q]', { autoAlpha: 0, x: -26 });
       gsap.set('[data-name]', { autoAlpha: 0, y: 10 });
@@ -494,28 +526,35 @@ export default function ToolPresentation() {
           scrub: 0.8,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
-            /* Six chapters plus the closing pull-back. Rounded down so the
-               caption changes as the camera arrives, not as it leaves. */
-            const at = Math.min(CARDS.length, Math.floor(self.progress * (CARDS.length + 1)));
+            /* One chapter per unit of timeline. Rounded down so the caption
+               changes as the camera arrives, not as it leaves. */
+            const at = Math.min(CHAPTERS.length - 1, Math.floor(self.progress * CHAPTERS.length));
             setChapter(at);
           },
         },
       });
 
-      /* Each chapter is one unit of timeline. The camera moves during the first
-         third of it and the card animates in the rest, so the move is over
+      /* Unit 0 is the establishing shot: the whole board, held, so the opening
+         paragraph is read with all six surfaces already in view. It creeps
+         very slightly closer across its unit — enough that the frame is alive
+         while it is being read, not enough to be a move.
+
+         From unit 1 each chapter is one card. The camera travels during the
+         first third and the card animates in the rest, so the move is over
          before the thing you flew to starts doing anything. */
+      tl.to(boardEl, { ...onBoard(BOARD_FILL + 0.05), duration: 1 }, 0);
 
       // 01 · the questions type in
-      tl.to('[data-q]', { autoAlpha: 1, x: 0, stagger: 0.12, duration: 0.55 }, 0.15);
+      tl.to(boardEl, { ...onCard('questions'), duration: 0.45 }, 1);
+      tl.to('[data-q]', { autoAlpha: 1, x: 0, stagger: 0.12, duration: 0.55 }, 1.35);
 
-      // 02 · fly right to the models; each column resolves
-      tl.to(boardEl, { ...to(...(centre('models') as [number, number]), 0.92), duration: 0.45 }, 1);
-      tl.to('[data-thinking]', { autoAlpha: 0, duration: 0.15 }, 1.4);
-      tl.to('[data-name]', { autoAlpha: 1, y: 0, stagger: 0.06, duration: 0.4 }, 1.45);
+      // 02 · right to the models; each column drops "thinking" and resolves
+      tl.to(boardEl, { ...onCard('models'), duration: 0.45 }, 2);
+      tl.to('[data-thinking]', { autoAlpha: 0, duration: 0.15 }, 2.4);
+      tl.to('[data-name]', { autoAlpha: 1, y: 0, stagger: 0.06, duration: 0.4 }, 2.45);
 
-      // 03 · dive into the number; it counts, the bars fill
-      tl.to(boardEl, { ...to(...(centre('score') as [number, number]), 1.02), duration: 0.45 }, 2);
+      // 03 · the number counts, the bars fill
+      tl.to(boardEl, { ...onCard('score'), duration: 0.45 }, 3);
       tl.to(
         '[data-count]',
         {
@@ -527,33 +566,33 @@ export default function ToolPresentation() {
           innerText: 24,
           snap: { innerText: 1 },
         },
-        2.4
+        3.4
       );
-      tl.to('[data-bar]', { scaleX: 1, stagger: 0.1, duration: 0.4 }, 2.45);
+      tl.to('[data-bar]', { scaleX: 1, stagger: 0.1, duration: 0.4 }, 3.45);
 
       // 04 · down and left to the rivals
-      tl.to(boardEl, { ...to(...(centre('rivals') as [number, number]), 1.02), duration: 0.45 }, 3);
-      tl.to('[data-rival]', { scaleX: 1, stagger: 0.11, duration: 0.45 }, 3.4);
+      tl.to(boardEl, { ...onCard('rivals'), duration: 0.45 }, 4);
+      tl.to('[data-rival]', { scaleX: 1, stagger: 0.11, duration: 0.45 }, 4.4);
 
       // 05 · across to the scorecard, which lights row by row
-      tl.to(boardEl, { ...to(...(centre('signals') as [number, number]), 0.98), duration: 0.45 }, 4);
-      tl.to('[data-signal]', { autoAlpha: 1, stagger: 0.09, duration: 0.35 }, 4.4);
-      tl.to('[data-tech]', { innerText: 43, snap: { innerText: 1 }, duration: 0.5 }, 4.4);
+      tl.to(boardEl, { ...onCard('signals'), duration: 0.45 }, 5);
+      tl.to('[data-signal]', { autoAlpha: 1, stagger: 0.09, duration: 0.35 }, 5.4);
+      tl.to('[data-tech]', { innerText: 43, snap: { innerText: 1 }, duration: 0.5 }, 5.4);
 
       // 06 · the far corner: the line draws and the readout rides it
-      tl.to(boardEl, { ...to(...(centre('trend') as [number, number]), 1.05), duration: 0.45 }, 5);
-      if (line) tl.to(line, { strokeDashoffset: 0, duration: 0.75 }, 5.35);
-      tl.to('[data-dot]', { autoAlpha: 1, scale: 1, stagger: 0.16, duration: 0.2 }, 5.4);
+      tl.to(boardEl, { ...onCard('trend'), duration: 0.45 }, 6);
+      if (line) tl.to(line, { strokeDashoffset: 0, duration: 0.75 }, 6.35);
+      tl.to('[data-dot]', { autoAlpha: 1, scale: 1, stagger: 0.16, duration: 0.2 }, 6.4);
       tl.fromTo(
         '[data-readout]',
         { autoAlpha: 0, left: '1.4%', top: '79%' },
         { autoAlpha: 1, duration: 0.12 },
-        5.42
+        6.42
       );
-      tl.to('[data-readout]', { left: '98.6%', top: '33%', duration: 0.68 }, 5.42);
+      tl.to('[data-readout]', { left: '98.6%', top: '33%', duration: 0.68 }, 6.42);
 
-      // 07 · pull all the way back — this is everything you get
-      tl.to(boardEl, { ...to(BOARD_W / 2, BOARD_H / 2, 0.42), duration: 0.7 }, 6.05);
+      // 07 · back out to where it started — now with everything filled in
+      tl.to(boardEl, { ...onBoard(), duration: 0.7 }, 7.05);
 
       document.fonts?.ready.then(() => ScrollTrigger.refresh());
     },
@@ -588,7 +627,9 @@ export default function ToolPresentation() {
 
       {/* The scroll track. One viewport of scroll per chapter, plus one for the
           closing pull-back and one of run-out so the last shot can be held. */}
-      <div className="relative" style={{ height: `${(CARDS.length + 2) * 100}svh` }}>
+      {/* One viewport of scroll per chapter: the establishing shot, the six
+          cards, and the pull-back to where it started. */}
+      <div className="relative" style={{ height: `${CHAPTERS.length * 100}svh` }}>
         <div ref={stage} className="sticky top-0 h-[100svh] overflow-hidden">
           {/* The board. Fixed size in design units; the camera transforms it. */}
           <div ref={board} className="absolute left-0 top-0" style={{ width: BOARD_W, height: BOARD_H }}>
@@ -609,10 +650,13 @@ export default function ToolPresentation() {
             />
             <div className="relative mx-auto flex max-w-[1440px] items-end justify-between gap-8">
               <div>
+                {/* Chapter 0 is the establishing shot and the last is the same
+                    frame again, so neither of them gets a number — they are not
+                    one of the six, they are all of them. */}
                 <Micro style={{ color: MID, fontSize: 11 }}>
-                  {chapter >= CARDS.length
-                    ? 'All of it'
-                    : `${String(chapter + 1).padStart(2, '0')} / ${String(CARDS.length).padStart(2, '0')}`}
+                  {chapter === 0 || chapter > CARDS.length
+                    ? 'All six'
+                    : `${String(chapter).padStart(2, '0')} / ${String(CARDS.length).padStart(2, '0')}`}
                 </Micro>
                 <p className="mt-3 text-[26px] font-bold leading-tight tracking-[-0.03em] text-gray-900 sm:text-[34px]">
                   {CHAPTERS[chapter].label}
@@ -643,6 +687,11 @@ export default function ToolPresentation() {
  * the reader is looking at all six surfaces at once.
  */
 const CHAPTERS: { label: string; blurb: string }[] = [
+  {
+    label: 'The whole report, at a glance.',
+    blurb:
+      'Six surfaces, from the questions we send to the trend they add up to over months. The camera goes through them one at a time from here.',
+  },
   {
     label: 'The questions',
     blurb: `${QUESTION_COUNT} questions a buyer would type, in the language of the market you sell into. Your brand is in none of them.`,
