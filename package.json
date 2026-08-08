@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "blog": "node scripts/blog.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
@@ -25,6 +26,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
+    "marked": "^18.0.9",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
