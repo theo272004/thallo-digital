@@ -80,7 +80,7 @@ const BOARD_H = 1500;
  * in the report you are — the reason the establishing shot exists at all.
  */
 const CARD_FILL = 0.64;
-const BOARD_FILL = 0.86;
+const BOARD_FILL = 0.9;
 
 /**
  * The ceiling on design units → pixels.
@@ -127,6 +127,24 @@ const CARDS: Card[] = [
 ];
 
 const cardById = (id: string) => CARDS.find((c) => c.id === id)!;
+
+/**
+ * The box the six cards actually occupy.
+ *
+ * The establishing shot frames this rather than the full 2400 × 1500 board.
+ * The board is bigger than its contents — the cards sit 150 units below its top
+ * edge and 80 short of its right one — and framing all that empty space pushed
+ * the whole composition down the screen and away from the heading above it.
+ * Derived rather than written down, so moving a card re-frames the shot instead
+ * of quietly leaving a margin behind.
+ */
+const BOUNDS = (() => {
+  const x0 = Math.min(...CARDS.map((c) => c.x));
+  const y0 = Math.min(...CARDS.map((c) => c.y));
+  const x1 = Math.max(...CARDS.map((c) => c.x + c.w));
+  const y1 = Math.max(...CARDS.map((c) => c.y + c.h));
+  return { cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, w: x1 - x0, h: y1 - y0 };
+})();
 
 
 /* ── Card chrome ─────────────────────────────────────────────────────────── */
@@ -499,8 +517,8 @@ export default function ToolPresentation() {
         return framed(box(c.x + c.w / 2, c.y + c.h / 2, c.w, c.h, fill));
       };
 
-      /** Frame the whole board — the establishing shot, and the closing one. */
-      const onBoard = (fill = BOARD_FILL) => framed(box(BOARD_W / 2, BOARD_H / 2, BOARD_W, BOARD_H, fill));
+      /** Frame all six at once — the establishing shot, and the closing one. */
+      const onBoard = (fill = BOARD_FILL) => framed(box(BOUNDS.cx, BOUNDS.cy, BOUNDS.w, BOUNDS.h, fill));
 
       // ── Opening state: everything at once ────────────────────────────────
       const wide = onBoard();
@@ -619,14 +637,16 @@ export default function ToolPresentation() {
 
   return (
     <div ref={root} className="bg-white">
-      <section className="px-6 pt-32 pb-14">
+      {/* pt-32 clears the floating navbar; the bottom padding is deliberately
+          small. The film begins immediately under these lines and the stage
+          already centres the board inside itself, so anything more here reads
+          as the heading and the animation belonging to different pages. */}
+      <section className="px-6 pt-32 pb-6">
         <div className="mx-auto max-w-[1440px]">
           <Opening />
         </div>
       </section>
 
-      {/* The scroll track. One viewport of scroll per chapter, plus one for the
-          closing pull-back and one of run-out so the last shot can be held. */}
       {/* One viewport of scroll per chapter: the establishing shot, the six
           cards, and the pull-back to where it started. */}
       <div className="relative" style={{ height: `${CHAPTERS.length * 100}svh` }}>
@@ -722,19 +742,24 @@ const CHAPTERS: { label: string; blurb: string }[] = [
   },
 ];
 
+/**
+ * The page's opening lines.
+ *
+ * Set in the site's own heading scale — `text-4xl sm:text-5xl`,
+ * `leading-[1.05]`, `tracking-tight` — which is what every other h1 on Thallo
+ * uses. This one had been given a bespoke `clamp()` that ran up to 73px, half
+ * again bigger than any heading elsewhere on the site, and the difference read
+ * as a mistake rather than as emphasis. A page does not get its own type scale
+ * because it is the newest one.
+ */
 function Opening() {
   return (
     <>
-      <Micro style={{ color: MID, fontSize: 11 }}>
-        Free · no account
-      </Micro>
-      <h1
-        className="mt-7 max-w-[17ch] font-sans font-bold text-gray-900"
-        style={{ fontSize: 'clamp(2.5rem, 5.4vw, 4.6rem)', lineHeight: 0.96, letterSpacing: '-0.043em' }}
-      >
+      <Micro style={{ color: MID, fontSize: 11 }}>Free · no account</Micro>
+      <h1 className="mb-5 mt-6 max-w-[20ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
         Ask the machines what they say about you.
       </h1>
-      <p className="mt-7 max-w-[50ch] text-[15px] font-medium leading-relaxed text-gray-500">
+      <p className="max-w-[52ch] text-[15px] font-medium leading-relaxed text-gray-500">
         We put {QUESTION_COUNT} real buying questions to ChatGPT, Claude and Gemini and count how often your name comes
         up. Scroll to watch the report being made — then run it on your own brand.
       </p>

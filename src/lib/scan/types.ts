@@ -41,7 +41,9 @@ export const PROVIDER_LABEL: Record<AnyProvider, string> = {
 /** Logo marks we actually hold. Providers without one fall back to a glyph. */
 export const PROVIDER_LOGO: Partial<Record<AnyProvider, string>> = {
   chatgpt: 'chatgpt.svg',
-  gemini: 'google.svg',
+  /* Gemini the model wears the Gemini spark; Google AI Overview wears Google's
+     "G". They are different products and had been sharing the one mark. */
+  gemini: 'gemini.svg',
   'ai-overview': 'google.svg',
   perplexity: 'perplexity.png',
 };

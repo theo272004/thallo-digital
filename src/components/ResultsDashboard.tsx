@@ -34,7 +34,10 @@ const READOUT = [
   { name: 'ChatGPT',    logo: 'chatgpt.svg',    pct: 62, verdict: 'Named',  tone: 'on'  },
   { name: 'Perplexity', logo: 'perplexity.png', pct: 44, verdict: 'Named',  tone: 'on'  },
   { name: 'Google AI',  logo: 'google.svg',     pct: 31, verdict: 'Mixed',  tone: 'mid' },
-  { name: 'Gemini',     logo: 'google.svg',     pct: 18, verdict: 'Rarely', tone: 'off' },
+  /* Gemini carries the Gemini spark, not Google's "G". They are different
+     products, and this row sat beside the Google AI Overview one wearing the
+     same mark. */
+  { name: 'Gemini',     logo: 'gemini.svg',     pct: 18, verdict: 'Rarely', tone: 'off' },
 ] as const;
 
 const VERDICT_TONE: Record<'on' | 'mid' | 'off', string> = {

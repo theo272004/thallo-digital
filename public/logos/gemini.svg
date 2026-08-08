@@ -1,0 +1,19 @@
+<!-- Google Gemini mark: the four-pointed spark, on its blue-to-red gradient.
+     Used wherever Gemini the model is named. Google's own "G" stays in
+     google.svg and is used for Google AI Overview, which is a different
+     product — showing the G beside the word Gemini was the bug this fixes. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="Gemini">
+  <defs>
+    <linearGradient id="gemini-spark" x1="2" y1="20" x2="22" y2="4" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4285F4"/>
+      <stop offset="0.52" stop-color="#9B72CB"/>
+      <stop offset="1" stop-color="#D96570"/>
+    </linearGradient>
+  </defs>
+  <!-- Each arm is a pair of quarter-circle arcs meeting at the centre, which
+       is what gives the mark its concave waist rather than straight edges. -->
+  <path
+    fill="url(#gemini-spark)"
+    d="M12 0c0 6.627-5.373 12-12 12 6.627 0 12 5.373 12 12 0-6.627 5.373-12 12-12-6.627 0-12-5.373-12-12Z"
+  />
+</svg>
