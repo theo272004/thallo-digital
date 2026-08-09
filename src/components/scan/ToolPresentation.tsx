@@ -709,23 +709,32 @@ export default function ToolPresentation() {
 
 function PresentationCTA() {
   return (
-    <section className="border-t border-[#E7ECD9] bg-[#171A10] px-6 py-20 sm:py-24">
-      <div className="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-8 sm:flex-row sm:items-end">
-        <div>
-          <Micro style={{ color: '#CBD0AC', fontSize: 11 }}>Ready to see your brand?</Micro>
-          <h2 className="mt-5 max-w-[18ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl">
-            Now run the scan on your own brand.
-          </h2>
-          <p className="mt-5 max-w-[52ch] text-base font-medium leading-relaxed text-[#CBD0AC]">
-            The presentation shows what the report can reveal. The scan shows where you stand today.
-          </p>
+    <section className="border-t border-[#E7ECD9] bg-white px-6 py-20 sm:py-24">
+      <div className="relative mx-auto max-w-[1440px] overflow-hidden rounded-[28px] px-8 py-12 sm:px-12 sm:py-16 lg:px-16 lg:py-20">
+        <img
+          src={`${BASE}/cta-bg.webp`}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-[#171A10]/95 via-[#171A10]/70 to-[#171A10]/20" />
+        <div className="relative z-10 flex flex-col items-start justify-between gap-8 sm:flex-row sm:items-end">
+          <div>
+            <Micro style={{ color: '#CBD0AC', fontSize: 11 }}>Ready to see your brand?</Micro>
+            <h2 className="mt-5 max-w-[18ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl">
+              Now run the scan on your own brand.
+            </h2>
+            <p className="mt-5 max-w-[52ch] text-base font-medium leading-relaxed text-[#CBD0AC]">
+              The presentation shows what the report can reveal. The scan shows where you stand today.
+            </p>
+          </div>
+          <a
+            href={`${BASE}/thallo-ai/scan/`}
+            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-7 py-4 text-sm font-semibold text-[#39471D] transition-colors hover:bg-[#E7ECD9]"
+          >
+            Try the scan <ArrowUpRight className="text-[11px]" />
+          </a>
         </div>
-        <a
-          href={`${BASE}/thallo-ai/scan/`}
-          className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-7 py-4 text-sm font-semibold text-[#39471D] transition-colors hover:bg-[#E7ECD9]"
-        >
-          Try the scan <ArrowUpRight className="text-[11px]" />
-        </a>
       </div>
     </section>
   );
