@@ -3,6 +3,8 @@
 import React, { useRef, useState, useSyncExternalStore } from 'react';
 import { gsap, useGSAP, ScrollTrigger } from '@/lib/gsap';
 import { QUESTION_COUNT } from '@/lib/scan/questions';
+import ArrowUpRight from '@/components/ui/ArrowUpRight';
+import { BASE } from '@/lib/site';
 
 /**
  * The opening of the tool page: one continuous camera move across the report,
@@ -620,6 +622,7 @@ export default function ToolPresentation() {
   /* ── Narrow, or motion switched off: the same cards, standing still ────── */
   if (!cinematic) {
     return (
+      <>
       <section className="bg-white px-6 pt-32 pb-20">
         <div className="mx-auto max-w-[720px]">
           <Opening />
@@ -632,10 +635,13 @@ export default function ToolPresentation() {
           </p>
         </div>
       </section>
+      <PresentationCTA />
+      </>
     );
   }
 
   return (
+    <>
     <div ref={root} className="bg-white">
       {/* pt-32 clears the floating navbar; the bottom padding is deliberately
           small. The film begins immediately under these lines and the stage
@@ -696,6 +702,32 @@ export default function ToolPresentation() {
         </div>
       </div>
     </div>
+    <PresentationCTA />
+    </>
+  );
+}
+
+function PresentationCTA() {
+  return (
+    <section className="border-t border-[#E7ECD9] bg-[#171A10] px-6 py-20 sm:py-24">
+      <div className="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-8 sm:flex-row sm:items-end">
+        <div>
+          <Micro style={{ color: '#CBD0AC', fontSize: 11 }}>Ready to see your brand?</Micro>
+          <h2 className="mt-5 max-w-[18ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl">
+            Now run the scan on your own brand.
+          </h2>
+          <p className="mt-5 max-w-[52ch] text-base font-medium leading-relaxed text-[#CBD0AC]">
+            The presentation shows what the report can reveal. The scan shows where you stand today.
+          </p>
+        </div>
+        <a
+          href={`${BASE}/thallo-ai/scan/`}
+          className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-7 py-4 text-sm font-semibold text-[#39471D] transition-colors hover:bg-[#E7ECD9]"
+        >
+          Try the scan <ArrowUpRight className="text-[11px]" />
+        </a>
+      </div>
+    </section>
   );
 }
 

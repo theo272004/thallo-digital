@@ -122,7 +122,7 @@ export default function ThalloAIPage() {
             the console gives you means anything.
           </p>
           <a
-            href={`${BASE}/thallo-ai/`}
+            href={`${BASE}/thallo-ai/scan/`}
             className="inline-flex items-center gap-2 text-sm font-semibold text-[#39471D] transition-colors hover:text-[#55672E]"
           >
             Run the scan <ArrowUpRight className="text-[11px]" />
