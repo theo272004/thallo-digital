@@ -44,7 +44,7 @@ const RIVALS = ['Northwind', 'Sable & Co', 'Lumen Group', 'Vertex Partners', 'Ar
 const MODEL_IDS: Record<string, string> = {
   chatgpt: 'openai/gpt-4o-mini (sample)',
   claude: 'anthropic/claude-haiku-4.5 (sample)',
-  gemini: 'google/gemini-2.0-flash (sample)',
+  gemini: 'google/gemini-2.5-flash (sample)',
 };
 
 export function demoPhase1(input: ScanInput): ScanPhase1 {

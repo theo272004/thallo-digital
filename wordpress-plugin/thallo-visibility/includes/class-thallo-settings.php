@@ -25,10 +25,27 @@ class Thallo_Vis_Settings {
 			 */
 			'provider_mode'       => 'openrouter',
 
+			/*
+			 * Checked against OpenRouter's live catalogue on 2026-08-09.
+			 *
+			 * `anthropic/claude-3.5-haiku` and `google/gemini-2.0-flash-001` were
+			 * the defaults and both are retired: the ids still resolve — the
+			 * metadata is kept — but `/models/{id}/endpoints` returns an empty
+			 * list, so nothing serves them. Two of the three providers would
+			 * have errored on the very first real scan, and the runner's honest
+			 * handling of that ("could not ask", not a zero) would have quietly
+			 * turned a three-model scan into a ChatGPT-only one.
+			 *
+			 * **Re-check these whenever a scan reports a provider unavailable.**
+			 * Model ids are the one part of this plugin with an expiry date.
+			 */
 			'openrouter_key'      => '',
 			'or_model_chatgpt'    => 'openai/gpt-4o-mini',
-			'or_model_claude'     => 'anthropic/claude-3.5-haiku',
-			'or_model_gemini'     => 'google/gemini-2.0-flash-001',
+			'or_model_claude'     => 'anthropic/claude-haiku-4.5',
+			/* Flash rather than flash-lite: this is standing in for "what Gemini
+			   says", so the mainstream model is the representative one. The
+			   difference is about $0.002 on a fifteen-question scan. */
+			'or_model_gemini'     => 'google/gemini-2.5-flash',
 			'or_model_perplexity' => 'perplexity/sonar',
 
 			'openai_key'          => '',
