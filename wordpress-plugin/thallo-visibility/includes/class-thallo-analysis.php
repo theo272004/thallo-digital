@@ -171,13 +171,29 @@ class Thallo_Vis_Analysis {
 			   zero here would read as "not recommended", which is a finding we
 			   have no evidence for. */
 			if ( count( $answers ) === 0 ) {
+				/* Carry the first real error up rather than the count of them.
+				   "Every request failed" tells the person reading the report
+				   that something broke and nothing about what — which is a
+				   diagnosis they then cannot make, and neither can we. The
+				   underlying message is usually the whole answer: a rejected
+				   parameter, an expired key, a model id that no longer serves. */
+				$detail = '';
+				foreach ( $results as $result ) {
+					if ( ! empty( $result['error'] ) ) {
+						$detail = (string) $result['error'];
+						break;
+					}
+				}
+
 				$providers[] = array(
 					'provider'  => $provider,
 					'model'     => isset( $state[ $models_key ][ $provider ] ) ? $state[ $models_key ][ $provider ] : '',
 					'mentions'  => 0,
 					'positions' => array(),
 					'answers'   => array(),
-					'error'     => $errors ? 'every request failed' : 'not run',
+					'error'     => $errors
+						? ( '' !== $detail ? 'every request failed — ' . $detail : 'every request failed' )
+						: 'not run',
 				);
 				continue;
 			}

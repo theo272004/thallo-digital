@@ -380,9 +380,7 @@ class Thallo_Vis_Runner {
 		/* 'grounded' leads, and only when there is something to ask. It is the
 		   expensive step and the one the visitor is waiting on, so it runs while
 		   they are still watching rather than after the cheap checks. */
-		$state['phase2_queue'] = $grounded_queue
-			? array( 'grounded', 'perplexity', 'ai-overview', 'technical' )
-			: array( 'perplexity', 'ai-overview', 'technical' );
+		$state['phase2_queue'] = self::phase2_steps( $grounded_queue ? true : false );
 
 		/* A scheduled re-run opens phase 2 with an address that is already in
 		   the leads table — it is where the monitor got it. Recording it again
@@ -393,6 +391,28 @@ class Thallo_Vis_Runner {
 		Thallo_Vis_DB::save_state( $state['scan_id'], $state, 'unlocking', $email );
 
 		return self::session( $state, 'unlocking' );
+	}
+
+	/**
+	 * The second half's steps, in order.
+	 *
+	 * The AI Overview drops out entirely when no search-results provider is
+	 * configured. It used to run anyway and report "not measured", which is the
+	 * wording reserved for something we tried and could not read — this was
+	 * never attempted. A permanent grey row on every report that no setting on
+	 * this screen can turn green reads as a broken product rather than as an
+	 * honest omission. Configure a provider and it comes back.
+	 */
+	private static function phase2_steps( $with_grounded ) {
+		$steps = $with_grounded ? array( 'grounded', 'perplexity' ) : array( 'perplexity' );
+
+		if ( 'none' !== Thallo_Vis_Settings::get( 'serp_provider', 'none' ) ) {
+			$steps[] = 'ai-overview';
+		}
+
+		$steps[] = 'technical';
+
+		return $steps;
 	}
 
 	private static function tick_phase2( array $state ) {
@@ -748,7 +768,12 @@ class Thallo_Vis_Runner {
 			);
 		}
 
-		foreach ( array( 'perplexity', 'ai-overview', 'technical' ) as $id ) {
+		/* Same list the queue was built from, minus the grounded row, which is
+		   rendered above with its own progress count. A step the run will never
+		   perform must not appear as a row waiting to be performed. */
+		$phase2_ids = array_values( array_diff( self::phase2_steps( false ), array( 'grounded' ) ) );
+
+		foreach ( $phase2_ids as $id ) {
 			if ( $locked ) {
 				$steps[] = array(
 					'id'     => $id,

@@ -40,12 +40,20 @@ class Thallo_Vis_Settings {
 			 * Model ids are the one part of this plugin with an expiry date.
 			 */
 			'openrouter_key'      => '',
-			'or_model_chatgpt'    => 'openai/gpt-4o-mini',
+			/* Each slot stands in for "what this assistant says", so the model
+			   should be the generation a person actually talks to today. An old
+			   model measures a product nobody is using any more, and the report
+			   would be honest about a question nobody asked.
+			   `gpt-4.1-nano` over `gpt-4o-mini`: newer, and cheaper per token. */
+			'or_model_chatgpt'    => 'openai/gpt-4.1-nano',
+			/* Haiku 4.5 is the newest model in its tier — there is no later small
+			   Anthropic model to move to. The only step up is Sonnet, which
+			   doubles the token price for a reading this size. */
 			'or_model_claude'     => 'anthropic/claude-haiku-4.5',
 			/* Flash rather than flash-lite: this is standing in for "what Gemini
-			   says", so the mainstream model is the representative one. The
-			   difference is about $0.002 on a fifteen-question scan. */
-			'or_model_gemini'     => 'google/gemini-2.5-flash',
+			   says", so the mainstream model is the representative one, and the
+			   difference is fractions of a cent on a reading with no search fee. */
+			'or_model_gemini'     => 'google/gemini-3.6-flash',
 			'or_model_perplexity' => 'perplexity/sonar',
 
 			/*
@@ -65,17 +73,23 @@ class Thallo_Vis_Settings {
 			 * price in front of them, not one they inherit from an update.
 			 *
 			 * Chosen on search fee first, token price second, because the search
-			 * fee is per call and dwarfs the tokens at this size. Checked against
-			 * the live catalogue on 2026-08-09:
+			 * fee is per call and dwarfs the tokens at this size — but only
+			 * among models that accept the parameters this plugin sends.
 			 *
-			 *   gpt-5.6-luna         $0.005 a search, $0.10/1M in
-			 *   claude-haiku-4.5     $0.010 a search, $1.00/1M in
-			 *   gemini-2.5-flash-lite $0.014 a search, $0.10/1M in
+			 * Luna on the ChatGPT slot is a fidelity choice before it is a price
+			 * one. The sentence this reading prints is "here is what ChatGPT
+			 * says when it searches", and somebody typing into ChatGPT today is
+			 * talking to the GPT-5 generation — so the GPT-5-series model is the
+			 * representative one. That it also halves the search fee is a
+			 * coincidence in our favour, not the reason.
 			 *
-			 * Luna rather than gpt-4.1-nano: same token price, half the search
-			 * fee, and a current model rather than a small older one. Flash-Lite
-			 * rather than Flash: identical search fee, a third of the tokens.
-			 * $0.010 is the floor on the Anthropic side, so Claude is unchanged.
+			 * It went out once as `gpt-4.1-nano` because Luna rejects
+			 * `temperature` and `openai_body()` sent it unconditionally: five
+			 * failed calls and a blank ChatGPT column. That was the wrong fix —
+			 * changing the model to suit a parameter that this half does not
+			 * need. The parameter is dropped for the grounded reading instead
+			 * (see Thallo_Vis_LLM::build_job), which frees the whole GPT-5 and
+			 * reasoning family to be used here.
 			 *
 			 * What is NOT traded away is native search. All three are the
 			 * provider's own model, so `:online` routes to that provider's own
@@ -86,7 +100,12 @@ class Thallo_Vis_Settings {
 			'grounded_enabled'    => 0,
 			'gr_model_chatgpt'    => 'openai/gpt-5.6-luna',
 			'gr_model_claude'     => 'anthropic/claude-haiku-4.5',
-			'gr_model_gemini'     => 'google/gemini-2.5-flash-lite',
+			/* Lite here, mainstream on the memory slot, and the reason is the
+			   bill rather than a change of heart: this half sends thousands of
+			   search excerpts through the prompt on every call, so the token
+			   price actually bites. A current-generation lite costs the same
+			   search fee as an old mainstream and is the newer reading. */
+			'gr_model_gemini'     => 'google/gemini-3.5-flash-lite',
 			/* low/medium/high. Search context is charged as prompt tokens and it
 			   is the half of the bill that is easy to miss — the search fee is
 			   fixed, the excerpts it stuffs into the prompt are not. */

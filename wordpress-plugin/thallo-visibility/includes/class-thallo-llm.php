@@ -45,6 +45,22 @@ class Thallo_Vis_LLM {
 			$model = Thallo_Vis_Settings::get( 'gr_model_' . $provider, '' );
 			$body  = self::openai_body( $model, $system, $question );
 
+			/* No `temperature` on this half, deliberately.
+			 *
+			 * Phase 1 pins it because two scans of the same brand a month apart
+			 * have to be comparable — that series is the product. This reading
+			 * measures a moving target: the web changed between the two runs,
+			 * and no sampling setting makes that reproducible. Pinning it here
+			 * tightens a screw on a part that moves anyway.
+			 *
+			 * What it buys instead is that the model field is safe to edit. The
+			 * newer OpenAI families do not accept `temperature` at all, so
+			 * sending it turned a perfectly good model id into five failed calls
+			 * and a blank column — the operator picks a better model and the
+			 * report quietly gets worse. A parameter that is not load-bearing
+			 * here should not be able to do that. */
+			unset( $body['temperature'] );
+
 			/* `:online` is OpenRouter's shorthand for the web plugin, and for
 			   OpenAI, Anthropic and Google models it routes to that provider's
 			   own native search rather than a third-party index. That matters

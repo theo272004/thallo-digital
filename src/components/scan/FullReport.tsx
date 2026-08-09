@@ -58,7 +58,15 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
             </div>
 
             <div className="grid grid-cols-3 divide-x divide-gray-100 border-y border-gray-100">
-              <Stat value={`${phase1.sovPct}%`} label="AI share of voice" />
+              {/* Named as the memory reading whenever a second one exists. The
+                  headline number is the from-memory percentage, and printing it
+                  as plain "AI share of voice" next to a panel showing a very
+                  different figure for the same brand reads as a contradiction
+                  rather than as two findings. */}
+              <Stat
+                value={`${phase1.sovPct}%`}
+                label={phase2.grounded ? 'Share of voice · from memory' : 'AI share of voice'}
+              />
               <Stat value={`${phase2.techScore}`} label={`Technical / ${maxTech}`} />
               <Stat
                 value={phase2.serpScore < 0 ? '—' : String(phase2.serpScore)}
@@ -307,19 +315,37 @@ function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded
 
   return (
     <Panel>
-      <Micro className="text-gray-400">Memory against search</Micro>
-      <p className="mt-4 mb-6 max-w-[62ch] text-[13px] font-medium leading-relaxed text-gray-500">
-        The same {memory.questions.length} questions, put to the same three models a second time — this time with web
-        search on. The first reading asks whether they know you. This one asks whether they pick you once they have
-        looked.
+      <Micro className="text-gray-400">Do they know you, or can they find you?</Micro>
+      <p className="mt-4 mb-7 max-w-[62ch] text-[13px] font-medium leading-relaxed text-gray-500">
+        We asked the same {memory.questions.length} questions twice. Once with the models answering from memory, the
+        way they do when nobody is looking anything up. Once with web search switched on, the way most people use them
+        today. Those are different questions about you, and the answers come apart.
       </p>
 
-      <div className="grid grid-cols-2 divide-x divide-gray-100 border-y border-gray-100">
-        <Stat value={`${memory.sovPct}%`} label={`From memory · ${memory.totalAnswers} answers`} />
-        <Stat value={`${grounded.sovPct}%`} label={`Searching · ${grounded.totalAnswers} answers`} />
+      <div className="grid grid-cols-1 gap-px overflow-hidden rounded-lg bg-gray-100 sm:grid-cols-2">
+        <div className="bg-white p-4 sm:p-5">
+          <p className="text-3xl font-bold leading-none tracking-tight text-[#39471D]">{memory.sovPct}%</p>
+          <p className="mt-2.5 text-[13px] font-bold tracking-tight text-gray-900">Named from memory</p>
+          <p className="mt-1.5 text-[12px] font-medium leading-relaxed text-gray-500">
+            Out of {memory.totalAnswers} answers given without looking anything up. This is whether the models already
+            know {memory.brand} — reputation, not pages.
+          </p>
+        </div>
+        <div className="bg-white p-4 sm:p-5">
+          <p className="text-3xl font-bold leading-none tracking-tight text-[#39471D]">{grounded.sovPct}%</p>
+          <p className="mt-2.5 text-[13px] font-bold tracking-tight text-gray-900">Named when they search</p>
+          <p className="mt-1.5 text-[12px] font-medium leading-relaxed text-gray-500">
+            Out of {grounded.totalAnswers} answers given with the web open. This is whether the models pick{' '}
+            {memory.brand} once they have looked — pages, not reputation.
+          </p>
+        </div>
       </div>
 
-      <ul className="mt-6 flex flex-col gap-3.5">
+      <p className="mt-6 mb-1 text-[12px] font-medium leading-relaxed text-gray-500">
+        Model by model, from memory <span className="text-gray-300">→</span> when searching:
+      </p>
+
+      <ul className="mt-4 flex flex-col gap-3.5">
         {grounded.providers.map((g) => {
           const m = memory.providers.find((p) => p.provider === g.provider);
           const mPct = m && m.answers.length ? Math.round((m.mentions / m.answers.length) * 100) : null;
