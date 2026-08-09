@@ -67,25 +67,7 @@ export default function ScanFlow() {
     }
   };
 
-  const reset = () => {
-    setSession(initialSession());
-    setPending(null);
-    setError('');
-    goto('setup');
-  };
-
   const brand = session.phase1?.brand ?? pending?.brand ?? 'your brand';
-
-  const status =
-    stage === 'setup'
-      ? `${QUESTION_COUNT} questions · 3 models · free`
-      : stage === 'scanning'
-        ? session.status === 'unlocking'
-          ? 'Running the second half'
-          : 'Scan in progress'
-        : stage === 'results'
-          ? 'Phase 1 complete'
-          : 'Full report';
 
   return (
     /* pt-32 rather than pt-28: the label above the heading is gone, and at the
@@ -103,12 +85,12 @@ export default function ScanFlow() {
             to machines. */}
         <div className="flex items-end justify-between gap-6">
           <div>
-            <Micro className="text-[#617A2B]">Scan</Micro>
+            <Micro className="text-[#CBD0AC]">Scan</Micro>
             <SplitReveal
               as="h1"
               scroll={false}
               fade={false}
-              className="mt-4 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl"
+              className="mt-4 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl"
               html="Check your AI visibility."
             />
           </div>
@@ -118,25 +100,6 @@ export default function ScanFlow() {
         {(!IS_LIVE || session.demo) && <DemoNotice configured={IS_LIVE} />}
 
         {/* Panel chrome — the strip a tool wears and a brochure does not. */}
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-[0_8px_24px_-18px_rgba(23,26,16,0.3)]">
-          <span className="flex items-center gap-2.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#617A2B]" />
-            <Micro className="text-gray-500">Thallo AI · visibility console</Micro>
-          </span>
-          <span className="flex items-center gap-4">
-            {stage !== 'setup' && (
-              <button
-                type="button"
-                onClick={reset}
-                className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#617A2B] underline-offset-4 transition-colors hover:text-[#39471D] hover:underline"
-              >
-                Scan another brand
-              </button>
-            )}
-            <Micro className="text-gray-400">{status}</Micro>
-          </span>
-        </div>
-
         <div ref={topRef} className="mt-3 scroll-mt-24">
           {stage === 'setup' && (
             <>
