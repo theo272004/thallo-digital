@@ -1,154 +1,165 @@
 'use client';
 
-import React, { useState } from 'react';
-import { ArrowUpRight, BriefcaseBusiness, Globe2, Link2, LockKeyhole, MessageCircle, ScanLine, Sparkles } from 'lucide-react';
-import { FIELD, Notice, Panel, ProviderMark } from './ui';
+import React, { useMemo, useState } from 'react';
+import { ArrowLeft, ArrowRight, Globe2, Link2, LockKeyhole, Sparkles } from 'lucide-react';
+import { FIELD, Micro, Notice, Panel } from './ui';
 import { QUESTION_COUNT, buildQuestions } from '@/lib/scan/questions';
 import { DEFAULT_MARKET, MARKETS, marketById } from '@/lib/scan/markets';
-import { INDUSTRIES, cleanDomain, isDomain, type ScanInput, type MemoryProvider } from '@/lib/scan/types';
+import { INDUSTRIES, cleanDomain, isDomain, type ScanInput } from '@/lib/scan/types';
 
-const PROVIDERS: MemoryProvider[] = ['chatgpt', 'claude', 'gemini'];
+type Step = 1 | 2;
 
-function IconBox({ children }: { children: React.ReactNode }) {
-  return <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F0F4E7] text-[#55672E]">{children}</span>;
+const LANGUAGES = [
+  { value: 'en', label: 'English' },
+  { value: 'es', label: 'Español' },
+  { value: 'pt', label: 'Português' },
+] as const;
+
+const COUNTRIES = Array.from(new Map(MARKETS.map((m) => [m.country, m])).values());
+
+function StepBadge({ n }: { n: number }) {
+  return <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F0F4E7] text-[15px] font-bold text-[#617A2B]">{n}.</span>;
 }
 
-function SectionHeading({ icon, title, copy }: { icon: React.ReactNode; title: string; copy: string }) {
-  return (
-    <div className="flex items-start gap-3">
-      <IconBox>{icon}</IconBox>
-      <div>
-        <h2 className="text-[18px] font-bold tracking-tight text-gray-900">{title}</h2>
-        <p className="mt-1 text-[12px] font-medium text-gray-500">{copy}</p>
-      </div>
-    </div>
-  );
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return <span className="text-[13px] font-bold text-gray-900">{children}</span>;
 }
 
 export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => void }) {
-  const [brand, setBrand] = useState('');
-  const [industry, setIndustry] = useState<string>(INDUSTRIES[0]);
+  const [step, setStep] = useState<Step>(1);
   const [domain, setDomain] = useState('');
-  const [market, setMarket] = useState<string>(DEFAULT_MARKET);
+  const [market, setMarket] = useState(DEFAULT_MARKET);
   const [error, setError] = useState('');
-  const samplePrompt = buildQuestions(industry, market)[0];
-  const currentMarket = marketById(market);
 
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const name = brand.trim().slice(0, 80);
-    const host = cleanDomain(domain);
-    if (!name) return setError('Enter the brand name buyers would search for.');
-    if (!isDomain(host)) return setError('Enter a valid website, e.g. yourcompany.com');
-    setError('');
-    onStart({ brand: name, domain: host, industry, market });
+  const selectedMarket = marketById(market);
+  const country = selectedMarket.country;
+  const language = selectedMarket.language;
+  const questions = useMemo(() => buildQuestions(INDUSTRIES[0], market), [market]);
+
+  const setCountry = (nextCountry: string) => {
+    const matching = MARKETS.find((m) => m.country === nextCountry && m.language === language) ?? MARKETS.find((m) => m.country === nextCountry);
+    if (matching) setMarket(matching.id);
   };
 
-  return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,420px)_minmax(0,1fr)]">
-      <Panel className="p-6 sm:p-7">
-        <form onSubmit={submit} className="flex flex-col">
-          <SectionHeading icon={<ScanLine size={19} />} title="Audit parameters" copy="Tell us about your brand and market" />
+  const setLanguage = (nextLanguage: string) => {
+    const matching = MARKETS.find((m) => m.country === country && m.language === nextLanguage) ?? MARKETS.find((m) => m.language === nextLanguage);
+    if (matching) setMarket(matching.id);
+  };
 
-          <div className="mt-8 flex flex-col gap-5">
-            <label className="flex flex-col gap-2">
-              <span className="text-[13px] font-bold text-gray-900">Brand name</span>
-              <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="e.g. Ledgerly" maxLength={80} autoComplete="organization" className={FIELD} />
-              <span className="text-[11px] font-medium text-gray-400">Exactly as a buyer would say it</span>
-            </label>
+  const continueToPrompts = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isDomain(cleanDomain(domain))) {
+      setError('Enter a valid website, e.g. yourcompany.com');
+      return;
+    }
+    setError('');
+    setStep(2);
+  };
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <label className="flex min-w-0 flex-col gap-2">
-                <span className="text-[13px] font-bold text-gray-900">Industry</span>
-                <span className="relative">
-                  <BriefcaseBusiness size={16} className="pointer-events-none absolute left-3 top-3 text-gray-400" />
-                  <select value={industry} onChange={(e) => setIndustry(e.target.value)} className={`${FIELD} appearance-none pl-10 pr-8`}>
-                    {INDUSTRIES.map((i) => <option key={i} value={i}>{i}</option>)}
-                  </select>
-                </span>
-                <span className="text-[11px] font-medium text-gray-400">Your category</span>
-              </label>
-              <label className="flex min-w-0 flex-col gap-2">
-                <span className="text-[13px] font-bold text-gray-900">Market</span>
-                <span className="relative">
-                  <Globe2 size={16} className="pointer-events-none absolute left-3 top-3 text-gray-400" />
-                  <select value={market} onChange={(e) => setMarket(e.target.value)} className={`${FIELD} appearance-none pl-10 pr-8`}>
-                    {MARKETS.map((m) => <option key={m.id} value={m.id}>{m.languageLabel} · {m.country.replace(/^the /, '')}</option>)}
-                  </select>
-                </span>
-                <span className="text-[11px] font-medium text-gray-400">Country and language</span>
-              </label>
-            </div>
+  const runFreeScan = () => {
+    const host = cleanDomain(domain);
+    const brand = host.split('.')[0].replace(/[-_]+/g, ' ').trim() || host;
+    onStart({ brand, domain: host, industry: INDUSTRIES[0], market });
+  };
 
-            <label className="flex flex-col gap-2">
-              <span className="text-[13px] font-bold text-gray-900">Website</span>
-              <span className="relative">
-                <Link2 size={16} className="pointer-events-none absolute left-3 top-3 text-gray-400" />
-                <input type="text" value={domain} onChange={(e) => setDomain(e.target.value)} placeholder="yourcompany.com" autoComplete="url" className={`${FIELD} pl-10`} />
-              </span>
-              <span className="text-[11px] font-medium text-gray-400">We&apos;ll analyze your site and content signals</span>
-            </label>
-          </div>
-
-          {error && <div className="mt-4"><Notice>{error}</Notice></div>}
-
-          <button type="submit" className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#617A2B] py-3.5 text-[13px] font-bold text-white transition-colors hover:bg-[#55672E]">
-            Run the scan <ArrowUpRight size={17} />
-          </button>
-          <div className="mt-5 flex items-start justify-center gap-2 border-t border-gray-100 pt-5 text-center">
-            <LockKeyhole size={14} className="mt-0.5 shrink-0 text-[#55672E]" />
-            <p className="text-[11px] font-medium leading-relaxed text-gray-500"><strong className="font-bold text-gray-700">No account needed.</strong><br />The first scan is free and usually finishes in under a minute.</p>
-          </div>
-        </form>
-      </Panel>
-
-      <div className="flex flex-col gap-4">
-        <Panel className="p-6 sm:p-8">
-          <SectionHeading icon={<Sparkles size={19} />} title="Visibility score" copy="Your AI presence at a glance" />
-          <div className="mt-7 grid grid-cols-1 items-center gap-8 xl:grid-cols-[minmax(280px,1fr)_minmax(270px,1fr)]">
-            <div className="flex items-center gap-7 sm:gap-10">
-              <div className="relative flex h-40 w-40 shrink-0 items-center justify-center rounded-full" style={{ background: 'conic-gradient(#D9DED0 0deg, #EEF1EA 0deg)' }}>
-                <div className="flex h-[122px] w-[122px] flex-col items-center justify-center rounded-full bg-white">
-                  <span className="text-4xl font-bold tracking-tight text-gray-900">—</span>
-                  <span className="mt-1 text-[12px] font-medium text-gray-400">/100</span>
-                  <span className="mt-2 text-[12px] font-bold text-[#617A2B]">Ready to scan</span>
-                </div>
-              </div>
-              <p className="max-w-[20ch] text-[14px] font-medium leading-relaxed text-gray-600">Complete the audit parameters to see how often AI models recommend your brand.</p>
-            </div>
-            <div className="border-t border-gray-100 pt-5 xl:border-l xl:border-t-0 xl:pl-8 xl:pt-0">
-              {PROVIDERS.map((provider, i) => (
-                <div key={provider} className="flex items-center gap-3 py-2.5">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white"><ProviderMark provider={provider} /></span>
-                  <span className="w-[76px] text-[13px] font-semibold text-gray-900">{provider === 'chatgpt' ? 'ChatGPT' : provider[0].toUpperCase() + provider.slice(1)}</span>
-                  <span className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-[#E7EAE3]"><span className="block h-full rounded-full bg-[#D6DCC8]" style={{ width: `${[72, 64, 67][i]}%` }} /></span>
-                  <span className="text-[12px] font-medium text-gray-400">—</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Panel>
-
-        <Panel className="p-6 sm:p-8">
-          <SectionHeading icon={<MessageCircle size={19} />} title="First question preview" copy="See exactly what we will ask" />
-          <div className="mt-7 grid grid-cols-1 items-center gap-6 lg:grid-cols-[minmax(0,1fr)_180px]">
-            <div>
-              <p className="max-w-[34ch] text-xl font-medium leading-snug tracking-tight text-gray-900 sm:text-2xl">{samplePrompt}</p>
-              <div className="mt-6 flex flex-wrap gap-2">
-                <span className="rounded-full border border-gray-200 px-3 py-1.5 text-[11px] font-medium text-gray-500">Language: {currentMarket.languageLabel}</span>
-                <span className="rounded-full border border-gray-200 px-3 py-1.5 text-[11px] font-medium text-gray-500">Market: {currentMarket.country.replace(/^the /, '')}</span>
+  if (step === 1) {
+    return (
+      <div className="mx-auto max-w-[720px]">
+        <Panel className="p-7 sm:p-10">
+          <form onSubmit={continueToPrompts}>
+            <div className="flex items-start gap-3">
+              <StepBadge n={1} />
+              <div>
+                <h2 className="text-[22px] font-bold tracking-tight text-gray-900">Your brand</h2>
+                <p className="mt-1 text-[14px] font-medium text-gray-500">The essentials to start your scan</p>
               </div>
             </div>
-            <div className="border-t border-gray-100 pt-5 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
-              <p className="text-[12px] font-medium text-[#617A2B]">Your brand mentioned</p>
-              <p className="mt-2 text-2xl font-bold text-gray-900">—</p>
-              <p className="mt-4 text-[12px] font-medium text-gray-500">Position</p>
-              <p className="mt-1 text-2xl font-bold text-gray-900">—</p>
+
+            <div className="mt-9 flex flex-col gap-6">
+              <label className="flex flex-col gap-2.5">
+                <FieldLabel>Website</FieldLabel>
+                <span className="relative">
+                  <Link2 size={17} className="pointer-events-none absolute left-4 top-3.5 text-gray-400" />
+                  <input type="text" value={domain} onChange={(e) => setDomain(e.target.value)} placeholder="yourcompany.com" autoComplete="url" className={`${FIELD} rounded-xl py-3.5 pl-11 text-[15px]`} />
+                </span>
+                <span className="text-[11px] font-medium text-gray-400">We&apos;ll analyze your site and content signals</span>
+              </label>
+
+              <label className="flex flex-col gap-2.5">
+                <FieldLabel>Country</FieldLabel>
+                <span className="relative">
+                  <Globe2 size={17} className="pointer-events-none absolute left-4 top-3.5 text-gray-400" />
+                  <select value={country} onChange={(e) => setCountry(e.target.value)} className={`${FIELD} appearance-none rounded-xl py-3.5 pl-11 text-[15px]`}>
+                    {COUNTRIES.map((m) => <option key={m.country} value={m.country}>{m.country.replace(/^the /, '')}</option>)}
+                  </select>
+                </span>
+              </label>
+
+              <label className="flex flex-col gap-2.5">
+                <FieldLabel>Language</FieldLabel>
+                <select value={language} onChange={(e) => setLanguage(e.target.value)} className={`${FIELD} rounded-xl py-3.5 text-[15px]`}>
+                  {LANGUAGES.map((l) => <option key={l.value} value={l.value}>{l.label}</option>)}
+                </select>
+              </label>
             </div>
-          </div>
-          <p className="mt-7 border-t border-gray-100 pt-5 text-[11px] font-medium text-gray-400">{QUESTION_COUNT} questions · 3 models · {QUESTION_COUNT * 3} answers in the free scan</p>
+
+            {error && <div className="mt-5"><Notice>{error}</Notice></div>}
+
+            <button type="submit" className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#617A2B] py-4 text-[14px] font-bold text-white transition-colors hover:bg-[#55672E]">
+              Continue <ArrowRight size={18} />
+            </button>
+
+            <div className="mt-7 flex items-start justify-center gap-2 border-t border-gray-100 pt-6 text-center">
+              <LockKeyhole size={14} className="mt-0.5 shrink-0 text-[#617A2B]" />
+              <p className="text-[12px] font-medium leading-relaxed text-gray-500"><strong className="font-bold text-gray-700">No credit card required</strong><br />Free scan · Results in under a minute</p>
+            </div>
+          </form>
         </Panel>
       </div>
-    </div>
+    );
+  }
+
+  return (
+    <Panel className="p-6 sm:p-8">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <StepBadge n={2} />
+          <div>
+            <h2 className="text-[22px] font-bold tracking-tight text-gray-900">What do you want to know?</h2>
+            <p className="mt-1 text-[14px] font-medium text-gray-500">Choose the questions for your visibility review</p>
+          </div>
+        </div>
+        <span className="rounded-full bg-[#F0F4E7] px-3.5 py-2 text-[12px] font-bold text-[#617A2B]">0 / {QUESTION_COUNT} selected</span>
+      </div>
+
+      <div className="mt-8 overflow-hidden rounded-xl border border-gray-200 bg-white">
+        {questions.map((question) => (
+          <div key={question} className="flex items-center gap-4 border-b border-gray-100 px-4 py-4 last:border-0 sm:px-5">
+            <span className="h-5 w-5 shrink-0 rounded border border-gray-300 bg-white" />
+            <span className="min-w-0 flex-1 text-[13px] font-medium leading-relaxed text-gray-700">{question}</span>
+            <span className="hidden shrink-0 text-gray-300 sm:block">⠿</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-5 flex items-center justify-between gap-4 rounded-xl border border-[#D9E2C8] bg-[#F7FAF2] px-4 py-4 sm:px-5">
+        <span className="flex items-center gap-3 text-[13px] font-semibold text-[#55672E]"><LockKeyhole size={17} /> Upgrade to Pro to customize prompts</span>
+        <span className="hidden items-center gap-1 text-[12px] font-semibold text-[#617A2B] sm:flex">Learn more <ArrowRight size={15} /></span>
+      </div>
+
+      <div className="mt-5 flex items-start gap-3 rounded-xl bg-[#F8FAF7] px-4 py-4 sm:px-5">
+        <Sparkles size={19} className="mt-0.5 shrink-0 text-[#617A2B]" />
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] font-semibold text-gray-800">You can run a free scan with the standard questions.</p>
+          <p className="mt-1 text-[12px] leading-relaxed text-gray-500">Get AI visibility insights across ChatGPT, Claude, Gemini and more.</p>
+        </div>
+        <span className="hidden rounded-full bg-[#F0F4E7] px-3 py-1.5 text-[11px] font-bold text-[#617A2B] sm:block">Free scan</span>
+      </div>
+
+      <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+        <button type="button" onClick={() => setStep(1)} className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-5 py-3 text-[13px] font-semibold text-gray-600 transition-colors hover:bg-gray-50"><ArrowLeft size={16} /> Back</button>
+        <button type="button" onClick={runFreeScan} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#617A2B] px-6 py-3 text-[13px] font-bold text-white transition-colors hover:bg-[#55672E]">Run free scan <ArrowRight size={17} /></button>
+      </div>
+    </Panel>
   );
 }
