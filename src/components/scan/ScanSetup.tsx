@@ -63,7 +63,10 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
   const [step, setStep] = useState<Step>(1);
   const [brand, setBrand] = useState('');
   const [domain, setDomain] = useState('');
-  const [industry, setIndustry] = useState<string>(INDUSTRIES[0]);
+  /* Empty, not pre-filled with the first suggestion. A default here is the
+     answer most people would leave alone, and it is wrong for all but one of
+     them — that is exactly how every scan came to be measured against fintech. */
+  const [industry, setIndustry] = useState('');
   const [market, setMarket] = useState(DEFAULT_MARKET);
   /** One empty row to start, so the first thing on screen is a cursor. */
   const [questions, setQuestions] = useState<string[]>(['']);
@@ -73,10 +76,11 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
   const country = selectedMarket.country;
   const language = selectedMarket.language;
 
-  /* One real question, in the chosen language, for the chosen industry. Not a
+  /* One real question, in the chosen language, for the chosen category. Not a
      list to pick from — a single example of the shape, so that "leave your
-     brand out of it" is demonstrated rather than only asserted. */
-  const example = buildQuestions(industry, market)[0];
+     brand out of it" is demonstrated rather than only asserted. Falls back to
+     a suggestion so the sentence reads even if the field is somehow empty. */
+  const example = buildQuestions(industry.trim() || INDUSTRIES[0], market)[0];
 
   const filled = questions.map((q) => q.trim()).filter(Boolean);
 
@@ -112,6 +116,10 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
       setError('Enter a valid website, e.g. yourcompany.com');
       return;
     }
+    if (!industry.trim()) {
+      setError('Say what category you want to be found in — anything from “pizzerias” to “legal tech”.');
+      return;
+    }
     setError('');
     setStep(2);
   };
@@ -136,7 +144,13 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
     }
 
     setError('');
-    onStart({ brand: brand.trim().slice(0, 80), domain: cleanDomain(domain), industry, market, questions: list });
+    onStart({
+      brand: brand.trim().slice(0, 80),
+      domain: cleanDomain(domain),
+      industry: industry.trim().slice(0, 120),
+      market,
+      questions: list,
+    });
   };
 
   if (step === 1) {
@@ -171,11 +185,28 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
                 <span className="text-[11px] font-medium text-gray-400">We&apos;ll analyze your site and content signals</span>
               </label>
 
+              {/* Free text with the catalogue as suggestions, not a closed
+                  dropdown. The eight entries never were a backend constraint —
+                  `industry_label()` passes anything it does not recognise
+                  straight through — and a closed list quietly forces a pizzeria
+                  to file itself under "Professional services", which is then
+                  the category phase 2 searches Google for. A wrong answer
+                  chosen from a menu still reads as a real one. */}
               <label className="flex flex-col gap-2.5">
-                <FieldLabel>Industry</FieldLabel>
-                <select value={industry} onChange={(e) => setIndustry(e.target.value)} className={`${FIELD} rounded-xl py-3.5 text-[15px]`}>
-                  {INDUSTRIES.map((i) => <option key={i} value={i}>{i}</option>)}
-                </select>
+                <FieldLabel>Category</FieldLabel>
+                <input
+                  type="text"
+                  value={industry}
+                  onChange={(e) => setIndustry(e.target.value)}
+                  list="scan-industries"
+                  maxLength={120}
+                  placeholder="e.g. pizzerias, legal tech, wedding photography"
+                  className={`${FIELD} rounded-xl py-3.5 text-[15px]`}
+                />
+                <datalist id="scan-industries">
+                  {INDUSTRIES.map((i) => <option key={i} value={i} />)}
+                </datalist>
+                <span className="text-[11px] font-medium text-gray-400">What you want to be found as — anything you like, or pick a suggestion</span>
               </label>
 
               <div className="grid gap-6 sm:grid-cols-2">

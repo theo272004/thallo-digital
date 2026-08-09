@@ -278,6 +278,20 @@ Adding a market is two edits: `MARKETS` and `TEMPLATES` in
 plugin's copy is authoritative; the site's exists so the setup screen can
 preview the prompt before anything is spent.
 
+### The category field
+
+Free text, offered with eight suggestions in a `datalist`. It was a closed
+dropdown and that was a bug with a menu in front of it: a pizzeria had to file
+itself under the nearest wrong option, and phase 2 then searched Google for
+*that*. The backend never required the list — `industry_label()` returns an
+unrecognised label untouched, and only the eight carry translations.
+
+It stays **required** even though the visitor now writes their own prompts,
+because phase 2 has no other source for what to look for: `serp_query()` builds
+the AI Overview search from it, and Perplexity's retrieval question embeds it.
+Inferring it from the prompts would be a paid model call to guess something the
+visitor knows.
+
 ### Who writes the questions
 
 Step 2 of the setup screen is a free-text editor: the visitor writes their own

@@ -255,6 +255,15 @@ export const SCAN_STEPS: readonly Omit<StepStatus, 'state'>[] = [
   { id: 'technical', label: 'Website & technical signals', phase: 2 },
 ];
 
+/**
+ * Suggestions for the category field — not the set of allowed answers.
+ *
+ * The setup screen offers these in a `datalist` and accepts anything else
+ * typed over them, because the backend always did: `industry_label()` passes an
+ * unrecognised label through untouched, and only the eight below have
+ * translations. A closed dropdown made a pizzeria pick the nearest wrong box,
+ * and that box is what phase 2 then searches Google for.
+ */
 export const INDUSTRIES = [
   'Fintech & payments',
   'Health tech & recovery',
