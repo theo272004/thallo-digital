@@ -48,6 +48,66 @@ class Thallo_Vis_Settings {
 			'or_model_gemini'     => 'google/gemini-2.5-flash',
 			'or_model_perplexity' => 'perplexity/sonar',
 
+			/*
+			 * The same three models again, asked the same questions, with web
+			 * search on. Phase 1 measures whether a model knows you; this
+			 * measures whether it picks you once it has looked — and those come
+			 * apart, which is the whole reason for asking twice.
+			 *
+			 * Separate ids rather than `:online` bolted onto the ones above,
+			 * because the cheapest memory model is not always the one with
+			 * native search. `openai/gpt-4o-mini` has none, so asked online it
+			 * falls back to a third-party index — measuring somebody else's
+			 * search rather than OpenAI's.
+			 *
+			 * Off by default: it is many times the cost of the memory reading,
+			 * so switching it on is a decision the site owner makes with the
+			 * price in front of them, not one they inherit from an update.
+			 *
+			 * Chosen on search fee first, token price second, because the search
+			 * fee is per call and dwarfs the tokens at this size. Checked against
+			 * the live catalogue on 2026-08-09:
+			 *
+			 *   gpt-5.6-luna         $0.005 a search, $0.10/1M in
+			 *   claude-haiku-4.5     $0.010 a search, $1.00/1M in
+			 *   gemini-2.5-flash-lite $0.014 a search, $0.10/1M in
+			 *
+			 * Luna rather than gpt-4.1-nano: same token price, half the search
+			 * fee, and a current model rather than a small older one. Flash-Lite
+			 * rather than Flash: identical search fee, a third of the tokens.
+			 * $0.010 is the floor on the Anthropic side, so Claude is unchanged.
+			 *
+			 * What is NOT traded away is native search. All three are the
+			 * provider's own model, so `:online` routes to that provider's own
+			 * index — the report claims "this is what Gemini says when it
+			 * searches", and a cheaper model behind somebody else's search would
+			 * make that sentence false.
+			 */
+			'grounded_enabled'    => 0,
+			'gr_model_chatgpt'    => 'openai/gpt-5.6-luna',
+			'gr_model_claude'     => 'anthropic/claude-haiku-4.5',
+			'gr_model_gemini'     => 'google/gemini-2.5-flash-lite',
+			/* low/medium/high. Search context is charged as prompt tokens and it
+			   is the half of the bill that is easy to miss — the search fee is
+			   fixed, the excerpts it stuffs into the prompt are not. */
+			'grounded_context'    => 'low',
+			/*
+			 * How many of the questions get asked a second time. The search fee
+			 * is charged per call and cannot be haggled down — $0.005 to $0.014
+			 * depending on the provider — so the only real lever on this half of
+			 * the bill is how many calls are made.
+			 *
+			 * Five rather than fifteen by default. Share of voice is a
+			 * proportion, and this reading is only asked to settle one thing:
+			 * whether searching changes who gets named. Five answers per model
+			 * separates "never" from "sometimes", which is the whole finding.
+			 * Below three it would separate nothing and should not be reported.
+			 *
+			 * The report prints both answer counts next to both percentages, so
+			 * the two halves being different sizes is visible rather than hidden.
+			 */
+			'grounded_questions'  => 5,
+
 			'openai_key'          => '',
 			'anthropic_key'       => '',
 			'google_key'          => '',
@@ -79,7 +139,7 @@ class Thallo_Vis_Settings {
 			 * the rest.
 			 */
 
-			'questions'           => 15,
+			'questions'           => 5,
 			'jobs_per_tick'       => 5,
 			'request_timeout'     => 25,
 
@@ -161,6 +221,9 @@ class Thallo_Vis_Settings {
 			'or_model_claude',
 			'or_model_gemini',
 			'or_model_perplexity',
+			'gr_model_chatgpt',
+			'gr_model_claude',
+			'gr_model_gemini',
 			'openai_key',
 			'anthropic_key',
 			'google_key',
@@ -205,6 +268,12 @@ class Thallo_Vis_Settings {
 
 		$out['monitor_daily_cap'] = self::clamp_int( $input, 'monitor_daily_cap', 1, 500, $defaults['monitor_daily_cap'] );
 
+		$out['grounded_questions'] = self::clamp_int( $input, 'grounded_questions', 3, 15, $defaults['grounded_questions'] );
+
+		$context               = isset( $input['grounded_context'] ) ? $input['grounded_context'] : 'low';
+		$out['grounded_context'] = in_array( $context, array( 'low', 'medium', 'high' ), true ) ? $context : 'low';
+
+		$out['grounded_enabled']    = empty( $input['grounded_enabled'] ) ? 0 : 1;
 		$out['send_report_to_lead'] = empty( $input['send_report_to_lead'] ) ? 0 : 1;
 		$out['monitoring_enabled']  = empty( $input['monitoring_enabled'] ) ? 0 : 1;
 		$out['demo_mode']           = empty( $input['demo_mode'] ) ? 0 : 1;
@@ -238,6 +307,25 @@ class Thallo_Vis_Settings {
 		);
 
 		return isset( $map[ $provider ] ) && '' !== self::get( $map[ $provider ] );
+	}
+
+	/**
+	 * Whether the grounded (web search on) reading can be taken for a provider.
+	 *
+	 * OpenRouter only. The native APIs each expose search differently — one
+	 * parameter for OpenAI, a tool for Anthropic, another for Google — and
+	 * three bespoke integrations to measure the same thing is three things to
+	 * keep working. On the native path the grounded half is simply not offered,
+	 * and the report says it was not measured rather than implying a zero.
+	 */
+	public static function has_grounded_model( $provider ) {
+		if ( ! self::get( 'grounded_enabled' ) ) {
+			return false;
+		}
+		if ( 'openrouter' !== self::get( 'provider_mode' ) ) {
+			return false;
+		}
+		return '' !== self::get( 'openrouter_key' ) && '' !== self::get( 'gr_model_' . $provider, '' );
 	}
 
 	/** True when nothing can be called and the API must return sample data. */

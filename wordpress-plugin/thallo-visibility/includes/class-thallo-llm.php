@@ -29,9 +29,46 @@ class Thallo_Vis_LLM {
 	 *
 	 * @return array|null Null when the provider has no key configured.
 	 */
-	public static function build_job( $provider, $question, $system = null ) {
+	public static function build_job( $provider, $question, $system = null, $grounded = false ) {
 		$system = null === $system ? Thallo_Vis_Questions::system_prompt() : $system;
 		$mode   = Thallo_Vis_Settings::get( 'provider_mode' );
+
+		/* The grounded reading exists on the OpenRouter path only — see
+		   Settings::has_grounded_model() for why. Asked for anywhere else it
+		   returns null, which the runner already treats as "not measured". */
+		if ( $grounded ) {
+			if ( ! Thallo_Vis_Settings::has_grounded_model( $provider ) ) {
+				return null;
+			}
+
+			$key   = Thallo_Vis_Settings::get( 'openrouter_key' );
+			$model = Thallo_Vis_Settings::get( 'gr_model_' . $provider, '' );
+			$body  = self::openai_body( $model, $system, $question );
+
+			/* `:online` is OpenRouter's shorthand for the web plugin, and for
+			   OpenAI, Anthropic and Google models it routes to that provider's
+			   own native search rather than a third-party index. That matters
+			   here more than convenience does: the claim on the report is "this
+			   is what Gemini says when it searches", so it had better be
+			   Google's search doing the looking. */
+			$body['model']              = $model . ':online';
+			$body['web_search_options'] = array(
+				'search_context_size' => Thallo_Vis_Settings::get( 'grounded_context', 'low' ),
+			);
+
+			return array(
+				'url'     => 'https://openrouter.ai/api/v1/chat/completions',
+				'headers' => array(
+					'Authorization' => 'Bearer ' . $key,
+					'Content-Type'  => 'application/json',
+					'HTTP-Referer'  => home_url(),
+					'X-Title'       => 'Thallo Visibility Engine',
+				),
+				'body'    => wp_json_encode( $body ),
+				'model'   => $body['model'],
+				'shape'   => 'openai',
+			);
+		}
 
 		if ( 'openrouter' === $mode ) {
 			$key   = Thallo_Vis_Settings::get( 'openrouter_key' );
@@ -50,7 +87,13 @@ class Thallo_Vis_LLM {
 					'HTTP-Referer'  => home_url(),
 					'X-Title'       => 'Thallo Visibility Engine',
 				),
-				'body'    => wp_json_encode( self::openai_body( $model, $system, $question ) ),
+				/* Perplexity is the exception to the JSON mode, here as much as
+				   on its own API: it rejects `response_format` outright and the
+				   call comes back 400. The native branch below has always known
+				   that; this one did not, so the whole live-retrieval half of
+				   the report went unmeasured whenever OpenRouter was the route
+				   — which is the recommended route, so in practice always. */
+				'body'    => wp_json_encode( self::openai_body( $model, $system, $question, 'perplexity' !== $provider ) ),
 				'model'   => $model,
 				'shape'   => 'openai',
 			);
@@ -187,7 +230,15 @@ class Thallo_Vis_LLM {
 	 *
 	 * @return array array( 'text' => string, 'companies' => string[], 'citations' => string[], 'error' => string )
 	 */
-	public static function parse( $shape, array $response ) {
+	/**
+	 * @param bool $expect_json Whether this job asked for the JSON company list.
+	 *                          False for the retrieval reading, which asks for
+	 *                          prose on purpose — its evidence is the citations,
+	 *                          not a ranking. Judging prose against a format it
+	 *                          was never asked for is how a working answer gets
+	 *                          reported as unreadable.
+	 */
+	public static function parse( $shape, array $response, $expect_json = true ) {
 		$out = array(
 			'text'      => '',
 			'companies' => array(),
@@ -244,7 +295,15 @@ class Thallo_Vis_LLM {
 				}
 				/* Perplexity returns its sources alongside the message. They are
 				   the most useful thing it gives us — a citation list is evidence
-				   in a way a percentage is not. */
+				   in a way a percentage is not.
+
+				   Three shapes, because the same answer arrives differently
+				   depending on the road it took. `citations` and `search_results`
+				   are Perplexity's own API. Through OpenRouter the sources are
+				   normalised onto OpenAI's `annotations` schema instead, and
+				   nothing in the body carries the native field names — so a
+				   parser that only knew the first two read every grounded answer
+				   as having no sources at all. */
 				if ( isset( $body['citations'] ) && is_array( $body['citations'] ) ) {
 					$out['citations'] = array_values( array_filter( array_map( 'strval', $body['citations'] ) ) );
 				} elseif ( isset( $body['search_results'] ) && is_array( $body['search_results'] ) ) {
@@ -253,6 +312,13 @@ class Thallo_Vis_LLM {
 							$out['citations'][] = (string) $result['url'];
 						}
 					}
+				} elseif ( isset( $body['choices'][0]['message']['annotations'] ) && is_array( $body['choices'][0]['message']['annotations'] ) ) {
+					foreach ( $body['choices'][0]['message']['annotations'] as $annotation ) {
+						if ( isset( $annotation['url_citation']['url'] ) ) {
+							$out['citations'][] = (string) $annotation['url_citation']['url'];
+						}
+					}
+					$out['citations'] = array_values( array_unique( $out['citations'] ) );
 				}
 				break;
 		}
@@ -263,6 +329,24 @@ class Thallo_Vis_LLM {
 		}
 
 		$json = Thallo_Vis_HTTP::extract_json( $out['text'] );
+
+		/* An answer we could not read is not an answer of "nobody". The counter
+		   downstream treats an empty company list as a measured zero — the model
+		   named nobody — and that is only true when the model actually returned
+		   a companies array that was empty. Prose with no JSON in it means the
+		   model ignored the format, which happens when a model is asked to
+		   search and answer in JSON at once. Reporting that as "you were not
+		   named" would put a finding in front of someone with nothing behind it.
+		   Gated on $expect_json, not on whether citations happen to be present:
+		   citations are evidence the answer is real, but their absence is not
+		   evidence it is broken, and hanging the check on them made a working
+		   prose answer unreadable the moment its sources arrived under a field
+		   name this parser did not yet read. */
+		if ( $expect_json && ( ! is_array( $json ) || ! isset( $json['companies'] ) || ! is_array( $json['companies'] ) ) ) {
+			$out['error'] = 'unreadable answer: the model did not return the list in the format asked for';
+			return $out;
+		}
+
 		if ( is_array( $json ) && isset( $json['companies'] ) && is_array( $json['companies'] ) ) {
 			foreach ( $json['companies'] as $name ) {
 				if ( is_string( $name ) ) {

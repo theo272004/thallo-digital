@@ -38,7 +38,12 @@ export default function ScanFlow() {
     try {
       const done = await startScan(input, setSession);
       setSession(done);
-      goto('results');
+      /* When the address was given on the setup screen the server ran the whole
+         thing in one go, so there is no gate to show — going to 'results' would
+         park a finished report behind a form asking for an email we already
+         have. The two-step flow still lands on 'results', which is where it
+         asks. */
+      goto(done.phase2 ? 'report' : 'results');
     } catch (e) {
       setError(e instanceof Error ? e.message : 'The scan could not be completed. Please try again.');
       goto('setup');

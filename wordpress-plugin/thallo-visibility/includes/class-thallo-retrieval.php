@@ -82,8 +82,8 @@ class Thallo_Vis_Retrieval {
 		$timeout   = (int) Thallo_Vis_Settings::get( 'request_timeout', 25 );
 		$responses = Thallo_Vis_HTTP::post_many( array( $job_category, $job_brand ), $timeout );
 
-		$category = Thallo_Vis_LLM::parse( $job_category['shape'], $responses[0] );
-		$about    = Thallo_Vis_LLM::parse( $job_brand['shape'], $responses[1] );
+		$category = Thallo_Vis_LLM::parse( $job_category['shape'], $responses[0], false );
+		$about    = Thallo_Vis_LLM::parse( $job_brand['shape'], $responses[1], false );
 
 		if ( $category['error'] && $about['error'] ) {
 			return array(

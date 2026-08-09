@@ -281,6 +281,44 @@ class Thallo_Vis_Admin {
 					?>
 				</table>
 
+				<h2><?php esc_html_e( 'The second reading: the same models, searching', 'thallo-visibility' ); ?></h2>
+				<p style="max-width:46em" class="description">
+					<?php esc_html_e( 'The scan above asks the three models from memory, which measures whether they know you. This asks them the same questions again with web search on, which measures whether they pick you once they have looked. The two come apart, and the gap is the finding: named when they search but not from memory means your pages are fine and your reputation has not reached the model yet.', 'thallo-visibility' ); ?>
+				</p>
+				<p style="max-width:46em" class="description">
+					<strong><?php esc_html_e( 'This is the expensive half.', 'thallo-visibility' ); ?></strong>
+					<?php esc_html_e( 'Search is billed per call on top of the tokens — about US$0.17 a scan at the default of five questions, against US$0.01–0.03 for the memory reading. It runs only after somebody has handed over an email, so it is charged per lead rather than per visitor. Leave it off until you have watched one scan with it on and seen the bill.', 'thallo-visibility' ); ?>
+				</p>
+				<table class="form-table" role="presentation">
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Second reading', 'thallo-visibility' ); ?></th>
+						<td>
+							<label>
+								<input type="checkbox" name="<?php echo esc_attr( $name ); ?>[grounded_enabled]" value="1" <?php checked( $s['grounded_enabled'], 1 ); ?>>
+								<?php esc_html_e( 'Ask the three models again with web search on, after the email', 'thallo-visibility' ); ?>
+							</label>
+							<p class="description"><?php esc_html_e( 'OpenRouter only. On the native path this is not offered, and the report simply does not show the section.', 'thallo-visibility' ); ?></p>
+						</td>
+					</tr>
+					<?php
+					self::text_field( $name, 'gr_model_chatgpt', $s, __( 'ChatGPT model', 'thallo-visibility' ), __( 'Must be a model with native OpenAI search. gpt-4o-mini has none — asked online it falls back to a third-party index, which measures somebody else\'s search.', 'thallo-visibility' ) );
+					self::text_field( $name, 'gr_model_claude', $s, __( 'Claude model', 'thallo-visibility' ) );
+					self::text_field( $name, 'gr_model_gemini', $s, __( 'Gemini model', 'thallo-visibility' ) );
+					self::number_field( $name, 'grounded_questions', $s, __( 'Questions asked a second time', 'thallo-visibility' ), 3, 15, __( 'The search fee is charged per call and cannot be reduced, so this is the only real lever on what this half costs. Five is about US$0.17 a scan, eight about US$0.27, fifteen about US$0.50. Share of voice is a proportion, so five answers per model still separates "never named" from "sometimes named" — which is the only thing this reading is asked to settle. The report prints both answer counts, so the two halves being different sizes is visible rather than hidden.', 'thallo-visibility' ) );
+					?>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Search depth', 'thallo-visibility' ); ?></th>
+						<td>
+							<select name="<?php echo esc_attr( $name ); ?>[grounded_context]">
+								<option value="low" <?php selected( $s['grounded_context'], 'low' ); ?>><?php esc_html_e( 'Low — cheapest', 'thallo-visibility' ); ?></option>
+								<option value="medium" <?php selected( $s['grounded_context'], 'medium' ); ?>><?php esc_html_e( 'Medium', 'thallo-visibility' ); ?></option>
+								<option value="high" <?php selected( $s['grounded_context'], 'high' ); ?>><?php esc_html_e( 'High — most context, most expensive', 'thallo-visibility' ); ?></option>
+							</select>
+							<p class="description"><?php esc_html_e( 'How much of each page the search feeds back to the model. Charged as prompt tokens, so this is the half of the bill that is easy to miss.', 'thallo-visibility' ); ?></p>
+						</td>
+					</tr>
+				</table>
+
 				<h3><?php esc_html_e( 'Native keys', 'thallo-visibility' ); ?></h3>
 				<table class="form-table" role="presentation">
 					<?php

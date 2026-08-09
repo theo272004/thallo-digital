@@ -70,6 +70,9 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
         </div>
       </Panel>
 
+      {/* ── Memory against search ────────────────────────────────────────── */}
+      {phase2.grounded && <GroundedComparison memory={phase1} grounded={phase2.grounded} />}
+
       {/* ── Trend ────────────────────────────────────────────────────────── */}
       <Panel>
         <Micro className="text-gray-400">Share of voice over time</Micro>
@@ -237,6 +240,120 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
         </div>
       </Panel>
     </div>
+  );
+}
+
+/**
+ * The same questions asked twice — once from memory, once with the web open.
+ *
+ * The single number people arrive for is the memory one, and on its own it is
+ * ambiguous: a zero could mean the models cannot find you or that they can and
+ * choose someone else. Those have opposite fixes, and the pair of numbers is
+ * what tells them apart. So this reads as a comparison rather than as a second
+ * score, and the sentence underneath names the diagnosis rather than leaving
+ * the reader to infer it from two percentages.
+ */
+function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded: ScanPhase1 }) {
+  /* Nothing came back at all — every request failed or the models were all
+     skipped. Printing 0% here would be a finding we did not measure. */
+  if (grounded.totalAnswers === 0) {
+    return (
+      <Panel>
+        <Micro className="text-gray-400">When they search the web</Micro>
+        <p className="mt-4 rounded-lg bg-gray-50 px-4 py-3 text-[13px] font-medium leading-relaxed text-gray-500">
+          Not measured — the second reading was attempted but no model answered. This is a fault at our end, not a
+          finding about {memory.brand}.
+        </p>
+      </Panel>
+    );
+  }
+
+  const delta = grounded.sovPct - memory.sovPct;
+
+  /* Ordered by which is most actionable, not by size of the gap. "Findable but
+     unknown" is the common case for a good small company and has a clear fix;
+     the reverse is rarer and more urgent, because it means the pages are the
+     problem. */
+  const [tone, verdict, reading]: [Tone, string, string] =
+    grounded.sovPct > 0 && memory.sovPct === 0
+      ? [
+          'mid',
+          'Findable, not yet known',
+          `The models name ${memory.brand} when they can look it up, and never from memory. Your pages are doing their job; what is missing is everything off your own site — the roundups, comparisons and citations a model learns a category from. This is the most fixable version of a zero.`,
+        ]
+      : delta >= 15
+        ? [
+            'mid',
+            'Search is carrying you',
+            `${memory.brand} does much better when the models search than when they answer from memory. You are winning on pages and losing on reputation: worth pressing, because searched answers are what most buyers see today, but memory is what holds when they do not search.`,
+          ]
+        : delta <= -15
+          ? [
+              'off',
+              'Losing ground when they look',
+              `The models name ${memory.brand} from memory more often than when they search. Something about what is published right now is pushing you out of the answer — stale pages, thin category coverage, or competitors who have simply published more recently.`,
+            ]
+          : memory.sovPct === 0 && grounded.sovPct === 0
+            ? [
+                'off',
+                'Absent either way',
+                `Neither reading names ${memory.brand}. The models do not know you and cannot find you when they look, which points at the same fix in both directions: get named on sites other than your own, in the terms buyers actually use.`,
+              ]
+            : [
+                'on',
+                'Consistent across both',
+                `${memory.brand} scores about the same whether the models search or answer from memory. That is the healthy shape — your presence does not depend on which mode the buyer happens to be in.`,
+              ];
+
+  return (
+    <Panel>
+      <Micro className="text-gray-400">Memory against search</Micro>
+      <p className="mt-4 mb-6 max-w-[62ch] text-[13px] font-medium leading-relaxed text-gray-500">
+        The same {memory.questions.length} questions, put to the same three models a second time — this time with web
+        search on. The first reading asks whether they know you. This one asks whether they pick you once they have
+        looked.
+      </p>
+
+      <div className="grid grid-cols-2 divide-x divide-gray-100 border-y border-gray-100">
+        <Stat value={`${memory.sovPct}%`} label={`From memory · ${memory.totalAnswers} answers`} />
+        <Stat value={`${grounded.sovPct}%`} label={`Searching · ${grounded.totalAnswers} answers`} />
+      </div>
+
+      <ul className="mt-6 flex flex-col gap-3.5">
+        {grounded.providers.map((g) => {
+          const m = memory.providers.find((p) => p.provider === g.provider);
+          const mPct = m && m.answers.length ? Math.round((m.mentions / m.answers.length) * 100) : null;
+          const gPct = g.answers.length ? Math.round((g.mentions / g.answers.length) * 100) : null;
+
+          return (
+            <li key={g.provider} className="flex items-center gap-3">
+              <ProviderMark provider={g.provider} />
+              <span className="w-[92px] shrink-0 truncate text-[13px] font-semibold text-gray-900">
+                {PROVIDER_LABEL[g.provider]}
+              </span>
+              {gPct === null ? (
+                <span className="text-[12px] font-medium text-gray-400">{g.error ?? 'not measured'}</span>
+              ) : (
+                <>
+                  <div className="min-w-0 flex-1">
+                    <Meter pct={gPct} />
+                  </div>
+                  <span className="w-[104px] shrink-0 text-right text-[12px] font-medium tabular-nums text-gray-500">
+                    {mPct === null ? '—' : `${mPct}%`} <span className="text-gray-300">→</span>{' '}
+                    <span className="font-semibold text-gray-900">{gPct}%</span>
+                  </span>
+                </>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="mt-6">
+        <Verdict tone={tone}>{verdict}</Verdict>
+        <p className="mt-3 max-w-[62ch] text-[13px] font-medium leading-relaxed text-gray-500">{reading}</p>
+      </div>
+    </Panel>
   );
 }
 

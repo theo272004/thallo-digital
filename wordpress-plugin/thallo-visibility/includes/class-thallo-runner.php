@@ -25,6 +25,7 @@ class Thallo_Vis_Runner {
 		'chatgpt'    => 'ChatGPT',
 		'claude'     => 'Claude',
 		'gemini'     => 'Gemini',
+		'grounded'   => 'The same three, searching the web',
 		'perplexity' => 'Perplexity',
 		'ai-overview' => 'Google AI Overview',
 		'technical'  => 'Website & technical signals',
@@ -41,7 +42,15 @@ class Thallo_Vis_Runner {
 	 *                       theirs over, and a duplicate row every week would
 	 *                       turn the leads table into a log.
 	 */
-	public static function start( $brand, $domain, $industry, $market = Thallo_Vis_Questions::DEFAULT_MARKET, $source = 'visitor', array $prompts = array() ) {
+	/**
+	 * @param string $email When the address is collected before the scan runs
+	 *                      rather than between the halves. The whole report is
+	 *                      then one job: phase 1 rolls into phase 2 without
+	 *                      stopping to ask, because there is nothing left to
+	 *                      ask for. Empty keeps the two-step flow, where the
+	 *                      free half stands alone and the rest is unlocked.
+	 */
+	public static function start( $brand, $domain, $industry, $market = Thallo_Vis_Questions::DEFAULT_MARKET, $source = 'visitor', array $prompts = array(), $email = '' ) {
 		$count = (int) Thallo_Vis_Settings::get( 'questions', 15 );
 
 		/* Written by the visitor when the setup screen sent them; the generated
@@ -90,14 +99,28 @@ class Thallo_Vis_Runner {
 			'questions'      => $questions,
 			'models'         => $models,
 			'skipped'        => $skipped,
-			'queue'          => $queue,
-			'results'        => array(),
-			'phase'          => 1,
-			'phase2_queue'   => array(),
-			'phase2_done'    => array(),
+			'queue'           => $queue,
+			'results'         => array(),
+			'phase'           => 1,
+			/* The grounded reading is the same three models over these same
+			   questions with search on. It is built at unlock rather than here,
+			   because it only ever runs behind the email and because the setting
+			   that decides whether it runs at all can change while a scan sits
+			   waiting for an address. */
+			'results_grounded' => array(),
+			'models_grounded'  => array(),
+			'skipped_grounded' => array(),
+			'grounded_queue'   => array(),
+			'phase2_queue'    => array(),
+			'phase2_done'     => array(),
 			'citation_hosts' => array(),
 			'retrieval'      => array(),
 			'demo'           => $demo,
+			/* Held rather than acted on. The lead is recorded when phase 1
+			   finishes, so the row carries the numbers it was collected for —
+			   an address banked against a scan that then failed is a contact
+			   with nothing to say to them. */
+			'email'          => $email,
 		);
 
 		if ( ! Thallo_Vis_DB::create( $scan_id, $brand, $domain, $industry, $state ) ) {
@@ -268,6 +291,13 @@ class Thallo_Vis_Runner {
 		   updates the same row with the grade if it ever runs. */
 		Thallo_Vis_DB::record_history( $state, isset( $state['source'] ) ? $state['source'] : 'visitor' );
 
+		/* The address was given before the scan started, so there is nothing to
+		   wait for: the second half opens itself and the visitor watches one
+		   continuous job rather than being stopped halfway and asked. */
+		if ( ! empty( $state['email'] ) ) {
+			return self::begin_phase2( $state, $state['email'] );
+		}
+
 		Thallo_Vis_DB::save_state( $state['scan_id'], $state, 'awaiting-email' );
 		return self::session( $state, 'awaiting-email' );
 	}
@@ -293,9 +323,66 @@ class Thallo_Vis_Runner {
 			return self::session( $state, 'complete' === $row['status'] ? 'complete' : 'unlocking' );
 		}
 
-		$state['phase']        = 2;
-		$state['phase2_queue'] = array( 'perplexity', 'ai-overview', 'technical' );
-		$state['email']        = $email;
+		return self::begin_phase2( $state, $email );
+	}
+
+	/**
+	 * Opens the second half. Reached two ways — from unlock(), when the address
+	 * was traded for the rest of the report, and straight out of finish_phase1()
+	 * when it was collected before the scan ran. One function rather than two
+	 * paths, because everything opening phase 2 means has to happen either way
+	 * and a second copy is a second place to forget one of them.
+	 */
+	private static function begin_phase2( array $state, $email ) {
+		$state['phase'] = 2;
+		$state['email'] = $email;
+
+		/* Built here, with the settings as they are now. A visitor who left the
+		   tab open overnight gets the grounded half if it was switched on in the
+		   meantime, and does not get charged for it if it was switched off. */
+		$grounded_queue    = array();
+		$models_grounded   = array();
+		$skipped_grounded  = array();
+		$demo              = ! empty( $state['demo'] );
+
+		foreach ( self::MEMORY_PROVIDERS as $provider ) {
+			if ( ! $demo && ! Thallo_Vis_Settings::has_grounded_model( $provider ) ) {
+				$skipped_grounded[ $provider ] = Thallo_Vis_Settings::get( 'grounded_enabled' )
+					? 'no search-capable model configured'
+					: 'the grounded reading is switched off for this installation';
+				continue;
+			}
+
+			$models_grounded[ $provider ] = $demo
+				? 'sample data'
+				: Thallo_Vis_Settings::get( 'gr_model_' . $provider, '' ) . ':online';
+
+			/* The first N, not a sample of them: the audit trail prints the
+			   questions in order and a reader comparing the two halves should be
+			   able to see, question by question, which ones were asked twice. */
+			$grounded_count = min(
+				count( $state['questions'] ),
+				max( 1, (int) Thallo_Vis_Settings::get( 'grounded_questions', 8 ) )
+			);
+
+			foreach ( array_slice( array_keys( $state['questions'] ), 0, $grounded_count ) as $index ) {
+				$grounded_queue[] = array(
+					'p' => $provider,
+					'q' => $index,
+				);
+			}
+		}
+
+		$state['models_grounded']  = $models_grounded;
+		$state['skipped_grounded'] = $skipped_grounded;
+		$state['grounded_queue']   = $grounded_queue;
+
+		/* 'grounded' leads, and only when there is something to ask. It is the
+		   expensive step and the one the visitor is waiting on, so it runs while
+		   they are still watching rather than after the cheap checks. */
+		$state['phase2_queue'] = $grounded_queue
+			? array( 'grounded', 'perplexity', 'ai-overview', 'technical' )
+			: array( 'perplexity', 'ai-overview', 'technical' );
 
 		/* A scheduled re-run opens phase 2 with an address that is already in
 		   the leads table — it is where the monitor got it. Recording it again
@@ -303,7 +390,7 @@ class Thallo_Vis_Runner {
 		if ( 'monitor' !== ( isset( $state['source'] ) ? $state['source'] : 'visitor' ) ) {
 			Thallo_Vis_Leads::record( $state, $email );
 		}
-		Thallo_Vis_DB::save_state( $scan_id, $state, 'unlocking', $email );
+		Thallo_Vis_DB::save_state( $state['scan_id'], $state, 'unlocking', $email );
 
 		return self::session( $state, 'unlocking' );
 	}
@@ -314,6 +401,30 @@ class Thallo_Vis_Runner {
 		}
 
 		$step = array_shift( $state['phase2_queue'] );
+
+		/* Forty-five calls, so it cannot be a step in the sense the others are:
+		   it drains a batch and puts itself back at the front of the queue until
+		   there is nothing left. Same reason phase 1 ticks — no shared host will
+		   hold a request open that long — and the same happy side effect, which
+		   is that the row the visitor is watching reports real work. */
+		if ( 'grounded' === $step ) {
+			$state = self::tick_grounded( $state );
+
+			if ( ! empty( $state['grounded_queue'] ) ) {
+				array_unshift( $state['phase2_queue'], 'grounded' );
+				Thallo_Vis_DB::save_state( $state['scan_id'], $state, 'unlocking' );
+				return self::session( $state, 'unlocking' );
+			}
+
+			$state['phase2_done'][] = 'grounded';
+
+			if ( empty( $state['phase2_queue'] ) ) {
+				return self::finish_phase2( $state );
+			}
+
+			Thallo_Vis_DB::save_state( $state['scan_id'], $state, 'unlocking' );
+			return self::session( $state, 'unlocking' );
+		}
 
 		switch ( $step ) {
 			case 'perplexity':
@@ -375,6 +486,89 @@ class Thallo_Vis_Runner {
 		return self::session( $state, 'unlocking' );
 	}
 
+	/**
+	 * One batch of the grounded reading. Mirrors tick_phase1() deliberately —
+	 * same batching, same one-provider-per-tick rule, same treatment of a
+	 * missing job — because the two readings are only comparable if the work
+	 * behind them was done the same way.
+	 */
+	private static function tick_grounded( array $state ) {
+		if ( empty( $state['grounded_queue'] ) ) {
+			return $state;
+		}
+
+		$batch_size = max( 1, (int) Thallo_Vis_Settings::get( 'jobs_per_tick', 5 ) );
+		$provider   = $state['grounded_queue'][0]['p'];
+		$batch      = array();
+
+		foreach ( $state['grounded_queue'] as $position => $item ) {
+			if ( $item['p'] !== $provider ) {
+				break;
+			}
+			$batch[ $position ] = $item;
+			if ( count( $batch ) >= $batch_size ) {
+				break;
+			}
+		}
+
+		if ( ! empty( $state['demo'] ) ) {
+			foreach ( $batch as $position => $item ) {
+				$state['results_grounded'][ $item['p'] ][ $item['q'] ] = self::demo_answer( $state, $item['p'], $item['q'] );
+				unset( $state['grounded_queue'][ $position ] );
+			}
+			$state['grounded_queue'] = array_values( $state['grounded_queue'] );
+			return $state;
+		}
+
+		/* The same system prompt as phase 1. The only difference between the two
+		   readings is whether the model may look things up — change the wording
+		   as well and the comparison stops being a comparison. */
+		$system = Thallo_Vis_Questions::system_prompt( self::market_of( $state ) );
+		$jobs   = array();
+		$shape  = 'openai';
+
+		foreach ( $batch as $position => $item ) {
+			$job = Thallo_Vis_LLM::build_job( $item['p'], $state['questions'][ $item['q'] ], $system, true );
+
+			if ( ! $job ) {
+				$state['results_grounded'][ $item['p'] ][ $item['q'] ] = array(
+					'companies' => array(),
+					'error'     => 'no search-capable model configured',
+				);
+				unset( $state['grounded_queue'][ $position ] );
+				continue;
+			}
+
+			$shape             = $job['shape'];
+			$jobs[ $position ] = $job;
+		}
+
+		if ( $jobs ) {
+			/* Searching takes longer than answering from memory, and a timeout
+			   here is charged for and thrown away. The floor is generous for the
+			   same reason the batch is small. */
+			$timeout   = max( 45, (int) Thallo_Vis_Settings::get( 'request_timeout', 25 ) );
+			$responses = Thallo_Vis_HTTP::post_many( array_values( $jobs ), $timeout );
+			$positions = array_keys( $jobs );
+
+			foreach ( $positions as $offset => $position ) {
+				$item   = $state['grounded_queue'][ $position ];
+				$parsed = Thallo_Vis_LLM::parse( $shape, $responses[ $offset ] );
+
+				$state['results_grounded'][ $item['p'] ][ $item['q'] ] = array(
+					'companies' => $parsed['companies'],
+					'error'     => $parsed['error'],
+				);
+
+				unset( $state['grounded_queue'][ $position ] );
+			}
+		}
+
+		$state['grounded_queue'] = array_values( $state['grounded_queue'] );
+
+		return $state;
+	}
+
 	private static function finish_phase2( array $state ) {
 		$phase1      = $state['phase1'];
 		$signals     = isset( $state['tech']['signals'] ) ? $state['tech']['signals'] : array();
@@ -408,6 +602,20 @@ class Thallo_Vis_Runner {
 			'actions'     => Thallo_Vis_Analysis::actions( $signals, $phase1, $competitors ),
 			'history'     => array(),
 		);
+
+		/* Only when it actually ran. An installation with the grounded reading
+		   switched off should show no section rather than a section saying it
+		   was not measured — "not measured" is for something we tried to read
+		   and could not, and this was never attempted. */
+		if ( ! empty( $state['models_grounded'] ) ) {
+			$state['phase2']['grounded'] = Thallo_Vis_Analysis::phase1( $state, '_grounded' );
+		}
+
+		/* Deliberately kept out of the grade. The grade already averages the
+		   memory reading, the technical score and retrieval; folding a second
+		   share-of-voice in would weight "are you named" twice against one
+		   reading of everything else, and would move the grade for a reason the
+		   person reading it could not see. It is a comparison, not a component. */
 
 		/* Written before it is read, so the grade lands on today's row and the
 		   series the report renders includes the run being reported. A chart that
@@ -513,6 +721,32 @@ class Thallo_Vis_Runner {
 		}
 
 		$locked = (int) $state['phase'] < 2;
+
+		/* Shown only once it is real. Before the unlock we do not yet know
+		   whether it will run — the setting is read at unlock — and a locked row
+		   promising a reading that never arrives is worse than no row. */
+		$grounded_total = isset( $state['models_grounded'] ) ? count( $state['models_grounded'] ) * $total : 0;
+
+		if ( ! $locked && $grounded_total > 0 ) {
+			$left = isset( $state['grounded_queue'] ) ? count( $state['grounded_queue'] ) : 0;
+			$done = $grounded_total - $left;
+
+			if ( 0 === $left ) {
+				$grounded_state  = 'done';
+				$grounded_detail = $grounded_total . ' asked with search on';
+			} else {
+				$grounded_state  = 'running';
+				$grounded_detail = $done . ' of ' . $grounded_total;
+			}
+
+			$steps[] = array(
+				'id'     => 'grounded',
+				'label'  => self::STEP_LABELS['grounded'],
+				'phase'  => 2,
+				'state'  => $grounded_state,
+				'detail' => $grounded_detail,
+			);
+		}
 
 		foreach ( array( 'perplexity', 'ai-overview', 'technical' ) as $id ) {
 			if ( $locked ) {

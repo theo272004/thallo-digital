@@ -88,12 +88,24 @@ class Thallo_Vis_Analysis {
 	}
 
 	/**
-	 * Builds the phase-1 payload from the raw answers the runner collected.
+	 * Counts one condition: how often the brand was named across the answers.
 	 *
-	 * @param array $state The scan job state.
-	 * @return array The ScanPhase1 shape the front end expects.
+	 * Builds the ScanPhase1 payload the front end expects, from the raw answers
+	 * the runner collected.
+	 *
+	 * @param string $bucket Suffix on the state keys to read. '' is the memory
+	 *                       reading of phase 1; '_grounded' is the same three
+	 *                       models over the same questions with web search on.
+	 *                       One counter rather than two, because two would be
+	 *                       two definitions of "mentioned" and the pair of
+	 *                       numbers is only worth printing side by side if the
+	 *                       same rules produced both.
 	 */
-	public static function phase1( array $state ) {
+	public static function phase1( array $state, $bucket = '' ) {
+		$results_key = 'results' . $bucket;
+		$models_key  = 'models' . $bucket;
+		$skipped_key = 'skipped' . $bucket;
+
 		$brand_norm  = self::normalize( $state['brand'] );
 		$domain_root = self::domain_root( $state['domain'] );
 		$questions   = $state['questions'];
@@ -104,16 +116,16 @@ class Thallo_Vis_Analysis {
 		$positions   = array();
 
 		foreach ( array( 'chatgpt', 'claude', 'gemini' ) as $provider ) {
-			$results = isset( $state['results'][ $provider ] ) ? $state['results'][ $provider ] : array();
+			$results = isset( $state[ $results_key ][ $provider ] ) ? $state[ $results_key ][ $provider ] : array();
 
-			if ( isset( $state['skipped'][ $provider ] ) ) {
+			if ( isset( $state[ $skipped_key ][ $provider ] ) ) {
 				$providers[] = array(
 					'provider'  => $provider,
 					'model'     => '',
 					'mentions'  => 0,
 					'positions' => array(),
 					'answers'   => array(),
-					'error'     => $state['skipped'][ $provider ],
+					'error'     => $state[ $skipped_key ][ $provider ],
 				);
 				continue;
 			}
@@ -161,7 +173,7 @@ class Thallo_Vis_Analysis {
 			if ( count( $answers ) === 0 ) {
 				$providers[] = array(
 					'provider'  => $provider,
-					'model'     => isset( $state['models'][ $provider ] ) ? $state['models'][ $provider ] : '',
+					'model'     => isset( $state[ $models_key ][ $provider ] ) ? $state[ $models_key ][ $provider ] : '',
 					'mentions'  => 0,
 					'positions' => array(),
 					'answers'   => array(),
@@ -175,7 +187,7 @@ class Thallo_Vis_Analysis {
 
 			$providers[] = array(
 				'provider'  => $provider,
-				'model'     => isset( $state['models'][ $provider ] ) ? $state['models'][ $provider ] : '',
+				'model'     => isset( $state[ $models_key ][ $provider ] ) ? $state[ $models_key ][ $provider ] : '',
 				'mentions'  => $hits,
 				'positions' => $provider_ranks,
 				'answers'   => $answers,
