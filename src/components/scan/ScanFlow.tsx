@@ -92,7 +92,7 @@ export default function ScanFlow() {
   return (
     /* pt-32 rather than pt-28: the label above the heading is gone, and at the
        old padding the h1 came within 26px of the floating navbar. */
-    <section id="tool" className="relative isolate overflow-hidden pt-32 pb-16 2xl:pt-40 2xl:pb-24" style={GROUND}>
+    <section id="tool" className="relative isolate overflow-hidden bg-[#F8FAF7] pt-32 pb-16 2xl:pt-40 2xl:pb-24" style={GROUND}>
       <div aria-hidden className="pointer-events-none absolute inset-0" style={GRID} />
 
       <div className="relative mx-auto max-w-[1440px] px-6">
@@ -108,10 +108,10 @@ export default function ScanFlow() {
             as="h2"
             scroll={false}
             fade={false}
-            className="mb-4 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl"
+            className="mb-4 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl"
             html="Do the models recommend you?"
           />
-          <p className="text-base font-medium leading-relaxed text-[#E7ECD9]">
+          <p className="text-base font-medium leading-relaxed text-gray-500">
             We put the questions your buyers ask to ChatGPT, Claude and Gemini, and count how often your name comes
             up. Your brand is never named in the question. You can see every question we sent.
           </p>
@@ -120,22 +120,22 @@ export default function ScanFlow() {
         {(!IS_LIVE || session.demo) && <DemoNotice configured={IS_LIVE} />}
 
         {/* Panel chrome — the strip a tool wears and a brochure does not. */}
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[#E7ECD9]/15 px-4 py-2.5">
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-[0_8px_24px_-18px_rgba(23,26,16,0.3)]">
           <span className="flex items-center gap-2.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#CBD0AC]" />
-            <Micro className="text-[#E7ECD9]">Thallo AI · visibility console</Micro>
+            <span className="h-1.5 w-1.5 rounded-full bg-[#617A2B]" />
+            <Micro className="text-gray-500">Thallo AI · visibility console</Micro>
           </span>
           <span className="flex items-center gap-4">
             {stage !== 'setup' && (
               <button
                 type="button"
                 onClick={reset}
-                className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#CBD0AC] underline-offset-4 transition-colors hover:text-white hover:underline"
+                className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#617A2B] underline-offset-4 transition-colors hover:text-[#39471D] hover:underline"
               >
                 Scan another brand
               </button>
             )}
-            <Micro className="text-[#CBD0AC]">{status}</Micro>
+            <Micro className="text-gray-400">{status}</Micro>
           </span>
         </div>
 
@@ -180,12 +180,12 @@ export default function ScanFlow() {
  */
 function Limits() {
   return (
-    <div className="mt-10 border-t border-[#E7ECD9]/15 pt-7">
+    <div className="mt-10 border-t border-gray-200 pt-7">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <Micro className="text-[#CBD0AC]">What this cannot tell you</Micro>
+        <Micro className="text-gray-500">What this cannot tell you</Micro>
         <a
           href={`${BASE}/thallo-ai/method/`}
-          className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#CBD0AC] underline-offset-4 transition-colors hover:text-white hover:underline"
+          className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#617A2B] underline-offset-4 transition-colors hover:text-[#39471D] hover:underline"
         >
           Read the full method →
         </a>
@@ -195,7 +195,7 @@ function Limits() {
         {LIMITS.map((l) => (
           <li key={l} className="flex items-start gap-2.5">
             <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[#55672E]" />
-            <span className="text-[12px] font-medium leading-relaxed text-[#CBD0AC]">{l}</span>
+            <span className="text-[12px] font-medium leading-relaxed text-gray-500">{l}</span>
           </li>
         ))}
       </ul>
