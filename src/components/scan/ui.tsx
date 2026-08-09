@@ -23,14 +23,14 @@ import { PROVIDER_LOGO, type AnyProvider } from '@/lib/scan/types';
 import { BASE } from '@/lib/site';
 
 export const GROUND: React.CSSProperties = {
-  backgroundImage: 'linear-gradient(158deg, #39471D 0%, #171A10 58%)',
+  backgroundImage: 'linear-gradient(180deg, #F8FAF7 0%, #F3F6F0 100%)',
 };
 
 /** The faint plotting grid that says "canvas" rather than "page". */
 export const GRID: React.CSSProperties = {
   backgroundImage:
-    'linear-gradient(to right, rgba(231,236,217,.055) 1px, transparent 1px),' +
-    'linear-gradient(to bottom, rgba(231,236,217,.055) 1px, transparent 1px)',
+    'linear-gradient(to right, rgba(85,103,46,.035) 1px, transparent 1px),' +
+    'linear-gradient(to bottom, rgba(85,103,46,.035) 1px, transparent 1px)',
   backgroundSize: '56px 56px',
 };
 
