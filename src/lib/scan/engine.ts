@@ -91,9 +91,9 @@ async function post<T>(path: string, body: unknown): Promise<T> {
 // ---------------------------------------------------------------------------
 
 /** Builds the step list at whatever point the demo has reached. */
-function demoSteps(doneIds: string[], runningId: string | null, locked: boolean): StepStatus[] {
+function demoSteps(doneIds: string[], runningId: string | null, locked: boolean, asked = 0): StepStatus[] {
   return SCAN_STEPS.map((s) => {
-    if (doneIds.includes(s.id)) return { ...s, state: 'done', detail: s.phase === 1 ? '15 asked' : 'checked' };
+    if (doneIds.includes(s.id)) return { ...s, state: 'done', detail: s.phase === 1 ? `${asked} asked` : 'checked' };
     if (s.id === runningId) return { ...s, state: 'running', detail: 'working…' };
     if (s.phase === 2 && locked) return { ...s, state: 'locked', detail: 'Locked' };
     return { ...s, state: 'queued' };
@@ -103,9 +103,10 @@ function demoSteps(doneIds: string[], runningId: string | null, locked: boolean)
 async function demoRun(input: ScanInput, onUpdate: OnUpdate): Promise<ScanSession> {
   const ids = SCAN_STEPS.filter((s) => s.phase === 1).map((s) => s.id);
   const done: string[] = [];
+  const asked = input.questions.length;
 
   for (const id of ids) {
-    onUpdate({ scanId: 'demo', status: 'running', demo: true, steps: demoSteps(done, id, true) });
+    onUpdate({ scanId: 'demo', status: 'running', demo: true, steps: demoSteps(done, id, true, asked) });
     await wait(900);
     done.push(id);
   }
@@ -115,7 +116,7 @@ async function demoRun(input: ScanInput, onUpdate: OnUpdate): Promise<ScanSessio
     scanId: phase1.scanId,
     status: 'awaiting-email',
     demo: true,
-    steps: demoSteps(done, null, true),
+    steps: demoSteps(done, null, true, asked),
     phase1,
   };
   onUpdate(session);
@@ -125,9 +126,10 @@ async function demoRun(input: ScanInput, onUpdate: OnUpdate): Promise<ScanSessio
 async function demoUnlock(session: ScanSession, onUpdate: OnUpdate): Promise<ScanSession> {
   if (!session.phase1) throw new ScanError('Nothing to unlock.');
   const done = SCAN_STEPS.filter((s) => s.phase === 1).map((s) => s.id);
+  const asked = session.phase1.questions.length;
 
   for (const s of SCAN_STEPS.filter((x) => x.phase === 2)) {
-    onUpdate({ ...session, status: 'unlocking', steps: demoSteps(done, s.id, false) });
+    onUpdate({ ...session, status: 'unlocking', steps: demoSteps(done, s.id, false, asked) });
     await wait(900);
     done.push(s.id);
   }
@@ -135,7 +137,7 @@ async function demoUnlock(session: ScanSession, onUpdate: OnUpdate): Promise<Sca
   const next: ScanSession = {
     ...session,
     status: 'complete',
-    steps: demoSteps(done, null, false),
+    steps: demoSteps(done, null, false, asked),
     phase2: demoPhase2(session.phase1),
   };
   onUpdate(next);

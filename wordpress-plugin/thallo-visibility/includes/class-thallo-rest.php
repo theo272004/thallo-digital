@@ -144,12 +144,57 @@ class Thallo_Vis_REST {
 			$market = Thallo_Vis_Questions::DEFAULT_MARKET;
 		}
 
+		/* The visitor's own prompts. Optional at this layer on purpose: a cached
+		   bundle predating the question editor sends no list at all, and the
+		   right answer for it is the generated set it was already getting, not
+		   a rejected scan. Anything that does arrive is trimmed, de-duplicated
+		   and capped — a scan costs `questions × models` upstream calls, so the
+		   ceiling is enforced on the server and not only in the form. */
+		$questions = $request->get_param( 'questions' );
+		$prompts   = array();
+
+		if ( is_array( $questions ) ) {
+			$max  = (int) Thallo_Vis_Settings::get( 'questions', 15 );
+			$seen = array();
+
+			foreach ( $questions as $question ) {
+				if ( ! is_string( $question ) ) {
+					continue;
+				}
+
+				$question = trim( sanitize_text_field( $question ) );
+				if ( '' === $question ) {
+					continue;
+				}
+
+				$question = mb_substr( $question, 0, 200 );
+				$key      = mb_strtolower( $question );
+				if ( isset( $seen[ $key ] ) ) {
+					continue;
+				}
+
+				$seen[ $key ] = true;
+				$prompts[]    = $question;
+
+				if ( count( $prompts ) >= $max ) {
+					break;
+				}
+			}
+
+			/* A list that arrived non-empty and sanitised down to nothing was a
+			   real attempt at asking something, so say so rather than silently
+			   falling back to questions the visitor did not write. */
+			if ( ! $prompts && $questions ) {
+				return new WP_Error( 'bad_questions', __( 'Write at least one question you want the models asked.', 'thallo-visibility' ), array( 'status' => 400 ) );
+			}
+		}
+
 		$limited = self::check_limits();
 		if ( is_wp_error( $limited ) ) {
 			return $limited;
 		}
 
-		$session = Thallo_Vis_Runner::start( $brand, $domain, $industry, $market );
+		$session = Thallo_Vis_Runner::start( $brand, $domain, $industry, $market, 'visitor', $prompts );
 
 		return is_wp_error( $session ) ? $session : rest_ensure_response( $session );
 	}

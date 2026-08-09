@@ -755,7 +755,7 @@ const CHAPTERS: { label: string; blurb: string }[] = [
   },
   {
     label: 'The questions',
-    blurb: `${QUESTION_COUNT} questions a buyer would type, in the language of the market you sell into. Your brand is in none of them.`,
+    blurb: `Up to ${QUESTION_COUNT} questions you write yourself — the ones your buyers actually type, in the language of the market you sell into. Your brand is in none of them.`,
   },
   {
     label: 'The models',
@@ -801,8 +801,8 @@ function Opening() {
         Ask the machines what they say about you.
       </h1>
       <p className="max-w-[52ch] text-[15px] font-medium leading-relaxed text-gray-500">
-        We put {QUESTION_COUNT} real buying questions to ChatGPT, Claude and Gemini and count how often your name comes
-        up. Scroll to watch the report being made — then run it on your own brand.
+        You write up to {QUESTION_COUNT} real buying questions. We put every one of them to ChatGPT, Claude and Gemini
+        and count how often your name comes up. Scroll to watch the report being made — then run it on your own brand.
       </p>
     </>
   );

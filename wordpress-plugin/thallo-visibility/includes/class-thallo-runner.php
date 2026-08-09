@@ -41,9 +41,17 @@ class Thallo_Vis_Runner {
 	 *                       theirs over, and a duplicate row every week would
 	 *                       turn the leads table into a log.
 	 */
-	public static function start( $brand, $domain, $industry, $market = Thallo_Vis_Questions::DEFAULT_MARKET, $source = 'visitor' ) {
-		$count     = (int) Thallo_Vis_Settings::get( 'questions', 15 );
-		$questions = Thallo_Vis_Questions::build( $industry, $count, $market );
+	public static function start( $brand, $domain, $industry, $market = Thallo_Vis_Questions::DEFAULT_MARKET, $source = 'visitor', array $prompts = array() ) {
+		$count = (int) Thallo_Vis_Settings::get( 'questions', 15 );
+
+		/* Written by the visitor when the setup screen sent them; the generated
+		   set otherwise. Either way the list is fixed here, stored on the scan,
+		   and printed verbatim in the audit trail — what a monitor re-runs next
+		   week is what it ran this week, which is the only thing that makes two
+		   scans of the same brand comparable. */
+		$questions = $prompts
+			? array_slice( $prompts, 0, $count )
+			: Thallo_Vis_Questions::build( $industry, $count, $market );
 		$demo      = Thallo_Vis_Settings::is_demo();
 		$scan_id   = Thallo_Vis_DB::new_scan_id();
 

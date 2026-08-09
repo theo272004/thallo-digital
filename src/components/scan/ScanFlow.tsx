@@ -8,7 +8,6 @@ import ScanResults from './ScanResults';
 import FullReport from './FullReport';
 import { GRID, GROUND, Micro } from './ui';
 import { IS_LIVE, initialSession, startScan, unlockScan } from '@/lib/scan/engine';
-import { QUESTION_COUNT } from '@/lib/scan/questions';
 import type { ScanInput, ScanSession } from '@/lib/scan/types';
 
 type Stage = 'setup' | 'scanning' | 'results' | 'report';
@@ -68,6 +67,9 @@ export default function ScanFlow() {
   };
 
   const brand = session.phase1?.brand ?? pending?.brand ?? 'your brand';
+  /* The server's list once it has one — it is authoritative about what was
+     actually sent — and the list the visitor just submitted before that. */
+  const asked = session.phase1?.questions.length ?? pending?.questions.length ?? 0;
 
   return (
     /* pt-32 rather than pt-28: the label above the heading is gone, and at the
@@ -112,7 +114,7 @@ export default function ScanFlow() {
             </>
           )}
 
-          {stage === 'scanning' && <ScanProgress session={session} brand={brand} />}
+          {stage === 'scanning' && <ScanProgress session={session} brand={brand} asked={asked} />}
 
           {stage === 'results' && session.phase1 && (
             <ScanResults phase1={session.phase1} onUnlock={unlock} unlocking={unlocking} error={error} />

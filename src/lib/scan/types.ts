@@ -225,7 +225,24 @@ export interface ScanInput {
       asked from. Separate markets are separate measurements, and separate
       history series, because they are separate answers. */
   market: string;
+  /**
+   * The prompts to send, written by the visitor.
+   *
+   * Every question is put to every model, so the cost of a scan is
+   * `questions × models` calls — which is why the ceiling below is a ceiling
+   * and not a suggestion.
+   *
+   * A caveat worth keeping in view: because these are the visitor's own words
+   * rather than a fixed set, two brands' scores are not comparable with each
+   * other, and neither are two runs of the same brand once the wording changes.
+   * The audit trail prints what was actually asked, so the number is always
+   * traceable — it is just no longer a benchmark.
+   */
+  questions: string[];
 }
+
+/** Ceiling on the prompt list. Fifteen questions × three models = 45 calls. */
+export const MAX_QUESTIONS = 15;
 
 /** The shape of the steps before the server has said anything about them.
     Used only for the very first paint of the progress screen. */

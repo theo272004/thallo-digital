@@ -49,7 +49,12 @@ const MODEL_IDS: Record<string, string> = {
 
 export function demoPhase1(input: ScanInput): ScanPhase1 {
   const rand = seeded(input.brand + input.domain);
-  const questions = buildQuestions(input.industry, input.market);
+  /* The visitor's own prompts, so the sample run's audit trail shows the
+     questions they actually wrote. Falls back to the generated set only if the
+     list arrives empty, which the setup screen does not allow. */
+  const questions = input.questions.length
+    ? input.questions
+    : buildQuestions(input.industry, input.market);
 
   const providers: ProviderResult[] = MEMORY_PROVIDERS.map((provider) => {
     const rate = rand() * 0.5;

@@ -278,6 +278,30 @@ Adding a market is two edits: `MARKETS` and `TEMPLATES` in
 plugin's copy is authoritative; the site's exists so the setup screen can
 preview the prompt before anything is spent.
 
+### Who writes the questions
+
+Step 2 of the setup screen is a free-text editor: the visitor writes their own
+prompts, up to the `questions` setting (3–15, default 15). `POST /scan` takes an
+optional `questions` array, trims and de-duplicates it, caps it at the setting,
+and `Thallo_Vis_Runner::start()` stores that list on the scan. The audit trail
+prints it verbatim, so a run is always traceable.
+
+The list is optional at the REST layer on purpose — a cached front-end bundle
+predating the editor sends nothing, and the right answer for it is the generated
+set, not a rejected scan.
+
+**What this costs.** The fifteen-question tables above were fixed strings so
+that two brands could be compared with each other and one brand with itself next
+month. Visitor-written prompts give that up: a scan is now a measurement of the
+questions that visitor chose. Two consequences worth holding on to —
+
+* the site's copy says "up to 15 questions **you write**" rather than quoting a
+  count as though it were a property of the tool;
+* **scheduled monitors still use the generated set.** `Monitors::run()` calls
+  `Runner::start()` without a prompt list, so a weekly series keeps asking the
+  same fifteen questions and stays a trend line. That is the whole reason the
+  tables are still here.
+
 ### History
 
 `wp_thallo_history` keeps a handful of numbers per run, forever. It is separate

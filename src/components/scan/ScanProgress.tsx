@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Micro, Panel, Spinner } from './ui';
-import { QUESTION_COUNT } from '@/lib/scan/questions';
 import type { ScanSession, StepStatus } from '@/lib/scan/types';
 
 /**
@@ -17,7 +16,19 @@ import type { ScanSession, StepStatus } from '@/lib/scan/types';
  * Phase 2 rows show as locked rather than pending, because they genuinely do
  * not run until an email is given.
  */
-export default function ScanProgress({ session, brand }: { session: ScanSession; brand: string }) {
+export default function ScanProgress({
+  session,
+  brand,
+  /** How many prompts this run is sending. The visitor writes them, so this is
+      no longer a constant and the line under the heading must not pretend it
+      is — "15 buying questions" over a three-question run is the same small
+      lie as an animated progress bar. */
+  asked,
+}: {
+  session: ScanSession;
+  brand: string;
+  asked: number;
+}) {
   const phase1 = session.steps.filter((s) => s.phase === 1);
   const phase2 = session.steps.filter((s) => s.phase === 2);
   const active = session.status === 'unlocking' ? phase2 : phase1;
@@ -36,7 +47,7 @@ export default function ScanProgress({ session, brand }: { session: ScanSession;
           <p className="mt-2.5 text-[13px] font-medium text-gray-500">
             {unlocking
               ? 'Grounded retrieval, the search result page, and a crawl of your site.'
-              : `${QUESTION_COUNT} buying questions, three models, ${QUESTION_COUNT * 3} answers.`}
+              : `${asked} ${asked === 1 ? 'question' : 'questions'}, three models, ${asked * 3} answers.`}
           </p>
         </div>
 
