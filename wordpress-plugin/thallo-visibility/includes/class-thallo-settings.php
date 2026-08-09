@@ -83,7 +83,21 @@ class Thallo_Vis_Settings {
 			'jobs_per_tick'       => 5,
 			'request_timeout'     => 25,
 
-			'rate_per_ip'         => 3,
+			/*
+			 * One free scan per visitor per day.
+			 *
+			 * The ceiling that protects the bill is `rate_global`, not this — at
+			 * ~$0.012 a scan, three per visitor was never the expensive part.
+			 * This number is a funnel decision: the second scan is the one a
+			 * visitor runs instead of leaving an email.
+			 *
+			 * It is a speed bump and not a gate, and it should not be mistaken
+			 * for one. A shared office or a carrier-grade NAT puts hundreds of
+			 * people behind one address, and a VPN or mobile data defeats it in
+			 * a tap. The real gates are further down and cost more to pass:
+			 * phase 2 asks for an email, monitoring asks for an account.
+			 */
+			'rate_per_ip'         => 1,
 			'rate_global'         => 200,
 			'retention_days'      => 14,
 
