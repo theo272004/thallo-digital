@@ -2,7 +2,6 @@ import React from 'react';
 import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
 import ScanFlow from '@/components/scan/ScanFlow';
-import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'Try the AI visibility scan',
@@ -20,7 +19,6 @@ export default function ThalloAIScan() {
     <div className="flex min-h-screen flex-col bg-white">
       <Navbar />
       <main className="flex-grow"><ScanFlow /></main>
-      <Footer />
     </div>
   );
 }

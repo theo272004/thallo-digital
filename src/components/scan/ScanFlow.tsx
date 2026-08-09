@@ -9,8 +9,6 @@ import FullReport from './FullReport';
 import { GRID, GROUND, Micro } from './ui';
 import { IS_LIVE, initialSession, startScan, unlockScan } from '@/lib/scan/engine';
 import { QUESTION_COUNT } from '@/lib/scan/questions';
-import { LIMITS } from '@/lib/scan/limits';
-import { BASE } from '@/lib/site';
 import type { ScanInput, ScanSession } from '@/lib/scan/types';
 
 type Stage = 'setup' | 'scanning' | 'results' | 'report';
@@ -103,18 +101,18 @@ export default function ScanFlow() {
             now. Two h1s would have left the document with no single answer to
             "what is this page", on a page whose whole subject is being legible
             to machines. */}
-        <div className="max-w-[58ch]">
-          <SplitReveal
-            as="h2"
-            scroll={false}
-            fade={false}
-            className="mb-4 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl"
-            html="Do the models recommend you?"
-          />
-          <p className="text-base font-medium leading-relaxed text-gray-500">
-            We put the questions your buyers ask to ChatGPT, Claude and Gemini, and count how often your name comes
-            up. Your brand is never named in the question. You can see every question we sent.
-          </p>
+        <div className="flex items-end justify-between gap-6">
+          <div>
+            <Micro className="text-[#617A2B]">Scan</Micro>
+            <SplitReveal
+              as="h1"
+              scroll={false}
+              fade={false}
+              className="mt-4 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl"
+              html="Check your AI visibility."
+            />
+          </div>
+          <span className="hidden rounded-full bg-[#F0F4E7] px-3 py-1.5 text-[11px] font-bold text-[#617A2B] sm:block">Free scan</span>
         </div>
 
         {(!IS_LIVE || session.demo) && <DemoNotice configured={IS_LIVE} />}
@@ -162,44 +160,8 @@ export default function ScanFlow() {
           )}
         </div>
 
-        <Limits />
       </div>
     </section>
-  );
-}
-
-/**
- * The honesty strip, kept on the tool itself.
- *
- * The full method lives on its own page now, because six sections of
- * explanation under a working console made the page read as a brochure about a
- * tool rather than as the tool. But the limits are not explanation — they are
- * part of the reading. Someone who runs a scan and walks away with a number
- * should have seen what the number does not cover, without having to click
- * through to find out.
- */
-function Limits() {
-  return (
-    <div className="mt-10 border-t border-gray-200 pt-7">
-      <div className="flex flex-wrap items-baseline justify-between gap-3">
-        <Micro className="text-gray-500">What this cannot tell you</Micro>
-        <a
-          href={`${BASE}/thallo-ai/method/`}
-          className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#617A2B] underline-offset-4 transition-colors hover:text-[#39471D] hover:underline"
-        >
-          Read the full method →
-        </a>
-      </div>
-
-      <ul className="mt-5 grid grid-cols-1 gap-x-10 gap-y-3.5 sm:grid-cols-2">
-        {LIMITS.map((l) => (
-          <li key={l} className="flex items-start gap-2.5">
-            <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[#55672E]" />
-            <span className="text-[12px] font-medium leading-relaxed text-gray-500">{l}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }
 
