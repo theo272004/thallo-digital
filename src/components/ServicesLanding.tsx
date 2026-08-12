@@ -3,10 +3,10 @@
 import React, { useState, useRef, useLayoutEffect } from 'react';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import SpinFlower from '@/components/ui/SpinFlower';
-import EngagementSteps from '@/components/EngagementSteps';
 import AuditCTA from '@/components/AuditCTA';
-import { Magnetic } from '@/components/motion';
 import { BASE } from '@/lib/site';
+// EngagementSteps and Magnetic left with the hidden process strip and plan
+// builder — restore them there and here together.
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
@@ -24,7 +24,12 @@ const SERVICES = [
       'Content and authority gaps',
       'Prioritized 90-day roadmap',
     ],
-    price: 'From $800 · one-time · no lock-in. The roadmap is yours either way.',
+    /* Amount and terms split rather than run together on one line. A figure
+       reads as a price; a figure with its conditions welded onto it reads as a
+       sentence, and the eye stops looking for the number. */
+    price: 'From $800',
+    terms: 'One-time. No lock-in. The roadmap is yours either way.',
+    cta: 'Book an audit',
   },
   {
     idx: '02',
@@ -40,10 +45,12 @@ const SERVICES = [
       'Consistent brand narrative',
       'Monthly outcome reporting',
     ],
+    price: 'From $2,500 / month',
     /* Three months, not six. The FAQ below explains the reasoning and the two
        have to agree — a page that states one term in the card and another in
        the answer underneath it is a page nobody can quote back to you. */
-    price: 'From $2,500 / month · 3-month initial term. Scales with the size of the operation.',
+    terms: '3-month initial term. Scales with the size of the operation.',
+    cta: 'Talk about the Engine',
   },
   {
     idx: '03',
@@ -58,7 +65,49 @@ const SERVICES = [
       'Digital PR and podcasts',
       'Interactive tools',
     ],
-    price: 'Priced by scope · quoted per project. Tell us what you have in mind.',
+    price: 'Priced by scope',
+    terms: 'Quoted per project. Tell us what you have in mind.',
+    cta: 'Request a quote',
+  },
+];
+
+/**
+ * What the monthly operation actually produces.
+ *
+ * Six cells rather than a paragraph, because the argument is that these are one
+ * operation rather than six services bought separately — and a list makes that
+ * claim visible in a way prose has to assert.
+ */
+const ENGINE = [
+  { title: 'Original research', copy: 'Studies and data only you could produce, built on your own numbers and expertise.' },
+  { title: 'Published work', copy: 'Written, structured and shipped every month. Not drafts sitting in your review queue.' },
+  { title: 'Technical build', copy: 'A site search engines and AI models can read, parse and cite without guessing.' },
+  { title: 'Distribution', copy: 'Each piece carried to LinkedIn, communities, podcasts and newsletters where buyers already are.' },
+  { title: 'Citation tracking', copy: 'How often the models name you across a fixed set of buying questions, measured against rivals.' },
+  { title: 'Monthly reporting', copy: 'What moved, what didn’t, and what changes next. Tied to pipeline, not traffic.' },
+];
+
+/** The five one-off pieces, at more length than the card bullets carry. */
+const PROJECTS = [
+  {
+    title: 'Original research studies',
+    copy: 'Numbers nobody else has, from a focused study to a full state-of-the-category report. The asset that earns citations for years.',
+  },
+  {
+    title: 'Definitive guides',
+    copy: 'The most complete answer that exists on a question your category keeps asking. Built to be the one that gets quoted.',
+  },
+  {
+    title: 'AI visibility build',
+    copy: 'The structural work that lets the models read, understand and cite you. Schema, architecture, and the pages that answer real buying questions.',
+  },
+  {
+    title: 'Digital PR and podcasts',
+    copy: 'Placement in the publications and shows your buyers already listen to.',
+  },
+  {
+    title: 'Interactive tools',
+    copy: 'Calculators and benchmarks that attract links and capture demand on their own.',
   },
 ];
 
@@ -103,70 +152,19 @@ function Check({ featured }: { featured: boolean }) {
   );
 }
 
-/**
- * The "included" marker: a filled olive disc with the tick cut out of it.
+/*
+ * Two helpers left with the plan builder: `Tick`, the filled disc with the
+ * tick cut out of it, and `FeatureIcon`, the glyph-per-deliverable map. Both
+ * were the builder's alone — the cards use `Check`, above.
  *
- * Disc and tick are one SVG, and that is the point. Drawn as a CSS circle with
- * a separate tick centred on top, the two shapes land on fractional pixels in a
- * fluid grid and round their antialiasing independently — at this size that
- * reads as a tick sitting slightly off centre, differently in every column.
- * One path cannot disagree with itself.
- */
-function Tick({ featured = false }: { featured?: boolean }) {
-  return (
-    <span className="block h-[19px] w-[19px] flex-shrink-0" aria-hidden="true">
-      <svg viewBox="0 0 26 26" className="h-full w-full">
-        <circle cx="13" cy="13" r="13" fill={featured ? '#CBD0AC' : '#39471D'} />
-        <polyline
-          points="8.7 13 11.4 15.7 17.3 10.3"
-          fill="none" stroke={featured ? '#39471D' : '#FFFFFF'} strokeWidth="2"
-          strokeLinecap="round" strokeLinejoin="round"
-        />
-      </svg>
-    </span>
-  );
-}
-
-/**
- * A glyph per deliverable, keyed by the deliverable's own text.
+ * The builder itself was ~170 lines of interactive markup with its own state,
+ * so it is not parked in a comment here the way the smaller hidden blocks on
+ * About and Case Studies are; a block that size in comment makes the file
+ * unreadable and rots the moment anything around it moves. It lives in git.
+ * To bring it back, with these two helpers:
  *
- * Keyed by string rather than carried on the data because these lines are
- * copy first — they get reworded — and a missing key falls through to null
- * rather than throwing or drawing the wrong thing.
+ *     git show 326c3e5:src/components/ServicesLanding.tsx
  */
-function FeatureIcon({ item }: { item: string }) {
-  const p = {
-    viewBox: '0 0 24 24', width: 15, height: 15, fill: 'none' as const,
-    stroke: 'currentColor', strokeWidth: 1.9,
-    strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const,
-  };
-  const map: Record<string, React.ReactNode> = {
-    // ── Audit ──
-    'Visibility benchmark against rivals': <svg {...p}><line x1="18" y1="20" x2="18" y2="9"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="13"/><line x1="2" y1="20" x2="22" y2="20"/></svg>,
-    'Share-of-answer scoring':         <svg {...p}><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10h-10z"/></svg>,
-    'Technical readiness review':      <svg {...p}><rect x="7" y="7" width="10" height="10" rx="1"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/><rect x="2" y="2" width="20" height="20" rx="3"/></svg>,
-    'Content and authority gaps':       <svg {...p}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
-    'Prioritized 90-day roadmap':      <svg {...p}><polyline points="3 6 4.5 7.5 7.5 4.5"/><polyline points="3 12 4.5 13.5 7.5 10.5"/><polyline points="3 18 4.5 19.5 7.5 16.5"/><line x1="11" y1="6" x2="21" y2="6"/><line x1="11" y1="12" x2="21" y2="12"/><line x1="11" y1="18" x2="21" y2="18"/></svg>,
-    'Competitor teardown':             <svg {...p}><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/><line x1="1" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="23" y2="12"/></svg>,
-
-    // ── Authority Engine ──
-    'Deeply researched original content': <svg {...p}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
-    'Technical AI-readiness build':    <svg {...p}><rect x="7" y="7" width="10" height="10" rx="1"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/><rect x="2" y="2" width="20" height="20" rx="3"/></svg>,
-    'Search and AI visibility':         <svg {...p}><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
-    'Distribution to buyer channels':  <svg {...p}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>,
-    'Consistent brand narrative':      <svg {...p}><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>,
-    'Monthly outcome reporting':       <svg {...p}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>,
-
-    // ── Standalone Projects ──
-    'Original research studies':        <svg {...p}><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3"/></svg>,
-    'Definitive guides':                <svg {...p}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="13" x2="8" y2="13"/></svg>,
-    'Digital PR and podcasts':          <svg {...p}><path d="M12 2a3 3 0 00-3 3v7a3 3 0 006 0V5a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>,
-    'Interactive tools':               <svg {...p}><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>,
-    'AI visibility build':              <svg {...p}><circle cx="12" cy="8" r="6"/><polyline points="8.2 13.4 7 22 12 19 17 22 15.8 13.4"/></svg>,
-    'Launch strategy':                 <svg {...p}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/></svg>,
-  };
-  return <>{map[item] ?? null}</>;
-}
 
 /**
  * Desktop lays the three side by side and puts the active one in the middle;
@@ -194,21 +192,9 @@ export default function ServicesPage() {
   const [activeService, setActiveService] = useState(1);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  // Plan builder: pick one base plan (Audit or Authority Engine), then layer
-  // on any Flagship items as optional add-ons. Flagship is never a base plan
-  // on its own — it only exists to be added to one of the other two.
-  const [basePlan, setBasePlan] = useState<0 | 1>(1);
-  const [addons, setAddons] = useState<string[]>([]);
-
-  function toggleAddon(item: string) {
-    setAddons(prev => prev.includes(item) ? prev.filter(a => a !== item) : [...prev, item]);
-  }
-
-  const basePlanData = SERVICES[basePlan];
-  const planSummary = addons.length > 0
-    ? `${basePlanData.title} + ${addons.length} add-on${addons.length > 1 ? 's' : ''}`
-    : basePlanData.title;
-  const builtPlan = [basePlanData.title, ...addons];
+  /* The plan builder's state lived here — a base plan, a list of add-ons, and
+     the summary it fed into the enquiry form as `activePlans`. It went out with
+     the builder; restoring one restores the other. */
 
   const wrapperRefs = useRef<(HTMLDivElement | null)[]>([]);
   const savedRects = useRef<(DOMRect | null)[]>([]);
@@ -344,11 +330,10 @@ export default function ServicesPage() {
                             Most chosen
                           </span>
                         )}
-                        {i === 2 && (
-                          <span className="text-[11px] font-bold tracking-widest uppercase text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                            Optional add-on
-                          </span>
-                        )}
+                        {/* "Optional add-on" sat here on the third card and is
+                            not in the design this page follows — the only badge
+                            it carries is "Most chosen". The card's own copy
+                            already says the work layers onto the Engine. */}
                       </div>
 
                       <h3 className={`text-2xl font-semibold mb-3 transition-colors duration-500 ${isFeatured ? 'text-white' : 'text-gray-900'}`}>
@@ -369,9 +354,28 @@ export default function ServicesPage() {
                     </div>
 
                     <div className={`relative mt-8 pt-6 border-t transition-colors duration-500 ${isFeatured ? 'border-white/15' : 'border-gray-200/70'}`}>
-                      <span className={`block text-base font-bold tracking-tight transition-colors duration-500 ${isFeatured ? 'text-[#CBD0AC]' : 'text-[#39471D]'}`}>
+                      <span className={`block text-base font-bold tracking-tight transition-colors duration-500 ${isFeatured ? 'text-white' : 'text-gray-900'}`}>
                         {svc.price}
                       </span>
+                      <span className={`mt-1 block text-[13px] font-medium leading-snug transition-colors duration-500 ${isFeatured ? 'text-[#CBD0AC]' : 'text-gray-500'}`}>
+                        {svc.terms}
+                      </span>
+
+                      {/* Each plan asks for itself. `stopPropagation` because
+                          the whole card is also the tab control — without it,
+                          following the link would first swap the featured card
+                          out from under the finger that pressed it. */}
+                      <a
+                        href="#enquiry"
+                        onClick={(e) => e.stopPropagation()}
+                        className={`mt-5 block rounded-full px-5 py-3 text-center text-sm font-semibold transition-colors ${
+                          isFeatured
+                            ? 'bg-white text-[#39471D] hover:bg-[#E7ECD9]'
+                            : 'border border-gray-200 text-gray-900 hover:border-[#39471D] hover:text-[#39471D]'
+                        }`}
+                      >
+                        {svc.cta} <ArrowUpRight className="ml-0.5" />
+                      </a>
                     </div>
                   </div>
                   </div>
@@ -380,216 +384,82 @@ export default function ServicesPage() {
             })}
           </div>
 
-          {/* The ask under the three plans. Now that the enquiry form lives on
-              this page, it hands off there instead of to /contact/ — the plan
-              you were reading arrives pre-ticked. */}
-          <div className="mt-14 flex justify-center">
-            <Magnetic>
-              <a
-                href="#enquiry"
-                className="inline-block px-9 py-4 bg-[#39471D] border border-[#39471D] rounded-full text-base font-semibold text-white shadow-[0_18px_36px_-16px_rgba(57,71,29,0.55)] hover:bg-[#55672E] hover:border-[#55672E] transition-all"
-              >
-                Book an audit <ArrowUpRight className="ml-0.5" />
-              </a>
-            </Magnetic>
+          {/* The single "Book an audit" button that stood here is gone: each
+              card now carries its own ask, and this is the line the design puts
+              in its place — a pointer for the reader who cannot choose. */}
+          <p className="mt-12 text-center text-base font-medium leading-relaxed text-gray-500">
+            Not sure which one fits?{' '}
+            <strong className="font-semibold text-gray-900">Start with the audit.</strong> It tells you what you
+            actually need, and you keep the roadmap whether you continue with us or not.
+          </p>
+        </div>
+      </section>
+
+      {/* ── HIDDEN: process, and the plan builder ─────────────────────────────
+          <EngagementSteps /> — the "how an engagement runs" strip — and the
+          interactive plan builder that stood under it are both absent from the
+          design this page follows, so both come off the page.
+
+          The builder is the bigger loss and worth naming: it let a visitor pick
+          a base plan, tick add-ons, and have that selection arrive pre-ticked in
+          the enquiry form below. That wiring is why `basePlan`/`addons` existed
+          and why the closing panel took an `activePlans` prop. Restoring the
+          builder means restoring that state and the prop with it.
+       ─────────────────────────────────────────────────────────────────────── */}
+
+      {/* ── What the Engine runs ──────────────────────────────────────────── */}
+      <section className="bg-[#F7F8F9] py-16 2xl:py-24 border-b border-gray-100">
+        <div className="max-w-[1440px] mx-auto px-6">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-end lg:gap-14 mb-12">
+            <h2 className="max-w-[16ch] text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans">
+              What the <span className="italic text-[#39471D]">Engine</span> runs every month.
+            </h2>
+            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[56ch]">
+              One operation, not a list of services bought separately. Research feeds the content, the
+              content feeds the structure, the structure feeds distribution, and the reporting tells
+              you what moved.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {ENGINE.map((cell) => (
+              <div key={cell.title} className="rounded-2xl border border-gray-200 bg-white p-6">
+                <h3 className="mb-2 font-sans text-base font-semibold tracking-tight text-gray-900">{cell.title}</h3>
+                <p className="text-sm font-medium leading-relaxed text-gray-500">{cell.copy}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── Process ───────────────────────────────────────────────────────── */}
-      <EngagementSteps />
-
-      {/* ── Compare / plan builder ───────────────────────────────────────── */}
-      <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
+      {/* ── Standalone Projects, at length ────────────────────────────────── */}
+      <section className="bg-white py-16 2xl:py-24 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
-          <div className="max-w-2xl mb-12">
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans mb-5">
-              Not sure which one fits? <span className="italic text-[#39471D]">Start with the audit.</span>
-            </h2>
-            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[58ch]">
-              It tells you what you actually need, and you keep the roadmap whether you continue with us or not.
-              Standalone Projects can be commissioned on their own or layered onto the Engine at any point.
-            </p>
-          </div>
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
+            <div>
+              <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans mb-4">
+                Standalone <span className="italic text-[#39471D]">Projects.</span>
+              </h2>
+              <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch]">
+                Each one is a complete piece of work with its own scope and price. Commission one on its
+                own, or add it to the Engine when you want to accelerate.
+              </p>
+            </div>
 
-          {/* No overflow-hidden on the panel: the flower hangs off its left
-              edge, and clipping is what a rounded corner needs from the
-              columns themselves, not from the whole grid. */}
-          <div className="relative">
-            <div className="grid rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] lg:grid-cols-[300px_1fr]">
-              {/* Left: base plan picker */}
-              <div className="flex flex-col gap-2 rounded-t-3xl border-b border-gray-100 bg-[#FAFAF8] p-3 lg:rounded-l-3xl lg:rounded-tr-none lg:border-b-0 lg:border-r">
-                {[0, 1].map((i) => {
-                  const svc = SERVICES[i];
-                  const active = basePlan === i;
-                  return (
-                    <div key={svc.idx} className="relative">
-                    <button
-                      type="button"
-                      onClick={() => setBasePlan(i as 0 | 1)}
-                      aria-pressed={active}
-                      className={`w-full rounded-2xl p-5 text-left transition-all duration-300 ${
-                        active
-                          ? 'bg-[#39471D] text-white shadow-[0_10px_25px_-8px_rgba(57,71,29,0.5)]'
-                          : 'bg-transparent text-gray-700 hover:bg-white'
-                      }`}
-                    >
-                      <div className="mb-1.5 flex items-center justify-between gap-2">
-                        <span className={`text-[11px] font-bold tracking-[0.16em] uppercase ${active ? 'text-white/60' : 'text-gray-400'}`}>
-                          {svc.idx} / Base plan
-                        </span>
-                        {i === 1 && (
-                          <span className={`whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-bold uppercase tracking-widest ${active ? 'bg-[#CBD0AC] text-[#39471D]' : 'bg-[#EEF2E3] text-[#39471D]'}`}>
-                            Most chosen
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-lg font-semibold">{svc.title}</div>
-                      <div className={`mt-1 text-xs font-medium ${active ? 'text-[#CBD0AC]' : 'text-gray-400'}`}>{svc.price}</div>
-                    </button>
-
-                    {/* Clear of the panel, not sunk into it.
-                        -translate-x-1/2 centred the mark on the button's left
-                        edge, which sits 12px inside the panel — so two thirds
-                        of the flower landed on the card and it read as caught
-                        under it. -translate-x-full puts its right edge on that
-                        line and -ml-4 carries it 16px further, past the panel
-                        border, so the whole mark sits in the margin.
-
-                        -ml-3 is exactly the column's own p-3, so the mark's
-                        right edge lands on the panel border itself — tangent
-                        to it, at every width, rather than at an offset that
-                        drifts as the panel grows. It cannot go further: the
-                        panel is max-w-1440 with px-6, so between lg and 1440
-                        the gutter is all there is, and at 1024 the flower
-                        already fills it corner to corner.
-
-                        Grabbable again, which is the other half of moving it
-                        out. Sat over the button it needed pointer-events-none
-                        or it would swallow clicks on the control it decorates
-                        — and that also killed the drag, so this was the one
-                        mark on the site you could not flick. Out here it
-                        overlaps nothing, so it behaves like all the others. */}
-                    {i === 1 && (
-                      <SpinFlower className="absolute top-1/2 left-0 z-10 -ml-3 hidden h-[68px] w-[68px] -translate-x-full -translate-y-1/2 lg:block" />
-                    )}
-                    </div>
-                  );
-                })}
-
-                {/* No Flagship card here. This column is the base plans, and
-                    the Flagship items are the add-ons picked on the right — a
-                    third card announcing them only restated the paragraph
-                    above and made the column look like three choices. */}
-              </div>
-
-              {/* Right: selected plan detail + add-on picker */}
-              <div className="bg-white p-8 lg:p-10">
-                <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#39471D]">
-                  {basePlanData.title} includes
-                </span>
-                {/* Tick, then the line's own glyph, then the words. The tick
-                    says "you get this"; the glyph says what it is. They do
-                    different jobs, so both earn their place — the glyph is
-                    drawn a shade lighter and a size smaller so the column of
-                    ticks stays the thing the eye runs down. */}
-                <ul className="mt-4 grid gap-x-8 gap-y-3.5 sm:grid-cols-2">
-                  {basePlanData.deliverables.map((item, j) => (
-                    <li key={j} className="flex items-center gap-2.5 text-sm font-medium text-gray-700">
-                      <Tick />
-                      <span className="flex shrink-0 text-[#55672E]/70"><FeatureIcon item={item} /></span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="mt-8 border-t border-gray-100 pt-8">
-                  <div className="mb-4 flex items-center justify-between gap-3">
-                    <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">
-                      Add flagship items
-                    </span>
-                    <span className="whitespace-nowrap text-xs font-medium text-gray-400">{addons.length} selected</span>
-                  </div>
-                  {/* The chips keep +/✓ rather than the Tick disc: these are
-                      controls, and the glyph has to say "press me to add" and
-                      then "added", which a static included-marker cannot. The
-                      line's own icon comes along so a chip and its twin in the
-                      list above are recognisably the same item. */}
-                  <div className="flex flex-wrap gap-2.5">
-                    {SERVICES[2].deliverables.map((item) => {
-                      const selected = addons.includes(item);
-                      return (
-                        <button
-                          key={item}
-                          type="button"
-                          onClick={() => toggleAddon(item)}
-                          aria-pressed={selected}
-                          className={`inline-flex items-center gap-2 rounded-full border py-2 pl-2.5 pr-4 text-sm font-semibold transition-all duration-200 ${
-                            selected
-                              ? 'border-[#39471D] bg-[#39471D] text-white'
-                              : 'border-gray-200 bg-white text-gray-700 hover:border-[#55672E]/40'
-                          }`}
-                        >
-                          <span className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-[12px] leading-none ${selected ? 'bg-white/20' : 'bg-[#EEF2E3] text-[#39471D]'}`}>
-                            {selected ? '✓' : '+'}
-                          </span>
-                          <span className={`flex shrink-0 ${selected ? 'text-[#CBD0AC]' : 'text-[#55672E]/70'}`}>
-                            <FeatureIcon item={item} />
-                          </span>
-                          {item}
-                        </button>
-                      );
-                    })}
-                  </div>
+            <div className="flex flex-wrap gap-3">
+              {PROJECTS.map((p) => (
+                <div
+                  key={p.title}
+                  className="min-w-[240px] flex-1 rounded-2xl border border-gray-200 bg-gray-50/60 p-6"
+                >
+                  <h3 className="mb-2 font-sans text-base font-semibold tracking-tight text-gray-900">{p.title}</h3>
+                  <p className="text-sm font-medium leading-relaxed text-gray-500">{p.copy}</p>
                 </div>
-
-                {/* Live summary of the plan being built — feeds the enquiry
-                    form below, so the plan travels with the visitor rather
-                    than resetting at the CTA. */}
-                {/* Grey, not the green tint it was: the tinted bands on this
-                    site are #F7F8F9 now, and a lone greenish panel in here
-                    read as a colour we no longer use. */}
-                <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-[#F7F8F9] px-6 py-5">
-                  <div>
-                    <span className="mb-1 block text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">Your plan</span>
-                    <span className="text-base font-semibold text-gray-900">{planSummary}</span>
-                  </div>
-                  <Magnetic>
-                    <a
-                      href="#enquiry"
-                      className="inline-flex items-center whitespace-nowrap rounded-full border border-[#39471D] bg-[#39471D] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:border-[#55672E] hover:bg-[#55672E]"
-                    >
-                      Request this plan <ArrowUpRight className="ml-0.5" />
-                    </a>
-                  </Magnetic>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
-
-      {/* ── CTA, with the enquiry form inside it ──────────────────────────── */}
-      {/* Whatever was built above — base plan plus any add-ons — arrives
-          pre-ticked, so the selection travels into the enquiry rather than
-          resetting here. This page is the only one that has a builder to feed
-          it; everywhere else the form opens on the three plans. */}
-      <AuditCTA
-        image={`${BASE}/cta-bg-services.webp`}
-        /* Broken by hand: left to wrap it took three lines and stretched the
-           panel with it. */
-        heading={<>Start with a clear look<br />at where you stand.</>}
-        copy={
-          addons.length > 0
-            ? `Your plan: ${planSummary}. Send it over and we'll confirm scope.`
-            : 'Book an AI visibility audit. Clear, fixed scope, and a roadmap you keep either way.'
-        }
-        /* The three plans, same as every other enquiry form on the site. The
-           builder's add-ons still travel via activePlans — they just do not
-           each get a chip of their own here, which turned three options into
-           eight. */
-        activePlans={builtPlan}
-      />
 
       {/* ── FAQ (centered) ────────────────────────────────────────────────── */}
       <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
@@ -664,6 +534,22 @@ export default function ServicesPage() {
           </div>
         </div>
       </section>
+
+      {/* ── CTA, with the enquiry form inside it ──────────────────────────── */}
+      {/* After the FAQ rather than before it, which is where the design puts
+          it: the questions are what a reader has left before deciding, so the
+          ask belongs on the other side of them.
+
+          No `activePlans` any more — that prop carried the hidden builder's
+          selection. The form opens on the three plans, the same as everywhere
+          else on the site. */}
+      <AuditCTA
+        image={`${BASE}/cta-bg-services.webp`}
+        /* Broken by hand: left to wrap it took three lines and stretched the
+           panel with it. */
+        heading={<>Still not sure<br />which one fits?</>}
+        copy="Tell us where you are and what you're trying to reach. You'll get a straight recommendation, including if the answer is that you don't need us yet."
+      />
 
     </>
   );
