@@ -171,6 +171,17 @@ export interface ScanPhase2 {
   grade: Grade;
   keyInsight: string;
   actions: ActionItem[];
+  /** The same three models over the same questions, with web search on.
+   *
+   *  Phase 1 measures whether a model knows you; this measures whether it picks
+   *  you once it has looked, and the two come apart. Absent when the reading is
+   *  switched off for the installation — a missing section is honest, whereas a
+   *  section reading "not measured" would imply we tried.
+   *
+   *  Deliberately not folded into `grade`: it is a comparison against phase 1,
+   *  not a fourth component, and averaging it in would weight share of voice
+   *  twice for a reason the reader could not see. */
+  grounded?: ScanPhase1;
   /** Every run of this brand in this market, oldest first, including the one
       just finished. A single-point series is the normal first-scan case and the
       chart says so rather than drawing a line through one dot. */
@@ -239,10 +250,23 @@ export interface ScanInput {
    * traceable — it is just no longer a benchmark.
    */
   questions: string[];
+  /**
+   * Collected on the setup screen, before anything is run.
+   *
+   * With web search on, a scan costs real money on the first call rather than
+   * on the second half, so the address is asked for up front and the whole
+   * report is one job: no free half, no gate in the middle, and nothing spent
+   * on somebody we cannot reply to. Omitted, the server falls back to the
+   * two-step flow, which is what a cached bundle from before this change
+   * still sends.
+   */
+  email?: string;
 }
 
-/** Ceiling on the prompt list. Fifteen questions × three models = 45 calls. */
-export const MAX_QUESTIONS = 15;
+/** Ceiling on the prompt list. Five questions × three models = 15 calls, and
+    with search on each of those carries a per-call fee — so this ceiling is
+    a bill, not a nicety. */
+export const MAX_QUESTIONS = 5;
 
 /** The shape of the steps before the server has said anything about them.
     Used only for the very first paint of the progress screen. */

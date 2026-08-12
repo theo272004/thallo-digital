@@ -120,6 +120,13 @@ async function demoRun(input: ScanInput, onUpdate: OnUpdate): Promise<ScanSessio
     phase1,
   };
   onUpdate(session);
+
+  /* The address came in with the setup, so the sample run does not stop to ask
+     for it either. Preview mode exists to show the shape of the real thing, and
+     a gate here that the live path no longer has would be showing the wrong
+     shape. */
+  if (input.email) return demoUnlock(session, onUpdate);
+
   return session;
 }
 
@@ -159,13 +166,18 @@ export async function startScan(input: ScanInput, onUpdate: OnUpdate): Promise<S
   let session = await post<ScanSession>('/scan', input);
   onUpdate(session);
 
-  for (let i = 0; i < MAX_TICKS && session.status === 'running'; i++) {
+  /* Through 'unlocking' as well as 'running'. When the address was given on the
+     setup screen the server does not stop to ask for it: phase 1 rolls straight
+     into phase 2 and the whole report arrives as one job. Stopping this loop at
+     'running' would leave that scan paid for and half-driven, with the browser
+     waiting for a gate the server had already opened. */
+  for (let i = 0; i < MAX_TICKS && (session.status === 'running' || session.status === 'unlocking'); i++) {
     await wait(TICK_PAUSE_MS);
     session = await post<ScanSession>(`/scan/${session.scanId}/tick`, {});
     onUpdate(session);
   }
 
-  if (session.status === 'running') {
+  if (session.status === 'running' || session.status === 'unlocking') {
     throw new ScanError('The scan is taking longer than expected. Please try again.', 'timeout');
   }
   if (session.status === 'failed') {

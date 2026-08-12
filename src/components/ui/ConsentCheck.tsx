@@ -15,7 +15,21 @@ import { BASE } from '@/lib/site';
  * sits under is usually half filled in, and sending the reader away to read the
  * terms would cost them the answers they had already typed.
  */
-export default function ConsentCheck({ id = 'consent' }: { id?: string }) {
+export default function ConsentCheck({
+  id = 'consent',
+  checked,
+  onChange,
+}: {
+  id?: string;
+  /* Controlled only where the surrounding button is not a form submit — the
+     scan setup validates in JS, so `required` never fires there and the state
+     has to be readable. Left undefined everywhere else, which keeps the
+     uncontrolled behaviour and the browser's own blocking. */
+  checked?: boolean;
+  onChange?: (next: boolean) => void;
+}) {
+  const controlled = typeof checked === 'boolean';
+
   return (
     <label htmlFor={id} className="flex items-start gap-2.5 cursor-pointer">
       <input
@@ -23,6 +37,7 @@ export default function ConsentCheck({ id = 'consent' }: { id?: string }) {
         name="consent"
         type="checkbox"
         required
+        {...(controlled ? { checked, onChange: (e) => onChange?.(e.target.checked) } : {})}
         className="mt-0.5 h-4 w-4 flex-shrink-0 accent-[#39471D]"
       />
       {/* Two lines at the width this sits in. Every clause is load-bearing —

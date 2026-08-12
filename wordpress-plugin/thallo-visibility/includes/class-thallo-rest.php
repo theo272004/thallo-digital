@@ -189,12 +189,24 @@ class Thallo_Vis_REST {
 			}
 		}
 
+		/* Collected before the scan runs when the front end asks for it there.
+		   Optional at this layer: a cached bundle that predates the change sends
+		   none, and the right answer for it is the two-step flow it was built
+		   for, not a rejected scan. An address that arrives and is not an
+		   address is rejected, though — silently running an expensive scan and
+		   then having nowhere to send it is the one outcome nobody wanted. */
+		$email = trim( (string) $request->get_param( 'email' ) );
+		if ( '' !== $email && ! is_email( $email ) ) {
+			return new WP_Error( 'bad_email', __( 'Enter a valid email address so we can send you the report.', 'thallo-visibility' ), array( 'status' => 400 ) );
+		}
+		$email = '' === $email ? '' : sanitize_email( $email );
+
 		$limited = self::check_limits();
 		if ( is_wp_error( $limited ) ) {
 			return $limited;
 		}
 
-		$session = Thallo_Vis_Runner::start( $brand, $domain, $industry, $market, 'visitor', $prompts );
+		$session = Thallo_Vis_Runner::start( $brand, $domain, $industry, $market, 'visitor', $prompts, $email );
 
 		return is_wp_error( $session ) ? $session : rest_ensure_response( $session );
 	}

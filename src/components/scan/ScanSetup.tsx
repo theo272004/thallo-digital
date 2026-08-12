@@ -37,11 +37,18 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, Building2, Globe2, Link2, LockKeyhole, Plus, Sparkles, X } from 'lucide-react';
 import { FIELD, Notice, Panel } from './ui';
+import ConsentCheck from '@/components/ui/ConsentCheck';
 import { buildQuestions } from '@/lib/scan/questions';
 import { DEFAULT_MARKET, MARKETS, marketById } from '@/lib/scan/markets';
 import { INDUSTRIES, MAX_QUESTIONS, cleanDomain, isDomain, type ScanInput } from '@/lib/scan/types';
 
 type Step = 1 | 2;
+
+/* Deliberately loose. The server validates properly with `is_email()`, and the
+   only job here is to catch the typo before an expensive scan starts — a
+   stricter pattern in the browser rejects real addresses and teaches nobody
+   anything. */
+const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
 
 const LANGUAGES = [
   { value: 'en', label: 'English' },
@@ -70,6 +77,8 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
   const [market, setMarket] = useState(DEFAULT_MARKET);
   /** One empty row to start, so the first thing on screen is a cursor. */
   const [questions, setQuestions] = useState<string[]>(['']);
+  const [email, setEmail] = useState('');
+  const [consent, setConsent] = useState(false);
   const [error, setError] = useState('');
 
   const selectedMarket = marketById(market);
@@ -143,6 +152,20 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
       return;
     }
 
+    /* Asked for here rather than halfway through the report. Every question is
+       put to three models with web search on, and each of those calls is billed
+       the moment it is made — so there is no free half to hand out first, and
+       nothing is spent on somebody we could not send the result to. */
+    if (!isEmail(email)) {
+      setError('Enter a valid email address — the report is sent there when it is ready.');
+      return;
+    }
+
+    if (!consent) {
+      setError('Tick the box to say we may email you the report.');
+      return;
+    }
+
     setError('');
     onStart({
       brand: brand.trim().slice(0, 80),
@@ -150,6 +173,7 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
       industry: industry.trim().slice(0, 120),
       market,
       questions: list,
+      email: email.trim(),
     });
   };
 
@@ -320,6 +344,32 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
         >
           <Plus size={16} /> Add question
         </button>
+
+        {/* Asked here, not after a free half. Every question is put to three
+            models with the web open and each of those calls is billed as it is
+            made, so there is nothing to give away first — and the report is
+            sent rather than only shown, which is the thing the address buys. */}
+        <div className="mt-7 rounded-xl bg-[#F4FAF5] p-4 sm:p-5">
+          <label htmlFor="scan-email" className="text-[13px] font-bold tracking-tight text-gray-900">
+            Where should we send the report?
+          </label>
+          <p className="mt-1.5 mb-3.5 max-w-[54ch] text-[12px] font-medium leading-relaxed text-gray-500">
+            The full report opens on screen as soon as it is ready, and we email you a copy so you do not have to keep
+            this tab open.
+          </p>
+          <input
+            id="scan-email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@company.com"
+            autoComplete="email"
+            className={`${FIELD} rounded-xl py-3.5 text-[15px] sm:max-w-[340px]`}
+          />
+          <div className="mt-3.5">
+            <ConsentCheck id="scan-setup-consent" checked={consent} onChange={setConsent} />
+          </div>
+        </div>
 
         {error && <div className="mt-5"><Notice>{error}</Notice></div>}
 

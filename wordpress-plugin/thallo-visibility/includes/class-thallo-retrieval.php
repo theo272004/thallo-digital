@@ -82,8 +82,8 @@ class Thallo_Vis_Retrieval {
 		$timeout   = (int) Thallo_Vis_Settings::get( 'request_timeout', 25 );
 		$responses = Thallo_Vis_HTTP::post_many( array( $job_category, $job_brand ), $timeout );
 
-		$category = Thallo_Vis_LLM::parse( $job_category['shape'], $responses[0] );
-		$about    = Thallo_Vis_LLM::parse( $job_brand['shape'], $responses[1] );
+		$category = Thallo_Vis_LLM::parse( $job_category['shape'], $responses[0], false );
+		$about    = Thallo_Vis_LLM::parse( $job_brand['shape'], $responses[1], false );
 
 		if ( $category['error'] && $about['error'] ) {
 			return array(
@@ -102,7 +102,15 @@ class Thallo_Vis_Retrieval {
 		$named_in_category = self::text_names_brand( $category['text'], $brand_norm )
 			|| self::hosts_include( $category['citations'], $domain );
 
-		$hosts = self::hosts( array_merge( $category['citations'], $about['citations'] ) );
+		/* Only the sources returned when asked about the brand by name.
+		   Merging in the category question's sources inflated this into a claim
+		   we had no evidence for: those are the pages Perplexity read to answer
+		   "who is good in this category", and most of them have never heard of
+		   the brand. The report printed them as "N third-party sources cited
+		   you" and scored 25 points on it — a fabricated finding, in the one
+		   product that must not have any. Asked about the brand, the sources
+		   coming back are at least about the brand. */
+		$hosts = self::hosts( $about['citations'] );
 
 		/* Being cited when someone asks about you by name is table stakes.
 		   Being cited when they ask about the category, without your name in the
