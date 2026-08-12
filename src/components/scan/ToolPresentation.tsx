@@ -185,10 +185,15 @@ function Surface({ card, children }: { card: Card; children: React.ReactNode }) 
  * set of cards that would drift away from these.
  */
 const CONTENT: Record<string, (narrow: boolean) => React.ReactNode> = {
+  /* The one panel on this page that is entirely in Spanish, because the sample
+     run it is showing is an es-CO one. Its chrome was in English around Spanish
+     questions, which read as a translation someone had not finished. `lang` sits
+     on the panel rather than on each question so hyphenation and screen readers
+     get the whole card, not four sentences of it. */
   questions: () => (
-        <div className="flex h-full flex-col p-9">
+        <div lang="es" className="flex h-full flex-col p-9">
           <div className="flex items-baseline justify-between">
-            <Micro className="text-gray-400">Sent verbatim</Micro>
+            <Micro className="text-gray-400">Enviadas tal cual</Micro>
             <Micro className="text-gray-400">Español · Colombia</Micro>
           </div>
           <ol className="mt-9 flex flex-col gap-6">
@@ -202,14 +207,14 @@ const CONTENT: Record<string, (narrow: boolean) => React.ReactNode> = {
                 <span className="font-mono text-[15px] font-bold tabular-nums text-gray-300">
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <span lang="es" className="text-[19px] font-medium leading-snug text-gray-800">
+                <span className="text-[19px] font-medium leading-snug text-gray-800">
                   {text}
                 </span>
               </li>
             ))}
           </ol>
           <p className="mt-auto border-t pt-6 text-[16px] font-medium text-gray-400" style={{ borderColor: HAIR }}>
-            + {QUESTION_COUNT - 4} more · your brand is in none of them
+            {`+ ${QUESTION_COUNT - 4} más · tu marca no aparece en ninguna`}
           </p>
         </div>
   ),
