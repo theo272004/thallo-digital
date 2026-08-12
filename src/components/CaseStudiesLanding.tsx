@@ -2,7 +2,9 @@
 import React, { useState } from 'react';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import SpinFlower from '@/components/ui/SpinFlower';
-import { SplitReveal, useRevealBatch } from '@/components/motion';
+// SplitReveal left the import with the hidden "Every figure has a source"
+// heading — restore it there and here together.
+import { useRevealBatch } from '@/components/motion';
 import AuditCTA from '@/components/AuditCTA';
 import { CASES, CASE_INDUSTRIES, type CaseStudy } from '@/lib/cases';
 import { BASE } from '@/lib/site';
@@ -132,53 +134,50 @@ export default function CaseStudiesLanding() {
         </div>
       </section>
 
-      {/* ── Introduction ─────────────────────────────────────────────────── */}
-      <section className="bg-[#F7F8F9] pt-12 pb-16 2xl:pt-16 2xl:pb-24 border-b border-gray-100">
-        <div className="max-w-[1440px] mx-auto px-6">
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] lg:gap-16">
-            <div>
-              <SplitReveal
-                as="h2"
-                className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-4 font-sans"
-                html="Every figure has a source."
-              />
+      {/* ── HIDDEN ────────────────────────────────────────────────────────────
+          Two blocks live here in comment rather than on the page: the
+          "Every figure has a source" introduction, and the "The cases, by
+          industry" header that stood over the list.
+
+          Neither is in the design this page was rewritten from, and that design
+          is the text of the page — so they come out. Kept verbatim so restoring
+          either is deleting a comment marker, not rewriting the copy.
+
+          <section className="bg-[#F7F8F9] pt-12 pb-16 2xl:pt-16 2xl:pb-24 border-b border-gray-100">
+            <div className="max-w-[1440px] mx-auto px-6">
+              <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] lg:gap-16">
+                <div>
+                  <SplitReveal
+                    as="h2"
+                    className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-4 font-sans"
+                    html="Every figure has a source."
+                  />
+                </div>
+                <div data-reveal>
+                  <p>The numbers on these pages come from platform exports — Search Console,
+                  analytics, the client's own dashboards — over a period we name, with anything
+                  projected labelled as a projection. Where a category makes identity sensitive,
+                  the client's name is withheld. The data is not.</p>
+                  <p>What we look for in an engagement worth writing up is a curve rather than a
+                  spike, and growth spread across a site rather than carried by one fortunate page.
+                  That is the difference between authority that compounds and a ranking that
+                  happened to land — and it is the difference that decides what the work is worth a
+                  year later.</p>
+                </div>
+              </div>
             </div>
-            <div data-reveal>
-              <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mb-5">
-                The numbers on these pages come from platform exports — Search Console, analytics,
-                the client&rsquo;s own dashboards — over a period we name, with anything projected
-                labelled as a projection. Where a category makes identity sensitive, the client&rsquo;s
-                name is withheld. The data is not.
-              </p>
-              <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch]">
-                What we look for in an engagement worth writing up is a curve rather than a spike,
-                and growth spread across a site rather than carried by one fortunate page. That is
-                the difference between authority that compounds and a ranking that happened to land
-                — and it is the difference that decides what the work is worth a year later.
-              </p>
-            </div>
+          </section>
+
+          <div className="max-w-2xl mx-auto mb-10 text-center" data-reveal>
+            <h2>The cases, by industry.</h2>
+            <p>Published work sits alongside what is still being written up. A case goes up once
+            the data covers a full period and the client has cleared every figure in it.</p>
           </div>
-        </div>
-      </section>
+       ─────────────────────────────────────────────────────────────────────── */}
 
       {/* ── The list, with its filter ────────────────────────────────────── */}
       <section className="bg-white py-16 2xl:py-24 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
-          {/* Centred: with three cards the list reads as a set rather than the
-              start of a longer column, and a left-aligned header over it left
-              the row looking as though a fourth were missing. */}
-          <div className="max-w-2xl mx-auto mb-10 text-center" data-reveal>
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-4 font-sans">
-              The cases, by industry.
-            </h2>
-            {/* The filter instruction moved up to the hero, so this line keeps
-                only the part the hero does not say: why the list is short. */}
-            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mx-auto">
-              Published work sits alongside what is still being written up. A case goes up once the
-              data covers a full period and the client has cleared every figure in it.
-            </p>
-          </div>
-
           {/* The filter sits above the list it governs — pills rather than a
               select, so every option is visible at a glance and the count of
               sectors stays honest about how much work is published. */}

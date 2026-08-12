@@ -52,7 +52,10 @@ export default function Footer() {
           <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Company</h4>
           <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
             <a href={`${BASE}/about/`} className="hover:text-[#39471D]">About</a>
-            <a href={`${BASE}/about/#team`} className="hover:text-[#39471D]">The partners</a>
+            {/* "The partners" pointed at #team on the about page, and that
+                section is hidden — see AboutLanding. A link to an anchor that
+                is no longer rendered scrolls nowhere and reads as a broken
+                page, so it goes out with it and comes back with it. */}
             <a href={BLOG_URL} className="hover:text-[#39471D]">Blog</a>
             <a href={`${BASE}/contact/`} className="hover:text-[#39471D]">Contact</a>
             <a href={`${BASE}/contact/`} className="hover:text-[#39471D]">Book an audit</a>
