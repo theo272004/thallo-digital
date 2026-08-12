@@ -20,6 +20,14 @@ export type CaseStudy = {
   headline: string;
   /** The result in figures. Placeholders carry a status here, never a number. */
   metric: string;
+  /**
+   * What the figure counts, set beneath it in small type.
+   *
+   * Split from `metric` so the number can be set large and alone — a figure
+   * reads as a result, and a figure with its unit welded onto it reads as a
+   * sentence. Absent on a placeholder, which has no figure to caption.
+   */
+  metricLabel?: string;
   /** How long the period covered by the case ran. */
   timeframe: string;
   blurb: string;
@@ -31,8 +39,14 @@ export const CASES: CaseStudy[] = [
     slug: 'va-disability-claims',
     industry: 'Health & recovery',
     headline: 'From page two to page one',
-    // Search Console, January–July 2026. The same figure the case study leads on.
-    metric: '3.3x organic clicks',
+    /* Search Console, January–July 2026. The same figure the case study leads
+       on, and it has to stay that way — the design this card was restyled from
+       wrote it as "+230%", which is the same arithmetic said differently and
+       would have left the index and the case page quoting two numbers for one
+       result. If it ever changes, change it in `ResultsLanding` and in the
+       [slug] route's metadata at the same time. */
+    metric: '3.3x',
+    metricLabel: 'organic clicks in six months',
     timeframe: 'Six months',
     blurb:
       'A veteran-founded service in the VA disability claims space — compliance-heavy, crowded at the top, and an audience sceptical by default. Authority was the only way in.',

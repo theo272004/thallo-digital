@@ -46,9 +46,14 @@ function CaseCard({ c }: { c: CaseStudy }) {
           figure, so this line stays small and grey: set at 1.6rem in olive it
           would read as a result whatever the words said. */}
       {live ? (
-        <p className="mt-3 text-[1.6rem] font-bold leading-none tracking-tight text-[#39471D] font-sans tabular-nums">
-          {c.metric}
-        </p>
+        <>
+          <p className="mt-3 text-[2.1rem] font-bold leading-none tracking-tight text-[#39471D] font-sans tabular-nums">
+            {c.metric}
+          </p>
+          {c.metricLabel && (
+            <p className="mt-2 text-sm font-semibold leading-snug text-[#39471D]">{c.metricLabel}</p>
+          )}
+        </>
       ) : (
         <p className="mt-3 text-sm font-medium text-gray-400">{c.metric}</p>
       )}
@@ -116,13 +121,12 @@ export default function CaseStudiesLanding() {
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-4 font-sans max-w-2xl">
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-4 font-sans max-w-[16ch]">
             {/* Emphasis by colour, as everywhere else on the site. */}
-            The work, and what<br />it <span className="text-[#39471D]">moved.</span>
+            Companies that became <span className="text-[#39471D]">the answer.</span>
           </h1>
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mb-10">
-            A short list, by design. A case goes up once the data covers a full period and the
-            client has cleared every figure in it.
+            Hard categories, verified results. Filter by sector to see the work.
           </p>
           <SpinFlower alt="Thallo" className="block w-20 h-20 opacity-80" />
         </div>
@@ -167,9 +171,11 @@ export default function CaseStudiesLanding() {
             <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-4 font-sans">
               The cases, by industry.
             </h2>
+            {/* The filter instruction moved up to the hero, so this line keeps
+                only the part the hero does not say: why the list is short. */}
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mx-auto">
-              Published work sits alongside what is still being written up. Filter by sector to see
-              the categories we build authority in.
+              Published work sits alongside what is still being written up. A case goes up once the
+              data covers a full period and the client has cleared every figure in it.
             </p>
           </div>
 
