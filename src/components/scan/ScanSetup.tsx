@@ -37,6 +37,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, Building2, Globe2, Link2, LockKeyhole, Plus, Sparkles, X } from 'lucide-react';
 import { FIELD, Notice, Panel } from './ui';
+import { Combo, Select } from './Dropdown';
 import ConsentCheck from '@/components/ui/ConsentCheck';
 import { buildQuestions } from '@/lib/scan/questions';
 import { DEFAULT_MARKET, MARKETS, marketById } from '@/lib/scan/markets';
@@ -59,7 +60,10 @@ const LANGUAGES = [
 const COUNTRIES = Array.from(new Map(MARKETS.map((m) => [m.country, m])).values());
 
 function StepBadge({ n }: { n: number }) {
-  return <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F0F4E7] text-[15px] font-bold text-[#617A2B]">{n}.</span>;
+  /* Filled olive with the numeral in white, rather than a pale disc with olive
+     type. It is the marker for which of two steps you are on, and a tint reads
+     as decoration where a filled one reads as a position. */
+  return <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#39471D] text-[15px] font-bold text-white">{n}.</span>;
 }
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
@@ -242,42 +246,49 @@ export default function ScanSetup({
                   to file itself under "Professional services", which is then
                   the category phase 2 searches Google for. A wrong answer
                   chosen from a menu still reads as a real one. */}
-              <label className="flex flex-col gap-2.5 sm:col-span-2">
+              {/* Not a <datalist>. The native one is drawn by the operating
+                  system — on Windows a black panel with violet rows — and takes
+                  no styling whatsoever. `Combo` is a real input with our own
+                  list under it, so it stays typeable and free text still wins. */}
+              <div className="flex flex-col gap-2.5 sm:col-span-2">
                 <FieldLabel>Category</FieldLabel>
-                <input
-                  type="text"
+                <Combo
+                  label="Category"
                   value={industry}
-                  onChange={(e) => setIndustry(e.target.value)}
-                  list="scan-industries"
+                  onChange={setIndustry}
+                  options={INDUSTRIES}
                   maxLength={120}
                   placeholder="e.g. pizzerias, legal tech, wedding photography"
                   className={`${FIELD} rounded-xl py-3.5 text-[15px]`}
                 />
-                <datalist id="scan-industries">
-                  {INDUSTRIES.map((i) => <option key={i} value={i} />)}
-                </datalist>
                 <span className="text-[11px] font-medium text-gray-400">What you want to be found as — anything you like, or pick a suggestion</span>
-              </label>
+              </div>
 
               {/* Direct children of the grid above rather than a nested
                   two-column grid of their own — nested, they shared one cell
                   and each ended up a quarter of the card wide. */}
-              <label className="flex min-w-0 flex-col gap-2.5">
+              <div className="flex min-w-0 flex-col gap-2.5">
                 <FieldLabel>Country</FieldLabel>
-                <span className="relative">
-                  <Globe2 size={17} className="pointer-events-none absolute left-4 top-3.5 text-gray-400" />
-                  <select value={country} onChange={(e) => setCountry(e.target.value)} className={`${FIELD} appearance-none rounded-xl py-3.5 pl-11 text-[15px]`}>
-                    {COUNTRIES.map((m) => <option key={m.country} value={m.country}>{m.country.replace(/^the /, '')}</option>)}
-                  </select>
-                </span>
-              </label>
+                <Select
+                  label="Country"
+                  value={country}
+                  onChange={setCountry}
+                  icon={<Globe2 size={17} className="shrink-0 text-gray-400" />}
+                  options={COUNTRIES.map((m) => ({ value: m.country, label: m.country.replace(/^the /, '') }))}
+                  className={`${FIELD} rounded-xl py-3.5 text-[15px]`}
+                />
+              </div>
 
-              <label className="flex min-w-0 flex-col gap-2.5">
+              <div className="flex min-w-0 flex-col gap-2.5">
                 <FieldLabel>Language</FieldLabel>
-                <select value={language} onChange={(e) => setLanguage(e.target.value)} className={`${FIELD} rounded-xl py-3.5 text-[15px]`}>
-                  {LANGUAGES.map((l) => <option key={l.value} value={l.value}>{l.label}</option>)}
-                </select>
-              </label>
+                <Select
+                  label="Language"
+                  value={language}
+                  onChange={setLanguage}
+                  options={LANGUAGES.map((l) => ({ value: l.value, label: l.label }))}
+                  className={`${FIELD} rounded-xl py-3.5 text-[15px]`}
+                />
+              </div>
             </div>
 
             {error && <div className="mt-5"><Notice>{error}</Notice></div>}
@@ -288,14 +299,14 @@ export default function ScanSetup({
                 button. Stacked again below `sm`. */}
             <div className="mt-6 flex flex-col-reverse items-center gap-5 border-t border-gray-100 pt-5 sm:flex-row sm:justify-between">
               <span className="flex items-start gap-2 text-center sm:text-left">
-                <LockKeyhole size={14} className="mt-0.5 shrink-0 text-[#617A2B]" />
+                <LockKeyhole size={14} className="mt-0.5 shrink-0 text-[#39471D]" />
                 <span className="text-[12px] font-medium leading-relaxed text-gray-500">
                   <strong className="font-bold text-gray-700">No credit card required</strong>
                   <br />Free scan · Results in under a minute
                 </span>
               </span>
 
-              <button type="submit" className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#617A2B] px-8 py-4 text-[14px] font-bold text-white transition-colors hover:bg-[#55672E] sm:w-auto">
+              <button type="submit" className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#39471D] px-8 py-4 text-[14px] font-bold text-white transition-colors hover:bg-[#55672E] sm:w-auto">
                 Continue <ArrowRight size={18} />
               </button>
             </div>
@@ -321,13 +332,13 @@ export default function ScanSetup({
               <p className="mt-1 text-[14px] font-medium text-gray-500">Write what you want the models asked — up to {MAX_QUESTIONS}</p>
             </div>
           </div>
-          <span className="rounded-full bg-[#F0F4E7] px-3.5 py-2 text-[12px] font-bold tabular-nums text-[#617A2B]">{filled.length} / {MAX_QUESTIONS}</span>
+          <span className="rounded-full bg-[#39471D]/10 px-3.5 py-2 text-[12px] font-bold tabular-nums text-[#39471D]">{filled.length} / {MAX_QUESTIONS}</span>
         </div>
 
         {/* The one thing that silently invalidates a scan, said before the
             first keystroke rather than after the results. */}
         <div className="mt-7 flex items-start gap-3 rounded-xl border border-[#D9E2C8] bg-[#F7FAF2] px-4 py-4 sm:px-5">
-          <Sparkles size={19} className="mt-0.5 shrink-0 text-[#617A2B]" />
+          <Sparkles size={19} className="mt-0.5 shrink-0 text-[#39471D]" />
           {/* The example is the generated question for this industry and market,
               not a hardcoded English one — a Spanish scan shown an English
               sample teaches the wrong shape. Written as a template literal
@@ -376,7 +387,7 @@ export default function ScanSetup({
           type="button"
           onClick={addQuestion}
           disabled={questions.length >= MAX_QUESTIONS}
-          className="mt-4 inline-flex items-center gap-2 rounded-xl border border-dashed border-gray-300 px-4 py-3 text-[13px] font-semibold text-gray-600 transition-colors hover:border-[#617A2B] hover:text-[#617A2B] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-gray-300 disabled:hover:text-gray-600"
+          className="mt-4 inline-flex items-center gap-2 rounded-xl border border-dashed border-gray-300 px-4 py-3 text-[13px] font-semibold text-gray-600 transition-colors hover:border-[#39471D] hover:text-[#39471D] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-gray-300 disabled:hover:text-gray-600"
         >
           <Plus size={16} /> Add question
         </button>
@@ -422,7 +433,7 @@ export default function ScanSetup({
             type="button"
             onClick={runScan}
             disabled={!filled.length}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#617A2B] px-6 py-3 text-[13px] font-bold text-white transition-colors hover:bg-[#55672E] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#617A2B]"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#39471D] px-6 py-3 text-[13px] font-bold text-white transition-colors hover:bg-[#55672E] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#39471D]"
           >
             Run scan <ArrowRight size={17} />
           </button>

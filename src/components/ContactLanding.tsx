@@ -164,7 +164,13 @@ export default function ContactLanding() {
             the card. That was 58px a side, which is what showed as the
             misalignment. `px-6` stays below `lg`, where a card running to the
             screen edge would have no gutter at all. */}
-        <div className="my-auto w-full max-w-[1440px] mx-auto px-6 lg:px-0 pt-32 pb-20 sm:pt-36 sm:pb-24 lg:py-16">
+        {/* `lg:pt-28 lg:pb-16` rather than a flat `lg:py-16`. `my-auto` centres
+            the card in this box, and the navbar floating over the top of the
+            screen means dead centre reads high — the eye measures from under
+            the bar, not from the top of the page. The extra 48px above splits
+            in half and nudges the card down 24px, which is the amount that
+            looks centred rather than the amount that is. */}
+        <div className="my-auto w-full max-w-[1440px] mx-auto px-6 lg:px-0 pt-32 pb-20 sm:pt-36 sm:pb-24 lg:pt-28 lg:pb-16">
           {/* ── Floating editorial card ──────────────────────────────────────── */}
           <div
             data-reveal

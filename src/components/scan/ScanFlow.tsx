@@ -153,7 +153,7 @@ export default function ScanFlow() {
                 html="Check your AI visibility."
               />
             </div>
-            <span className="hidden rounded-full bg-[#F0F4E7] px-3 py-1.5 text-[11px] font-bold text-[#617A2B] sm:block">Free scan</span>
+            <span className="hidden rounded-full bg-[#39471D]/10 px-3 py-1.5 text-[11px] font-bold text-[#39471D] sm:block">Free scan</span>
           </div>
         )}
 
