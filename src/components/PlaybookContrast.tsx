@@ -27,10 +27,13 @@ import SpinFlower from '@/components/ui/SpinFlower';
  *
  * The approved mockup is drawn in a different palette from the live site — a
  * cooler forest green on a warm paper ground. The words are taken from it; the
- * material is the site's own: the `#F7F8F9` tint every other banded section
- * uses, the 28px card radius, the one house shadow, the isotipo. A section that
- * matched the mockup's colours exactly would be the only one on the page that
- * did.
+ * material is the site's own: the 28px card radius, the one house shadow, the
+ * isotipo. A section that matched the mockup's colours exactly would be the
+ * only one on the page that did.
+ *
+ * The ground itself is white. It was the `#F7F8F9` tint, which put it directly
+ * under the equally tinted shift section — the card inside keeps its own white
+ * and its border, so the panel still reads as an object on the page.
  */
 
 const ROWS: [string, string][] = [
@@ -43,7 +46,9 @@ const ROWS: [string, string][] = [
 
 export default function PlaybookContrast() {
   return (
-    <section className="border-b border-gray-100 bg-[#F7F8F9] py-16 2xl:py-24">
+    /* White ground; the hairline underneath carries it into the approach
+       section. */
+    <section className="border-b border-gray-100 bg-white py-16 2xl:py-24">
       <div className="mx-auto max-w-[1440px] px-6">
         <div
           data-reveal
