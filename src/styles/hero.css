@@ -51,10 +51,26 @@
 
 /* Premium Phone Frame Visual boundaries — a wide, CSS-drawn iPhone cropped to
    show exactly its top half (no PNG canvas, so there's no stray white box). */
+/* The window the device is seen through. The frame inside it is a whole phone
+   at 9:19.5 — about 750px tall on a desktop — and this crops it.
+
+   It runs 90px past the bottom of its column so more of the device shows. Only
+   downward: `align-self: flex-start` pins it to the top of the wrapper, which
+   is what keeps the phone's own top edge, the notch, the screen and every
+   frame of the typing animation exactly where they were. Its parent is
+   `flex items-center`, and without that line the extra height would have been
+   split evenly above and below and lifted the whole scene by 45px.
+
+   Nothing below has to make room for it either: the hero section is
+   `overflow-hidden`, so the surplus is cut off at the fold rather than pushed
+   into the ticker. That is also why the number can be generous — 90px reaches
+   the bottom edge on a 900px screen, where 70 would have been exact, and any
+   screen shorter than that simply crops a little sooner. */
 .phone-crop-container {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: calc(100% + 90px);
+  align-self: flex-start;
   overflow: hidden;
   display: flex;
   justify-content: center;
