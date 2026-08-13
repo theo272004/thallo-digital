@@ -591,14 +591,23 @@ export default function ServicesPage() {
                 taller. */}
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6">
               {PROJECTS.map((p, i) => (
+                /* The same olive edge and sage fill the approach chips take, so
+                   the two behave alike wherever a pointer lands on the site. */
                 <div
                   key={p.title}
-                  className={`rounded-2xl border border-gray-200 bg-gray-50/60 p-5 ${
+                  className={`group/proj rounded-2xl border border-gray-200 bg-gray-50/60 p-5 transition-colors duration-300 hover:border-[#39471D] hover:bg-[#E7ECD9] ${
                     i < 3 ? 'lg:col-span-2' : 'lg:col-span-3'
                   }`}
                 >
-                  <h3 className="mb-1.5 font-sans text-[15px] font-semibold tracking-tight text-gray-900">{p.title}</h3>
-                  <p className="text-[13px] font-medium leading-relaxed text-gray-500">{p.copy}</p>
+                  <h3 className="mb-1.5 font-sans text-[15px] font-semibold tracking-tight text-gray-900 transition-colors duration-300 group-hover/proj:text-[#39471D]">
+                    {p.title}
+                  </h3>
+                  {/* A step darker on hover. gray-500 clears 4.5:1 against the
+                      near-white ground but only 4.3 against #E7ECD9, and this
+                      copy is 13px — exactly the size that has to clear it. */}
+                  <p className="text-[13px] font-medium leading-relaxed text-gray-500 transition-colors duration-300 group-hover/proj:text-gray-600">
+                    {p.copy}
+                  </p>
                 </div>
               ))}
             </div>
