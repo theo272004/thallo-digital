@@ -51,7 +51,11 @@ export default function ScannerStripe() {
        the page where two tinted sections meet, and without a rule the two
        grounds run together into one long band with a photograph floating in
        the middle of it. */
-    <section className="border-b border-gray-100 bg-[#F7F8F9] py-10 2xl:py-14">
+    /* Padding is asymmetric on purpose: the bottom is cut back so the blog
+       sits close under this. The two share a ground and a hairline and read as
+       one run of the page, and 40px under here plus 64px over there was
+       holding them apart as though they were unrelated. */
+    <section className="border-b border-gray-100 bg-[#F7F8F9] pt-10 pb-6 2xl:pt-14 2xl:pb-8">
       <div className="mx-auto max-w-[1440px] px-6">
         {/* `data-reveal`, not the Reveal component. The page root already runs
             useRevealBatch, which is how every other section here fades in;
