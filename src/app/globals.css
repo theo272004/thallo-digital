@@ -64,6 +64,21 @@ html, body {
   overflow-x: clip;
 }
 
+/* Reserve the scrollbar's gutter whether or not the page needs one.
+
+   Without this the grid moved between pages. A page tall enough to scroll is
+   laid out in 1425px; one that fits exactly — the scan’s first step, which
+   was built to finish without scrolling — gets the whole 1440. Every centred
+   container on the site then sits 7.5px further right on the short page, the
+   navbar included, so going from the home to the scan slid the logo, the menu
+   and the content sideways by half a scrollbar.
+
+   It is the scroll container that reserves the gutter, so this belongs on
+   `html` rather than on `body`. */
+html {
+  scrollbar-gutter: stable;
+}
+
 /* Laptop range: only container width and About image are adjusted.
    No font-size change — both Mac and Windows laptops keep the 16px default
    (same as desktop, which looks correct on both). */
