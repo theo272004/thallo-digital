@@ -107,7 +107,11 @@ export default function ScanFlow() {
         {(!IS_LIVE || session.demo) && <DemoNotice configured={IS_LIVE} />}
 
         {/* Panel chrome — the strip a tool wears and a brochure does not. */}
-        <div ref={topRef} className="mt-3 scroll-mt-24">
+        {/* mt-8, not mt-3. The panel was sitting almost against the heading —
+            12px between a 48px h1 and the top edge of a card reads as a
+            collision rather than a relationship. The room comes out of the
+            step's own height, which the two-column form gave back. */}
+        <div ref={topRef} className="mt-8 scroll-mt-24">
           {stage === 'setup' && (
             <>
               {error && (

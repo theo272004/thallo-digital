@@ -179,8 +179,16 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
 
   if (step === 1) {
     return (
-      <div className="mx-auto max-w-[720px]">
-        <Panel className="p-7 sm:p-10">
+      /* 1040px and two columns, where this was 720px and one.
+
+         At 720 in a 1392 container the card was half the width of the page with
+         five fields stacked down it — the proportions of a phone screen shown
+         on a desktop, which is exactly what it looked like. Two columns is also
+         what keeps the whole step on one screen: five stacked fields plus a
+         button and a footnote ran past the fold, and a form you have to scroll
+         to finish is a form people abandon halfway. */
+      <div className="mx-auto max-w-[1040px]">
+        <Panel className="p-6 sm:p-8">
           <form onSubmit={continueToPrompts}>
             <div className="flex items-start gap-3">
               <StepBadge n={1} />
@@ -190,7 +198,11 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
               </div>
             </div>
 
-            <div className="mt-9 flex flex-col gap-6">
+            {/* Brand and website pair, category takes the full width because it
+                carries the longest hint, country and language pair. Everything
+                collapses to one column below `sm`, where a single column is the
+                right answer rather than a symptom. */}
+            <div className="mt-7 grid gap-4 sm:grid-cols-2">
               <label className="flex flex-col gap-2.5">
                 <FieldLabel>Brand name</FieldLabel>
                 <span className="relative">
@@ -216,7 +228,7 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
                   to file itself under "Professional services", which is then
                   the category phase 2 searches Google for. A wrong answer
                   chosen from a menu still reads as a real one. */}
-              <label className="flex flex-col gap-2.5">
+              <label className="flex flex-col gap-2.5 sm:col-span-2">
                 <FieldLabel>Category</FieldLabel>
                 <input
                   type="text"
@@ -233,35 +245,45 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
                 <span className="text-[11px] font-medium text-gray-400">What you want to be found as — anything you like, or pick a suggestion</span>
               </label>
 
-              <div className="grid gap-6 sm:grid-cols-2">
-                <label className="flex min-w-0 flex-col gap-2.5">
-                  <FieldLabel>Country</FieldLabel>
-                  <span className="relative">
-                    <Globe2 size={17} className="pointer-events-none absolute left-4 top-3.5 text-gray-400" />
-                    <select value={country} onChange={(e) => setCountry(e.target.value)} className={`${FIELD} appearance-none rounded-xl py-3.5 pl-11 text-[15px]`}>
-                      {COUNTRIES.map((m) => <option key={m.country} value={m.country}>{m.country.replace(/^the /, '')}</option>)}
-                    </select>
-                  </span>
-                </label>
-
-                <label className="flex min-w-0 flex-col gap-2.5">
-                  <FieldLabel>Language</FieldLabel>
-                  <select value={language} onChange={(e) => setLanguage(e.target.value)} className={`${FIELD} rounded-xl py-3.5 text-[15px]`}>
-                    {LANGUAGES.map((l) => <option key={l.value} value={l.value}>{l.label}</option>)}
+              {/* Direct children of the grid above rather than a nested
+                  two-column grid of their own — nested, they shared one cell
+                  and each ended up a quarter of the card wide. */}
+              <label className="flex min-w-0 flex-col gap-2.5">
+                <FieldLabel>Country</FieldLabel>
+                <span className="relative">
+                  <Globe2 size={17} className="pointer-events-none absolute left-4 top-3.5 text-gray-400" />
+                  <select value={country} onChange={(e) => setCountry(e.target.value)} className={`${FIELD} appearance-none rounded-xl py-3.5 pl-11 text-[15px]`}>
+                    {COUNTRIES.map((m) => <option key={m.country} value={m.country}>{m.country.replace(/^the /, '')}</option>)}
                   </select>
-                </label>
-              </div>
+                </span>
+              </label>
+
+              <label className="flex min-w-0 flex-col gap-2.5">
+                <FieldLabel>Language</FieldLabel>
+                <select value={language} onChange={(e) => setLanguage(e.target.value)} className={`${FIELD} rounded-xl py-3.5 text-[15px]`}>
+                  {LANGUAGES.map((l) => <option key={l.value} value={l.value}>{l.label}</option>)}
+                </select>
+              </label>
             </div>
 
             {error && <div className="mt-5"><Notice>{error}</Notice></div>}
 
-            <button type="submit" className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#617A2B] py-4 text-[14px] font-bold text-white transition-colors hover:bg-[#55672E]">
-              Continue <ArrowRight size={18} />
-            </button>
+            {/* Button and reassurance share a row instead of stacking, which
+                is another 60px of height back and reads better on a card this
+                wide: a full-width button across 1040px is a banner, not a
+                button. Stacked again below `sm`. */}
+            <div className="mt-6 flex flex-col-reverse items-center gap-5 border-t border-gray-100 pt-5 sm:flex-row sm:justify-between">
+              <span className="flex items-start gap-2 text-center sm:text-left">
+                <LockKeyhole size={14} className="mt-0.5 shrink-0 text-[#617A2B]" />
+                <span className="text-[12px] font-medium leading-relaxed text-gray-500">
+                  <strong className="font-bold text-gray-700">No credit card required</strong>
+                  <br />Free scan · Results in under a minute
+                </span>
+              </span>
 
-            <div className="mt-7 flex items-start justify-center gap-2 border-t border-gray-100 pt-6 text-center">
-              <LockKeyhole size={14} className="mt-0.5 shrink-0 text-[#617A2B]" />
-              <p className="text-[12px] font-medium leading-relaxed text-gray-500"><strong className="font-bold text-gray-700">No credit card required</strong><br />Free scan · Results in under a minute</p>
+              <button type="submit" className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#617A2B] px-8 py-4 text-[14px] font-bold text-white transition-colors hover:bg-[#55672E] sm:w-auto">
+                Continue <ArrowRight size={18} />
+              </button>
             </div>
           </form>
         </Panel>
