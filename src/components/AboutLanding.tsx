@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import SpinFlower from '@/components/ui/SpinFlower';
 // import Partners from '@/components/Partners'; ← restore with the hidden team section below
 import AuditCTA from '@/components/AuditCTA';
@@ -90,6 +92,10 @@ const FIT = [
 ];
 
 export default function AboutLanding() {
+  /* Which position is lit. Never null: a grid where nothing is chosen looks
+     unfinished, so the first starts lit. */
+  const [activeBelief, setActiveBelief] = useState(0);
+
   return (
     <>
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
@@ -109,58 +115,50 @@ export default function AboutLanding() {
       {/* ── The belief the business rests on ──────────────────────────────── */}
       <section className="border-b border-gray-100 bg-white py-16 2xl:py-24">
         <div className="mx-auto max-w-[1440px] px-6">
-          <div className="relative overflow-hidden rounded-3xl bg-[#171A10] p-9 sm:p-14">
-            {/* The one flourish the source panel had: a soft olive bloom off the
-                top-right corner, so a large block of dark is not a flat slab. */}
+          {/* The photograph is the panel's ground now, not a column beside the
+              prose. As a column it was an illustration sitting next to an
+              argument; behind it, it is the room the argument is made in. */}
+          <div className="relative isolate overflow-hidden rounded-3xl bg-[#171A10] p-9 sm:p-14">
+            <img
+              src={`${BASE}/notebook-desk.webp`}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              className="pointer-events-none absolute inset-0 -z-10 h-full w-full select-none object-cover"
+            />
+            {/* Heavier on the left, where every line of this starts, and easing
+                off to the right so the desk is still legible as a photograph.
+                Measured after: the copy clears 9:1 against its ground at its
+                worst point. */}
             <div
               aria-hidden
-              className="pointer-events-none absolute -right-[8%] -top-[35%] h-[460px] w-[460px]"
-              style={{ background: 'radial-gradient(circle, rgba(203,208,172,.15), transparent 68%)' }}
+              className="absolute inset-0 -z-10"
+              style={{
+                background:
+                  'linear-gradient(to right, rgba(23,26,16,.93) 0%, rgba(23,26,16,.84) 52%, rgba(23,26,16,.6) 100%)',
+              }}
             />
-            {/* Stretch rather than centre: the photograph is a column of this
-                panel, not an ornament floating in the middle of one. Centred, it
-                sat 224px tall beside 377px of prose and left a band of bare dark
-                above and below it. */}
-            <div className="relative grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-stretch lg:gap-14">
-              <div>
-                <h2 className="mb-6 max-w-[18ch] font-sans text-3xl font-bold leading-[1.07] tracking-tight text-white sm:text-4xl">
-                  Authority is the one asset <span className="text-[#CBD0AC]">that appreciates.</span>
-                </h2>
-                <div className="flex flex-col gap-4">
-                  <p className="max-w-[60ch] text-[15px] font-medium leading-relaxed text-white/65">
-                    Ads stop the day you stop paying. Rankings move with every update.{' '}
-                    <strong className="font-semibold text-white">Authority compounds.</strong> Every study you publish,
-                    every citation you earn, every room where your name comes up makes the next one easier.
-                  </p>
-                  <p className="max-w-[60ch] text-[15px] font-medium leading-relaxed text-white/65">
-                    That mattered before. It matters more now that anyone can generate a thousand articles in an
-                    afternoon. When content becomes infinite, the only thing that carries weight is the work a machine
-                    could not have produced: research nobody else could run, judgment earned in a specific field, a point
-                    of view somebody is willing to sign.
-                  </p>
-                  <p className="max-w-[60ch] text-[15px] font-medium leading-relaxed text-white/65">
-                    That is the whole business. We build that for companies where the decision is expensive enough that
-                    buyers do their homework first.
-                  </p>
-                </div>
-              </div>
 
-              {/* A photograph rather than the source's dashed "Image" box. The
-                  site holds this one already and it is otherwise unused.
-
-                  Fixed 4:3 while the panel is stacked, then full height once it
-                  is a column — the source photograph is landscape, so a portrait
-                  frame at every width would have cropped it to a stripe of desk. */}
-              <div className="aspect-[4/3] overflow-hidden rounded-2xl lg:aspect-auto lg:h-full">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`${BASE}/notebook-desk.webp`}
-                  alt=""
-                  aria-hidden="true"
-                  loading="lazy"
-                  className="h-full w-full object-cover"
-                />
-              </div>
+            <h2 className="mb-6 max-w-[18ch] font-sans text-3xl font-bold leading-[1.07] tracking-tight text-white sm:text-4xl">
+              Authority is the one asset <span className="text-[#CBD0AC]">that appreciates.</span>
+            </h2>
+            <div className="flex max-w-[62ch] flex-col gap-4">
+              <p className="text-[15px] font-medium leading-relaxed text-white/75">
+                Ads stop the day you stop paying. Rankings move with every update.{' '}
+                <strong className="font-semibold text-white">Authority compounds.</strong> Every study you publish,
+                every citation you earn, every room where your name comes up makes the next one easier.
+              </p>
+              <p className="text-[15px] font-medium leading-relaxed text-white/75">
+                That mattered before. It matters more now that anyone can generate a thousand articles in an
+                afternoon. When content becomes infinite, the only thing that carries weight is the work a machine
+                could not have produced: research nobody else could run, judgment earned in a specific field, a point
+                of view somebody is willing to sign.
+              </p>
+              <p className="text-[15px] font-medium leading-relaxed text-white/75">
+                That is the whole business. We build that for companies where the decision is expensive enough that
+                buyers do their homework first.
+              </p>
             </div>
           </div>
         </div>
@@ -207,30 +205,67 @@ export default function AboutLanding() {
             </p>
           </div>
 
+          {/* One card is olive at a time, and it follows the pointer — the
+              device from the industries grid. Six blocks of solid green read as
+              a wall; one against five white reads as a selection.
+
+              It does not reset on mouse-out: whichever card the cursor touched
+              last stays lit once you scroll on, so the section keeps a chosen
+              state rather than snapping back to a default the moment you
+              leave. */}
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {BELIEFS.map((b) => (
-              <div
-                key={b.n}
-                data-reveal
-                className="rounded-3xl border border-gray-200 bg-white p-8 lift transition-all duration-300"
-              >
-                <span className="mb-4 block text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">{b.n}</span>
-                <h3 className="mb-2.5 font-sans text-xl font-semibold tracking-tight text-gray-900">{b.title}</h3>
-                <p className="text-[15px] font-medium leading-relaxed text-gray-500">
-                  {Array.isArray(b.copy) ? (
-                    <>
-                      {b.copy[0]}
-                      <a href={b.href} className="font-semibold text-[#39471D] underline underline-offset-2">
-                        {b.copy[1]}
-                      </a>
-                      {b.copy[2]}
-                    </>
-                  ) : (
-                    b.copy
-                  )}
-                </p>
-              </div>
-            ))}
+            {BELIEFS.map((b, i) => {
+              const on = i === activeBelief;
+              return (
+                <div
+                  key={b.n}
+                  data-reveal
+                  onMouseEnter={() => setActiveBelief(i)}
+                  onFocus={() => setActiveBelief(i)}
+                  tabIndex={0}
+                  className={`rounded-3xl border p-8 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#39471D] ${
+                    on
+                      ? 'border-transparent bg-[#39471D] shadow-[0_24px_60px_-20px_rgba(57,71,29,0.55)]'
+                      : 'lift border-gray-200 bg-white'
+                  }`}
+                >
+                  <span
+                    className={`mb-4 block text-[11px] font-bold uppercase tracking-[0.18em] transition-colors duration-300 ${
+                      on ? 'text-[#CBD0AC]' : 'text-gray-400'
+                    }`}
+                  >
+                    {b.n}
+                  </span>
+                  <h3
+                    className={`mb-2.5 font-sans text-xl font-semibold tracking-tight transition-colors duration-300 ${
+                      on ? 'text-white' : 'text-gray-900'
+                    }`}
+                  >
+                    {b.title}
+                  </h3>
+                  <p
+                    className={`text-[15px] font-medium leading-relaxed transition-colors duration-300 ${
+                      on ? 'text-[#CBD0AC]' : 'text-gray-500'
+                    }`}
+                  >
+                    {Array.isArray(b.copy) ? (
+                      <>
+                        {b.copy[0]}
+                        <a
+                          href={b.href}
+                          className={`font-semibold underline underline-offset-2 ${on ? 'text-white' : 'text-[#39471D]'}`}
+                        >
+                          {b.copy[1]}
+                        </a>
+                        {b.copy[2]}
+                      </>
+                    ) : (
+                      b.copy
+                    )}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
