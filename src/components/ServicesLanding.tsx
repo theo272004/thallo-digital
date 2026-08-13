@@ -191,6 +191,10 @@ function orderClasses(cardIdx: number, active: number): string {
 export default function ServicesPage() {
   const [activeService, setActiveService] = useState(1);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  /* Which of the Engine's six cells is open. Never null — a row of six closed
+     cards would say nothing about what the section does, and pointing away
+     from one leaves it open rather than collapsing the row to nothing. */
+  const [activeCell, setActiveCell] = useState(2);
 
   /* The plan builder's state lived here — a base plan, a list of add-ons, and
      the summary it fed into the enquiry form as `activePlans`. It went out with
@@ -408,79 +412,128 @@ export default function ServicesPage() {
        ─────────────────────────────────────────────────────────────────────── */}
 
       {/* ── What the Engine runs ────────────────────────────────────────────
-          A photograph panel with the six cells laid across it as glass, one
-          row. No new words: the heading and the paragraph are the ones that
-          were on the grey version, and each card carries the title and copy it
-          already had.
+          The photograph is the section, edge to edge — not a picture inside a
+          card sitting on a white page.
 
-          The expansion is CSS alone. Each card is `flex-1` and grows to
-          `flex-[1.9]` on hover — the other five give the room back on their
-          own, because that is what a flex row does, so nothing needs to know
-          which sibling is hovered.
+          ## Why nothing changes width
 
-          Two things the row is careful about:
+          The first pass widened the hovered card and let the other five give
+          the room back. It read badly: every card's text re-wrapped on every
+          frame of the animation, so six paragraphs shuffled their line breaks
+          while one opened. Words moving is the thing the eye cannot ignore.
 
-           · its height is fixed on desktop. The compact copy is clamped to
-             three lines and the hovered card unclamps; letting that change the
-             row height would nudge every neighbour down mid-hover.
-           · below `lg` there is no hover to speak of, so the cards stack, drop
-             the glass, unclamp, and read as a plain list. A reveal a touch
-             device cannot reach is a reveal that hides the content.
+          So the columns are equal and they stay equal. The only thing that
+          animates is the open card's body, on `grid-template-rows` 0fr → 1fr —
+          the same mechanism the FAQ below uses. One property, no reflow, and
+          the row's height is fixed with the cards sitting on its floor, so the
+          one that opens grows upward into space that was already empty and
+          nothing else on the page moves at all.
+
+          ## Why one is always open
+
+          A row of six closed cards says nothing about what it does. The third
+          starts open, and pointing at another moves the selection rather than
+          opening a second — so the section always reads as one thing showing
+          and five waiting, and it never collapses into an empty state.
+
+          Selection follows the pointer and also focus, so a keyboard reaches
+          every card. Below `lg` there is no pointer worth speaking of: the
+          cards stack and every body is open.
+
+          No new words. The heading, the paragraph, and all six titles and
+          bodies are the ones the grey version carried.
        ─────────────────────────────────────────────────────────────────────── */}
-      <section className="bg-white py-16 2xl:py-24 border-b border-gray-100">
-        <div className="max-w-[1440px] mx-auto px-6">
-          <div className="relative isolate overflow-hidden rounded-[28px]">
-            <img
-              loading="lazy"
-              decoding="async"
-              src={`${BASE}/engine-bg.webp`}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 -z-10 h-full w-full object-cover"
-            />
-            {/* The photograph is dark but not evenly so — a lit wall runs down
-                the right, exactly where the paragraph sits. Darkest at top and
-                bottom, where the type is; lightest across the middle, which is
-                the part of the picture worth seeing. */}
-            <div
-              aria-hidden
-              className="absolute inset-0 -z-10"
-              style={{
-                background:
-                  'linear-gradient(to bottom, rgba(23,26,16,.82) 0%, rgba(23,26,16,.42) 38%, rgba(23,26,16,.55) 68%, rgba(23,26,16,.86) 100%)',
-              }}
-            />
+      <section className="relative isolate overflow-hidden border-b border-gray-100">
+        <img
+          loading="lazy"
+          decoding="async"
+          src={`${BASE}/engine-bg.webp`}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 -z-10 h-full w-full object-cover"
+        />
+        {/* Darkest where the type is — the top, and the floor the cards sit on
+            — and lightest across the middle, which is the part of the picture
+            worth seeing. The photograph carries a lit wall down its right,
+            exactly where the paragraph falls. */}
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10"
+          style={{
+            background:
+              'linear-gradient(to bottom, rgba(23,26,16,.86) 0%, rgba(23,26,16,.46) 34%, rgba(23,26,16,.62) 62%, rgba(23,26,16,.9) 100%)',
+          }}
+        />
 
-            <div className="p-7 sm:p-10 lg:p-12">
-              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start lg:gap-14">
-                <h2 className="max-w-[16ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl">
-                  {/* Sage, not the olive the light sections use — #39471D on
-                      this ground is very nearly invisible. */}
-                  What the <span className="italic text-[#CBD0AC]">Engine</span> runs every month.
-                </h2>
-                <p className="max-w-[56ch] text-base font-medium leading-relaxed text-white/75">
-                  One operation, not a list of services bought separately. Research feeds the content, the
-                  content feeds the structure, the structure feeds distribution, and the reporting tells
-                  you what moved.
-                </p>
-              </div>
+        <div className="mx-auto max-w-[1440px] px-6 py-16 2xl:py-24">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start lg:gap-14">
+            <h2 className="max-w-[16ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl">
+              {/* Sage, not the olive the light sections use — #39471D on this
+                  ground is very nearly invisible. */}
+              What the <span className="italic text-[#CBD0AC]">Engine</span> runs every month.
+            </h2>
+            <p className="max-w-[56ch] text-base font-medium leading-relaxed text-white/75">
+              One operation, not a list of services bought separately. Research feeds the content, the
+              content feeds the structure, the structure feeds distribution, and the reporting tells
+              you what moved.
+            </p>
+          </div>
 
-              <div className="mt-10 flex flex-col gap-3 lg:mt-16 lg:h-[248px] lg:flex-row">
-                {ENGINE.map((cell) => (
-                  <div
-                    key={cell.title}
-                    className="group/cell rounded-2xl border border-white/15 bg-white/[0.08] p-5 backdrop-blur-md transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] lg:h-full lg:flex-1 lg:overflow-hidden lg:hover:flex-[1.9] lg:hover:border-white lg:hover:bg-white lg:hover:shadow-[0_24px_60px_-24px_rgba(23,26,16,0.7)]"
+          {/* The row reserves the height of the tallest card it can ever open,
+              so opening one never moves the section below it. That height is a
+              function of card width, and card width is a function of the
+              breakpoint: measured at 225px when the six share 1024, 176px at
+              1280, 154px at 1440 and above, where the container stops growing.
+              A single value would either clip the narrow case or leave a band
+              of bare photograph above the wide one. Each carries a little
+              headroom over the measurement — the copy is text, and text gets
+              reworded. */}
+          <div className="mt-10 flex flex-col gap-3 lg:mt-14 lg:h-[248px] lg:flex-row lg:items-end xl:h-[196px] 2xl:h-[176px]">
+            {ENGINE.map((cell, i) => {
+              const open = i === activeCell;
+              return (
+                <div
+                  key={cell.title}
+                  tabIndex={0}
+                  onMouseEnter={() => setActiveCell(i)}
+                  onFocus={() => setActiveCell(i)}
+                  aria-expanded={open}
+                  className={`rounded-2xl border p-5 backdrop-blur-md transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CBD0AC] lg:flex-1 ${
+                    open
+                      ? 'border-white bg-white shadow-[0_24px_60px_-24px_rgba(23,26,16,0.7)]'
+                      : 'border-white/15 bg-white/[0.08]'
+                  }`}
+                >
+                  <h3
+                    className={`font-sans text-[15px] font-semibold leading-snug tracking-tight transition-colors duration-500 ${
+                      open ? 'lg:text-gray-900' : 'text-white'
+                    }`}
                   >
-                    <h3 className="font-sans text-[15px] font-semibold tracking-tight text-white transition-colors duration-500 lg:group-hover/cell:text-gray-900">
-                      {cell.title}
-                    </h3>
-                    <p className="mt-2.5 text-[13px] font-medium leading-relaxed text-white/70 transition-colors duration-500 lg:line-clamp-3 lg:group-hover/cell:line-clamp-none lg:group-hover/cell:text-gray-600">
-                      {cell.copy}
-                    </p>
+                    {cell.title}
+                  </h3>
+
+                  {/* 0fr → 1fr rather than a max-height guessed at: the body is
+                      whatever it measures, so the easing runs over the real
+                      distance from first pixel to last. Open at every width
+                      below lg, where there is no pointer to open it with. */}
+                  <div
+                    className={`grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] grid-rows-[1fr] ${
+                      open ? 'lg:grid-rows-[1fr]' : 'lg:grid-rows-[0fr]'
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <p
+                        className={`pt-2.5 text-[13px] font-medium leading-relaxed transition-opacity duration-500 ${
+                          open ? 'text-gray-600 lg:opacity-100' : 'text-white/70 lg:opacity-0'
+                        }`}
+                      >
+                        {cell.copy}
+                      </p>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
