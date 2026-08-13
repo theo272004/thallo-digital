@@ -374,7 +374,9 @@ export default function ServicesPage() {
                         onClick={(e) => e.stopPropagation()}
                         className={`mt-5 block rounded-full px-5 py-3 text-center text-sm font-semibold transition-colors ${
                           isFeatured
-                            ? 'bg-white text-[#39471D] hover:bg-[#E7ECD9]'
+                            /* Hover darkens the type rather than tinting the
+                               button. The sage fill it used is out of use. */
+                            ? 'bg-white text-[#39471D] hover:text-[#171A10]'
                             : 'border border-gray-200 text-gray-900 hover:border-[#39471D] hover:text-[#39471D]'
                         }`}
                       >
@@ -591,21 +593,18 @@ export default function ServicesPage() {
                 taller. */}
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6">
               {PROJECTS.map((p, i) => (
-                /* The same olive edge and sage fill the approach chips take, so
-                   the two behave alike wherever a pointer lands on the site. */
+                /* Olive edge on hover, and the card lifts off its grey ground
+                   to white. No sage fill: #E7ECD9 is out of use. */
                 <div
                   key={p.title}
-                  className={`group/proj rounded-2xl border border-gray-200 bg-gray-50/60 p-5 transition-colors duration-300 hover:border-[#39471D] hover:bg-[#E7ECD9] ${
+                  className={`group/proj rounded-2xl border border-gray-200 bg-gray-50/60 p-5 transition-colors duration-300 hover:border-[#39471D] hover:bg-white ${
                     i < 3 ? 'lg:col-span-2' : 'lg:col-span-3'
                   }`}
                 >
                   <h3 className="mb-1.5 font-sans text-[15px] font-semibold tracking-tight text-gray-900 transition-colors duration-300 group-hover/proj:text-[#39471D]">
                     {p.title}
                   </h3>
-                  {/* A step darker on hover. gray-500 clears 4.5:1 against the
-                      near-white ground but only 4.3 against #E7ECD9, and this
-                      copy is 13px — exactly the size that has to clear it. */}
-                  <p className="text-[13px] font-medium leading-relaxed text-gray-500 transition-colors duration-300 group-hover/proj:text-gray-600">
+                  <p className="text-[13px] font-medium leading-relaxed text-gray-500">
                     {p.copy}
                   </p>
                 </div>
