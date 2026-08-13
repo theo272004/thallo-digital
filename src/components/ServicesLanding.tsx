@@ -4,6 +4,7 @@ import React, { useState, useRef, useLayoutEffect } from 'react';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import SpinFlower from '@/components/ui/SpinFlower';
 import AuditCTA from '@/components/AuditCTA';
+import FaqList from '@/components/ui/FaqList';
 import { BASE } from '@/lib/site';
 // EngagementSteps and Magnetic left with the hidden process strip and plan
 // builder — restore them there and here together.
@@ -190,7 +191,6 @@ function orderClasses(cardIdx: number, active: number): string {
 
 export default function ServicesPage() {
   const [activeService, setActiveService] = useState(1);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
   /* Which of the Engine's six cells is open. Never null — a row of six closed
      cards would say nothing about what the section does, and pointing away
      from one leaves it open rather than collapsing the row to nothing. */
@@ -601,52 +601,7 @@ export default function ServicesPage() {
               </p>
             </div>
 
-            <div className="border-t border-gray-200">
-              {FAQS.map((faq, i) => {
-                const isOpen = openFaq === i;
-                return (
-                  <div key={faq.q} className="border-b border-gray-200">
-                    <button
-                      type="button"
-                      id={`faq-q-${i}`}
-                      aria-expanded={isOpen}
-                      aria-controls={`faq-a-${i}`}
-                      onClick={() => setOpenFaq(isOpen ? null : i)}
-                      className="flex w-full items-center justify-between gap-6 py-6 text-left"
-                    >
-                      <span className="text-[17px] font-semibold tracking-[-0.01em] text-gray-900">{faq.q}</span>
-                      {/* Two one-pixel rules rather than an icon font, so it
-                          stays crisp at any zoom and needs nothing loaded. */}
-                      <span aria-hidden className="relative block h-5 w-5 shrink-0">
-                        <span className="absolute left-0 top-[9px] block h-[1.5px] w-5 bg-[#39471D]" />
-                        <span
-                          className="absolute left-[9px] top-0 block h-5 w-[1.5px] bg-[#39471D] transition-all duration-300"
-                          style={{ transform: isOpen ? 'rotate(90deg)' : 'none', opacity: isOpen ? 0 : 1 }}
-                        />
-                      </span>
-                    </button>
-
-                    {/* Grid-rows rather than max-height: a guess that is too
-                        small clips the longest answer, and one that is too
-                        large makes every other answer close at the wrong
-                        speed. */}
-                    <div
-                      id={`faq-a-${i}`}
-                      role="region"
-                      aria-labelledby={`faq-q-${i}`}
-                      className="grid transition-all duration-300 ease-out"
-                      style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
-                    >
-                      <div className="overflow-hidden">
-                        <p className="max-w-[64ch] pb-7 text-[15.5px] font-medium leading-relaxed text-gray-500">
-                          {faq.a}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <FaqList items={FAQS} idPrefix="plans-faq" />
           </div>
         </div>
       </section>
