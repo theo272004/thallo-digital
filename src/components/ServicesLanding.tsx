@@ -475,11 +475,14 @@ export default function ServicesPage() {
           }}
         />
 
-        {/* Trimmed from py-16/24 so this and Standalone Projects have a chance
-            of sitting on one screen together. The photograph reads as generous
-            on its own; the padding was adding to a section that already had
-            room inside it. */}
-        <div className="mx-auto max-w-[1440px] px-6 py-12 2xl:py-16">
+        {/* Back to py-16/24. It was trimmed to buy height for the screen these
+            two sections share, and that was the wrong place to take it from:
+            the padding here is not empty space, it is how much of the
+            photograph you see above the heading and below the cards. Cutting it
+            cropped the picture. The height came out of Standalone Projects
+            instead, where it was a layout fault rather than a deliberate
+            margin. */}
+        <div className="mx-auto max-w-[1440px] px-6 py-16 2xl:py-24">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start lg:gap-14">
             <h2 className="max-w-[16ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl">
               {/* Sage, not the olive the light sections use — #39471D on this
@@ -507,7 +510,7 @@ export default function ServicesPage() {
               simply as tall as they are. The breakpoint-by-breakpoint reserve
               that used to be here existed only to hold room for a card that
               grew; nothing grows now. */}
-          <div className="mt-8 flex flex-col gap-3 lg:mt-10 lg:flex-row lg:items-stretch">
+          <div className="mt-10 flex flex-col gap-3 lg:mt-14 lg:flex-row lg:items-stretch">
             {ENGINE.map((cell, i) => {
               const selected = i === activeCell;
               return (

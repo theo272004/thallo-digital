@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { SplitReveal } from '@/components/motion';
-import SpinFlower from '@/components/ui/SpinFlower';
 
 /**
  * The old playbook against how we work.
@@ -49,20 +48,13 @@ export default function PlaybookContrast() {
     /* White ground; the hairline underneath carries it into the approach
        section. */
     <section className="border-b border-gray-100 bg-white py-16 2xl:py-24">
-      <div className="mx-auto max-w-[1440px] px-6">
-        <div
-          data-reveal
-          className="relative rounded-[28px] border border-gray-200 bg-white px-6 pb-4 pt-12 sm:px-12 sm:pt-14"
-          style={{ boxShadow: '0 6px 20px -8px rgba(23,26,16,0.14)' }}
-        >
-          {/* The mark hangs off the card's left edge, as it does on the plans
-              page. Desktop only — at narrow widths there is no margin for it to
-              hang into and it would sit on top of the heading. */}
-          <SpinFlower
-            alt="Thallo"
-            className="absolute left-0 top-14 z-10 -ml-3 hidden h-[68px] w-[68px] -translate-x-full lg:block"
-          />
-
+      {/* No card around any of this any more, and no flower hanging off its
+          edge. A white card on a white ground was drawing an outline that
+          separated nothing — the two panels inside it are the objects here, and
+          a border around the pair only competed with them. What is left is the
+          section's own ground, the words, and the two panels. */}
+      <div className="mx-auto max-w-[1440px] px-6" data-reveal>
+        <div>
           <SplitReveal
             as="h2"
             className="mb-4 max-w-[20ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl"
@@ -131,8 +123,11 @@ export default function PlaybookContrast() {
 
           {/* The two panels stack on a phone, where "the old playbook" and
               "how we work" become two lists one after the other rather than two
-              columns to read across. The rows still pair up in order. */}
-          <div className="h-8" />
+              columns to read across. The rows still pair up in order.
+
+              The 32px spacer that used to close this off went with the card —
+              it was holding the panels away from the card's bottom edge, and
+              there is no edge now. The section's own padding does the job. */}
         </div>
       </div>
     </section>
