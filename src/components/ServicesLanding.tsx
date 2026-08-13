@@ -475,14 +475,12 @@ export default function ServicesPage() {
           }}
         />
 
-        {/* Back to py-16/24. It was trimmed to buy height for the screen these
-            two sections share, and that was the wrong place to take it from:
-            the padding here is not empty space, it is how much of the
-            photograph you see above the heading and below the cards. Cutting it
-            cropped the picture. The height came out of Standalone Projects
-            instead, where it was a layout fault rather than a deliberate
-            margin. */}
-        <div className="mx-auto max-w-[1440px] px-6 py-16 2xl:py-24">
+        {/* This padding is not empty space — it is how much of the photograph
+            you see above the heading and below the cards, so it is the one
+            control over how much picture there is. py-24/32 rather than the
+            16/24 it was, paid for out of what Standalone Projects gave back
+            when its bottom row went to one-and-a-half cards wide. */}
+        <div className="mx-auto max-w-[1440px] px-6 py-24 2xl:py-32">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start lg:gap-14">
             <h2 className="max-w-[16ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl">
               {/* Sage, not the olive the light sections use — #39471D on this
@@ -581,11 +579,23 @@ export default function ServicesPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {PROJECTS.map((p) => (
+            {/* Six columns, not three, so the bottom row can be one and a half
+                cards wide apiece: three spans of two above, two spans of three
+                below. Five cards do not divide into three columns, and the odd
+                one out either sits alone at a third of the width or stretches
+                to the whole of it — both of which read as a card that missed
+                its row. Two half-again-wider cards read as a row.
+
+                It buys height as well: wider cards wrap their copy into fewer
+                lines, so the second row is shorter than the first rather than
+                taller. */}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6">
+              {PROJECTS.map((p, i) => (
                 <div
                   key={p.title}
-                  className="rounded-2xl border border-gray-200 bg-gray-50/60 p-5"
+                  className={`rounded-2xl border border-gray-200 bg-gray-50/60 p-5 ${
+                    i < 3 ? 'lg:col-span-2' : 'lg:col-span-3'
+                  }`}
                 >
                   <h3 className="mb-1.5 font-sans text-[15px] font-semibold tracking-tight text-gray-900">{p.title}</h3>
                   <p className="text-[13px] font-medium leading-relaxed text-gray-500">{p.copy}</p>
