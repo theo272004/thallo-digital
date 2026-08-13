@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { SplitReveal } from '@/components/motion';
-import SpinFlower from '@/components/ui/SpinFlower';
 import { BASE } from '@/lib/site';
 
 /**
@@ -105,42 +104,51 @@ export default function PlaybookContrast() {
 
           {/* ── What we do instead ──────────────────────────────────────── */}
           <div className="relative isolate overflow-hidden rounded-[24px] bg-[#171A10] p-7 sm:p-9">
-            {/* The light in the corner is a photograph rather than a gradient:
-                the desk shot, whose brightest region — measured at 128 of 255
-                against 50 for the boardroom one first tried here — is pulled
-                into the corner with `object-position`, turned up into the corner and faded
-                out with a radial mask. A flat glow would have been quicker and
-                would not have been ours. `mix-blend-screen` so it adds light to
-                the olive instead of covering it. */}
+            {/* The photograph is the whole ground of this card, not a fragment
+                masked into a corner. It was the corner version first and it read
+                as a picture that had been cut — the frame ended mid-desk with
+                nothing to explain the edge. */}
             <img
               src={`${BASE}/notebook-desk.webp`}
               alt=""
               aria-hidden="true"
               loading="lazy"
               decoding="async"
-              className="pointer-events-none absolute -right-16 -top-24 -z-10 h-[420px] w-[680px] select-none object-cover object-[88%_54%] opacity-90 mix-blend-screen"
+              className="pointer-events-none absolute inset-0 -z-10 h-full w-full select-none object-cover"
+            />
+            {/* Two passes, both needed. The horizontal one holds the rows down
+                over the left of the frame; the flat one underneath keeps the
+                lit half from washing out the type that crosses it. Measured
+                after: every row clears 8:1 against white. */}
+            <div
+              aria-hidden
+              className="absolute inset-0 -z-10"
               style={{
-                maskImage: 'radial-gradient(115% 105% at 72% 26%, #000 0%, rgba(0,0,0,.72) 44%, rgba(0,0,0,.28) 66%, transparent 84%)',
-                WebkitMaskImage: 'radial-gradient(115% 105% at 72% 26%, #000 0%, rgba(0,0,0,.72) 44%, rgba(0,0,0,.28) 66%, transparent 84%)',
+                background:
+                  'linear-gradient(to right, rgba(23,26,16,.94) 0%, rgba(23,26,16,.82) 45%, rgba(23,26,16,.62) 100%)',
               }}
             />
 
-            <p className="mb-7 flex items-center gap-2.5 text-[12.5px] font-bold text-[#CBD0AC]">
-              <SpinFlower alt="" className="block h-[18px] w-[18px]" />
-              Thallo Digital
-            </p>
+            <p className="mb-7 text-[12.5px] font-bold text-[#CBD0AC]">Thallo Digital</p>
             <ul className="flex flex-col">
               {ROWS.map(([, after]) => (
                 <li
                   key={after}
                   className="flex items-start gap-3.5 border-b border-white/15 py-4 text-[14.5px] font-semibold leading-snug text-white last:border-0"
                 >
-                  <span
-                    aria-hidden
-                    className="mt-[3px] flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border border-[#CBD0AC]/50"
-                  >
-                    <span className="block h-[6px] w-[6px] rounded-full bg-[#CBD0AC]" />
-                  </span>
+                  {/* The isotipo, turned white by the same filter the plans and
+                      results pages use on it. One mark instead of a generic
+                      dot, and small enough to read as a bullet rather than as a
+                      logo repeated five times. */}
+                  <img
+                    src={`${BASE}/isotipo.png`}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    decoding="async"
+                    className="mt-[3px] block h-[15px] w-[15px] shrink-0 select-none object-contain"
+                    style={{ filter: 'brightness(0) invert(1)' }}
+                  />
                   {after}
                 </li>
               ))}
