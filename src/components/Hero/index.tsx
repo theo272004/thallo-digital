@@ -21,6 +21,16 @@ const GATHER_MS = 1700; // browser window is here; cards morph INTO its tabs (ju
 const GATHER_STAGGER = 240; // gap between each card flying into the window
 const CARD_FLIGHT_MS = 700; // how long a single card takes to reach + dissolve into its tab
 const TAB_MS = 1500; // each browser tab stays active this long (snappier switching)
+/**
+ * How long the FIRST tab holds, and it is shorter than the rest on purpose.
+ *
+ * ChatGPT is already the active tab throughout `gather` — it is the tab the
+ * cards assemble around — so at a flat `TAB_MS` it was on screen for
+ * GATHER_MS + TAB_MS, 3200ms against 1500 for the other three. More than twice
+ * as long, and the second half of it perfectly still, which is what made it
+ * feel stuck. This buys the finished window a beat to settle and then moves on.
+ */
+const FIRST_TAB_MS = 650;
 
 /** Module-level so the reference is stable across renders. */
 const subscribeVisibility = (onChange: () => void) => {
@@ -54,6 +64,7 @@ export default function Hero() {
       phase === 'phone' ? PHONE_MS :
       phase === 'burst' ? BURST_MS :
       phase === 'gather' ? GATHER_MS :
+      tabIndex === 0 ? FIRST_TAB_MS :
       TAB_MS;
 
     const id = window.setTimeout(() => {

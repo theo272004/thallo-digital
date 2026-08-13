@@ -218,7 +218,7 @@ export default function Testimonials() {
         <div className="mt-8 flex justify-center">
           <a
             href="https://thallodigital.com/blog/"
-            className="group inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-5 py-2.5 text-[13px] font-bold text-[#39471D] transition-colors hover:border-[#39471D] hover:text-[#171A10]"
+            className="group inline-flex items-center gap-1.5 rounded-full border border-[#39471D] bg-[#39471D] px-5 py-2.5 text-[13px] font-bold text-white transition-colors hover:border-[#55672E] hover:bg-[#55672E]"
           >
             All notes
             <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
