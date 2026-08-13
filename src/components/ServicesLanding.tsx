@@ -475,7 +475,11 @@ export default function ServicesPage() {
           }}
         />
 
-        <div className="mx-auto max-w-[1440px] px-6 py-16 2xl:py-24">
+        {/* Trimmed from py-16/24 so this and Standalone Projects have a chance
+            of sitting on one screen together. The photograph reads as generous
+            on its own; the padding was adding to a section that already had
+            room inside it. */}
+        <div className="mx-auto max-w-[1440px] px-6 py-12 2xl:py-16">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start lg:gap-14">
             <h2 className="max-w-[16ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl">
               {/* Sage, not the olive the light sections use — #39471D on this
@@ -503,7 +507,7 @@ export default function ServicesPage() {
               simply as tall as they are. The breakpoint-by-breakpoint reserve
               that used to be here existed only to hold room for a card that
               grew; nothing grows now. */}
-          <div className="mt-10 flex flex-col gap-3 lg:mt-14 lg:flex-row lg:items-stretch">
+          <div className="mt-8 flex flex-col gap-3 lg:mt-10 lg:flex-row lg:items-stretch">
             {ENGINE.map((cell, i) => {
               const selected = i === activeCell;
               return (
@@ -550,33 +554,61 @@ export default function ServicesPage() {
       </section>
 
       {/* ── Standalone Projects, at length ────────────────────────────────── */}
-      <section className="bg-white py-16 2xl:py-24 border-b border-gray-100">
+      {/* Shorter than it was, without a word coming out.
+
+          The saving is in the layout. The introduction column was 0.8fr of the
+          row — 474px — which left the cards 710px, and at `min-w-[240px]` on a
+          wrapping flex row that is exactly two per line. Five cards became
+          three rows, the last of them one card stretched the full width.
+
+          The column is 0.55fr now and the cards are an explicit three-column
+          grid rather than a flex row guessing at how many fit. Five cards, two
+          rows, and the heading column has more than enough for a heading and
+          three lines. */}
+      <section className="bg-white pt-12 pb-14 2xl:pt-16 2xl:pb-20 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-16">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,0.55fr)_minmax(0,1.45fr)] lg:gap-12">
             <div>
               <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans mb-4">
                 Standalone <span className="italic text-[#39471D]">Projects.</span>
               </h2>
-              <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch]">
+              <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[44ch]">
                 Each one is a complete piece of work with its own scope and price. Commission one on its
                 own, or add it to the Engine when you want to accelerate.
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {PROJECTS.map((p) => (
                 <div
                   key={p.title}
-                  className="min-w-[240px] flex-1 rounded-2xl border border-gray-200 bg-gray-50/60 p-6"
+                  className="rounded-2xl border border-gray-200 bg-gray-50/60 p-5"
                 >
-                  <h3 className="mb-2 font-sans text-base font-semibold tracking-tight text-gray-900">{p.title}</h3>
-                  <p className="text-sm font-medium leading-relaxed text-gray-500">{p.copy}</p>
+                  <h3 className="mb-1.5 font-sans text-[15px] font-semibold tracking-tight text-gray-900">{p.title}</h3>
+                  <p className="text-[13px] font-medium leading-relaxed text-gray-500">{p.copy}</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
       </section>
+
+      {/* ── CTA, with the enquiry form inside it ──────────────────────────── */}
+      {/* Before the questions, matching the home page. The design this page
+          follows puts the ask after them; the rule that the questions close
+          every page is Cami's and it outranks the mockup, because a site where
+          the same two blocks swap order between pages reads as two sites.
+
+          No `activePlans` any more — that prop carried the hidden builder's
+          selection. The form opens on the three plans, the same as everywhere
+          else on the site. */}
+      <AuditCTA
+        image={`${BASE}/cta-bg-services.webp`}
+        /* Broken by hand: left to wrap it took three lines and stretched the
+           panel with it. */
+        heading={<>Still not sure<br />which one fits?</>}
+        copy="Tell us where you are and what you're trying to reach. You'll get a straight recommendation, including if the answer is that you don't need us yet."
+      />
 
       {/* ── FAQ ─────────────────────────────────────────────────────────────
           The same shape as the home page's: the heading and its line on the
@@ -605,22 +637,6 @@ export default function ServicesPage() {
           </div>
         </div>
       </section>
-
-      {/* ── CTA, with the enquiry form inside it ──────────────────────────── */}
-      {/* After the FAQ rather than before it, which is where the design puts
-          it: the questions are what a reader has left before deciding, so the
-          ask belongs on the other side of them.
-
-          No `activePlans` any more — that prop carried the hidden builder's
-          selection. The form opens on the three plans, the same as everywhere
-          else on the site. */}
-      <AuditCTA
-        image={`${BASE}/cta-bg-services.webp`}
-        /* Broken by hand: left to wrap it took three lines and stretched the
-           panel with it. */
-        heading={<>Still not sure<br />which one fits?</>}
-        copy="Tell us where you are and what you're trying to reach. You'll get a straight recommendation, including if the answer is that you don't need us yet."
-      />
 
     </>
   );
