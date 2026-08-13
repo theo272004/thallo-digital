@@ -66,8 +66,24 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
   return <span className="text-[13px] font-bold text-gray-900">{children}</span>;
 }
 
-export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => void }) {
-  const [step, setStep] = useState<Step>(1);
+export default function ScanSetup({
+  onStart,
+  /* Reported up because the page around this changes with it: step 1 sits in
+     the right half of a photograph with the heading beside it, and step 2 —
+     which grows a row every time a question is added — takes the full width on
+     the plain ground. ScanFlow cannot lay that out without knowing the step,
+     and lifting the whole step state up there would have dragged the
+     validation with it. */
+  onStepChange,
+}: {
+  onStart: (input: ScanInput) => void;
+  onStepChange?: (step: Step) => void;
+}) {
+  const [step, setStepState] = useState<Step>(1);
+  const setStep = (next: Step) => {
+    setStepState(next);
+    onStepChange?.(next);
+  };
   const [brand, setBrand] = useState('');
   const [domain, setDomain] = useState('');
   /* Empty, not pre-filled with the first suggestion. A default here is the
@@ -179,15 +195,13 @@ export default function ScanSetup({ onStart }: { onStart: (input: ScanInput) => 
 
   if (step === 1) {
     return (
-      /* 1040px and two columns, where this was 720px and one.
-
-         At 720 in a 1392 container the card was half the width of the page with
-         five fields stacked down it — the proportions of a phone screen shown
-         on a desktop, which is exactly what it looked like. Two columns is also
-         what keeps the whole step on one screen: five stacked fields plus a
-         button and a footnote ran past the fold, and a form you have to scroll
-         to finish is a form people abandon halfway. */
-      <div className="mx-auto max-w-[1040px]">
+      /* No width of its own any more: this card is the right-hand half of the
+         photograph now, and the column it sits in sets how wide it is. It was
+         720px centred in a 1392 container with five fields stacked down it —
+         the proportions of a phone screen shown on a desktop, which is exactly
+         what it looked like. The fields still pair up two to a row, which is
+         what keeps the whole step above the fold. */
+      <div className="w-full">
         <Panel className="p-6 sm:p-8">
           <form onSubmit={continueToPrompts}>
             <div className="flex items-start gap-3">

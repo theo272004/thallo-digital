@@ -8,6 +8,7 @@ import ScanResults from './ScanResults';
 import FullReport from './FullReport';
 import { GRID, GROUND, Micro } from './ui';
 import { IS_LIVE, initialSession, startScan, unlockScan } from '@/lib/scan/engine';
+import { BASE } from '@/lib/site';
 import type { ScanInput, ScanSession } from '@/lib/scan/types';
 
 type Stage = 'setup' | 'scanning' | 'results' | 'report';
@@ -71,6 +72,11 @@ export default function ScanFlow() {
     }
   };
 
+  /* Which half of the setup is showing. Only the first step gets the
+     photograph and the two-column spread — see the note on the <img> below. */
+  const [setupStep, setSetupStep] = useState<1 | 2>(1);
+  const hero = stage === 'setup' && setupStep === 1;
+
   const brand = session.phase1?.brand ?? pending?.brand ?? 'your brand';
   /* The server's list once it has one — it is authoritative about what was
      actually sent — and the list the visitor just submitted before that. */
@@ -79,8 +85,37 @@ export default function ScanFlow() {
   return (
     /* pt-32 rather than pt-28: the label above the heading is gone, and at the
        old padding the h1 came within 26px of the floating navbar. */
-    <section id="tool" className="relative isolate overflow-hidden bg-[#F8FAF7] pt-32 pb-16 2xl:pt-40 2xl:pb-24" style={GROUND}>
-      <div aria-hidden className="pointer-events-none absolute inset-0" style={GRID} />
+    <section id="tool" className="relative isolate overflow-hidden bg-[#F8FAF7] pt-32 pb-16 2xl:pt-40 2xl:pb-24" style={hero ? undefined : GROUND}>
+      {/* The photograph only stands behind the first step. Everything after it
+          — the progress list, the results, the report — is long, dense and
+          scrolls, and a picture behind two thousand pixels of table is a
+          picture nobody is looking at. Those keep the olive ground and its
+          plotting grid, which is the tool's own language. */}
+      {hero ? (
+        <>
+          <img
+            src={`${BASE}/contact-bg.webp`}
+            alt=""
+            aria-hidden="true"
+            fetchPriority="high"
+            decoding="async"
+            className="absolute inset-0 -z-10 h-full w-full select-none object-cover object-[68%_center]"
+          />
+          {/* Two passes. The horizontal one holds the heading down over the
+              left of the frame, where the wall is at its brightest; the flat
+              one underneath keeps the whole picture from competing with a white
+              card sitting on it. The isotipo on that wall is the reason the
+              left pass stops short of opaque — it should still be visible
+              behind the words. */}
+          <div
+            aria-hidden
+            className="absolute inset-0 -z-10"
+            style={{ background: 'linear-gradient(to right, rgba(23,26,16,.78) 0%, rgba(23,26,16,.5) 42%, rgba(23,26,16,.28) 100%)' }}
+          />
+        </>
+      ) : (
+        <div aria-hidden className="pointer-events-none absolute inset-0" style={GRID} />
+      )}
 
       <div className="relative mx-auto max-w-[1440px] px-6">
         {/* Outside the flow on purpose — the prerendered HTML still says what
@@ -90,28 +125,28 @@ export default function ScanFlow() {
             now. Two h1s would have left the document with no single answer to
             "what is this page", on a page whose whole subject is being legible
             to machines. */}
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <Micro className="text-[#CBD0AC]">Scan</Micro>
-            <SplitReveal
-              as="h1"
-              scroll={false}
-              fade={false}
-              className="mt-4 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl"
-              html="Check your AI visibility."
-            />
+        {/* On the first step the heading is the left half of a spread and the
+            form is the right, so it belongs inside that grid. Everywhere else
+            it is a masthead over whatever the stage is showing. */}
+        {!hero && (
+          <div className="flex items-end justify-between gap-6">
+            <div>
+              <Micro className="text-[#CBD0AC]">Scan</Micro>
+              <SplitReveal
+                as="h1"
+                scroll={false}
+                fade={false}
+                className="mt-4 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl"
+                html="Check your AI visibility."
+              />
+            </div>
+            <span className="hidden rounded-full bg-[#F0F4E7] px-3 py-1.5 text-[11px] font-bold text-[#617A2B] sm:block">Free scan</span>
           </div>
-          <span className="hidden rounded-full bg-[#F0F4E7] px-3 py-1.5 text-[11px] font-bold text-[#617A2B] sm:block">Free scan</span>
-        </div>
+        )}
 
         {(!IS_LIVE || session.demo) && <DemoNotice configured={IS_LIVE} />}
 
-        {/* Panel chrome — the strip a tool wears and a brochure does not. */}
-        {/* mt-8, not mt-3. The panel was sitting almost against the heading —
-            12px between a 48px h1 and the top edge of a card reads as a
-            collision rather than a relationship. The room comes out of the
-            step's own height, which the two-column form gave back. */}
-        <div ref={topRef} className="mt-8 scroll-mt-24">
+        <div ref={topRef} className={`${hero ? '' : 'mt-8'} scroll-mt-24`}>
           {stage === 'setup' && (
             <>
               {error && (
@@ -119,7 +154,39 @@ export default function ScanFlow() {
                   <p className="text-[13px] font-medium leading-relaxed text-rose-100">{error}</p>
                 </div>
               )}
-              <ScanSetup onStart={start} />
+
+              {/* One tree, not a ternary with a <ScanSetup> in each arm. Two
+                  arms are two positions as far as React is concerned, so the
+                  moment `hero` flipped it unmounted one instance and mounted a
+                  fresh one — which reset the step to 1 the instant the step
+                  changed to 2, and the form bounced straight back. The keys are
+                  what let the left column appear and disappear without the form
+                  beside it being treated as a different element. */}
+              <div
+                className={
+                  hero
+                    ? 'grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16'
+                    : ''
+                }
+              >
+                {hero && (
+                  <div key="intro">
+                    <Micro className="text-[#CBD0AC]">Scan</Micro>
+                    <SplitReveal
+                      as="h1"
+                      scroll={false}
+                      fade={false}
+                      className="mt-4 max-w-[14ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl"
+                      html="Check your AI visibility."
+                    />
+                    <p className="mt-5 max-w-[46ch] text-[15px] font-medium leading-relaxed text-white/75">
+                      Ask the models what they say about you, in your own words. Free, no account, under a minute.
+                    </p>
+                  </div>
+                )}
+
+                <ScanSetup key="setup" onStart={start} onStepChange={setSetupStep} />
+              </div>
             </>
           )}
 
