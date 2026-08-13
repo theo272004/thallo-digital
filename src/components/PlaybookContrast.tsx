@@ -104,23 +104,24 @@ export default function PlaybookContrast() {
           </div>
 
           {/* ── What we do instead ──────────────────────────────────────── */}
-          <div className="relative isolate overflow-hidden rounded-[24px] bg-[#39471D] p-7 sm:p-9">
+          <div className="relative isolate overflow-hidden rounded-[24px] bg-[#171A10] p-7 sm:p-9">
             {/* The light in the corner is a photograph rather than a gradient:
-                the boardroom shot, which is dark down its left and carries a lit
-                wall and window on its right, turned up into the corner and faded
+                the desk shot, whose brightest region — measured at 128 of 255
+                against 50 for the boardroom one first tried here — is pulled
+                into the corner with `object-position`, turned up into the corner and faded
                 out with a radial mask. A flat glow would have been quicker and
                 would not have been ours. `mix-blend-screen` so it adds light to
                 the olive instead of covering it. */}
             <img
-              src={`${BASE}/cta-bg.webp`}
+              src={`${BASE}/notebook-desk.webp`}
               alt=""
               aria-hidden="true"
               loading="lazy"
               decoding="async"
-              className="pointer-events-none absolute -right-10 -top-20 -z-10 h-[340px] w-[540px] select-none object-cover opacity-40 mix-blend-screen"
+              className="pointer-events-none absolute -right-16 -top-24 -z-10 h-[420px] w-[680px] select-none object-cover object-[88%_54%] opacity-90 mix-blend-screen"
               style={{
-                maskImage: 'radial-gradient(120% 100% at 76% 24%, #000 0%, rgba(0,0,0,.5) 46%, transparent 76%)',
-                WebkitMaskImage: 'radial-gradient(120% 100% at 76% 24%, #000 0%, rgba(0,0,0,.5) 46%, transparent 76%)',
+                maskImage: 'radial-gradient(115% 105% at 72% 26%, #000 0%, rgba(0,0,0,.72) 44%, rgba(0,0,0,.28) 66%, transparent 84%)',
+                WebkitMaskImage: 'radial-gradient(115% 105% at 72% 26%, #000 0%, rgba(0,0,0,.72) 44%, rgba(0,0,0,.28) 66%, transparent 84%)',
               }}
             />
 
