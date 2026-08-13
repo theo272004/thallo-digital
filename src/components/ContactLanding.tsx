@@ -196,9 +196,11 @@ export default function ContactLanding() {
               <div>
                 {done ? (
                   <div className="py-8" role="status" aria-live="polite">
+                    {/* Outlined rather than filled — the sage fill it wore is
+                        out of use, and a ring reads as a mark of completion as
+                        well as a disc does. */}
                     <span
-                      className="mb-6 flex h-14 w-14 items-center justify-center rounded-full text-2xl"
-                      style={{ backgroundColor: '#E7ECD9', color: '#39471D' }}
+                      className="mb-6 flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#39471D] text-2xl text-[#39471D]"
                       aria-hidden="true"
                     >
                       ✓

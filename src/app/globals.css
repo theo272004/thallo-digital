@@ -16,7 +16,20 @@
      olive  #39471D   the brand green — fills, figures, icons, buttons
      mid    #55672E   button hover, secondary marks, small accents
      soft   #CBD0AC   copy and rules ON olive; too light to sit on white
-     tint   #E7ECD9   fills and rules on white; too light to carry text
+     tint   #E7ECD9   RETIRED — see below
+
+   `tint` is not a brand colour. Cami said so on 13 August 2026, and this note
+   is what had been telling everyone otherwise, so it is corrected here first.
+
+   It is gone from every marketing page. Where it was a hover fill, nothing
+   replaced it: the olive edge and darker type were doing the work and the
+   wash behind them was decoration. Where it was a solid — the contact page's
+   completion mark — the shape is outlined instead. Where it was a rule, the
+   rule is the neutral grey every other hairline on the site uses.
+
+   It survives inside `components/scan/`, deliberately: the tool is being
+   tested and is not the place to be changing colours this week. That is the
+   only place left to clean up.
 
    For a ramp — a bar chart, a set of steps — use `olive` at falling opacity
    rather than picking new greens. That is what ResultsDashboard does now.

@@ -119,7 +119,10 @@ export default function IndustryTicker() {
                 {item.icon}
                 <span style={{ fontSize: '13px', fontWeight: 500 }}>{item.title}</span>
               </div>
-              <div style={{ width: '1px', height: '20px', background: '#E7ECD9', flexShrink: 0 }} />
+              {/* A neutral hairline, the same grey every rule on the site
+                  uses. It was a sage one, which on this white ground was a
+                  faint green line doing a divider's job. */}
+              <div style={{ width: '1px', height: '20px', background: '#E5E7EB', flexShrink: 0 }} />
             </React.Fragment>
           ))}
         </div>

@@ -95,7 +95,10 @@ export default function AuditCTA({
               <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:items-center">
                 <a
                   href={`${BASE}/contact/`}
-                  className="inline-block w-full sm:w-auto text-center px-7 py-3.5 bg-white rounded-full text-sm font-semibold text-[#39471D] hover:bg-[#E7ECD9] transition-colors"
+                  /* Hover darkens the type. This button sits on a photograph,
+                     so a tint behind it would have to clear the same contrast
+                     white does — and the tint it used is out of use anyway. */
+                  className="inline-block w-full sm:w-auto text-center px-7 py-3.5 bg-white rounded-full text-sm font-semibold text-[#39471D] hover:text-[#171A10] transition-colors"
                 >
                   Book an audit <ArrowUpRight className="ml-0.5" />
                 </a>
