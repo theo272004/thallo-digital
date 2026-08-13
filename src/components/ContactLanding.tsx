@@ -157,11 +157,18 @@ export default function ContactLanding() {
             leftover — which is the case on a phone, where the card is taller
             than the screen — so it degrades to top-aligned rather than
             centring the top of the card off the top of the page. */}
-        <div className="my-auto w-full max-w-[1440px] mx-auto px-6 lg:px-14 pt-32 pb-20 sm:pt-36 sm:pb-24 lg:py-16">
+        {/* The card lines up with the navbar above it. Both sit in the same
+            `max-w-[1440px]` container — which the laptop rule in globals.css
+            narrows to 90vw — so matching them is a matter of the card taking
+            that container whole: no `lg:px-14` on the wrapper, no 1180 cap on
+            the card. That was 58px a side, which is what showed as the
+            misalignment. `px-6` stays below `lg`, where a card running to the
+            screen edge would have no gutter at all. */}
+        <div className="my-auto w-full max-w-[1440px] mx-auto px-6 lg:px-0 pt-32 pb-20 sm:pt-36 sm:pb-24 lg:py-16">
           {/* ── Floating editorial card ──────────────────────────────────────── */}
           <div
             data-reveal
-            className="mx-auto max-w-[1180px] rounded-[32px] bg-white p-8 sm:p-12 lg:p-16
+            className="mx-auto rounded-[32px] bg-white p-8 sm:p-12 lg:p-16
                        shadow-[0_50px_120px_-40px_rgba(23,26,16,0.55)]"
           >
             <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1fr] gap-12 lg:gap-20 items-start">
