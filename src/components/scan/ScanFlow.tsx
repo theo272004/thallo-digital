@@ -85,7 +85,18 @@ export default function ScanFlow() {
   return (
     /* pt-32 rather than pt-28: the label above the heading is gone, and at the
        old padding the h1 came within 26px of the floating navbar. */
-    <section id="tool" className="relative isolate overflow-hidden bg-[#F8FAF7] pt-32 pb-16 2xl:pt-40 2xl:pb-24" style={hero ? undefined : GROUND}>
+    /* On the first step the section is at least a full screen and centres what
+       is in it, so the photograph runs to the bottom edge instead of stopping
+       38px short and leaving a strip of the page showing under it. Only there:
+       the later stages are taller than a screen anyway and a minimum would do
+       nothing but add dead space. */
+    <section
+      id="tool"
+      className={`relative isolate overflow-hidden bg-[#F8FAF7] pt-32 pb-16 2xl:pt-40 2xl:pb-24 ${
+        hero ? 'lg:flex lg:min-h-screen lg:flex-col lg:justify-center' : ''
+      }`}
+      style={hero ? undefined : GROUND}
+    >
       {/* The photograph only stands behind the first step. Everything after it
           — the progress list, the results, the report — is long, dense and
           scrolls, and a picture behind two thousand pixels of table is a
@@ -110,14 +121,16 @@ export default function ScanFlow() {
           <div
             aria-hidden
             className="absolute inset-0 -z-10"
-            style={{ background: 'linear-gradient(to right, rgba(23,26,16,.78) 0%, rgba(23,26,16,.5) 42%, rgba(23,26,16,.28) 100%)' }}
+            style={{ background: 'linear-gradient(to right, rgba(23,26,16,.88) 0%, rgba(23,26,16,.66) 42%, rgba(23,26,16,.5) 100%)' }}
           />
         </>
       ) : (
         <div aria-hidden className="pointer-events-none absolute inset-0" style={GRID} />
       )}
 
-      <div className="relative mx-auto max-w-[1440px] px-6">
+      {/* `w-full` because the section is a flex column on the first step, and a
+          flex child sizes to its content rather than its parent. */}
+      <div className="relative mx-auto w-full max-w-[1440px] px-6">
         {/* Outside the flow on purpose — the prerendered HTML still says what
             this page is, whatever the console resolves to.
 
@@ -164,8 +177,12 @@ export default function ScanFlow() {
                   beside it being treated as a different element. */}
               <div
                 className={
+                  /* `items-end`, not `items-center`. The heading is shorter
+                     than the form beside it, and centred it floated 188px above
+                     the card's bottom edge with nothing under it. Sitting both
+                     on the same line gives the spread a floor. */
                   hero
-                    ? 'grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16'
+                    ? 'grid grid-cols-1 items-end gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16'
                     : ''
                 }
               >
