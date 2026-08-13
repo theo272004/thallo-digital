@@ -93,17 +93,45 @@ export default function Hero() {
     return () => ids.forEach((id) => window.clearTimeout(id));
   }, [phase, paused]);
 
-  // A soft "navigation" glide when the browser switches tabs — ONLY while
-  // browsing. During burst/gather the stage must stay perfectly still: any 3D
-  // transform here would skew the measured positions the cards fly from/to,
-  // making them land visibly off their tabs.
+  /* A soft "navigation" glide when the browser switches tabs — ONLY while
+     browsing. During burst/gather the stage must stay perfectly still: any 3D
+     transform here would skew the measured positions the cards fly from/to,
+     making them land visibly off their tabs.
+
+     ## Why it used to fire twice on the first tab
+
+     The effect keyed on `[phase, tabIndex]`, so entering `browse` counted as a
+     change even though the tab had not moved — it was still tab 0, ChatGPT. On
+     every other tab the glide coincided with a tab actually switching and read
+     as one motion; on ChatGPT it landed right after the cards had finished
+     assembling into the window, with nothing to explain it. Two movements back
+     to back on the same view, which is exactly what it looked like.
+
+     `lastGlided` holds the tab the glide last ran for. Entering `browse` seeds
+     it without animating, so the first thing the glide ever responds to is a
+     real tab change. */
+  const lastGlided = useRef<number | null>(null);
   useEffect(() => {
     const el = stageRef.current;
-    if (!el || phase !== 'browse' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!el || phase !== 'browse' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (phase !== 'browse') lastGlided.current = null;
+      return;
+    }
+    if (lastGlided.current === null) {
+      lastGlided.current = tabIndex;
+      return;
+    }
+    if (lastGlided.current === tabIndex) return;
+    lastGlided.current = tabIndex;
+
+    /* Softer and longer than it was: -2.5° instead of -4, a scale that only
+       dips to .996, and 1.1s on `power3.out` rather than .8 on `power2.out`.
+       The old one covered more distance in less time on a shallower curve,
+       which is what made it read as a knock rather than a glide. */
     gsap.fromTo(
       el,
-      { scale: 0.99, rotateY: -4 },
-      { scale: 1, rotateY: 0, duration: 0.8, ease: 'power2.out', overwrite: true }
+      { scale: 0.996, rotateY: -2.5 },
+      { scale: 1, rotateY: 0, duration: 1.1, ease: 'power3.out', overwrite: true }
     );
   }, [phase, tabIndex]);
 
