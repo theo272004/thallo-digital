@@ -126,12 +126,11 @@ export default function HowItWorks() {
 
   return (
     <section
-      /* The house tint, #F7F8F9 — the same one the shift section carries, and
-         the only grey the page bands with. It follows the playbook contrast,
-         which is white, so the alternation continues rather than putting two
-         whites together. The ground belongs to the slot, not to the component:
-         if this ever moves, the colour moves with the slot. */
-      className="bg-[#F7F8F9] border-b border-gray-100 pt-[5.5rem] lg:pt-0 pb-[5.5rem]"
+      /* White ground. The grey moved one section down, to the scanner stripe —
+         the ground belongs to the slot rather than to the component, so if this
+         ever moves in the page order the colour stays with the slot and not
+         with the approach. */
+      className="bg-white border-b border-gray-100 pt-[5.5rem] lg:pt-0 pb-[5.5rem]"
       id="approach"
       ref={sectionRef}
     >
