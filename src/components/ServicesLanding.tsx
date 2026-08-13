@@ -407,27 +407,80 @@ export default function ServicesPage() {
           builder means restoring that state and the prop with it.
        ─────────────────────────────────────────────────────────────────────── */}
 
-      {/* ── What the Engine runs ──────────────────────────────────────────── */}
-      <section className="bg-[#F7F8F9] py-16 2xl:py-24 border-b border-gray-100">
-        <div className="max-w-[1440px] mx-auto px-6">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-end lg:gap-14 mb-12">
-            <h2 className="max-w-[16ch] text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans">
-              What the <span className="italic text-[#39471D]">Engine</span> runs every month.
-            </h2>
-            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[56ch]">
-              One operation, not a list of services bought separately. Research feeds the content, the
-              content feeds the structure, the structure feeds distribution, and the reporting tells
-              you what moved.
-            </p>
-          </div>
+      {/* ── What the Engine runs ────────────────────────────────────────────
+          A photograph panel with the six cells laid across it as glass, one
+          row. No new words: the heading and the paragraph are the ones that
+          were on the grey version, and each card carries the title and copy it
+          already had.
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {ENGINE.map((cell) => (
-              <div key={cell.title} className="rounded-2xl border border-gray-200 bg-white p-6">
-                <h3 className="mb-2 font-sans text-base font-semibold tracking-tight text-gray-900">{cell.title}</h3>
-                <p className="text-sm font-medium leading-relaxed text-gray-500">{cell.copy}</p>
+          The expansion is CSS alone. Each card is `flex-1` and grows to
+          `flex-[1.9]` on hover — the other five give the room back on their
+          own, because that is what a flex row does, so nothing needs to know
+          which sibling is hovered.
+
+          Two things the row is careful about:
+
+           · its height is fixed on desktop. The compact copy is clamped to
+             three lines and the hovered card unclamps; letting that change the
+             row height would nudge every neighbour down mid-hover.
+           · below `lg` there is no hover to speak of, so the cards stack, drop
+             the glass, unclamp, and read as a plain list. A reveal a touch
+             device cannot reach is a reveal that hides the content.
+       ─────────────────────────────────────────────────────────────────────── */}
+      <section className="bg-white py-16 2xl:py-24 border-b border-gray-100">
+        <div className="max-w-[1440px] mx-auto px-6">
+          <div className="relative isolate overflow-hidden rounded-[28px]">
+            <img
+              loading="lazy"
+              decoding="async"
+              src={`${BASE}/engine-bg.webp`}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 -z-10 h-full w-full object-cover"
+            />
+            {/* The photograph is dark but not evenly so — a lit wall runs down
+                the right, exactly where the paragraph sits. Darkest at top and
+                bottom, where the type is; lightest across the middle, which is
+                the part of the picture worth seeing. */}
+            <div
+              aria-hidden
+              className="absolute inset-0 -z-10"
+              style={{
+                background:
+                  'linear-gradient(to bottom, rgba(23,26,16,.82) 0%, rgba(23,26,16,.42) 38%, rgba(23,26,16,.55) 68%, rgba(23,26,16,.86) 100%)',
+              }}
+            />
+
+            <div className="p-7 sm:p-10 lg:p-12">
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start lg:gap-14">
+                <h2 className="max-w-[16ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl">
+                  {/* Sage, not the olive the light sections use — #39471D on
+                      this ground is very nearly invisible. */}
+                  What the <span className="italic text-[#CBD0AC]">Engine</span> runs every month.
+                </h2>
+                <p className="max-w-[56ch] text-base font-medium leading-relaxed text-white/75">
+                  One operation, not a list of services bought separately. Research feeds the content, the
+                  content feeds the structure, the structure feeds distribution, and the reporting tells
+                  you what moved.
+                </p>
               </div>
-            ))}
+
+              <div className="mt-10 flex flex-col gap-3 lg:mt-16 lg:h-[248px] lg:flex-row">
+                {ENGINE.map((cell) => (
+                  <div
+                    key={cell.title}
+                    className="group/cell rounded-2xl border border-white/15 bg-white/[0.08] p-5 backdrop-blur-md transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] lg:h-full lg:flex-1 lg:overflow-hidden lg:hover:flex-[1.9] lg:hover:border-white lg:hover:bg-white lg:hover:shadow-[0_24px_60px_-24px_rgba(23,26,16,0.7)]"
+                  >
+                    <h3 className="font-sans text-[15px] font-semibold tracking-tight text-white transition-colors duration-500 lg:group-hover/cell:text-gray-900">
+                      {cell.title}
+                    </h3>
+                    <p className="mt-2.5 text-[13px] font-medium leading-relaxed text-white/70 transition-colors duration-500 lg:line-clamp-3 lg:group-hover/cell:line-clamp-none lg:group-hover/cell:text-gray-600">
+                      {cell.copy}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
