@@ -126,9 +126,12 @@ export default function HowItWorks() {
 
   return (
     <section
-      /* White ground: the approach now follows About directly, and the page's
-         grey/white alternation belongs to the slot, not to the component. */
-      className="bg-white border-b border-gray-100 pt-[5.5rem] lg:pt-0 pb-[5.5rem]"
+      /* The house tint, #F7F8F9 — the same one the shift section carries, and
+         the only grey the page bands with. It follows the playbook contrast,
+         which is white, so the alternation continues rather than putting two
+         whites together. The ground belongs to the slot, not to the component:
+         if this ever moves, the colour moves with the slot. */
+      className="bg-[#F7F8F9] border-b border-gray-100 pt-[5.5rem] lg:pt-0 pb-[5.5rem]"
       id="approach"
       ref={sectionRef}
     >

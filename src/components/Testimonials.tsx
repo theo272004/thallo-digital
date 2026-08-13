@@ -107,12 +107,20 @@ export default function Testimonials() {
       <div className="max-w-[1440px] mx-auto px-6">
 
         {/* Masthead, centred — the index link sits below the grid, where it
-            reads as the end of the list rather than as a second heading. */}
+            reads as the end of the list rather than as a second heading.
+
+            No label pill above the heading. The reference has one, but its
+            heading is "Our recent news & insights" and the pill is what tells
+            you the section is a newspaper; ours already says "Blogs & guides"
+            in type twice the size, so the pill was the same word said quieter
+            directly above itself.
+
+            The heading is `text-4xl sm:text-5xl`, which is what every other h2
+            on the site is. It briefly was not, and a section heading set a step
+            smaller than its neighbours does not read as restraint — it reads as
+            a mistake. */}
         <div className="mx-auto mb-9 max-w-2xl text-center">
-          <span className="inline-block rounded-full bg-[#39471D]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#39471D]">
-            Blog
-          </span>
-          <h2 className="mt-4 font-sans text-3xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-4xl">
+          <h2 className="font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
             Blogs &amp; guides.
           </h2>
         </div>
