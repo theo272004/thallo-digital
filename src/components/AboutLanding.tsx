@@ -262,27 +262,37 @@ export default function AboutLanding() {
       </section>
 
       {/* ── Who this is for ───────────────────────────────────────────────── */}
+      {/* Not a card. The page already runs on cards — the belief panel, the six
+          positions, the four ways of working — and a fifth one closing it made
+          the whole thing read as a stack of boxes. This is four conditions, and
+          conditions read better as a row you can take in at once than as a list
+          inside a container.
+
+          The olive moves from a filled panel to the numerals and the rules, so
+          the section still carries brand colour without another block of it. */}
       <section className="border-b border-gray-100 bg-white py-16 2xl:py-24">
         <div className="mx-auto max-w-[1440px] px-6">
-          <div className="rounded-3xl bg-[#39471D] p-9 sm:p-14">
-            <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-center lg:gap-14">
-              <h2 className="max-w-[12ch] font-sans text-3xl font-bold leading-[1.07] tracking-tight text-white sm:text-4xl">
-                We are a good fit <span className="text-[#CBD0AC]">if.</span>
-              </h2>
-              <ul className="flex flex-col">
-                {FIT.map((line) => (
-                  <li
-                    key={line}
-                    className="flex items-start gap-3.5 border-b border-white/15 py-4 text-[15px] font-medium leading-snug text-white/90 last:border-b-0"
-                  >
-                    <span aria-hidden className="mt-0.5 shrink-0 text-sm text-[#CBD0AC]">
-                      &rarr;
-                    </span>
-                    {line}
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <div className="mx-auto mb-12 max-w-2xl text-center">
+            <h2 className="font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
+              We are a good fit <span className="italic text-[#39471D]">if.</span>
+            </h2>
+          </div>
+
+          {/* A rule over each column rather than between them. Between, they
+              would be four dividers doing the work of a table; over, each one
+              belongs to the condition under it and the row reads as four
+              separate statements. */}
+          <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+            {FIT.map((line, i) => (
+              <div key={line} className="border-t-2 border-[#39471D] pt-5">
+                <span className="block font-mono text-[12px] font-bold tracking-[0.18em] text-[#39471D]">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <p className="mt-3 text-[17px] font-semibold leading-snug tracking-tight text-gray-900 text-balance">
+                  {line}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
