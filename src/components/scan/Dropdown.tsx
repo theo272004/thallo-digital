@@ -29,24 +29,39 @@ import { Check, ChevronDown } from 'lucide-react';
 const PANEL =
   'absolute z-30 mt-2 max-h-[264px] w-full overflow-auto rounded-xl border border-gray-200 bg-white p-1.5 shadow-[0_24px_60px_-20px_rgba(23,26,16,0.35)]';
 
+/**
+ * One row.
+ *
+ * Green marks what you are about to choose, the tick marks what is chosen, and
+ * they are not the same thing. Point at Português while Español is set and
+ * Português goes green — that is the row the click will take — while Español
+ * keeps its tick. The two coincide only when you are pointing at the row you
+ * already have.
+ *
+ * The highlight follows the pointer and the arrow keys through the same piece
+ * of state, so a mouse and a keyboard cannot disagree about which row is next.
+ */
 function Row({
   label,
   selected,
   active,
   id,
   onPick,
+  onHover,
 }: {
   label: string;
   selected: boolean;
   active: boolean;
   id: string;
   onPick: () => void;
+  onHover: () => void;
 }) {
   return (
     <li
       id={id}
       role="option"
       aria-selected={selected}
+      onMouseEnter={onHover}
       /* `onMouseDown` rather than `onClick`: the trigger closes the panel on
          blur, and a click fires after blur — so by the time the click landed
          the row it was aimed at was gone. */
@@ -55,7 +70,7 @@ function Row({
         onPick();
       }}
       className={`flex cursor-pointer items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-[14px] font-medium transition-colors ${
-        selected ? 'bg-[#39471D] text-white' : active ? 'bg-[#39471D]/8 text-[#39471D]' : 'text-gray-700'
+        active ? 'bg-[#39471D] text-white' : selected ? 'text-[#39471D]' : 'text-gray-700'
       }`}
     >
       {label}
@@ -140,6 +155,7 @@ export function Select({
         role="combobox"
         aria-haspopup="listbox"
         aria-expanded={open}
+        aria-controls={`${id}-list`}
         aria-label={label}
         aria-activedescendant={open ? `${id}-${active}` : undefined}
         onClick={() => {
@@ -160,7 +176,7 @@ export function Select({
       </button>
 
       {open && (
-        <ul role="listbox" aria-label={label} className={PANEL}>
+        <ul id={`${id}-list`} role="listbox" aria-label={label} className={PANEL}>
           {options.map((o, i) => (
             <Row
               key={o.value}
@@ -168,6 +184,7 @@ export function Select({
               label={o.label}
               selected={o.value === value}
               active={i === active}
+              onHover={() => setActive(i)}
               onPick={() => commit(i)}
             />
           ))}
@@ -205,16 +222,26 @@ export function Combo({
 }) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
+  /* Whether the panel is narrowing to what is being typed, or simply listing
+     everything. It filters only while you are actually typing; opening it again
+     afterwards shows the whole list.
+
+     Without this the field could not be reopened once it held an answer. The
+     panel filtered on its own value, so "pizzerías de barrio" — which matches
+     none of the eight — left nothing to show and the panel hid itself. Having
+     chosen once, you could never see the options again to change your mind. */
+  const [typing, setTyping] = useState(false);
   const id = useId();
   const box = useDismiss(open, () => setOpen(false));
 
   const query = value.trim().toLowerCase();
-  const shown = query ? options.filter((o) => o.toLowerCase().includes(query)) : options;
+  const shown = typing && query ? options.filter((o) => o.toLowerCase().includes(query)) : options;
 
   const commit = (label: string) => {
     onChange(label);
     setOpen(false);
     setActive(-1);
+    setTyping(false);
   };
 
   const onKey = (e: React.KeyboardEvent) => {
@@ -250,19 +277,36 @@ export function Combo({
           onChange={(e) => {
             onChange(e.target.value);
             setActive(-1);
+            setTyping(true);
             setOpen(true);
           }}
-          onFocus={() => setOpen(true)}
+          onFocus={() => {
+            setTyping(false);
+            setOpen(true);
+          }}
+          /* Also on click. Focus fires once; clicking a field that already has
+             focus fires nothing, which is exactly the case after picking a
+             suggestion — the panel closed, the input kept focus, and the next
+             click did nothing at all. */
+          onClick={() => {
+            setTyping(false);
+            setOpen(true);
+          }}
           onKeyDown={onKey}
           className={`${className} pr-11`}
         />
-        <ChevronDown
-          size={17}
+        <button
+          type="button"
+          tabIndex={-1}
           aria-hidden
-          className={`pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 transition-transform duration-200 ${
-            open ? 'rotate-180' : ''
-          }`}
-        />
+          onClick={() => {
+            setTyping(false);
+            setOpen((o) => !o);
+          }}
+          className="absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center text-gray-400"
+        >
+          <ChevronDown size={17} className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+        </button>
       </div>
 
       {open && shown.length > 0 && (
@@ -274,6 +318,7 @@ export function Combo({
               label={o}
               selected={o.toLowerCase() === query}
               active={i === active}
+              onHover={() => setActive(i)}
               onPick={() => commit(o)}
             />
           ))}
