@@ -212,7 +212,7 @@ export default function AboutLanding() {
               <div
                 key={b.n}
                 data-reveal
-                className="rounded-3xl border border-gray-200 bg-white p-8 transition-all duration-300 hover:-translate-y-1 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-30px_rgba(57,71,29,0.25)]"
+                className="rounded-3xl border border-gray-200 bg-white p-8 lift transition-all duration-300"
               >
                 <span className="mb-4 block text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400">{b.n}</span>
                 <h3 className="mb-2.5 font-sans text-xl font-semibold tracking-tight text-gray-900">{b.title}</h3>

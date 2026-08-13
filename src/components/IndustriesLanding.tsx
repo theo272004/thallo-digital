@@ -193,7 +193,7 @@ export default function IndustriesPage() {
                 className={`relative overflow-hidden rounded-3xl p-8 flex flex-col gap-5 transition-all duration-300 min-h-[240px] ${
                   ind.type === 'phrase'
                     ? 'bg-[#39471D] border border-[#39471D] hover:-translate-y-1 hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,0.55)]'
-                    : 'bg-gray-50/60 border border-gray-200 hover:-translate-y-1 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-30px_rgba(57,71,29,0.2)]'
+                    : 'bg-gray-50/60 border border-gray-200 lift'
                 }`}
               >
                 {ind.type === 'metric' ? (

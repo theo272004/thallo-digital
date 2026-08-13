@@ -99,7 +99,7 @@ function CaseCard({ c }: { c: CaseStudy }) {
   return (
     <a
       href={`${BASE}/results/${c.slug}/`}
-      className="group flex h-full min-h-[300px] flex-col border border-gray-200 rounded-3xl p-8 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] hover:shadow-[0_16px_40px_-14px_rgba(23,26,16,0.22)] transition-shadow duration-300"
+      className="group flex h-full min-h-[300px] flex-col border border-gray-200 rounded-3xl p-8 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] lift transition-all duration-300"
     >
       {body}
     </a>
@@ -197,7 +197,7 @@ export default function CaseStudiesLanding() {
                   className={`rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
                     active
                       ? 'bg-[#39471D] border-[#39471D] text-white'
-                      : 'bg-white border-gray-200 text-gray-500 hover:border-[#55672E]/40 hover:text-[#39471D]'
+                      : 'bg-white border-gray-200 text-gray-500 lift-sm hover:text-[#39471D]'
                   }`}
                 >
                   {option ?? 'All cases'}

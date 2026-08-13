@@ -305,7 +305,7 @@ export default function ServicesPage() {
                     className={`relative overflow-hidden p-8 rounded-3xl flex flex-col h-full transition-all duration-500 hover:-translate-y-1 ${
                       isFeatured
                         ? 'bg-[#39471D] border border-[#39471D] shadow-[0_2px_6px_rgba(57,71,29,0.35),0_10px_28px_-4px_rgba(57,71,29,0.55)]'
-                        : 'bg-gray-50/60 border border-gray-200 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] hover:border-[#55672E]/20'
+                        : 'bg-gray-50/60 border border-gray-200 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] lift'
                     }`}
                   >
                     {isFeatured && (
@@ -597,7 +597,7 @@ export default function ServicesPage() {
                    to white. No sage fill: #E7ECD9 is out of use. */
                 <div
                   key={p.title}
-                  className={`group/proj rounded-2xl border border-gray-200 bg-gray-50/60 p-5 transition-colors duration-300 hover:border-[#39471D] hover:bg-white ${
+                  className={`group/proj rounded-2xl border border-gray-200 bg-gray-50/60 p-5 lift transition-all duration-300 hover:bg-white ${
                     i < 3 ? 'lg:col-span-2' : 'lg:col-span-3'
                   }`}
                 >

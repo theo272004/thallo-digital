@@ -93,7 +93,7 @@ function Meta({ a }: { a: Article }) {
    as the picture reacting rather than the link. The images hold still now and
    the card is what answers to the cursor. */
 const CARD =
-  'group flex rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1.5 hover:border-[#55672E]/30 hover:shadow-[0_22px_50px_-18px_rgba(23,26,16,0.3)]';
+  'group flex rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] lift';
 
 export default function Testimonials() {
   const [lead, ...rest] = ARTICLES;

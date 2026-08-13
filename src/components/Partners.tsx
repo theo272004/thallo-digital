@@ -50,7 +50,7 @@ function PartnerCard({ partner }: { partner: Partner }) {
   return (
     <div
       data-reveal
-      className="flex flex-col items-center rounded-3xl border border-gray-200 bg-gray-50/60 p-8 text-center transition-all duration-300 hover:-translate-y-1 hover:border-[#55672E]/40 hover:shadow-[0_24px_60px_-30px_rgba(57,71,29,0.25)]"
+      className="flex flex-col items-center rounded-3xl border border-gray-200 bg-gray-50/60 p-8 text-center transition-all duration-300 lift"
     >
       {partner.photo ? (
         <img

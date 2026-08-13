@@ -251,3 +251,43 @@ body {
     animation-play-state: running !important;
   }
 }
+
+/* ─── What an outlined surface does under the pointer ────────────────────────
+   One answer, because there were nine. A survey of the marketing components
+   turned up six different shadows, four lift distances and six border colours
+   across cards that are all the same kind of object — the difference between
+   them was not a decision anyone made, it was the order they were written in.
+
+   The one that survives is the industries grid's, which is the one Cami picked:
+   the edge goes olive, the surface rises, and a soft olive shadow appears under
+   it. The border is #39471D at full strength rather than the #55672E/40 that
+   grid used — at 40% it was an outline you had to be looking for, which was the
+   complaint that started this.
+
+   Written as CSS rather than a shared class-string constant. The constant would
+   have meant importing it into six components and turning every one of their
+   `className="…"` into a template literal, which is a lot of edit for a hover.
+   A class name composes with whatever Tailwind is already on the element.
+
+   `.lift` moves 4px. On a 28px-tall chip that is a seventh of its own height and
+   reads as a jump rather than a lift, so `.lift-sm` moves 2px with a shadow
+   scaled to match. Two amounts, one recipe.
+
+   Both need `transition-all duration-300` on the element; they set the
+   destination, not the journey, so a component keeps control of its own timing
+   and of anything else it happens to be transitioning.
+
+   `components/scan/` uses neither. The tool has its own language — see the note
+   at the top of `scan/ui.tsx` — and a card there is not the same object as a
+   card on a marketing page. */
+.lift:hover {
+  transform: translateY(-4px);
+  border-color: #39471D;
+  box-shadow: 0 24px 60px -30px rgba(57, 71, 29, 0.25);
+}
+
+.lift-sm:hover {
+  transform: translateY(-2px);
+  border-color: #39471D;
+  box-shadow: 0 10px 24px -12px rgba(57, 71, 29, 0.35);
+}

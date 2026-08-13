@@ -340,7 +340,7 @@ export default function ContactLanding() {
                 data-reveal
                 className="group rounded-[28px] border border-gray-200 bg-white p-8 transition-all duration-300
                            shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)]
-                           hover:border-[#39471D]/25 hover:shadow-[0_16px_40px_-14px_rgba(23,26,16,0.22)]"
+                           lift"
               >
                 <p className="text-lg font-bold text-gray-900 mb-2">{r.label}</p>
                 <p className="text-sm text-gray-500 leading-relaxed mb-6">{r.copy}</p>
