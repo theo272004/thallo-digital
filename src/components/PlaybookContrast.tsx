@@ -75,15 +75,27 @@ export default function PlaybookContrast() {
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-5">
             {/* ── What everyone else still does ─────────────────────────── */}
+            {/* Both markers are flex items with a top margin rather than
+                absolutes at a guessed `top`. The old values were set against a
+                line box they no longer matched — the rule sat at 15px where
+                the first line's optical centre is 24 — so both marks floated
+                above their text. A margin of half the leading less half the
+                mark centres them, and keeps centring them if the type changes.
+                `items-start`, not `items-center`: on a row that wraps, the mark
+                belongs beside the first line, not beside the middle of the
+                block. */}
             <div className="rounded-[20px] bg-[#F7F8F9] p-7 sm:p-8">
               <p className="mb-6 text-[11px] font-bold uppercase tracking-[0.2em] text-gray-400">The old playbook</p>
               <ul className="flex flex-col">
                 {ROWS.map(([before]) => (
                   <li
                     key={before}
-                    className="relative border-b border-gray-200/70 py-3.5 pl-7 text-[15px] font-medium leading-snug text-gray-400 last:border-0"
+                    className="flex items-start gap-3.5 border-b border-gray-200/70 py-3.5 text-[15px] font-medium leading-snug text-gray-400 last:border-0"
                   >
-                    <span aria-hidden className="absolute left-0 top-[15px] block h-px w-3.5 bg-gray-300" />
+                    {/* 2px, not 1px, and a step darker. At a hairline it read
+                        as a stray rule rather than as a minus against the dots
+                        opposite. */}
+                    <span aria-hidden className="mt-[9px] block h-[2px] w-3.5 shrink-0 rounded-full bg-gray-400" />
                     {before}
                   </li>
                 ))}
@@ -91,17 +103,24 @@ export default function PlaybookContrast() {
             </div>
 
             {/* ── What we do instead ────────────────────────────────────── */}
-            <div className="rounded-[20px] bg-[#E7ECD9] p-7 sm:p-8">
-              <p className="mb-6 text-[11px] font-bold uppercase tracking-[0.2em] text-[#39471D]">How we work</p>
+            {/* #39471D, the brand green, rather than the #E7ECD9 tint it wore.
+                That tint is the one the palette reserves for fills on white and
+                is explicitly too light to carry text; this panel is the answer
+                to the one beside it and it should read as the darker, heavier
+                object. Copy goes white and the label and dots go #CBD0AC —
+                which is what that colour is for, and what the palette note in
+                globals.css says: soft is for copy and rules ON olive. */}
+            <div className="rounded-[20px] bg-[#39471D] p-7 sm:p-8">
+              <p className="mb-6 text-[11px] font-bold uppercase tracking-[0.2em] text-[#CBD0AC]">How we work</p>
               <ul className="flex flex-col">
                 {ROWS.map(([, after]) => (
                   <li
                     key={after}
-                    className="relative border-b border-[#39471D]/12 py-3.5 pl-7 text-[15px] font-semibold leading-snug text-gray-900 last:border-0"
+                    className="flex items-start gap-3.5 border-b border-white/15 py-3.5 text-[15px] font-semibold leading-snug text-white last:border-0"
                   >
                     <span
                       aria-hidden
-                      className="absolute left-0 top-[17px] block h-[7px] w-[7px] rounded-full bg-[#39471D]"
+                      className="mt-[7px] block h-[7px] w-[7px] shrink-0 rounded-full bg-[#CBD0AC]"
                     />
                     {after}
                   </li>
