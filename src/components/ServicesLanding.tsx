@@ -415,30 +415,40 @@ export default function ServicesPage() {
           The photograph is the section, edge to edge — not a picture inside a
           card sitting on a white page.
 
-          ## Why nothing changes width
+          ## Nothing moves. At all.
 
-          The first pass widened the hovered card and let the other five give
-          the room back. It read badly: every card's text re-wrapped on every
-          frame of the animation, so six paragraphs shuffled their line breaks
-          while one opened. Words moving is the thing the eye cannot ignore.
+          Two passes got here and both were wrong in the same way — they made
+          the layout the thing that changed.
 
-          So the columns are equal and they stay equal. The only thing that
-          animates is the open card's body, on `grid-template-rows` 0fr → 1fr —
-          the same mechanism the FAQ below uses. One property, no reflow, and
-          the row's height is fixed with the cards sitting on its floor, so the
-          one that opens grows upward into space that was already empty and
-          nothing else on the page moves at all.
+          The first widened the hovered card and let the other five give the
+          room back, so six paragraphs re-wrapped on every frame while one
+          opened. The second kept the widths equal but collapsed the bodies of
+          the five that were not selected, which stopped the shuffling and cost
+          five sixths of what the section is for: the reader could only see one
+          description at a time.
 
-          ## Why one is always open
+          So every card shows its title and its body, always, and the six are
+          identical in size. Selection is a change of surface and nothing else
+          — glass becomes white, white type becomes dark. Colour is the one
+          thing that can animate without any geometry depending on it, which is
+          why this is the version that finally sits still.
 
-          A row of six closed cards says nothing about what it does. The third
-          starts open, and pointing at another moves the selection rather than
-          opening a second — so the section always reads as one thing showing
-          and five waiting, and it never collapses into an empty state.
+          It also means the row needs no reserved height. It is as tall as the
+          cards, the cards are as tall as their copy, and the earlier
+          breakpoint-by-breakpoint reserve went with the thing it was holding
+          room for.
 
-          Selection follows the pointer and also focus, so a keyboard reaches
-          every card. Below `lg` there is no pointer worth speaking of: the
-          cards stack and every body is open.
+          ## Why one is always selected
+
+          A row where nothing is chosen looks unfinished. The third starts
+          selected, and pointing at another moves the selection rather than
+          adding one, so there is exactly one at every moment and it never
+          empties. Selection follows focus as well as the pointer, so a
+          keyboard reaches all six.
+
+          Below `lg` there is no pointer worth speaking of, so the cards stack
+          and none of them takes the white treatment — on a phone it is a list,
+          and a list does not need a cursor to be read.
 
           No new words. The heading, the paragraph, and all six titles and
           bodies are the ones the grey version carried.
@@ -488,49 +498,50 @@ export default function ServicesPage() {
               of bare photograph above the wide one. Each carries a little
               headroom over the measurement — the copy is text, and text gets
               reworded. */}
-          <div className="mt-10 flex flex-col gap-3 lg:mt-14 lg:h-[248px] lg:flex-row lg:items-end xl:h-[196px] 2xl:h-[176px]">
+          {/* No fixed height, and no `items-end`. Every card carries its body
+              at every moment, so all six are the same height and the row is
+              simply as tall as they are. The breakpoint-by-breakpoint reserve
+              that used to be here existed only to hold room for a card that
+              grew; nothing grows now. */}
+          <div className="mt-10 flex flex-col gap-3 lg:mt-14 lg:flex-row lg:items-stretch">
             {ENGINE.map((cell, i) => {
-              const open = i === activeCell;
+              const selected = i === activeCell;
               return (
                 <div
                   key={cell.title}
                   tabIndex={0}
                   onMouseEnter={() => setActiveCell(i)}
                   onFocus={() => setActiveCell(i)}
-                  aria-expanded={open}
-                  className={`rounded-2xl border p-5 backdrop-blur-md transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CBD0AC] lg:flex-1 ${
-                    open
-                      ? 'border-white bg-white shadow-[0_24px_60px_-24px_rgba(23,26,16,0.7)]'
-                      : 'border-white/15 bg-white/[0.08]'
+                  aria-current={selected}
+                  /* The white surface is `lg:` only, and so is the dark type
+                     that goes with it. Ungated, the selected card took a white
+                     background on a phone while its type stayed white for want
+                     of the `lg:` on the colour — white on white. Both halves of
+                     the treatment have to arrive at the same breakpoint. */
+                  className={`rounded-2xl border border-white/15 bg-white/[0.08] p-5 backdrop-blur-md transition-colors duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#CBD0AC] lg:flex-1 ${
+                    selected
+                      ? 'lg:border-white lg:bg-white lg:shadow-[0_24px_60px_-24px_rgba(23,26,16,0.7)]'
+                      : ''
                   }`}
                 >
+                  {/* `text-white` is the base on both branches, not the else —
+                     written as the alternative, the selected card lost its
+                     colour below `lg` where `lg:text-gray-900` does not apply,
+                     and the title fell back to inherited dark on glass. */}
                   <h3
-                    className={`font-sans text-[15px] font-semibold leading-snug tracking-tight transition-colors duration-500 ${
-                      open ? 'lg:text-gray-900' : 'text-white'
+                    className={`font-sans text-[15px] font-semibold leading-snug tracking-tight text-white transition-colors duration-500 ${
+                      selected ? 'lg:text-gray-900' : ''
                     }`}
                   >
                     {cell.title}
                   </h3>
-
-                  {/* 0fr → 1fr rather than a max-height guessed at: the body is
-                      whatever it measures, so the easing runs over the real
-                      distance from first pixel to last. Open at every width
-                      below lg, where there is no pointer to open it with. */}
-                  <div
-                    className={`grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] grid-rows-[1fr] ${
-                      open ? 'lg:grid-rows-[1fr]' : 'lg:grid-rows-[0fr]'
+                  <p
+                    className={`mt-2.5 text-[13px] font-medium leading-relaxed text-white/70 transition-colors duration-500 ${
+                      selected ? 'lg:text-gray-600' : ''
                     }`}
                   >
-                    <div className="overflow-hidden">
-                      <p
-                        className={`pt-2.5 text-[13px] font-medium leading-relaxed transition-opacity duration-500 ${
-                          open ? 'text-gray-600 lg:opacity-100' : 'text-white/70 lg:opacity-0'
-                        }`}
-                      >
-                        {cell.copy}
-                      </p>
-                    </div>
-                  </div>
+                    {cell.copy}
+                  </p>
                 </div>
               );
             })}
