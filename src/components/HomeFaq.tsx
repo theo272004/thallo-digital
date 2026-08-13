@@ -106,7 +106,9 @@ export default function HomeFaq() {
               html='Questions we get <span class="italic text-[#39471D]">before the first call.</span>'
             />
             <p className="max-w-[42ch] text-base font-medium leading-relaxed text-gray-500">
-              If yours isn&rsquo;t here, ask it in the form below and you&rsquo;ll get a straight answer.
+              {/* "above", not "below": this section is the last on the page
+                  now and the enquiry form sits in the panel before it. */}
+              If yours isn&rsquo;t here, ask it in the form above and you&rsquo;ll get a straight answer.
             </p>
           </div>
 

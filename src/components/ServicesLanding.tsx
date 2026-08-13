@@ -578,76 +578,75 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* ── FAQ (centered) ────────────────────────────────────────────────── */}
-      <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
+      {/* ── FAQ ─────────────────────────────────────────────────────────────
+          The same shape as the home page's: the heading and its line on the
+          left, the questions stacked on the right, hairline-ruled, with a plus
+          that drops its upright stroke when the answer opens.
+
+          It was centred, with the plus set in a circle that rotated to a cross
+          — a second way of drawing the same component, on a site with two FAQs
+          in total. One of them had to give, and the layout that survives is the
+          one that reads better: a heading beside a list rather than above it,
+          so the eye has somewhere to rest while the list changes height.
+       ─────────────────────────────────────────────────────────────────────── */}
+      <section className="bg-white py-16 2xl:py-24 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
-          <div className="text-center mb-14">
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans">
-              Before you <span className="italic text-[#39471D]">decide.</span>
-            </h2>
-            <p className="mt-5 text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mx-auto">
-              The questions that usually come up at this point.
-            </p>
-          </div>
+          <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-20">
+            <div>
+              <h2 className="mb-4 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
+                Before you <span className="italic text-[#39471D]">decide.</span>
+              </h2>
+              <p className="max-w-[42ch] text-base font-medium leading-relaxed text-gray-500">
+                The questions that usually come up at this point.
+              </p>
+            </div>
 
-          <div className="max-w-3xl mx-auto">
-            {FAQS.map((faq, i) => {
-              const isOpen = openFaq === i;
-              return (
-                <div key={i} className="border-b border-gray-100">
-                  <button
-                    id={`faq-q-${i}`}
-                    onClick={() => setOpenFaq(isOpen ? null : i)}
-                    aria-expanded={isOpen}
-                    aria-controls={`faq-a-${i}`}
-                    className="w-full text-left py-6 flex justify-between items-center gap-5 group"
-                  >
-                    <span className="text-base font-semibold text-gray-900 group-hover:text-[#39471D] transition-colors">
-                      {faq.q}
-                    </span>
-                    <span className={`shrink-0 w-7 h-7 rounded-full border flex items-center justify-center text-sm font-semibold transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                      isOpen
-                        ? 'bg-[#39471D] border-[#39471D] text-white rotate-45'
-                        : 'border-gray-200 text-gray-400'
-                    }`}>
-                      +
-                    </span>
-                  </button>
-                  {/* Grid rows from 0fr to 1fr, rather than a max-height to a
-                      guessed pixel value.
+            <div className="border-t border-gray-200">
+              {FAQS.map((faq, i) => {
+                const isOpen = openFaq === i;
+                return (
+                  <div key={faq.q} className="border-b border-gray-200">
+                    <button
+                      type="button"
+                      id={`faq-q-${i}`}
+                      aria-expanded={isOpen}
+                      aria-controls={`faq-a-${i}`}
+                      onClick={() => setOpenFaq(isOpen ? null : i)}
+                      className="flex w-full items-center justify-between gap-6 py-6 text-left"
+                    >
+                      <span className="text-[17px] font-semibold tracking-[-0.01em] text-gray-900">{faq.q}</span>
+                      {/* Two one-pixel rules rather than an icon font, so it
+                          stays crisp at any zoom and needs nothing loaded. */}
+                      <span aria-hidden className="relative block h-5 w-5 shrink-0">
+                        <span className="absolute left-0 top-[9px] block h-[1.5px] w-5 bg-[#39471D]" />
+                        <span
+                          className="absolute left-[9px] top-0 block h-5 w-[1.5px] bg-[#39471D] transition-all duration-300"
+                          style={{ transform: isOpen ? 'rotate(90deg)' : 'none', opacity: isOpen ? 0 : 1 }}
+                        />
+                      </span>
+                    </button>
 
-                      The old 300px was far taller than any answer — 138px at
-                      desktop width, 229px at 375px. Height is min(content,
-                      max-height), so the panel finished opening once max-height
-                      passed the content, at roughly half the duration, and the
-                      other half ran on an element that had already stopped. It
-                      opened through the fast middle of the curve and never
-                      reached the ease-out, which is what made it feel abrupt;
-                      closing was the same in reverse, a pause and then a drop.
-
-                      1fr is whatever the answer actually measures, so the easing
-                      applies to the real distance from first pixel to last. */}
-                  <div
-                    id={`faq-a-${i}`}
-                    role="region"
-                    aria-labelledby={`faq-q-${i}`}
-                    className={`grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                      isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
-                    }`}
-                  >
-                    <div className="overflow-hidden">
-                      <p
-                        className={`pb-6 text-sm text-gray-500 font-medium leading-relaxed max-w-[68ch] transition-opacity duration-300 ${
-                          isOpen ? 'opacity-100 delay-150' : 'opacity-0'
-                        }`}
-                      >
-                        {faq.a}
-                      </p>
+                    {/* Grid-rows rather than max-height: a guess that is too
+                        small clips the longest answer, and one that is too
+                        large makes every other answer close at the wrong
+                        speed. */}
+                    <div
+                      id={`faq-a-${i}`}
+                      role="region"
+                      aria-labelledby={`faq-q-${i}`}
+                      className="grid transition-all duration-300 ease-out"
+                      style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
+                    >
+                      <div className="overflow-hidden">
+                        <p className="max-w-[64ch] pb-7 text-[15.5px] font-medium leading-relaxed text-gray-500">
+                          {faq.a}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>

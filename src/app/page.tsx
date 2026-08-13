@@ -53,12 +53,9 @@ export default function Home() {
         <ScannerStripe />
         {/* "Blogs & guides" — the writing, despite the file name. */}
         <Testimonials />
-        {/* The awkward questions, answered before the call rather than on it.
-            It sits after the writing rather than before it: someone who has
-            read this far is closer to deciding than to browsing, and the last
-            thing they should meet before the ask is the price, the timeline
-            and what happens if it does not work. */}
-        <HomeFaq />
+        {/* Closes the argument: with the form on its own route now, this is the
+            home's hand-off to /contact/. */}
+        <CTASection />
 
         {/*
           ── HIDDEN, NOT DELETED ─────────────────────────────────────────────
@@ -81,9 +78,13 @@ export default function Home() {
           ────────────────────────────────────────────────────────────────────
         */}
 
-        {/* Closes the page: with the form on its own route now, this is the
-            home's hand-off to /contact/. */}
-        <CTASection />
+        {/* The awkward questions, and now the last thing on the page.
+            They used to sit before the ask, on the reasoning that the last
+            thing a reader met should be the price and the timeline. The order
+            is reversed at Cami's request: the ask closes the argument, and the
+            questions sit under it for whoever still has one. Which is why the
+            intro sentence points at the form *above* it now. */}
+        <HomeFaq />
       </main>
       <Footer />
     </div>
