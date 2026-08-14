@@ -63,3 +63,168 @@ function thallo_blog_editor_fonts() {
 	);
 }
 add_action( 'after_setup_theme', 'thallo_blog_editor_fonts' );
+
+/**
+ * How long the post takes to read, as a string.
+ *
+ * Exposed as a shortcode because a block template is markup, not PHP, and this
+ * is the one number on the page that has to be computed. 220 words a minute is
+ * the middle of the range the research puts adult silent reading at; the figure
+ * is a courtesy to the reader deciding whether to start, not a measurement, so
+ * the third decimal place of the constant does not matter.
+ */
+function thallo_blog_reading_time() {
+	$post = get_post();
+	if ( ! $post ) {
+		return '';
+	}
+
+	$words   = str_word_count( wp_strip_all_tags( strip_shortcodes( $post->post_content ) ) );
+	$minutes = max( 1, (int) round( $words / 220 ) );
+
+	/* translators: %d: estimated reading time in minutes. */
+	return esc_html( sprintf( _n( '%d min read', '%d min read', $minutes, 'thallo-blog' ), $minutes ) );
+}
+add_shortcode( 'thallo_reading_time', 'thallo_blog_reading_time' );
+
+/**
+ * Pulls the questions and answers back out of a post's FAQ section.
+ *
+ * The pattern at patterns/faq.php writes a plain group with a class on it. This
+ * reads that group back and returns [question => answer] pairs, so the markup
+ * below is generated from what was actually published rather than typed twice.
+ * Structured data that is maintained separately from the prose it describes
+ * drifts from it, and then makes a claim about the page that the page no longer
+ * supports — which is exactly the failure this whole product exists to find.
+ *
+ * @return array<string,string>
+ */
+function thallo_blog_faq_pairs( $content ) {
+	if ( false === strpos( $content, 'thallo-faq' ) || ! class_exists( 'DOMDocument' ) ) {
+		return array();
+	}
+
+	$dom      = new DOMDocument();
+	$previous = libxml_use_internal_errors( true );
+	/* The block markup is a fragment, not a document, and it is UTF-8. Without
+	   the encoding hint DOMDocument reads it as Latin-1 and every accented
+	   character comes back broken. */
+	$dom->loadHTML( '<?xml encoding="UTF-8"><div>' . $content . '</div>', LIBXML_NOERROR | LIBXML_NOWARNING );
+	libxml_clear_errors();
+	libxml_use_internal_errors( $previous );
+
+	$xpath = new DOMXPath( $dom );
+	$pairs = array();
+
+	$sections = $xpath->query( "//*[contains(concat(' ', normalize-space(@class), ' '), ' thallo-faq ')]" );
+	if ( ! $sections || 0 === $sections->length ) {
+		return array();
+	}
+
+	foreach ( $sections as $section ) {
+		foreach ( $xpath->query( './/h3', $section ) as $question ) {
+			$text = trim( $question->textContent );
+			if ( '' === $text ) {
+				continue;
+			}
+
+			/* Everything between this h3 and the next one is its answer. */
+			$answer = '';
+			for ( $node = $question->nextSibling; $node; $node = $node->nextSibling ) {
+				if ( XML_ELEMENT_NODE === $node->nodeType && 'h3' === strtolower( $node->nodeName ) ) {
+					break;
+				}
+				$answer .= ' ' . $node->textContent;
+			}
+
+			$answer = trim( preg_replace( '/\s+/', ' ', $answer ) );
+			if ( '' !== $answer ) {
+				$pairs[ $text ] = $answer;
+			}
+		}
+	}
+
+	return $pairs;
+}
+
+/**
+ * Article and FAQPage structured data on single posts.
+ *
+ * Thallo's own scan gives a site points for exactly this markup, on the grounds
+ * that it lets a model resolve who wrote a page and what it claims instead of
+ * inferring both from prose. A blog selling that finding while shipping without
+ * it would be a bad look, and — more to the point — the posts are the asset
+ * meant to get cited.
+ *
+ * Emitted from post data rather than hand-written per post, so it cannot fall
+ * out of step with the post it describes.
+ */
+function thallo_blog_schema() {
+	if ( ! is_singular( 'post' ) ) {
+		return;
+	}
+
+	$post = get_post();
+	if ( ! $post ) {
+		return;
+	}
+
+	$graph = array();
+
+	$article = array(
+		'@context'         => 'https://schema.org',
+		'@type'            => 'BlogPosting',
+		'headline'         => wp_strip_all_tags( get_the_title( $post ) ),
+		'datePublished'    => get_the_date( 'c', $post ),
+		'dateModified'     => get_the_modified_date( 'c', $post ),
+		'mainEntityOfPage' => get_permalink( $post ),
+		'author'           => array(
+			'@type' => 'Organization',
+			'name'  => 'Thallo Digital',
+			'url'   => 'https://thallodigital.com/',
+		),
+		'publisher'        => array(
+			'@type' => 'Organization',
+			'name'  => 'Thallo Digital',
+			'url'   => 'https://thallodigital.com/',
+		),
+	);
+
+	$excerpt = wp_strip_all_tags( get_the_excerpt( $post ) );
+	if ( '' !== $excerpt ) {
+		$article['description'] = $excerpt;
+	}
+
+	$image = get_the_post_thumbnail_url( $post, 'full' );
+	if ( $image ) {
+		$article['image'] = $image;
+	}
+
+	$graph[] = $article;
+
+	$pairs = thallo_blog_faq_pairs( $post->post_content );
+	if ( $pairs ) {
+		$entities = array();
+		foreach ( $pairs as $question => $answer ) {
+			$entities[] = array(
+				'@type'          => 'Question',
+				'name'           => $question,
+				'acceptedAnswer' => array(
+					'@type' => 'Answer',
+					'text'  => $answer,
+				),
+			);
+		}
+
+		$graph[] = array(
+			'@context'   => 'https://schema.org',
+			'@type'      => 'FAQPage',
+			'mainEntity' => $entities,
+		);
+	}
+
+	foreach ( $graph as $item ) {
+		echo "\n" . '<script type="application/ld+json">' . wp_json_encode( $item, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . '</script>' . "\n";
+	}
+}
+add_action( 'wp_head', 'thallo_blog_schema' );

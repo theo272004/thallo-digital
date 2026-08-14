@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "blog": "node scripts/blog.mjs",
-    "plugin:zip": "node scripts/plugin-zip.mjs"
+    "plugin:zip": "node scripts/plugin-zip.mjs",
+    "theme:zip": "node scripts/plugin-zip.mjs theme"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

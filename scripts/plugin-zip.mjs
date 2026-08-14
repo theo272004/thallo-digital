@@ -22,8 +22,24 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const SRC = join(ROOT, 'wordpress-plugin', 'thallo-visibility');
-const OUT = join(ROOT, 'wordpress-plugin', 'thallo-visibility.zip');
+
+/* Two things to package now — the plugin and the blog theme — and both have
+   the same requirement that brought this script into existence: forward
+   slashes in the entry names. `npm run theme:zip` passes the theme's path. */
+const TARGETS = {
+  plugin: { src: ['wordpress-plugin', 'thallo-visibility'], out: ['wordpress-plugin', 'thallo-visibility.zip'] },
+  theme: { src: ['wordpress-theme', 'thallo-blog'], out: ['wordpress-theme', 'thallo-blog.zip'] },
+};
+
+const name = process.argv[2] ?? 'plugin';
+const target = TARGETS[name];
+if (!target) {
+  console.error(`Unknown target "${name}". Use one of: ${Object.keys(TARGETS).join(', ')}`);
+  process.exit(1);
+}
+
+const SRC = join(ROOT, ...target.src);
+const OUT = join(ROOT, ...target.out);
 
 /** CRC-32, which the zip format requires per entry and Node does not ship. */
 const TABLE = Int32Array.from({ length: 256 }, (_, n) => {
@@ -47,9 +63,16 @@ function walk(dir) {
 
 /* Every path is posix-separated on the way in. This is the whole point of the
    file, so it happens once, here, and not at each call site. */
+/* The folder WordPress will unpack into, taken from the source directory
+   rather than written out. Hardcoding it was fine while there was one target
+   and silently wrong the moment there were two: the theme packaged itself
+   under the plugin's name, which installs as a theme called thallo-visibility
+   and fails in a way that looks like a WordPress problem. */
+const FOLDER = target.src[target.src.length - 1];
+
 const files = walk(SRC)
   .map((full) => ({
-    name: `thallo-visibility/${relative(SRC, full).split('\\').join('/')}`,
+    name: `${FOLDER}/${relative(SRC, full).split('\\').join('/')}`,
     body: readFileSync(full),
     mtime: statSync(full).mtime,
   }))
@@ -116,9 +139,13 @@ end.writeUInt32LE(offset, 16);
 const zip = Buffer.concat([...locals, centralBuf, end]);
 writeFileSync(OUT, zip);
 
-const version = readFileSync(join(SRC, 'thallo-visibility.php'), 'utf8').match(
-  /THALLO_VIS_VERSION',\s*'([^']+)'/
-)?.[1];
+/* The plugin keeps its version in a PHP constant, the theme in the style.css
+   header. Keyed off the target rather than sniffed from the file list, whose
+   entries carry the top-level folder and so never match a bare filename. */
+const version =
+  name === 'plugin'
+    ? readFileSync(join(SRC, 'thallo-visibility.php'), 'utf8').match(/THALLO_VIS_VERSION',\s*'([^']+)'/)?.[1]
+    : readFileSync(join(SRC, 'style.css'), 'utf8').match(/^\s*Version:\s*(.+)$/m)?.[1].trim();
 
 console.log(`${OUT}`);
 console.log(`  version ${version ?? '?'} · ${files.length} files · ${(zip.length / 1024).toFixed(0)}KB`);
