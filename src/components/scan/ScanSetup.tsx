@@ -36,7 +36,7 @@
 
 import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, Building2, Globe2, Link2, LockKeyhole, Plus, Sparkles, X } from 'lucide-react';
-import { FIELD, Notice, Panel } from './ui';
+import { BTN_PRIMARY, BTN_SECONDARY, FIELD, Head, Notice, Panel, Tint } from './ui';
 import { Combo, Select } from './Dropdown';
 import ConsentCheck from '@/components/ui/ConsentCheck';
 import { buildQuestions } from '@/lib/scan/questions';
@@ -58,13 +58,6 @@ const LANGUAGES = [
 ] as const;
 
 const COUNTRIES = Array.from(new Map(MARKETS.map((m) => [m.country, m])).values());
-
-function StepBadge({ n }: { n: number }) {
-  /* Filled olive with the numeral in white, rather than a pale disc with olive
-     type. It is the marker for which of two steps you are on, and a tint reads
-     as decoration where a filled one reads as a position. */
-  return <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#39471D] text-[15px] font-bold text-white">{n}.</span>;
-}
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
   return <span className="text-[13px] font-bold text-gray-900">{children}</span>;
@@ -208,13 +201,7 @@ export default function ScanSetup({
       <div className="w-full">
         <Panel className="p-6 sm:p-8">
           <form onSubmit={continueToPrompts}>
-            <div className="flex items-start gap-3">
-              <StepBadge n={1} />
-              <div>
-                <h2 className="text-[22px] font-bold tracking-tight text-gray-900">Your brand</h2>
-                <p className="mt-1 text-[14px] font-medium text-gray-500">The essentials to start your scan</p>
-              </div>
-            </div>
+            <Head badge="1." title="Your brand" sub="The essentials to start your scan" />
 
             {/* Brand and website pair, category takes the full width because it
                 carries the longest hint, country and language pair. Everything
@@ -224,8 +211,8 @@ export default function ScanSetup({
               <label className="flex flex-col gap-2.5">
                 <FieldLabel>Brand name</FieldLabel>
                 <span className="relative">
-                  <Building2 size={17} className="pointer-events-none absolute left-4 top-3.5 text-gray-400" />
-                  <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="e.g. Ledgerly" maxLength={80} autoComplete="organization" className={`${FIELD} rounded-xl py-3.5 pl-11 text-[15px]`} />
+                  <Building2 size={17} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="e.g. Ledgerly" maxLength={80} autoComplete="organization" className={`${FIELD} pl-11`} />
                 </span>
                 <span className="text-[11px] font-medium text-gray-400">The name we look for in every answer</span>
               </label>
@@ -233,8 +220,8 @@ export default function ScanSetup({
               <label className="flex flex-col gap-2.5">
                 <FieldLabel>Website</FieldLabel>
                 <span className="relative">
-                  <Link2 size={17} className="pointer-events-none absolute left-4 top-3.5 text-gray-400" />
-                  <input type="text" value={domain} onChange={(e) => setDomain(e.target.value)} placeholder="yourcompany.com" autoComplete="url" className={`${FIELD} rounded-xl py-3.5 pl-11 text-[15px]`} />
+                  <Link2 size={17} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input type="text" value={domain} onChange={(e) => setDomain(e.target.value)} placeholder="yourcompany.com" autoComplete="url" className={`${FIELD} pl-11`} />
                 </span>
                 <span className="text-[11px] font-medium text-gray-400">We&apos;ll analyze your site and content signals</span>
               </label>
@@ -259,7 +246,7 @@ export default function ScanSetup({
                   options={INDUSTRIES}
                   maxLength={120}
                   placeholder="e.g. pizzerias, legal tech, wedding photography"
-                  className={`${FIELD} rounded-xl py-3.5 text-[15px]`}
+                  className={`${FIELD}`}
                 />
                 <span className="text-[11px] font-medium text-gray-400">What you want to be found as — anything you like, or pick a suggestion</span>
               </div>
@@ -275,7 +262,7 @@ export default function ScanSetup({
                   onChange={setCountry}
                   icon={<Globe2 size={17} className="shrink-0 text-gray-400" />}
                   options={COUNTRIES.map((m) => ({ value: m.country, label: m.country.replace(/^the /, '') }))}
-                  className={`${FIELD} rounded-xl py-3.5 text-[15px]`}
+                  className={`${FIELD}`}
                 />
               </div>
 
@@ -286,7 +273,7 @@ export default function ScanSetup({
                   value={language}
                   onChange={setLanguage}
                   options={LANGUAGES.map((l) => ({ value: l.value, label: l.label }))}
-                  className={`${FIELD} rounded-xl py-3.5 text-[15px]`}
+                  className={`${FIELD}`}
                 />
               </div>
             </div>
@@ -306,7 +293,7 @@ export default function ScanSetup({
                 </span>
               </span>
 
-              <button type="submit" className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#39471D] px-8 py-4 text-[14px] font-bold text-white transition-colors hover:bg-[#55672E] sm:w-auto">
+              <button type="submit" className={`${BTN_PRIMARY} w-full shrink-0 px-8 py-4 sm:w-auto`}>
                 Continue <ArrowRight size={18} />
               </button>
             </div>
@@ -324,20 +311,16 @@ export default function ScanSetup({
           375px phone. The row chrome gives way for the same reason — see the
           numeral and the remove button below. */}
       <Panel className="p-5 sm:p-10">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="flex items-start gap-3">
-            <StepBadge n={2} />
-            <div>
-              <h2 className="text-[22px] font-bold tracking-tight text-gray-900">Your questions</h2>
-              <p className="mt-1 text-[14px] font-medium text-gray-500">Write what you want the models asked — up to {MAX_QUESTIONS}</p>
-            </div>
-          </div>
-          <span className="rounded-full bg-[#39471D]/10 px-3.5 py-2 text-[12px] font-bold tabular-nums text-[#39471D]">{filled.length} / {MAX_QUESTIONS}</span>
-        </div>
+        <Head
+          badge="2."
+          title="Your questions"
+          sub={`Write what you want the models asked — up to ${MAX_QUESTIONS}`}
+          chip={`${filled.length} / ${MAX_QUESTIONS}`}
+        />
 
         {/* The one thing that silently invalidates a scan, said before the
             first keystroke rather than after the results. */}
-        <div className="mt-7 flex items-start gap-3 rounded-xl border border-[#D9E2C8] bg-[#F7FAF2] px-4 py-4 sm:px-5">
+        <Tint edged className="mt-7 flex items-start gap-3">
           <Sparkles size={19} className="mt-0.5 shrink-0 text-[#39471D]" />
           {/* The example is the generated question for this industry and market,
               not a hardcoded English one — a Spanish scan shown an English
@@ -348,7 +331,7 @@ export default function ScanSetup({
             <strong className="font-bold">Leave your brand name out of the question.</strong>{' '}
             {`Ask what a buyer would type before they know you exist — like “${example}”. A question that names you only measures whether the model will agree with you.`}
           </p>
-        </div>
+        </Tint>
 
         <div className="mt-6 flex flex-col gap-3">
           {questions.map((question, i) => (
@@ -369,7 +352,7 @@ export default function ScanSetup({
                 }}
                 maxLength={200}
                 placeholder={i === 0 ? 'Write your first question…' : 'Add another question…'}
-                className={`${FIELD} min-w-0 flex-1 rounded-xl py-3.5 text-[14px]`}
+                className={`${FIELD} min-w-0 flex-1`}
               />
               <button
                 type="button"
@@ -396,7 +379,7 @@ export default function ScanSetup({
             models with the web open and each of those calls is billed as it is
             made, so there is nothing to give away first — and the report is
             sent rather than only shown, which is the thing the address buys. */}
-        <div className="mt-7 rounded-xl bg-[#F4FAF5] p-4 sm:p-5">
+        <Tint className="mt-7">
           <label htmlFor="scan-email" className="text-[13px] font-bold tracking-tight text-gray-900">
             Where should we send the report?
           </label>
@@ -411,12 +394,12 @@ export default function ScanSetup({
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@company.com"
             autoComplete="email"
-            className={`${FIELD} rounded-xl py-3.5 text-[15px] sm:max-w-[340px]`}
+            className={`${FIELD} sm:max-w-[340px]`}
           />
           <div className="mt-3.5">
             <ConsentCheck id="scan-setup-consent" checked={consent} onChange={setConsent} />
           </div>
-        </div>
+        </Tint>
 
         {error && <div className="mt-5"><Notice>{error}</Notice></div>}
 
@@ -428,13 +411,10 @@ export default function ScanSetup({
         </p>
 
         <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
-          <button type="button" onClick={() => setStep(1)} className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-5 py-3 text-[13px] font-semibold text-gray-600 transition-colors hover:bg-gray-50"><ArrowLeft size={16} /> Back</button>
-          <button
-            type="button"
-            onClick={runScan}
-            disabled={!filled.length}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#39471D] px-6 py-3 text-[13px] font-bold text-white transition-colors hover:bg-[#55672E] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#39471D]"
-          >
+          <button type="button" onClick={() => setStep(1)} className={BTN_SECONDARY}>
+            <ArrowLeft size={16} /> Back
+          </button>
+          <button type="button" onClick={runScan} disabled={!filled.length} className={BTN_PRIMARY}>
             Run scan <ArrowRight size={17} />
           </button>
         </div>

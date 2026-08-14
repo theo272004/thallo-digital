@@ -17,7 +17,7 @@ export default function AuditTrail({ phase1 }: { phase1: ScanPhase1 }) {
   const answered = phase1.providers.filter((p) => !p.error);
 
   return (
-    <div className="rounded-lg border border-gray-200">
+    <div className="rounded-xl border border-gray-200">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}

@@ -15,7 +15,7 @@ const INBOX = 'hello@thallo.co';
    closing CTA panel, not on a page of its own, so the vertical rhythm is
    tighter than ContactLanding's. Change both if the input style changes. */
 const fieldCls =
-  'w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm font-medium text-gray-900 placeholder:text-gray-400 outline-none transition-colors duration-200 focus:border-[#39471D] focus:ring-2 focus:ring-[#39471D]/15 hover:border-gray-300';
+  'w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm font-medium text-gray-900 placeholder:text-gray-400 outline-none transition-colors duration-200 focus:border-[#39471D] hover:border-gray-300';
 const labelCls =
   'block text-[11px] font-bold text-gray-500 tracking-wider uppercase mb-1.5';
 

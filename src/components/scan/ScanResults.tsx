@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import ConsentCheck from '@/components/ui/ConsentCheck';
 import AuditTrail from './AuditTrail';
 import ScoreRing from './ScoreRing';
-import { BTN_DARK, FIELD, Meter, Micro, Notice, Panel, ProviderMark, Spinner, Stat, Verdict, type Tone } from './ui';
+import { BarChart3, LockKeyhole } from 'lucide-react';
+import { BTN_PRIMARY, FIELD, Head, Meter, Micro, Notice, Panel, ProviderMark, Spinner, Stat, Tint, Verdict, type Tone } from './ui';
 import { marketLabel } from '@/lib/scan/markets';
 import { PROVIDER_LABEL, type ProviderResult, type ScanPhase1 } from '@/lib/scan/types';
 
@@ -52,21 +53,19 @@ export default function ScanResults({
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       <Panel>
-        <div className="flex flex-wrap items-baseline justify-between gap-2 pb-5">
-          <p className="max-w-[32ch] truncate text-[15px] font-bold tracking-tight text-gray-900">{phase1.brand}</p>
-          {/* The market belongs on the dateline, not in a footnote. A share of
-              voice is only a finding about a brand once you know which market
-              it was measured in — the same brand can be 40% in one and 0% in
-              the next, and both readings are correct. */}
-          <Micro className="text-gray-400">
-            {phase1.industry} · {marketLabel(phase1.market)} ·{' '}
-            {new Date(phase1.scannedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-          </Micro>
-        </div>
+        {/* The market belongs on the dateline, not in a footnote. A share of
+            voice is only a finding about a brand once you know which market it
+            was measured in — the same brand can be 40% in one and 0% in the
+            next, and both readings are correct. */}
+        <Head
+          badge={<BarChart3 size={18} />}
+          title={`What the models say about ${phase1.brand}`}
+          sub={`${phase1.industry} · ${marketLabel(phase1.market)} · ${new Date(phase1.scannedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}`}
+        />
 
-        <div className="grid grid-cols-1 items-center gap-8 border-y border-gray-100 py-7 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
+        <div className="mt-7 grid grid-cols-1 items-center gap-8 border-y border-gray-100 py-7 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
           <ScoreRing pct={phase1.sovPct} label="Share of voice" />
 
           <div className="flex flex-col gap-4">
@@ -115,17 +114,13 @@ export default function ScanResults({
       <Panel>
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[1fr_320px] lg:gap-14">
           <div>
-            <Micro className="text-gray-400">Second half</Micro>
-            <h2 className="mt-4 mb-3 text-2xl sm:text-3xl font-bold leading-[1.1] tracking-tight text-gray-900">
-              Now the part that says what to do about it.
-            </h2>
-            <p className="mb-6 max-w-[54ch] text-[15px] font-medium leading-relaxed text-gray-500">
-              The rest of the scan costs us money to run — live retrieval, a search result page, and a crawl of{' '}
-              {phase1.domain}. We will run it now in exchange for an email, and send you the report so you do not
-              have to keep this tab open.
-            </p>
+            <Head
+              badge={<LockKeyhole size={18} />}
+              title="Now the part that says what to do about it."
+              sub={`The rest of the scan costs us money to run — live retrieval, a search result page, and a crawl of ${phase1.domain}. We will run it now in exchange for an email, and send you the report so you do not have to keep this tab open.`}
+            />
 
-            <form onSubmit={submit} className="flex flex-col gap-4">
+            <form onSubmit={submit} className="mt-6 flex flex-col gap-4">
               <div className="flex flex-col gap-3 sm:flex-row">
                 <input
                   type="email"
@@ -137,7 +132,7 @@ export default function ScanResults({
                   disabled={unlocking}
                   className={`${FIELD} sm:max-w-[300px]`}
                 />
-                <button type="submit" disabled={unlocking} className={`${BTN_DARK} shrink-0`}>
+                <button type="submit" disabled={unlocking} className={`${BTN_PRIMARY} shrink-0`}>
                   {unlocking ? (
                     <>
                       <Spinner className="h-3.5 w-3.5 border-white/40 border-t-transparent" /> Running
@@ -152,7 +147,7 @@ export default function ScanResults({
             </form>
           </div>
 
-          <div className="w-full rounded-lg bg-[#F4FAF5] p-5">
+          <Tint className="w-full">
             <Micro className="text-[#39471D]">Still locked</Micro>
             <ul className="mt-4 flex flex-col gap-3">
               {LOCKED.map((l) => (
@@ -173,7 +168,7 @@ export default function ScanResults({
                 </li>
               ))}
             </ul>
-          </div>
+          </Tint>
         </div>
       </Panel>
     </div>

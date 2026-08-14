@@ -51,7 +51,7 @@ function TrendTooltip({ active, payload }: { active?: boolean; payload?: { paylo
 export default function TrendChart({ history, brand }: { history: HistoryPoint[]; brand: string }) {
   if (history.length < 2) {
     return (
-      <div className="rounded-lg bg-gray-50 px-4 py-4">
+      <div className="rounded-xl bg-gray-50 px-4 py-4">
         <p className="text-[13px] font-medium leading-relaxed text-gray-500">
           This is the first recorded scan for {brand} in this market, so there is nothing to compare it against yet.
           Run it again and this becomes a trend — which is the number that actually answers whether the work is

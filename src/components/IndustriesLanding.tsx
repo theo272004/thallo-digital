@@ -180,21 +180,27 @@ export default function IndustriesPage() {
       </section>
 
       {/* Industries grid */}
-      <section className="bg-white py-16 2xl:py-28 border-b border-gray-100">
+      {/* Sized to land whole. Six cards at 240px, a 56px heading gap and 112px
+          of section padding ran the button off the bottom of a laptop screen,
+          which is the one place it has to be seen — so the cards lose 50px of
+          minimum height, the padding inside them comes in from 32 to 24, and
+          the figures come down a step. Nothing here needed to be that large;
+          the cards were sized by habit rather than by their content. */}
+      <section className="bg-white py-12 2xl:py-20 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
-          <div className="max-w-2xl mb-14">
-            <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans mb-4">
+          <div className="max-w-2xl mb-8">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans mb-3">
               Industries we build authority for.
             </h2>
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[48ch]">
               We focus where trust and authority decide who wins.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {INDUSTRIES.map((ind) => (
               <div
                 key={ind.name}
-                className={`relative overflow-hidden rounded-3xl p-8 flex flex-col gap-5 transition-all duration-300 min-h-[240px] ${
+                className={`relative overflow-hidden rounded-3xl p-5 flex flex-col gap-3 transition-all duration-300 min-h-[170px] ${
                   ind.type === 'phrase'
                     ? 'bg-[#39471D] border border-[#39471D] hover:-translate-y-1 hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,0.55)]'
                     : 'bg-gray-50/60 border border-gray-200 lift'
@@ -212,29 +218,29 @@ export default function IndustriesPage() {
                 {ind.type === 'metric' ? (
                   <>
                     <div>
-                      <p className="text-[3rem] font-bold tracking-tight leading-none text-[#39471D] font-sans">{ind.metric}</p>
-                      <p className="text-sm text-gray-500 font-medium leading-snug mt-2 max-w-[28ch]">{ind.meaning}</p>
-                      <p className="text-[11px] font-bold tracking-[0.12em] uppercase text-gray-400 mt-1.5">{ind.src}</p>
+                      <p className="text-[2.1rem] font-bold tracking-tight leading-none text-[#39471D] font-sans">{ind.metric}</p>
+                      <p className="text-[12.5px] text-gray-500 font-medium leading-[1.4] mt-1.5 max-w-[30ch]">{ind.meaning}</p>
+                      <p className="text-[10px] font-bold tracking-[0.12em] uppercase text-gray-400 mt-1">{ind.src}</p>
                     </div>
                     {/* The industry name is the thing you are meant to leave
                         with, and in near-black under a 3rem figure it was the
                         quietest line on the card. Olive on the light cards,
                         white on the olive ones — the same job, inverted. */}
-                    <div className="mt-auto pt-5 border-t border-gray-200/70">
+                    <div className="mt-auto pt-3.5 border-t border-gray-200/70">
                       {/* 20px against the 14px line under it. At 16px bold it
                           was only two points clear of its own description, so
                           the eye finished on the figure above and stopped. */}
-                      <h3 className="text-xl font-bold tracking-tight leading-snug text-[#39471D] mb-1.5">{ind.name}</h3>
-                      <p className="text-sm text-gray-500 font-medium leading-relaxed">{ind.line}</p>
+                      <h3 className="text-base font-bold tracking-tight leading-snug text-[#39471D] mb-1">{ind.name}</h3>
+                      <p className="text-[12.5px] text-gray-500 font-medium leading-[1.45]">{ind.line}</p>
                     </div>
                   </>
                 ) : (
                   <>
-                    <p className="font-serif italic text-[1.55rem] leading-[1.25] text-[#CBD0AC] flex-1">
+                    <p className="font-serif italic text-[1.25rem] leading-[1.3] text-[#CBD0AC] flex-1">
                       {ind.phrase}
                     </p>
-                    <div className="pt-5 border-t border-white/15">
-                      <h3 className="text-xl font-bold tracking-tight leading-snug text-white">{ind.name}</h3>
+                    <div className="pt-3.5 border-t border-white/15">
+                      <h3 className="text-base font-bold tracking-tight leading-snug text-white">{ind.name}</h3>
                     </div>
                   </>
                 )}
@@ -246,13 +252,13 @@ export default function IndustriesPage() {
               do in between — six cards of reasoning and no way to act on it.
               One button, and the cheaper of the two asks: the panel at the
               foot of the page still carries the audit and the form. */}
-          <div className="mt-14 flex flex-col items-center gap-5 text-center 2xl:mt-20">
-            <p className="max-w-[46ch] text-base font-medium leading-relaxed text-gray-500">
+          <div className="mt-8 flex flex-col items-center justify-center gap-4 text-center sm:flex-row sm:gap-6 sm:text-left 2xl:mt-12">
+            <p className="max-w-[46ch] text-[15px] font-medium leading-relaxed text-gray-500">
               Whichever one you are in, the first question is the same: what do the models say when your buyer asks?
             </p>
             <a
               href={`${BASE}/thallo-ai/scan/`}
-              className="inline-flex items-center justify-center rounded-full bg-[#39471D] px-8 py-4 text-sm font-semibold text-white transition-transform hover:-translate-y-px"
+              className="inline-flex shrink-0 items-center justify-center rounded-full bg-[#39471D] px-7 py-3.5 text-sm font-semibold text-white transition-transform hover:-translate-y-px"
             >
               Run a free scan <ArrowUpRight className="ml-1" />
             </a>
@@ -261,8 +267,21 @@ export default function IndustriesPage() {
       </section>
 
       {/* Testimonials */}
-      <section className="bg-gray-50/50 py-16 2xl:py-28 border-b border-gray-100">
+      <section className="bg-gray-50/50 py-14 2xl:py-24 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6">
+          {/* Three quotes arrived on the page with nothing above them saying
+              what they were, so they read as decoration between two sections
+              that did have titles. Small on purpose — this is a caption over
+              the cards, not another section headline competing with the two
+              above it. */}
+          <div className="mb-9 text-center">
+            <h2 className="font-sans text-2xl sm:text-3xl font-bold tracking-tight leading-[1.1] text-gray-900">
+              In their <span className="italic text-[#39471D]">own words.</span>
+            </h2>
+            <p className="mx-auto mt-3 max-w-[46ch] text-[15px] font-medium leading-relaxed text-gray-500">
+              Three sectors, three engagements, on what changed once the models started naming them.
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {QUOTES.map((q, i) => (
               <div

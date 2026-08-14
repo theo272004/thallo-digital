@@ -97,11 +97,18 @@ export default function ScanFlow() {
       }`}
       style={hero ? undefined : GROUND}
     >
-      {/* The photograph only stands behind the first step. Everything after it
-          — the progress list, the results, the report — is long, dense and
-          scrolls, and a picture behind two thousand pixels of table is a
-          picture nobody is looking at. Those keep the olive ground and its
-          plotting grid, which is the tool's own language. */}
+      {/* The photograph used to stand behind the first step and nowhere else,
+          on the reasoning that a picture behind two thousand pixels of table is
+          a picture nobody looks at. That reasoning holds for the table and not
+          for the masthead — and dropping it outright is what made every stage
+          after the first read as a different, plainer product.
+
+          So it stays on all of them, as a band under the heading rather than a
+          full-bleed backdrop: at 460px it covers the masthead and nothing else,
+          and it is masked out at the bottom instead of being faded into a flat
+          colour, so the olive ground and its plotting grid come through
+          underneath exactly as before. The first step still gets the whole
+          frame, because there the picture *is* the screen. */}
       {hero ? (
         <>
           <img
@@ -125,7 +132,31 @@ export default function ScanFlow() {
           />
         </>
       ) : (
-        <div aria-hidden className="pointer-events-none absolute inset-0" style={GRID} />
+        <>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[460px] select-none overflow-hidden"
+            style={{
+              WebkitMaskImage: 'linear-gradient(to bottom, #000 0%, #000 52%, transparent 100%)',
+              maskImage: 'linear-gradient(to bottom, #000 0%, #000 52%, transparent 100%)',
+            }}
+          >
+            <img
+              src={`${BASE}/contact-bg.webp`}
+              alt=""
+              aria-hidden="true"
+              decoding="async"
+              className="h-full w-full object-cover object-[68%_center]"
+            />
+            {/* The same two passes the first step uses, so the white type sits
+                on the same weight of ground wherever you are in the flow. */}
+            <div
+              className="absolute inset-0"
+              style={{ background: 'linear-gradient(to right, rgba(23,26,16,.88) 0%, rgba(23,26,16,.66) 42%, rgba(23,26,16,.5) 100%)' }}
+            />
+          </div>
+          <div aria-hidden className="pointer-events-none absolute inset-0" style={GRID} />
+        </>
       )}
 
       {/* `w-full` because the section is a flex column on the first step, and a
@@ -152,8 +183,18 @@ export default function ScanFlow() {
                 className="mt-4 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl"
                 html="Check your AI visibility."
               />
+              {/* The first step carries a line under its heading; without one
+                  here the masthead sat straight on top of a card and the two
+                  screens read as different templates. */}
+              <p className="mt-5 max-w-[46ch] text-[15px] font-medium leading-relaxed text-white/75">
+                Ask the models what they say about you, in your own words. Free, no account, under a minute.
+              </p>
             </div>
-            <span className="hidden rounded-full bg-[#39471D]/10 px-3 py-1.5 text-[11px] font-bold text-[#39471D] sm:block">Free scan</span>
+            {/* Olive type on an olive tint was 1.6:1 against the photograph
+                behind it — legible on the old flat ground, invisible now. */}
+            <span className="hidden shrink-0 rounded-full border border-white/25 bg-white/10 px-3.5 py-2 text-[11px] font-bold text-white sm:block">
+              Free scan
+            </span>
           </div>
         )}
 
@@ -163,7 +204,7 @@ export default function ScanFlow() {
           {stage === 'setup' && (
             <>
               {error && (
-                <div className="mb-3 rounded-lg border border-rose-300/40 bg-rose-950/30 px-4 py-3">
+                <div className="mb-3 rounded-xl border border-rose-300/40 bg-rose-950/30 px-4 py-3.5">
                   <p className="text-[13px] font-medium leading-relaxed text-rose-100">{error}</p>
                 </div>
               )}
@@ -243,7 +284,7 @@ export default function ScanFlow() {
  */
 function DemoNotice({ configured }: { configured: boolean }) {
   return (
-    <div className="mt-8 flex items-start gap-3 rounded-lg border border-[#CBD0AC]/40 bg-[#171A10]/50 px-4 py-3.5">
+    <div className="mt-8 flex items-start gap-3 rounded-xl border border-[#CBD0AC]/40 bg-[#171A10]/50 px-4 py-3.5">
       <svg
         width="15"
         height="15"

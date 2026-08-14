@@ -5,7 +5,8 @@ import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import AuditTrail from './AuditTrail';
 import ScoreRing from './ScoreRing';
 import TrendChart from './TrendChart';
-import { BTN_DARK, BTN_GHOST, Meter, Micro, Panel, ProviderMark, Stat, Verdict, type Tone } from './ui';
+import { Compass, FileText, Gauge, ListChecks, Search, TrendingUp, Trophy } from 'lucide-react';
+import { BTN_PRIMARY, BTN_SECONDARY, Head, Meter, Micro, Panel, ProviderMark, Stat, Tint, Verdict, type Tone } from './ui';
 import { PROVIDER_LABEL, type ScanPhase1, type ScanPhase2, type RetrievalResult, type TechSignal } from '@/lib/scan/types';
 import { BASE } from '@/lib/site';
 
@@ -32,30 +33,26 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
   const maxTech = scoredSignals.reduce((sum, s) => sum + s.weight, 0);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       {/* ── Headline ─────────────────────────────────────────────────────── */}
       <Panel>
-        <div className="flex flex-wrap items-baseline justify-between gap-2 pb-5">
-          <p className="max-w-[32ch] truncate text-[15px] font-bold tracking-tight text-gray-900">
-            {phase1.brand} · full report
-          </p>
-          <Micro className="text-gray-400">{phase1.domain}</Micro>
-        </div>
+        <Head
+          badge={<FileText size={18} />}
+          title={`The full report for ${phase1.brand}`}
+          sub={`Measured against ${phase1.domain}. Every figure below traces to a row further down — nothing here is an estimate.`}
+          chip={phase2.grade}
+        />
 
-        <div className="grid grid-cols-1 gap-8 border-t border-gray-100 pt-7 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-12">
+        <div className="mt-7 grid grid-cols-1 gap-8 border-t border-gray-100 pt-7 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-12">
           <div>
             <ScoreRing pct={phase1.sovPct} label="Share of voice" size={152} />
-            <p className="mt-5 text-center">
-              <span className="text-3xl font-bold leading-none tracking-tight text-[#39471D]">{phase2.grade}</span>
-              <Micro className="mt-2 block text-gray-400">Overall grade</Micro>
-            </p>
           </div>
 
           <div className="flex flex-col gap-5">
-            <div className="rounded-lg bg-[#F4FAF5] p-4 sm:p-5">
+            <Tint>
               <Micro className="text-[#39471D]">Key insight</Micro>
               <p className="mt-2.5 text-[14px] font-medium leading-relaxed text-gray-700">{phase2.keyInsight}</p>
-            </div>
+            </Tint>
 
             <div className="grid grid-cols-3 divide-x divide-gray-100 border-y border-gray-100">
               {/* Named as the memory reading whenever a second one exists. The
@@ -83,29 +80,31 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
 
       {/* ── Trend ────────────────────────────────────────────────────────── */}
       <Panel>
-        <Micro className="text-gray-400">Share of voice over time</Micro>
-        <p className="mt-4 mb-6 max-w-[62ch] text-[13px] font-medium leading-relaxed text-gray-500">
-          Every scan of {phase1.domain} in this market, oldest first. A single scan tells you where you stand; only
-          the series tells you whether anything you changed worked.
-        </p>
-        <TrendChart history={phase2.history ?? []} brand={phase1.brand} />
+        <Head
+          badge={<TrendingUp size={18} />}
+          title="Share of voice over time"
+          sub={`Every scan of ${phase1.domain} in this market, oldest first. A single scan tells you where you stand; only the series tells you whether anything you changed worked.`}
+        />
+        <div className="mt-7">
+          <TrendChart history={phase2.history ?? []} brand={phase1.brand} />
+        </div>
       </Panel>
 
       {/* ── Recommended instead of you ───────────────────────────────────── */}
       <Panel>
-        <Micro className="text-gray-400">Recommended instead of you</Micro>
-        <p className="mt-4 mb-6 max-w-[62ch] text-[13px] font-medium leading-relaxed text-gray-500">
-          Every company the models named across the {phase1.totalAnswers} answers, ranked by how often. These are the
-          names occupying the position you want.
-        </p>
+        <Head
+          badge={<Trophy size={18} />}
+          title="Recommended instead of you"
+          sub={`Every company the models named across the ${phase1.totalAnswers} answers, ranked by how often. These are the names occupying the position you want.`}
+        />
 
         {phase2.competitors.length === 0 ? (
-          <p className="rounded-lg bg-gray-50 px-4 py-3 text-[13px] font-medium text-gray-500">
+          <p className="mt-7 rounded-xl bg-gray-50 px-4 py-3.5 text-[13px] font-medium text-gray-500">
             The models named no consistent set of companies for this category — usually a sign the category label is
             too broad or too new for them to have an opinion about.
           </p>
         ) : (
-          <ol className="flex flex-col gap-3.5">
+          <ol className="mt-7 flex flex-col gap-3.5">
             {phase2.competitors.map((c, i) => {
               const mine = c.name.toLowerCase() === phase1.brand.toLowerCase();
               return (
@@ -134,15 +133,20 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
 
       {/* ── Grounded retrieval ───────────────────────────────────────────── */}
       <Panel>
-        <Micro className="text-gray-400">Live retrieval</Micro>
-        <p className="mt-4 mb-6 max-w-[62ch] text-[13px] font-medium leading-relaxed text-gray-500">
-          The models above answer from memory. These two search the web as they answer, so they measure something
-          different: whether your pages are findable and quotable <em>today</em>.
-        </p>
+        <Head
+          badge={<Search size={18} />}
+          title="Live retrieval"
+          sub={
+            <>
+              The models above answer from memory. These two search the web as they answer, so they measure something
+              different: whether your pages are findable and quotable <em>today</em>.
+            </>
+          }
+        />
 
-        <div className="flex flex-col gap-3">
+        <div className="mt-7 flex flex-col gap-3">
           {phase2.retrieval.map((r) => (
-            <div key={r.provider} className="rounded-lg border border-gray-200 p-4">
+            <div key={r.provider} className="rounded-xl border border-gray-200 p-4 sm:p-5">
               <div className="flex items-center gap-3">
                 <ProviderMark provider={r.provider} />
                 <span className="flex-1 text-[13px] font-bold text-gray-900">{PROVIDER_LABEL[r.provider]}</span>
@@ -165,17 +169,14 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
 
       {/* ── Technical readiness ──────────────────────────────────────────── */}
       <Panel>
-        <div className="flex flex-wrap items-baseline justify-between gap-3">
-          <Micro className="text-gray-400">Website & technical signals</Micro>
-          <Micro className="text-gray-900">
-            {phase2.techScore} / {maxTech}
-          </Micro>
-        </div>
-        <p className="mt-4 mb-6 max-w-[62ch] text-[13px] font-medium leading-relaxed text-gray-500">
-          Checked against {phase1.domain}. Every point in the score above traces to a row here.
-        </p>
+        <Head
+          badge={<Gauge size={18} />}
+          title="Website & technical signals"
+          sub={`Checked against ${phase1.domain}. Every point in the score above traces to a row here.`}
+          chip={`${phase2.techScore} / ${maxTech}`}
+        />
 
-        <div className="flex flex-col">
+        <div className="mt-7 flex flex-col">
           {phase2.signals.map((s) => (
             <SignalRow key={s.id} signal={s} />
           ))}
@@ -184,14 +185,15 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
 
       {/* ── Actions ──────────────────────────────────────────────────────── */}
       <Panel>
-        <Micro className="text-gray-400">What to do first</Micro>
-        <p className="mt-4 mb-6 max-w-[62ch] text-[13px] font-medium leading-relaxed text-gray-500">
-          Ordered by what the scan actually found, heaviest unmet signal first — not by a fixed script.
-        </p>
+        <Head
+          badge={<ListChecks size={18} />}
+          title="What to do first"
+          sub="Ordered by what the scan actually found, heaviest unmet signal first — not by a fixed script."
+        />
 
-        <div className="flex flex-col gap-3">
+        <div className="mt-7 flex flex-col gap-3">
           {phase2.actions.map((a, i) => (
-            <div key={a.title} className="rounded-lg border border-gray-200 p-4 sm:p-5">
+            <div key={a.title} className="rounded-xl border border-gray-200 p-4 sm:p-5">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
                 <Micro className="shrink-0 text-gray-300">{String(i + 1).padStart(2, '0')}</Micro>
                 <div className="min-w-0 flex-1">
@@ -227,21 +229,17 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
 
       {/* ── Close ────────────────────────────────────────────────────────── */}
       <Panel>
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="max-w-[52ch]">
-            <p className="text-[15px] font-bold tracking-tight text-gray-900">
-              This is the measurement. The work is the other half.
-            </p>
-            <p className="mt-2 text-[13px] font-medium leading-relaxed text-gray-500">
-              A commissioned engagement takes the plan above and executes it — the content, the citations and the
-              structure that move these numbers.
-            </p>
-          </div>
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <Head
+            badge={<Compass size={18} />}
+            title="This is the measurement. The work is the other half."
+            sub="A commissioned engagement takes the plan above and executes it — the content, the citations and the structure that move these numbers."
+          />
           <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
-            <a href={`${BASE}/contact/`} className={BTN_DARK}>
-              Talk to us <ArrowUpRight className="text-[11px]" />
+            <a href={`${BASE}/contact/`} className={BTN_PRIMARY}>
+              Talk to us <ArrowUpRight className="text-[12px]" />
             </a>
-            <a href={`${BASE}/services/`} className={BTN_GHOST}>
+            <a href={`${BASE}/services/`} className={BTN_SECONDARY}>
               See what we do
             </a>
           </div>
@@ -267,8 +265,8 @@ function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded
   if (grounded.totalAnswers === 0) {
     return (
       <Panel>
-        <Micro className="text-gray-400">When they search the web</Micro>
-        <p className="mt-4 rounded-lg bg-gray-50 px-4 py-3 text-[13px] font-medium leading-relaxed text-gray-500">
+        <Head badge={<Search size={18} />} title="When they search the web" />
+        <p className="mt-7 rounded-xl bg-gray-50 px-4 py-3.5 text-[13px] font-medium leading-relaxed text-gray-500">
           Not measured — the second reading was attempted but no model answered. This is a fault at our end, not a
           finding about {memory.brand}.
         </p>
@@ -315,14 +313,13 @@ function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded
 
   return (
     <Panel>
-      <Micro className="text-gray-400">Do they know you, or can they find you?</Micro>
-      <p className="mt-4 mb-7 max-w-[62ch] text-[13px] font-medium leading-relaxed text-gray-500">
-        We asked the same {memory.questions.length} questions twice. Once with the models answering from memory, the
-        way they do when nobody is looking anything up. Once with web search switched on, the way most people use them
-        today. Those are different questions about you, and the answers come apart.
-      </p>
+      <Head
+        badge={<Compass size={18} />}
+        title="Do they know you, or can they find you?"
+        sub={`We asked the same ${memory.questions.length} questions twice. Once with the models answering from memory, the way they do when nobody is looking anything up. Once with web search switched on, the way most people use them today. Those are different questions about you, and the answers come apart.`}
+      />
 
-      <div className="grid grid-cols-1 gap-px overflow-hidden rounded-lg bg-gray-100 sm:grid-cols-2">
+      <div className="mt-7 grid grid-cols-1 gap-px overflow-hidden rounded-xl bg-gray-100 sm:grid-cols-2">
         <div className="bg-white p-4 sm:p-5">
           <p className="text-3xl font-bold leading-none tracking-tight text-[#39471D]">{memory.sovPct}%</p>
           <p className="mt-2.5 text-[13px] font-bold tracking-tight text-gray-900">Named from memory</p>

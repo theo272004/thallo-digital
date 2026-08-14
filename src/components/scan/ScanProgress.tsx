@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Micro, Panel, Spinner } from './ui';
+import { Radar } from 'lucide-react';
+import { Head, Micro, Panel, Spinner } from './ui';
 import type { ScanSession, StepStatus } from '@/lib/scan/types';
 
 /**
@@ -38,29 +39,23 @@ export default function ScanProgress({
 
   return (
     <Panel>
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <Micro className="text-gray-400">{unlocking ? 'Unlocking' : 'Scanning'}</Micro>
-          <h2 className="mt-4 text-2xl sm:text-3xl font-bold leading-[1.1] tracking-tight text-gray-900">
-            {unlocking ? `Finishing the report for ${brand}…` : `Asking the models about ${brand}…`}
-          </h2>
-          <p className="mt-2.5 text-[13px] font-medium text-gray-500">
-            {unlocking
-              ? 'Grounded retrieval, the search result page, and a crawl of your site.'
-              : `${asked} ${asked === 1 ? 'question' : 'questions'}, three models, ${asked * 3} answers.`}
-          </p>
-        </div>
+      {/* The same masthead the two setup screens carry, so the running screen
+          reads as the third card in one sequence rather than as a different
+          program that has taken over. The count moved into the chip for the
+          same reason: at 3rem it was the largest thing on a screen whose
+          subject is the list underneath it. */}
+      <Head
+        badge={<Radar size={18} />}
+        title={unlocking ? `Finishing the report for ${brand}…` : `Asking the models about ${brand}…`}
+        sub={
+          unlocking
+            ? 'Grounded retrieval, the search result page, and a crawl of your site.'
+            : `${asked} ${asked === 1 ? 'question' : 'questions'}, three models, ${asked * 3} answers.`
+        }
+        chip={`${done} / ${active.length} done`}
+      />
 
-        <div className="text-right">
-          <p className="text-3xl font-bold leading-none tracking-tight text-[#39471D] tabular-nums">
-            {done}
-            <span className="text-lg text-gray-300"> / {active.length}</span>
-          </p>
-          <Micro className="mt-2 block text-gray-400">Steps done</Micro>
-        </div>
-      </div>
-
-      <div className="mt-8 flex flex-col">
+      <div className="mt-7 flex flex-col">
         {phase1.map((step) => (
           <Row key={step.id} step={step} />
         ))}

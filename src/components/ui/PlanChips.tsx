@@ -32,10 +32,15 @@ export default function PlanChips({
           return (
             <label
               key={plan}
-              className={`cursor-pointer rounded-lg border px-2.5 py-1.5 text-[12px] font-semibold transition-colors ${
+              /* The same object as the case-study filter, at chip scale: the
+                 selected one is filled olive, and an unselected one lifts and
+                 turns its type olive under the cursor. It used to only nudge
+                 its border a shade of grey, which read as nothing happening —
+                 there was no way to tell the group was clickable at all. */
+              className={`cursor-pointer rounded-full border px-3 py-1.5 text-[12px] font-semibold transition-all duration-300 ${
                 on
                   ? 'border-[#39471D] bg-[#39471D] text-white'
-                  : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                  : 'border-gray-200 bg-white text-gray-600 lift-sm hover:text-[#39471D]'
               }`}
             >
               <input
