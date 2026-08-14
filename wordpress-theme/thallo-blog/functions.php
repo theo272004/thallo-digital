@@ -47,6 +47,28 @@ function thallo_blog_fonts() {
 add_action( 'wp_enqueue_scripts', 'thallo_blog_fonts' );
 
 /**
+ * The contents list, on posts only.
+ *
+ * Deferred and tiny. It builds the list from headings that are already in the
+ * HTML, so nothing on the page depends on it having run — a reader with the
+ * script blocked gets the post, minus a convenience.
+ */
+function thallo_blog_toc_script() {
+	if ( ! is_singular( 'post' ) ) {
+		return;
+	}
+
+	wp_enqueue_script(
+		'thallo-blog-toc',
+		get_stylesheet_directory_uri() . '/assets/toc.js',
+		array(),
+		wp_get_theme()->get( 'Version' ),
+		array( 'strategy' => 'defer', 'in_footer' => true )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'thallo_blog_toc_script' );
+
+/**
  * The same fonts inside the editor.
  *
  * Without this the editor renders the post in its own default face while

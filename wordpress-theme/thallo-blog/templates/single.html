@@ -23,6 +23,13 @@
 
 <!-- wp:post-featured-image {"align":"wide","aspectRatio":"21/9","style":{"border":{"radius":"18px"},"spacing":{"margin":{"bottom":"var:preset|spacing|50"}}}} /-->
 
+<!-- Filled by assets/toc.js from the post's own h2s, and left empty when there
+     are fewer than two. `hidden` until the script decides there is something
+     to show, so a post with one section never flashes an empty box. -->
+<!-- wp:html -->
+<nav class="thallo-toc" aria-label="On this page" hidden></nav>
+<!-- /wp:html -->
+
 <!-- wp:post-content {"layout":{"type":"constrained","contentSize":"44rem"}} /-->
 
 <!-- The sign-off. Kept in the template rather than left to the writer so that

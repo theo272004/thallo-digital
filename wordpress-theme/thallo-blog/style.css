@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.2.0
+Version:      1.3.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -217,4 +217,142 @@ Text Domain:  thallo-blog
   .thallo-lead .wp-block-post-title {
     max-width: none;
   }
+}
+
+/* ── Archive cards ─────────────────────────────────────────────────────────
+   The lift on hover is the only motion on the page. It is there because a
+   card that does not respond reads as a panel rather than as a link, and the
+   whole card is the target. */
+.thallo-card {
+  height: 100%;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s;
+}
+.thallo-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 34px -22px rgba(23, 26, 16, 0.5);
+}
+.thallo-card .wp-block-post-title a {
+  text-decoration: none;
+}
+.thallo-card .wp-block-post-title a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .thallo-card,
+  .thallo-card:hover {
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ── Category links ────────────────────────────────────────────────────────
+   The Terms List block ships as a bulleted <ul>. These are navigation, not
+   prose, so the markers come off and the rows become pills in a row. */
+.thallo-filters ul,
+ul.thallo-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.thallo-filters li {
+  margin: 0;
+}
+.thallo-filters a {
+  display: inline-block;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 60px;
+  padding: 0.5rem 1rem;
+  font-size: 0.82rem;
+  text-decoration: none;
+  color: var(--wp--preset--color--ink);
+  transition: border-color 0.2s, background-color 0.2s;
+}
+.thallo-filters a:hover {
+  border-color: var(--wp--preset--color--olive);
+  background: var(--wp--preset--color--olive-tint);
+}
+
+/* ── On this page ──────────────────────────────────────────────────────────
+   Inline above the article rather than a sticky rail. The rail needs a third
+   column that this measure does not have, and on a phone it collapses to
+   exactly this anyway — so this is the layout that always works, rather than
+   the one that works on a wide desktop and is thrown away everywhere else. */
+.thallo-toc[hidden] {
+  display: none;
+}
+.thallo-toc {
+  border-left: 2px solid var(--wp--preset--color--olive-soft);
+  padding: 0.1rem 0 0.1rem 1.1rem;
+  margin: 0 0 var(--wp--preset--spacing--50);
+}
+.thallo-toc__label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--grey-500);
+  margin: 0 0 0.6rem;
+}
+.thallo-toc__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: toc;
+}
+.thallo-toc__list li {
+  counter-increment: toc;
+  margin: 0 0 0.35rem;
+}
+.thallo-toc__list a {
+  font-size: 0.92rem;
+  color: var(--wp--preset--color--grey-500);
+  text-decoration: none;
+}
+.thallo-toc__list a::before {
+  content: counter(toc) ". ";
+  color: var(--wp--preset--color--olive-soft);
+}
+.thallo-toc__list a:hover,
+.thallo-toc__list a.is-current {
+  color: var(--wp--preset--color--ink);
+}
+.thallo-toc__list a.is-current {
+  font-weight: 600;
+}
+
+/* Anchors land below the heading without the sticky header covering it. */
+.entry-content h2 {
+  scroll-margin-top: 5rem;
+}
+
+/* ── Three figures ─────────────────────────────────────────────────────────
+   The gap is 1px over a hairline background, so the cards read as one object
+   divided rather than three objects placed near each other. */
+.thallo-figures {
+  background: var(--wp--preset--color--hairline);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.thallo-figures__n {
+  font-family: var(--wp--preset--font-family--serif);
+  font-size: 2.1rem;
+  line-height: 1;
+  margin: 0;
+}
+@media (max-width: 40rem) {
+  .thallo-figures {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── The line ──────────────────────────────────────────────────────────────*/
+.thallo-line p {
+  font-size: 1.4rem;
+  line-height: 1.35;
+  font-style: italic;
+  margin: 0;
 }

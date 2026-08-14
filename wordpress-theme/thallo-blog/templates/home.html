@@ -15,6 +15,18 @@
 <p class="has-large-font-size" style="margin-bottom:var(--wp--preset--spacing--50)">Notes on being found when the answer is written for you — how models decide who to name, what actually moves it, and what nobody can honestly tell you yet.</p>
 <!-- /wp:paragraph -->
 
+<!-- The categories, as links to their own archives.
+
+     The mockup did this with JavaScript that hid cards on the page. Links to
+     the real archive are the same gesture and a better thing: each one is a
+     URL a reader can bookmark, a search engine can index, and a model can
+     reach — which for a blog about being reachable by models is not a detail.
+     Hiding rows in the DOM produces none of that.
+
+     Renders whatever categories exist, so it fills itself in as they are
+     created. Right now that is one, called Uncategorized. -->
+<!-- wp:categories {"showPostCounts":true,"showOnlyTopLevel":true,"className":"thallo-filters","style":{"spacing":{"margin":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40"}}}} /-->
+
 <!-- wp:separator {"className":"is-style-wide"} -->
 <hr class="wp-block-separator has-alpha-channel-opacity is-style-wide"/>
 <!-- /wp:separator -->
@@ -72,23 +84,26 @@
 <!-- wp:query {"queryId":3,"query":{"perPage":12,"pages":0,"offset":1,"postType":"post","order":"desc","orderBy":"date","inherit":false},"style":{"spacing":{"margin":{"top":"var:preset|spacing|60"}}},"layout":{"type":"default"}} -->
 <div class="wp-block-query" style="margin-top:var(--wp--preset--spacing--60)">
 
-<!-- wp:post-template {"style":{"spacing":{"blockGap":"var:preset|spacing|50"}},"layout":{"type":"grid","columnCount":2}} -->
+<!-- wp:post-template {"style":{"spacing":{"blockGap":"var:preset|spacing|40"}},"layout":{"type":"grid","columnCount":3}} -->
 
-<!-- wp:group {"style":{"spacing":{"blockGap":"1rem"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group">
+<!-- wp:group {"className":"thallo-card","backgroundColor":"white","style":{"spacing":{"blockGap":"0.9rem","padding":{"top":"1.15rem","bottom":"1.5rem","left":"1.15rem","right":"1.15rem"}},"border":{"radius":"18px"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group thallo-card has-white-background-color has-background" style="border-radius:18px;padding-top:1.15rem;padding-right:1.15rem;padding-bottom:1.5rem;padding-left:1.15rem">
 
-<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/10","style":{"border":{"radius":"16px"}}} /-->
+<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/10","style":{"border":{"radius":"12px"}}} /-->
 
-<!-- wp:group {"style":{"spacing":{"blockGap":"0.75rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
+<!-- wp:group {"style":{"spacing":{"blockGap":"0.6rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
 <div class="wp-block-group">
 <!-- wp:post-terms {"term":"category","fontSize":"small"} /-->
 <!-- wp:post-date {"format":"j M Y","fontSize":"small"} /-->
+<!-- wp:shortcode {"fontSize":"small"} -->
+[thallo_reading_time]
+<!-- /wp:shortcode -->
 </div>
 <!-- /wp:group -->
 
-<!-- wp:post-title {"level":2,"isLink":true,"fontSize":"x-large"} /-->
+<!-- wp:post-title {"level":2,"isLink":true,"fontSize":"large"} /-->
 
-<!-- wp:post-excerpt {"moreText":"Read the note","excerptLength":32} /-->
+<!-- wp:post-excerpt {"moreText":"Read the note","excerptLength":24} /-->
 
 </div>
 <!-- /wp:group -->
