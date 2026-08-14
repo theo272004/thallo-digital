@@ -25,6 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     })),
+    { url: `${SITE_URL}/articles/`, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${SITE_URL}/thallo-ai/`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/thallo-ai/method/`, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/contact/`, changeFrequency: 'yearly', priority: 0.7 },

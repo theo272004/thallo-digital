@@ -1,5 +1,5 @@
 import React from 'react';
-import { BASE, BLOG_URL } from '@/lib/site';
+import { BASE, ARTICLES_URL } from '@/lib/site';
 
 // `relative z-10` is load-bearing: /contact/ pins a photograph at z-index 0, and
 // a static footer — however late in the document — paints underneath any
@@ -56,7 +56,7 @@ export default function Footer() {
                 section is hidden — see AboutLanding. A link to an anchor that
                 is no longer rendered scrolls nowhere and reads as a broken
                 page, so it goes out with it and comes back with it. */}
-            <a href={BLOG_URL} className="hover:text-[#39471D]">Blog</a>
+            <a href={ARTICLES_URL} className="hover:text-[#39471D]">Blog</a>
             <a href={`${BASE}/contact/`} className="hover:text-[#39471D]">Contact</a>
             <a href={`${BASE}/contact/`} className="hover:text-[#39471D]">Book an audit</a>
           </div>
