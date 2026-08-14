@@ -21,7 +21,7 @@ import { BASE } from '@/lib/site';
 
 const FAQS: { q: string; a: React.ReactNode }[] = [
   {
-    q: 'How long before we see something?',
+    q: 'How long before we start seeing results?',
     a: (
       <>
         The visibility baseline lands in the first two weeks, so you know where you stand almost immediately. Movement
@@ -103,9 +103,9 @@ export default function HomeFaq() {
               html='Questions we get <span class="italic text-[#39471D]">before the first call.</span>'
             />
             <p className="max-w-[42ch] text-base font-medium leading-relaxed text-gray-500">
-              {/* "above", not "below": this section is the last on the page
-                  now and the enquiry form sits in the panel before it. */}
-              If yours isn&rsquo;t here, ask it in the form above and you&rsquo;ll get a straight answer.
+              {/* "below": the questions sit above the closing panel now, and
+                  the enquiry form lives inside it. */}
+              If yours isn&rsquo;t here, ask it in the form below and you&rsquo;ll get a straight answer.
             </p>
           </div>
 

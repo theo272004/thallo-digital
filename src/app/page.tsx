@@ -23,7 +23,7 @@ import { useRevealBatch } from '@/components/motion';
  *
  * One argument, start to finish: who we are, what changed, what everyone else
  * is still selling, what we do instead, a free way to check where you stand,
- * the writing, the awkward questions answered, the ask.
+ * the awkward questions answered, the writing, the ask.
  *
  * Four sections came off it to get there. The results dashboard and the
  * industries panel were both saying, at length, things the sections around
@@ -51,6 +51,11 @@ export default function Home() {
         <HowItWorks />
         {/* The cheapest possible next step, offered once. */}
         <ScannerStripe />
+        {/* The awkward questions, answered before the writing and the ask.
+            They spent a week as the last thing on the page; they sit above the
+            closing panel again at Cami's request, which is why the intro
+            sentence points at the form *below* it. */}
+        <HomeFaq />
         {/* "Blogs & guides" — the writing, despite the file name. */}
         <Testimonials />
         {/* Closes the argument: with the form on its own route now, this is the
@@ -78,13 +83,6 @@ export default function Home() {
           ────────────────────────────────────────────────────────────────────
         */}
 
-        {/* The awkward questions, and now the last thing on the page.
-            They used to sit before the ask, on the reasoning that the last
-            thing a reader met should be the price and the timeline. The order
-            is reversed at Cami's request: the ask closes the argument, and the
-            questions sit under it for whoever still has one. Which is why the
-            intro sentence points at the form *above* it now. */}
-        <HomeFaq />
       </main>
       <Footer />
     </div>

@@ -49,7 +49,8 @@ export default function About() {
           />
           <p className="text-gray-500 font-medium text-base sm:text-lg leading-relaxed">
             Ads stop the day you stop paying. Rankings move with every update.{' '}
-            <strong className="text-gray-900 font-semibold">Authority compounds.</strong> Every study you publish, every
+            <strong className="text-gray-900 font-semibold">Authority compounds.</strong>{' '}
+            Every study you publish, every
             citation you earn, every room where your name comes up makes the next one easier. That&rsquo;s what we build
             for companies in high-consideration industries.
           </p>

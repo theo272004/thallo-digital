@@ -235,8 +235,8 @@ export default function HowItWorks() {
               html='The <span class="italic whitespace-nowrap text-[#39471D]">Authority Engine.</span>'
             />
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch] mx-auto lg:mx-0">
-              Four phases, run as one operation. It starts by measuring where you actually
-              stand, and ends with you being the source that gets named.
+              Four phases, run as one operation. It starts by measuring where you stand,
+              and ends with you being the source that gets named.
             </p>
           </div>
 

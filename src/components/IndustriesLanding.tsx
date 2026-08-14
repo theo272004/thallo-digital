@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import SpinFlower from '@/components/ui/SpinFlower';
+import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import AuditCTA from '@/components/AuditCTA';
 import { BASE } from '@/lib/site';
 
@@ -227,6 +228,22 @@ export default function IndustriesPage() {
                 )}
               </div>
             ))}
+          </div>
+
+          {/* The grid used to hand straight over to the quotes with nothing to
+              do in between — six cards of reasoning and no way to act on it.
+              One button, and the cheaper of the two asks: the panel at the
+              foot of the page still carries the audit and the form. */}
+          <div className="mt-14 flex flex-col items-center gap-5 text-center 2xl:mt-20">
+            <p className="max-w-[46ch] text-base font-medium leading-relaxed text-gray-500">
+              Whichever one you are in, the first question is the same: what do the models say when your buyer asks?
+            </p>
+            <a
+              href={`${BASE}/thallo-ai/scan/`}
+              className="inline-flex items-center justify-center rounded-full bg-[#39471D] px-8 py-4 text-sm font-semibold text-white transition-transform hover:-translate-y-px"
+            >
+              Run a free scan <ArrowUpRight className="ml-1" />
+            </a>
           </div>
         </div>
       </section>

@@ -96,7 +96,7 @@ export default function ScannerStripe() {
                     it — which is exactly what shipped: "against 15real buying
                     questions". A template literal cannot lose it. */}
                 <p className="mt-4 max-w-[54ch] text-[15.5px] font-medium leading-relaxed text-[#CBD0AC]">
-                  {`Run your brand against up to ${QUESTION_COUNT} real buying questions — the ones you write — across ChatGPT, Claude and Gemini. `}
+                  {`Run your brand against up to ${QUESTION_COUNT} real buying questions across ChatGPT, Claude and Gemini. `}
                   You&rsquo;ll see how often you&rsquo;re named, and who gets named instead. Free, no account, under a
                   minute.
                 </p>
