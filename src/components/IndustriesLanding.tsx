@@ -25,7 +25,7 @@ const STATS = [
 
 type Industry =
   | { type: 'metric'; name: string; metric: string; meaning: string; src: string; line: string }
-  | { type: 'phrase'; name: string; phrase: string };
+  | { type: 'phrase'; name: string; phrase: string; image: string };
 
 const INDUSTRIES: Industry[] = [
   {
@@ -40,6 +40,7 @@ const INDUSTRIES: Industry[] = [
     type: 'phrase',
     name: 'Fintech',
     phrase: 'Nobody moves money to a name they do not trust.',
+    image: 'industry-fintech-bg.webp',
   },
   {
     type: 'metric',
@@ -53,6 +54,7 @@ const INDUSTRIES: Industry[] = [
     type: 'phrase',
     name: 'Professional services',
     phrase: 'Your reputation arrives before you do.',
+    image: 'industry-professional-services-bg.webp',
   },
   {
     type: 'metric',
@@ -66,6 +68,7 @@ const INDUSTRIES: Industry[] = [
     type: 'phrase',
     name: 'Health tech',
     phrase: 'In medicine, being credible is not a nice-to-have. It is the whole decision.',
+    image: 'industry-health-tech-bg.webp',
   },
 ];
 
@@ -196,6 +199,15 @@ export default function IndustriesPage() {
                     ? 'bg-[#39471D] border border-[#39471D] hover:-translate-y-1 hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,0.55)]'
                     : 'bg-gray-50/60 border border-gray-200 lift'
                 }`}
+                style={
+                  ind.type === 'phrase'
+                    ? {
+                        backgroundImage: `linear-gradient(180deg, rgba(20, 28, 10, 0.68), rgba(20, 28, 10, 0.86)), url(${BASE}/${ind.image})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                      }
+                    : undefined
+                }
               >
                 {ind.type === 'metric' ? (
                   <>
