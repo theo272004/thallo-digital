@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.1.0
+Version:      1.2.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -199,4 +199,22 @@ Text Domain:  thallo-blog
 .thallo-faq > h2 + h3 {
   border-top: 0;
   padding-top: 0;
+}
+
+/* ── The lead note ─────────────────────────────────────────────────────────
+   The newest post, given the width of the page. The grid under it is two
+   columns, so the only thing separating the two is scale — which is enough
+   when the scale gap is this large, and stops working if it narrows. */
+.thallo-lead .wp-block-post-title {
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  max-width: 22ch;
+}
+.thallo-lead .wp-block-post-excerpt__excerpt {
+  max-width: 58ch;
+}
+@media (max-width: 40rem) {
+  .thallo-lead .wp-block-post-title {
+    max-width: none;
+  }
 }

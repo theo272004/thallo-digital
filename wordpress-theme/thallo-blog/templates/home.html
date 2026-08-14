@@ -19,8 +19,58 @@
 <hr class="wp-block-separator has-alpha-channel-opacity is-style-wide"/>
 <!-- /wp:separator -->
 
-<!-- wp:query {"queryId":0,"query":{"perPage":12,"pages":0,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":true},"style":{"spacing":{"margin":{"top":"var:preset|spacing|50"}}},"layout":{"type":"default"}} -->
+<!-- The newest note, on its own.
+
+     Two queries rather than one: this takes post 1, the grid below takes 2
+     onwards. A single query cannot give the first item a different layout from
+     the rest, and the alternative — every card identical — makes an archive
+     read as a pile with no argument about what to read first.
+
+     Deliberately not the dark card from the mockup. The scan sign-off at the
+     bottom of this page is already ink, and two dark blocks on one screen
+     compete for the same job. The lead note earns its weight from size here,
+     not from colour. -->
+<!-- wp:query {"queryId":2,"query":{"perPage":1,"pages":1,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":false},"style":{"spacing":{"margin":{"top":"var:preset|spacing|50"}}},"layout":{"type":"default"}} -->
 <div class="wp-block-query" style="margin-top:var(--wp--preset--spacing--50)">
+
+<!-- wp:post-template {"className":"thallo-lead","layout":{"type":"default"}} -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|40"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group">
+
+<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/7","style":{"border":{"radius":"18px"}}} /-->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0.75rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
+<div class="wp-block-group">
+<!-- wp:post-terms {"term":"category","fontSize":"small"} /-->
+<!-- wp:post-date {"format":"j M Y","fontSize":"small"} /-->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:post-title {"level":2,"isLink":true,"fontSize":"xx-large"} /-->
+
+<!-- wp:post-excerpt {"moreText":"Read the note","excerptLength":40,"fontSize":"large"} /-->
+
+</div>
+<!-- /wp:group -->
+
+<!-- /wp:post-template -->
+
+<!-- wp:query-no-results -->
+<!-- wp:paragraph -->
+<p>Nothing published yet. The first note is on its way.</p>
+<!-- /wp:paragraph -->
+<!-- /wp:query-no-results -->
+
+</div>
+<!-- /wp:query -->
+
+<!-- Everything after the lead. `offset: 1` skips the note shown above so it
+     does not appear twice; `inherit: false` is what makes the offset apply at
+     all, because an inherited query takes the main loop's parameters and
+     ignores its own. -->
+<!-- wp:query {"queryId":3,"query":{"perPage":12,"pages":0,"offset":1,"postType":"post","order":"desc","orderBy":"date","inherit":false},"style":{"spacing":{"margin":{"top":"var:preset|spacing|60"}}},"layout":{"type":"default"}} -->
+<div class="wp-block-query" style="margin-top:var(--wp--preset--spacing--60)">
 
 <!-- wp:post-template {"style":{"spacing":{"blockGap":"var:preset|spacing|50"}},"layout":{"type":"grid","columnCount":2}} -->
 
@@ -31,8 +81,8 @@
 
 <!-- wp:group {"style":{"spacing":{"blockGap":"0.75rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
 <div class="wp-block-group">
-<!-- wp:post-date {"format":"j M Y","fontSize":"small"} /-->
 <!-- wp:post-terms {"term":"category","fontSize":"small"} /-->
+<!-- wp:post-date {"format":"j M Y","fontSize":"small"} /-->
 </div>
 <!-- /wp:group -->
 
@@ -45,11 +95,9 @@
 
 <!-- /wp:post-template -->
 
-<!-- wp:query-no-results -->
-<!-- wp:paragraph -->
-<p>Nothing published yet. The first note is on its way.</p>
-<!-- /wp:paragraph -->
-<!-- /wp:query-no-results -->
+<!-- The empty state here is silent on purpose. With one note published the
+     lead above is the whole archive, and "nothing else yet" under it would be
+     stating the obvious in a way that reads as a fault. -->
 
 <!-- wp:query-pagination {"style":{"spacing":{"margin":{"top":"var:preset|spacing|50"}}},"layout":{"type":"flex","justifyContent":"space-between"}} -->
 <!-- wp:query-pagination-previous /-->
@@ -68,7 +116,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph {"style":{"color":{"text":"#CBD0AC"}}} -->
-<p style="color:#CBD0AC">Fifteen buying questions, put to ChatGPT, Claude and Gemini. Your brand is never named in the question, and you see every question and every answer. Free, no account, about a minute.</p>
+<p style="color:#CBD0AC">Your buying questions, put to ChatGPT, Claude and Gemini — once from memory and once with the web open. Your brand is never named in the question, and you see every question and every answer. Free, no account, about a minute.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:buttons -->
