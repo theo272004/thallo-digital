@@ -28,18 +28,17 @@ export const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? '/thallo-digital';
 export const SITE_URL = 'https://thallodigital.com';
 
 /**
- * The writing, at its two addresses.
+ * The writing.
  *
- * `BLOG_URL` is where the articles are: WordPress, in a subfolder of the same
- * domain, so it is absolute rather than `${BASE}/blog/`. On the GitHub Pages
- * build there is no /blog/ to link to and a relative path would 404 there; the
- * articles only ever exist at one address.
+ * WordPress, in a subfolder of the same domain — so it is absolute rather than
+ * `${BASE}/blog/`. On the GitHub Pages build there is no /blog/ to link to and
+ * a relative path would 404 there; the blog only ever exists at one address.
  *
- * `ARTICLES_URL` is the index that lists them, and it belongs to this site. It
- * is not at /blog/ because WordPress is, and because the deploy excludes that
- * path so publishing can never overwrite the articles. Point navigation here:
- * a reader arriving from the menu should land on the page wearing this site's
- * navbar and type, and reach WordPress only by choosing an article.
+ * The index lived here for a day, at /articles/, so it could reuse this site's
+ * components. That bought the look and cost the URL: /blog/ for the index and
+ * /blog/name/ for an article is the pair that reads as one thing, and only
+ * WordPress can serve that path — the deploy excludes it, which is the only
+ * guard against a bad publish deleting the articles. So the index went back to
+ * WordPress and the theme carries a copy of the navbar and footer instead.
  */
 export const BLOG_URL = `${SITE_URL}/blog/`;
-export const ARTICLES_URL = `${BASE}/articles/`;

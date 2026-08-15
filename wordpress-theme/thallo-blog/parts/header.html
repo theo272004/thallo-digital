@@ -1,45 +1,36 @@
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"1.25rem","bottom":"1.25rem"}},"border":{"bottom":{"width":"1px","color":"var:preset|color|hairline"}}},"backgroundColor":"white","layout":{"type":"constrained","contentSize":"72rem"}} -->
-<div class="wp-block-group has-white-background-color has-background" style="border-bottom-color:var(--wp--preset--color--hairline);border-bottom-width:1px;padding-top:1.25rem;padding-bottom:1.25rem">
+<!-- The site's navbar, rebuilt here.
 
-<!-- wp:group {"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"wrap"}} -->
-<div class="wp-block-group">
+     Written as plain HTML rather than as blocks on purpose. The navbar on the
+     rest of the site is a floating pill — fixed, inset from both edges,
+     rounded, translucent with a blur behind it — and block layout has no
+     vocabulary for that. Forcing it out of groups and rows produced something
+     that was nearly it, and nearly it is what makes a reader feel they have
+     left the site.
 
-<!-- wp:image {"width":"128px","linkDestination":"custom","className":"is-resized"} -->
-<figure class="wp-block-image is-resized"><a href="https://thallodigital.com/"><img src="https://thallodigital.com/logo.png" alt="Thallo Digital" style="width:128px"/></a></figure>
-<!-- /wp:image -->
+     It is a copy, and copies drift. The trade was accepted knowingly: the
+     alternative was serving this page from the Next.js build, which cannot
+     have this URL without the deploy being allowed to write into the folder
+     WordPress lives in — and that exclusion is the only thing standing between
+     a bad deploy and a deleted blog. A navbar in two files is the cheaper
+     risk. When the real one changes, this file changes with it. -->
+<!-- wp:html -->
+<nav class="thallo-nav" aria-label="Main">
+  <div class="thallo-nav__bar">
+    <a class="thallo-nav__brand" href="https://thallodigital.com/">
+      <img src="https://thallodigital.com/logo.png" alt="Thallo Digital" width="150" height="44" />
+    </a>
 
-<!-- wp:group {"style":{"spacing":{"blockGap":"1.5rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
-<div class="wp-block-group">
+    <div class="thallo-nav__links">
+      <a href="https://thallodigital.com/services/">Our Plans</a>
+      <a href="https://thallodigital.com/industries/">Industries</a>
+      <a href="https://thallodigital.com/results/">Case Studies</a>
+      <a href="https://thallodigital.com/blog/" aria-current="page">Blog</a>
+    </div>
 
-<!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size"><a href="https://thallodigital.com/services/">Our Plans</a></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size"><a href="https://thallodigital.com/industries/">Industries</a></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size"><a href="https://thallodigital.com/results/">Case Studies</a></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph {"fontSize":"small","style":{"color":{"text":"#111827"}}} -->
-<p class="has-small-font-size" style="color:#111827"><strong><a href="https://thallodigital.com/blog/">Blog</a></strong></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:buttons -->
-<div class="wp-block-buttons">
-<!-- wp:button {"backgroundColor":"ink","textColor":"white"} -->
-<div class="wp-block-button"><a class="wp-block-button__link has-white-color has-ink-background-color has-text-color has-background wp-element-button" href="https://thallodigital.com/thallo-ai/">Check my visibility</a></div>
-<!-- /wp:button -->
-</div>
-<!-- /wp:buttons -->
-
-</div>
-<!-- /wp:group -->
-
-</div>
-<!-- /wp:group -->
-
-</div>
-<!-- /wp:group -->
+    <div class="thallo-nav__cta">
+      <a class="thallo-btn thallo-btn--ghost" href="https://thallodigital.com/thallo-ai/scan/">Try the scan <span aria-hidden="true">↗</span></a>
+      <a class="thallo-btn thallo-btn--solid" href="https://thallodigital.com/contact/">Book an audit <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+</nav>
+<!-- /wp:html -->

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import { Magnetic } from '@/components/motion';
-import { BASE, ARTICLES_URL } from '@/lib/site';
+import { BASE, BLOG_URL } from '@/lib/site';
 
 /**
  * `page` is the route this link owns, when it owns one. The two anchors point
@@ -15,11 +15,12 @@ const LINKS = [
   { label: 'Our Plans', href: `${BASE}/services/`, page: '/services' },
   { label: 'Industries', href: `${BASE}/industries/`, page: '/industries' },
   { label: 'Case Studies', href: `${BASE}/results/`, page: '/results' },
-  /* The index of the writing, which is a page of this site. The articles
-     themselves are in WordPress at /blog/ — a reader reaches them by choosing
-     one, rather than by being dropped into a different-looking site from the
-     menu. See ARTICLES_URL. */
-  { label: 'Blog', href: ARTICLES_URL },
+  /* WordPress, at /blog/ — index and articles both. It briefly was not: the
+     index lived here at /articles/ so it could reuse these components, which
+     bought the look and cost the URL. /blog/ and /blog/name/ is the coherent
+     pair, and WordPress is the only thing that can serve that path, so the
+     theme carries a copy of this navbar instead. See BLOG_URL. */
+  { label: 'Blog', href: BLOG_URL },
 ];
 
 export default function Navbar() {

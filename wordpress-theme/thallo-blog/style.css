@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.3.0
+Version:      1.4.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -355,4 +355,209 @@ ul.thallo-filters {
   line-height: 1.35;
   font-style: italic;
   margin: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   The site's chrome, rebuilt.
+
+   Values copied from the Next.js components rather than approximated: the
+   floating pill, its blur, its shadow, the olive #39471D, the 1440px measure.
+   A navbar that is nearly the same is worse than one that is obviously
+   different — the reader cannot say what changed, only that something did.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.thallo-nav {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  z-index: 50;
+}
+@media (min-width: 640px) {
+  .thallo-nav {
+    top: 1.25rem;
+    left: 1.5rem;
+    right: 1.5rem;
+  }
+}
+.thallo-nav__bar {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-radius: 9999px;
+  padding: 0.625rem 1rem;
+  background: rgba(255, 255, 255, 0.85);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 12px 36px -18px rgba(57, 71, 29, 0.22);
+}
+@media (min-width: 640px) {
+  .thallo-nav__bar {
+    padding: 0.625rem 1.5rem;
+  }
+}
+.thallo-nav__brand img {
+  height: 2.25rem;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+@media (min-width: 640px) {
+  .thallo-nav__brand img {
+    height: 2.75rem;
+  }
+}
+.thallo-nav__links {
+  display: none;
+  align-items: center;
+  gap: 1.75rem;
+}
+.thallo-nav__cta {
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+/* Below 900px the links and buttons come out entirely rather than wrapping.
+   The pill is a fixed bar; a second row inside it covers the article. The
+   logo still goes home, which is the one thing a reader needs from it here. */
+@media (min-width: 900px) {
+  .thallo-nav__links,
+  .thallo-nav__cta {
+    display: flex;
+  }
+}
+.thallo-nav__links a {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--wp--preset--color--grey-500);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.thallo-nav__links a:hover,
+.thallo-nav__links a[aria-current='page'] {
+  color: var(--wp--preset--color--olive);
+}
+
+.thallo-btn {
+  display: inline-block;
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.thallo-btn--ghost {
+  border: 1px solid var(--wp--preset--color--hairline);
+  color: #1f2937;
+}
+.thallo-btn--ghost:hover {
+  border-color: #9ca3af;
+  background: #f9fafb;
+}
+.thallo-btn--solid {
+  border: 1px solid var(--wp--preset--color--olive);
+  background: var(--wp--preset--color--olive);
+  color: #fff;
+}
+.thallo-btn--solid:hover {
+  background: var(--wp--preset--color--olive-mid);
+  border-color: var(--wp--preset--color--olive-mid);
+}
+
+/* The bar is fixed, so the page needs the height back or the first heading
+   sits under it. */
+body > main,
+.wp-site-blocks > main {
+  padding-top: 6.5rem;
+}
+
+/* ── Footer ────────────────────────────────────────────────────────────────*/
+.thallo-foot {
+  border-top: 1px solid var(--wp--preset--color--hairline);
+  margin-top: var(--wp--preset--spacing--60);
+  padding: var(--wp--preset--spacing--60) 1.5rem var(--wp--preset--spacing--50);
+  font-size: 0.7rem;
+}
+.thallo-foot__cols {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  gap: 2.5rem;
+  grid-template-columns: 1fr;
+  padding-bottom: 2.5rem;
+}
+@media (min-width: 640px) {
+  .thallo-foot__cols {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (min-width: 1000px) {
+  .thallo-foot__cols {
+    grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  }
+}
+.thallo-foot__brand img {
+  height: 2.5rem;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+.thallo-foot__brand p {
+  margin: 0.9rem 0 0;
+  max-width: 28ch;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-foot h4 {
+  font-size: 0.69rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--grey-900);
+  margin: 0 0 1rem;
+}
+.thallo-foot__cols div > a,
+.thallo-foot__legal a,
+.thallo-foot__base span {
+  display: block;
+  font-size: 0.69rem;
+  font-weight: 600;
+  color: var(--wp--preset--color--grey-500);
+  text-decoration: none;
+  margin-bottom: 0.625rem;
+}
+.thallo-foot__cols div > a:hover,
+.thallo-foot__legal a:hover {
+  color: var(--wp--preset--color--olive);
+}
+.thallo-foot__legal {
+  max-width: 1440px;
+  margin: 0 auto;
+  border-top: 1px solid var(--wp--preset--color--hairline);
+  padding-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.75rem;
+}
+.thallo-foot__legal a {
+  margin-bottom: 0;
+}
+.thallo-foot__base {
+  max-width: 1440px;
+  margin: 1.75rem auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.thallo-foot__base span {
+  margin-bottom: 0;
 }

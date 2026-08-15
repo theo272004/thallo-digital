@@ -1,33 +1,54 @@
-<!-- wp:group {"style":{"spacing":{"padding":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|50"}},"border":{"top":{"width":"1px","color":"var:preset|color|hairline"}}},"backgroundColor":"white","layout":{"type":"constrained","contentSize":"72rem"}} -->
-<div class="wp-block-group has-white-background-color has-background" style="border-top-color:var(--wp--preset--color--hairline);border-top-width:1px;padding-top:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--50)">
+<!-- The site's footer, mirrored. Same reasoning as parts/header.html: written
+     as plain HTML so the columns, the legal strip and the type scale match
+     what a reader just scrolled past on every other page. -->
+<!-- wp:html -->
+<footer class="thallo-foot">
+  <div class="thallo-foot__cols">
+    <div class="thallo-foot__brand">
+      <a href="https://thallodigital.com/">
+        <img src="https://thallodigital.com/logo.png" alt="Thallo Digital" width="150" height="44" />
+      </a>
+      <p>Authority for companies in high-consideration industries.</p>
+    </div>
 
-<!-- wp:group {"layout":{"type":"flex","justifyContent":"space-between","flexWrap":"wrap"}} -->
-<div class="wp-block-group">
+    <div>
+      <h4>Solutions</h4>
+      <a href="https://thallodigital.com/services/">AI Visibility Audit</a>
+      <a href="https://thallodigital.com/services/">The Authority Engine</a>
+      <a href="https://thallodigital.com/services/">Standalone Projects</a>
+      <a href="https://thallodigital.com/thallo-ai/">Visibility Check</a>
+    </div>
 
-<!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size">© Thallo Digital · <a href="https://thallodigital.com/">thallodigital.com</a></p>
-<!-- /wp:paragraph -->
+    <div>
+      <h4>Industries</h4>
+      <a href="https://thallodigital.com/industries/">Fintech</a>
+      <a href="https://thallodigital.com/industries/">Health tech</a>
+      <a href="https://thallodigital.com/industries/">Professional services</a>
+      <a href="https://thallodigital.com/industries/">Health &amp; recovery</a>
+    </div>
 
-<!-- wp:group {"style":{"spacing":{"blockGap":"1.25rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
-<div class="wp-block-group">
+    <div>
+      <h4>Company</h4>
+      <a href="https://thallodigital.com/about/">About</a>
+      <a href="https://thallodigital.com/blog/">Blog</a>
+      <a href="https://thallodigital.com/contact/">Contact</a>
+      <a href="https://thallodigital.com/contact/">Book an audit</a>
+    </div>
+  </div>
 
-<!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size"><a href="https://thallodigital.com/contact/">Contact</a></p>
-<!-- /wp:paragraph -->
+  <!-- The legal strip gets its own row rather than a fifth column, for the
+       same reason it does on the main site: a payment processor reviewing the
+       site looks for these three in the footer, and a reader looking for the
+       refund window should not have to find it among the service links. -->
+  <div class="thallo-foot__legal">
+    <a href="https://thallodigital.com/terms/">Terms &amp; Conditions</a>
+    <a href="https://thallodigital.com/refund-policy/">Refund Policy</a>
+    <a href="https://thallodigital.com/privacy/">Privacy Policy</a>
+  </div>
 
-<!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size"><a href="https://thallodigital.com/privacy/">Privacy</a></p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size"><a href="https://thallodigital.com/terms/">Terms</a></p>
-<!-- /wp:paragraph -->
-
-</div>
-<!-- /wp:group -->
-
-</div>
-<!-- /wp:group -->
-
-</div>
-<!-- /wp:group -->
+  <div class="thallo-foot__base">
+    <span>© 2026 Thallo Digital</span>
+    <span>thallodigital.com</span>
+  </div>
+</footer>
+<!-- /wp:html -->
