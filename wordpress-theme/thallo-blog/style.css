@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.5.0
+Version:      1.6.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -877,4 +877,67 @@ body > main,
   .thallo-post__prose {
     margin: 0;
   }
+}
+
+/* ── Contrast on the dark card ─────────────────────────────────────────────
+   The title arrived as a link, and a link inherits the global link colour
+   from theme.json unless something says otherwise. On the dark card that
+   rendered near-black on near-black — the heading was there, at the right
+   size, and unreadable.
+
+   Every colour on this card is therefore stated against the card rather than
+   inherited, and the link rules carry enough weight to beat the global ones
+   wherever WordPress decides to print them. A heading a reader cannot see is
+   not a styling preference to be overridden politely. */
+.thallo-feat .thallo-feat__title,
+.thallo-feat .thallo-feat__title a,
+.thallo-feat .thallo-feat__title a:hover,
+.thallo-feat .thallo-feat__title a:visited,
+.thallo-feat .thallo-feat__title a:focus {
+  color: #ffffff !important;
+  text-decoration: none;
+}
+.thallo-feat .thallo-feat__title a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.thallo-feat .thallo-feat__excerpt,
+.thallo-feat .thallo-feat__excerpt p {
+  color: rgba(255, 255, 255, 0.62) !important;
+}
+.thallo-feat .thallo-feat__go {
+  color: var(--wp--preset--color--olive-soft) !important;
+}
+
+/* The same statement for the light cards, so a global link colour cannot
+   turn a card title blue there either. */
+.thallo-card .thallo-card__title,
+.thallo-card .thallo-card__title a,
+.thallo-card .thallo-card__title a:visited {
+  color: var(--wp--preset--color--grey-900) !important;
+  text-decoration: none;
+}
+.thallo-card .thallo-card__title a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* The whole card is the link, so the photograph must not sit above it. */
+.thallo-feat__media a,
+.thallo-card__media a {
+  display: block;
+  height: 100%;
+}
+
+/* ── Uncategorized ─────────────────────────────────────────────────────────
+   WordPress's default term, not a decision anybody made. A card wearing it as
+   a badge says the writer forgot something, and a filter row offering it as
+   the only choice is furniture. Hidden until there are real categories, at
+   which point both fill in on their own. */
+.thallo-meta .wp-block-post-terms:empty,
+.thallo-filters:empty {
+  display: none;
+}
+.thallo-meta .wp-block-post-terms:empty + *::before {
+  content: none;
 }

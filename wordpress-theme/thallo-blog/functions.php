@@ -250,3 +250,40 @@ function thallo_blog_schema() {
 	}
 }
 add_action( 'wp_head', 'thallo_blog_schema' );
+
+/**
+ * Drops WordPress's default category from anywhere it would be printed.
+ *
+ * "Uncategorized" is what a post gets when nobody chose, so printing it as a
+ * badge announces the omission rather than describing the post — and a filter
+ * row whose only option is that word is furniture. Removed at render rather
+ * than hidden with CSS, because the string also reaches the RSS feed, the
+ * category archive and the structured data, and hiding it in one of the four
+ * places it appears is not the same as not saying it.
+ *
+ * Nothing is deleted. Give a post a real category and the badge returns.
+ */
+function thallo_blog_hide_default_term( $content, $block ) {
+	if ( empty( $block['blockName'] ) ) {
+		return $content;
+	}
+
+	if ( 'core/post-terms' === $block['blockName'] || 'core/categories' === $block['blockName'] ) {
+		$default = (int) get_option( 'default_category' );
+		$term    = $default ? get_term( $default ) : null;
+
+		if ( $term && ! is_wp_error( $term ) ) {
+			/* Only when it is the *only* thing there. A post filed under both
+			   Uncategorized and something real should still show the real one,
+			   and stripping a link out of the middle of a comma-separated list
+			   leaves the comma behind. */
+			$stripped = trim( wp_strip_all_tags( $content ) );
+			if ( $stripped === $term->name || '' === $stripped ) {
+				return '';
+			}
+		}
+	}
+
+	return $content;
+}
+add_filter( 'render_block', 'thallo_blog_hide_default_term', 10, 2 );
