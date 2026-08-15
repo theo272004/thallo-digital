@@ -23,6 +23,16 @@
 
 <!-- wp:post-featured-image {"align":"wide","aspectRatio":"21/9","style":{"border":{"radius":"18px"},"spacing":{"margin":{"bottom":"var:preset|spacing|50"}}}} /-->
 
+<!-- The article, with its contents beside it.
+
+     A grid of two columns on a wide screen — the list in the left gutter,
+     sticky, and the prose in the middle at its reading measure. Below 1180px
+     the grid collapses and the list becomes a box above the article, which is
+     the same information in the shape that fits. Neither layout is the
+     fallback; they are the two shapes this content has. -->
+<!-- wp:group {"className":"thallo-post__with-toc","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-post__with-toc">
+
 <!-- Filled by assets/toc.js from the post's own h2s, and left empty when there
      are fewer than two. `hidden` until the script decides there is something
      to show, so a post with one section never flashes an empty box. -->
@@ -30,7 +40,14 @@
 <nav class="thallo-toc" aria-label="On this page" hidden></nav>
 <!-- /wp:html -->
 
+<!-- wp:group {"className":"thallo-post__prose","layout":{"type":"constrained","contentSize":"44rem"}} -->
+<div class="wp-block-group thallo-post__prose">
 <!-- wp:post-content {"layout":{"type":"constrained","contentSize":"44rem"}} /-->
+</div>
+<!-- /wp:group -->
+
+</div>
+<!-- /wp:group -->
 
 <!-- The sign-off. Kept in the template rather than left to the writer so that
      every post ends by offering the reader the thing the post is about, and so

@@ -1,67 +1,65 @@
 <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
 
-<!-- wp:group {"tagName":"main","style":{"spacing":{"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60"}}},"layout":{"type":"constrained","contentSize":"72rem"}} -->
-<main class="wp-block-group" style="padding-top:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--60)">
+<!-- wp:group {"tagName":"main","className":"thallo-archive","layout":{"type":"constrained","contentSize":"1440px"}} -->
+<main class="wp-block-group thallo-archive">
 
-<!-- wp:heading {"level":4} -->
-<h4 class="wp-block-heading">Thallo · writing</h4>
+<!-- The masthead. Centred, and the second word set in the serif italic — the
+     one place on this page the serif appears, which is what makes it read as a
+     masthead rather than as another heading. -->
+<!-- wp:group {"className":"thallo-archive__head","layout":{"type":"constrained"}} -->
+<div class="wp-block-group thallo-archive__head">
+
+<!-- wp:heading {"level":1,"className":"thallo-archive__title"} -->
+<h1 class="wp-block-heading thallo-archive__title">Articles and <em>guides.</em></h1>
 <!-- /wp:heading -->
 
-<!-- wp:heading {"level":1,"fontSize":"xx-large","style":{"spacing":{"margin":{"top":"1.5rem","bottom":"1.5rem"}}}} -->
-<h1 class="wp-block-heading has-xx-large-font-size" style="margin-top:1.5rem;margin-bottom:1.5rem">What we have worked out, written down.</h1>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph {"fontSize":"large","style":{"spacing":{"margin":{"bottom":"var:preset|spacing|50"}}}} -->
-<p class="has-large-font-size" style="margin-bottom:var(--wp--preset--spacing--50)">Notes on being found when the answer is written for you — how models decide who to name, what actually moves it, and what nobody can honestly tell you yet.</p>
+<!-- wp:paragraph {"className":"thallo-archive__lead"} -->
+<p class="thallo-archive__lead">On search, AI visibility and building authority in categories where trust decides the sale.</p>
 <!-- /wp:paragraph -->
 
-<!-- The categories, as links to their own archives.
+<!-- wp:categories {"showPostCounts":false,"showOnlyTopLevel":true,"className":"thallo-filters"} /-->
 
-     The mockup did this with JavaScript that hid cards on the page. Links to
-     the real archive are the same gesture and a better thing: each one is a
-     URL a reader can bookmark, a search engine can index, and a model can
-     reach — which for a blog about being reachable by models is not a detail.
-     Hiding rows in the DOM produces none of that.
-
-     Renders whatever categories exist, so it fills itself in as they are
-     created. Right now that is one, called Uncategorized. -->
-<!-- wp:categories {"showPostCounts":true,"showOnlyTopLevel":true,"className":"thallo-filters","style":{"spacing":{"margin":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40"}}}} /-->
-
-<!-- wp:separator {"className":"is-style-wide"} -->
-<hr class="wp-block-separator has-alpha-channel-opacity is-style-wide"/>
-<!-- /wp:separator -->
-
-<!-- The newest note, on its own.
-
-     Two queries rather than one: this takes post 1, the grid below takes 2
-     onwards. A single query cannot give the first item a different layout from
-     the rest, and the alternative — every card identical — makes an archive
-     read as a pile with no argument about what to read first.
-
-     Deliberately not the dark card from the mockup. The scan sign-off at the
-     bottom of this page is already ink, and two dark blocks on one screen
-     compete for the same job. The lead note earns its weight from size here,
-     not from colour. -->
-<!-- wp:query {"queryId":2,"query":{"perPage":1,"pages":1,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":false},"style":{"spacing":{"margin":{"top":"var:preset|spacing|50"}}},"layout":{"type":"default"}} -->
-<div class="wp-block-query" style="margin-top:var(--wp--preset--spacing--50)">
-
-<!-- wp:post-template {"className":"thallo-lead","layout":{"type":"default"}} -->
-
-<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|40"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group">
-
-<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/7","style":{"border":{"radius":"18px"}}} /-->
-
-<!-- wp:group {"style":{"spacing":{"blockGap":"0.75rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
-<div class="wp-block-group">
-<!-- wp:post-terms {"term":"category","fontSize":"small"} /-->
-<!-- wp:post-date {"format":"j M Y","fontSize":"small"} /-->
 </div>
 <!-- /wp:group -->
 
-<!-- wp:post-title {"level":2,"isLink":true,"fontSize":"xx-large"} /-->
+<!-- The newest note, as the dark card.
 
-<!-- wp:post-excerpt {"moreText":"Read the note","excerptLength":40,"fontSize":"large"} /-->
+     Two queries rather than one: a single query cannot give its first item a
+     different layout, and an archive where every card is identical makes no
+     argument about what to read first. -->
+<!-- wp:query {"queryId":2,"query":{"perPage":1,"pages":1,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":false},"layout":{"type":"default"}} -->
+<div class="wp-block-query">
+
+<!-- wp:post-template {"className":"thallo-feat__loop","layout":{"type":"default"}} -->
+
+<!-- wp:group {"className":"thallo-feat","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-feat">
+
+<!-- wp:post-featured-image {"isLink":true,"className":"thallo-feat__media"} /-->
+
+<!-- wp:group {"className":"thallo-feat__body","layout":{"type":"constrained"}} -->
+<div class="wp-block-group thallo-feat__body">
+
+<!-- wp:group {"className":"thallo-meta","layout":{"type":"flex","flexWrap":"wrap"}} -->
+<div class="wp-block-group thallo-meta">
+<!-- wp:post-terms {"term":"category"} /-->
+<!-- wp:post-date {"format":"j M Y"} /-->
+<!-- wp:shortcode -->
+[thallo_reading_time]
+<!-- /wp:shortcode -->
+</div>
+<!-- /wp:group -->
+
+<!-- wp:post-title {"level":2,"isLink":true,"className":"thallo-feat__title"} /-->
+
+<!-- wp:post-excerpt {"excerptLength":38,"className":"thallo-feat__excerpt","moreText":" "} /-->
+
+<!-- wp:paragraph {"className":"thallo-feat__go"} -->
+<p class="thallo-feat__go">Read the article ↗</p>
+<!-- /wp:paragraph -->
+
+</div>
+<!-- /wp:group -->
 
 </div>
 <!-- /wp:group -->
@@ -77,44 +75,48 @@
 </div>
 <!-- /wp:query -->
 
-<!-- Everything after the lead. `offset: 1` skips the note shown above so it
-     does not appear twice; `inherit: false` is what makes the offset apply at
-     all, because an inherited query takes the main loop's parameters and
-     ignores its own. -->
-<!-- wp:query {"queryId":3,"query":{"perPage":12,"pages":0,"offset":1,"postType":"post","order":"desc","orderBy":"date","inherit":false},"style":{"spacing":{"margin":{"top":"var:preset|spacing|60"}}},"layout":{"type":"default"}} -->
-<div class="wp-block-query" style="margin-top:var(--wp--preset--spacing--60)">
+<!-- Everything after the lead. `offset: 1` skips the note above so it does not
+     appear twice; `inherit: false` is what makes the offset apply at all. -->
+<!-- wp:query {"queryId":3,"query":{"perPage":12,"pages":0,"offset":1,"postType":"post","order":"desc","orderBy":"date","inherit":false},"className":"thallo-grid","layout":{"type":"default"}} -->
+<div class="wp-block-query thallo-grid">
 
-<!-- wp:post-template {"style":{"spacing":{"blockGap":"var:preset|spacing|40"}},"layout":{"type":"grid","columnCount":3}} -->
+<!-- wp:post-template {"className":"thallo-grid__loop","layout":{"type":"grid","columnCount":3}} -->
 
-<!-- wp:group {"className":"thallo-card","backgroundColor":"white","style":{"spacing":{"blockGap":"0.9rem","padding":{"top":"1.15rem","bottom":"1.5rem","left":"1.15rem","right":"1.15rem"}},"border":{"radius":"18px"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group thallo-card has-white-background-color has-background" style="border-radius:18px;padding-top:1.15rem;padding-right:1.15rem;padding-bottom:1.5rem;padding-left:1.15rem">
+<!-- wp:group {"className":"thallo-card","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-card">
 
-<!-- wp:post-featured-image {"isLink":true,"aspectRatio":"16/10","style":{"border":{"radius":"12px"}}} /-->
+<!-- wp:post-featured-image {"isLink":true,"className":"thallo-card__media"} /-->
 
-<!-- wp:group {"style":{"spacing":{"blockGap":"0.6rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
-<div class="wp-block-group">
-<!-- wp:post-terms {"term":"category","fontSize":"small"} /-->
-<!-- wp:post-date {"format":"j M Y","fontSize":"small"} /-->
-<!-- wp:shortcode {"fontSize":"small"} -->
+<!-- wp:group {"className":"thallo-card__body","layout":{"type":"constrained"}} -->
+<div class="wp-block-group thallo-card__body">
+
+<!-- wp:group {"className":"thallo-meta","layout":{"type":"flex","flexWrap":"wrap"}} -->
+<div class="wp-block-group thallo-meta">
+<!-- wp:post-terms {"term":"category"} /-->
+<!-- wp:post-date {"format":"j M Y"} /-->
+<!-- wp:shortcode -->
 [thallo_reading_time]
 <!-- /wp:shortcode -->
 </div>
 <!-- /wp:group -->
 
-<!-- wp:post-title {"level":2,"isLink":true,"fontSize":"large"} /-->
+<!-- wp:post-title {"level":2,"isLink":true,"className":"thallo-card__title"} /-->
 
-<!-- wp:post-excerpt {"moreText":"Read the note","excerptLength":24} /-->
+<!-- wp:post-excerpt {"excerptLength":22,"className":"thallo-card__excerpt","moreText":" "} /-->
+
+<!-- wp:paragraph {"className":"thallo-card__go"} -->
+<p class="thallo-card__go">Read the article ↗</p>
+<!-- /wp:paragraph -->
+
+</div>
+<!-- /wp:group -->
 
 </div>
 <!-- /wp:group -->
 
 <!-- /wp:post-template -->
 
-<!-- The empty state here is silent on purpose. With one note published the
-     lead above is the whole archive, and "nothing else yet" under it would be
-     stating the obvious in a way that reads as a fault. -->
-
-<!-- wp:query-pagination {"style":{"spacing":{"margin":{"top":"var:preset|spacing|50"}}},"layout":{"type":"flex","justifyContent":"space-between"}} -->
+<!-- wp:query-pagination {"className":"thallo-pagination","layout":{"type":"flex","justifyContent":"space-between"}} -->
 <!-- wp:query-pagination-previous /-->
 <!-- wp:query-pagination-numbers /-->
 <!-- wp:query-pagination-next /-->
@@ -123,24 +125,20 @@
 </div>
 <!-- /wp:query -->
 
-<!-- wp:group {"backgroundColor":"ink","style":{"spacing":{"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60","left":"var:preset|spacing|40","right":"var:preset|spacing|40"},"margin":{"top":"var:preset|spacing|60"}},"border":{"radius":"20px"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group has-ink-background-color has-background" style="border-radius:20px;margin-top:var(--wp--preset--spacing--60);padding-top:var(--wp--preset--spacing--60);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--60);padding-left:var(--wp--preset--spacing--40)">
+<!-- wp:group {"className":"thallo-scan","layout":{"type":"constrained"}} -->
+<div class="wp-block-group thallo-scan">
 
-<!-- wp:heading {"level":2,"style":{"color":{"text":"#FFFFFF"}}} -->
-<h2 class="wp-block-heading" style="color:#FFFFFF">Do the models recommend you?</h2>
+<!-- wp:heading {"level":2,"className":"thallo-scan__title"} -->
+<h2 class="wp-block-heading thallo-scan__title">Do the models recommend you?</h2>
 <!-- /wp:heading -->
 
-<!-- wp:paragraph {"style":{"color":{"text":"#CBD0AC"}}} -->
-<p style="color:#CBD0AC">Your buying questions, put to ChatGPT, Claude and Gemini — once from memory and once with the web open. Your brand is never named in the question, and you see every question and every answer. Free, no account, about a minute.</p>
+<!-- wp:paragraph {"className":"thallo-scan__lead"} -->
+<p class="thallo-scan__lead">Your buying questions, put to ChatGPT, Claude and Gemini — once from memory and once with the web open. Your brand is never named in the question, and you see every question and every answer. Free, no account, about a minute.</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:buttons -->
-<div class="wp-block-buttons">
-<!-- wp:button {"backgroundColor":"white","textColor":"ink"} -->
-<div class="wp-block-button"><a class="wp-block-button__link has-ink-color has-white-background-color has-text-color has-background wp-element-button" href="https://thallodigital.com/thallo-ai/">Check my visibility</a></div>
-<!-- /wp:button -->
-</div>
-<!-- /wp:buttons -->
+<!-- wp:html -->
+<a class="thallo-btn thallo-btn--light" href="https://thallodigital.com/thallo-ai/">Check my visibility ↗</a>
+<!-- /wp:html -->
 
 </div>
 <!-- /wp:group -->
