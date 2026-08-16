@@ -53,7 +53,7 @@ export default function ScanResults({
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
       <Panel>
         {/* The market belongs on the dateline, not in a footnote. A share of
             voice is only a finding about a brand once you know which market it

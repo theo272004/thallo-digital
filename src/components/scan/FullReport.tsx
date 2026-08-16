@@ -33,7 +33,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
   const maxTech = scoredSignals.reduce((sum, s) => sum + s.weight, 0);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
       {/* ── Headline ─────────────────────────────────────────────────────── */}
       <Panel>
         <Head

@@ -27,6 +27,12 @@
  * stays, but only for genuine micro-captions — units, counts, the masthead
  * eyebrow — never as a panel's title.
  *
+ * `Stepper` and `Tag` carry the same idea outwards onto the dark masthead: the
+ * setup card numbered its own two screens and then the numbering stopped, so
+ * running and reporting read as a different program rather than as steps 3 and
+ * 4 of one. The rail now spans all four, and the facts you typed into the form
+ * — brand, category, market — stay on screen as tags once the fields are gone.
+ *
  * Contrast, checked rather than assumed. Both ends of the ground gradient carry
  * white well past AA (#39471D → 10.0:1, #171A10 → 17.6:1) and #E7ECD9 past it
  * too (8.3:1 and 14.6:1). #CBD0AC is 6.3:1 on the olive end. #55672E is only
@@ -155,6 +161,82 @@ export function Tint({
 export const Micro = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
   <span className={`text-[11px] font-bold uppercase tracking-[0.18em] ${className}`}>{children}</span>
 );
+
+/**
+ * A fact about the run, worn on the dark masthead.
+ *
+ * The setup card carries the brand, the category and the market as fields you
+ * filled in; the moment the scan starts they vanish from the screen, and every
+ * stage after it was a report about a brand with no statement of what was
+ * actually measured. These put them back where the fields were.
+ */
+export function Tag({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[11.5px] font-semibold text-white/90">
+      {children}
+    </span>
+  );
+}
+
+/** The four screens of a scan, in order. `Stepper` is indexed against this. */
+export const STAGE_LABELS = ['Your brand', 'Your questions', 'Scanning', 'Report'] as const;
+
+/**
+ * Where you are in the scan.
+ *
+ * The setup card numbers its own two screens with olive discs — "1. Your
+ * brand", "2. Your questions" — and then the numbering simply stopped. Running
+ * and reporting are two more screens in the same sequence, and without a rail
+ * saying so they read as a different program that took over once the form was
+ * submitted. So the rail covers all four, sits on the masthead above every
+ * stage including the first, and uses the same discs.
+ *
+ * Colours are for the dark ground it always sits on: white for the step you are
+ * on, #CBD0AC for the ones behind you (6.3:1 on the olive end), and a muted
+ * white for the ones ahead — which are chrome, not information.
+ */
+export function Stepper({ current }: { current: 1 | 2 | 3 | 4 }) {
+  return (
+    <ol className="flex flex-wrap items-center gap-x-2.5 gap-y-2.5">
+      {STAGE_LABELS.map((label, i) => {
+        const n = i + 1;
+        const done = n < current;
+        const now = n === current;
+        return (
+          <li key={label} className="flex items-center gap-2.5">
+            <span
+              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold tabular-nums ${
+                done
+                  ? 'bg-[#CBD0AC] text-[#171A10]'
+                  : now
+                    ? 'bg-white text-[#39471D]'
+                    : 'border border-white/25 text-white/55'
+              }`}
+            >
+              {done ? (
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round">
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+              ) : (
+                n
+              )}
+            </span>
+            <span
+              className={`text-[12.5px] ${
+                now ? 'font-bold text-white' : done ? 'font-semibold text-[#CBD0AC]' : 'font-medium text-white/55'
+              }`}
+            >
+              {label}
+            </span>
+            {/* Hidden on small screens, where the rail wraps and a rule between
+                two lines points at nothing. */}
+            {i < STAGE_LABELS.length - 1 && <span aria-hidden className="ml-1 hidden h-px w-7 bg-white/20 lg:block" />}
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
 
 /** A white console panel. */
 export function Panel({
