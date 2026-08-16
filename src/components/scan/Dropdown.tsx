@@ -62,8 +62,6 @@ const PANEL =
 /** Room left between the panel and the field, and between it and the viewport edge. */
 const GAP = 8;
 const EDGE = 16;
-/** As tall as the panel would like to be — about six rows. */
-const IDEAL_HEIGHT = 264;
 /** Below this there is no useful list left, so it is better to flip than to fit. */
 const MIN_HEIGHT = 132;
 
@@ -141,6 +139,7 @@ function Popover({
   label,
   anchor,
   active,
+  count,
   panelRef,
   children,
 }: {
@@ -148,6 +147,9 @@ function Popover({
   label: string;
   anchor: React.RefObject<HTMLElement | null>;
   active: number;
+  /** How many rows are in the list. Re-measures the panel when it changes,
+      which is what happens as you type into `Combo` and the list narrows. */
+  count: number;
   panelRef: React.RefObject<HTMLUListElement | null>;
   children: React.ReactNode;
 }) {
@@ -155,6 +157,19 @@ function Popover({
     const panel = panelRef.current;
     const field = anchor.current;
     if (!panel || !field) return;
+
+    /* How tall the list wants to be, measured uncapped and once per change of
+       contents — `count` is in the deps for exactly that. Sizing to the content
+       rather than to a fixed 264px is what stops these lists scrolling at all:
+       seven countries come to 309px, so the old cap left a scrollbar with 47px
+       of travel behind it. A wheel notch is about 100, which meant one notch
+       hit the bottom and every notch after it did nothing — a menu that reads
+       as broken rather than as short.
+
+       `scrollHeight` is the content box plus padding; `max-height` under
+       `box-sizing: border-box` also has to cover the 1px border each side. */
+    panel.style.maxHeight = 'none';
+    const natural = panel.scrollHeight + 2;
 
     /* Recomputed on scroll and resize rather than measured once: the page moves
        under a fixed panel, so a panel placed and then left alone drifts away
@@ -164,11 +179,12 @@ function Popover({
       const r = field.getBoundingClientRect();
       const below = window.innerHeight - r.bottom - GAP - EDGE;
       const above = r.top - GAP - EDGE;
-      /* Downwards unless there is genuinely more room the other way — a panel
-         that flips up while a perfectly good gap sits under the field reads as
-         a glitch, so the comparison is on real space rather than a threshold. */
-      const flip = below < MIN_HEIGHT && above > below;
-      const maxHeight = Math.min(IDEAL_HEIGHT, Math.max(MIN_HEIGHT, flip ? above : below));
+      /* Downwards unless the list does not fit there and fits better above — a
+         panel that flips up while a perfectly good gap sits under the field
+         reads as a glitch, so the test is on the room the list actually needs
+         rather than on a fixed threshold. */
+      const flip = natural > below && above > below;
+      const maxHeight = Math.max(MIN_HEIGHT, Math.min(natural, flip ? above : below));
 
       panel.style.left = `${r.left}px`;
       panel.style.top = `${flip ? Math.max(EDGE, r.top - GAP - maxHeight) : r.bottom + GAP}px`;
@@ -184,7 +200,7 @@ function Popover({
       window.removeEventListener('scroll', place, true);
       window.removeEventListener('resize', place);
     };
-  }, [anchor, panelRef]);
+  }, [anchor, panelRef, count]);
 
   useEffect(() => {
     const panel = panelRef.current;
@@ -327,7 +343,7 @@ export function Select({
       </button>
 
       {open && (
-        <Popover id={`${id}-list`} label={label} anchor={triggerRef} active={active} panelRef={panelRef}>
+        <Popover id={`${id}-list`} label={label} anchor={triggerRef} active={active} count={options.length} panelRef={panelRef}>
           {options.map((o, i) => (
             <Row
               key={o.value}
@@ -463,7 +479,7 @@ export function Combo({
       </div>
 
       {open && shown.length > 0 && (
-        <Popover id={`${id}-list`} label={label} anchor={fieldRef} active={active} panelRef={panelRef}>
+        <Popover id={`${id}-list`} label={label} anchor={fieldRef} active={active} count={shown.length} panelRef={panelRef}>
           {shown.map((o, i) => (
             <Row
               key={o}

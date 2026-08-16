@@ -47,7 +47,11 @@ export const GROUND: React.CSSProperties = {
   backgroundImage: 'linear-gradient(158deg, #39471D 0%, #171A10 58%)',
 };
 
-/** The faint plotting grid that says "canvas" rather than "page". */
+/** The faint plotting grid that says "canvas" rather than "page".
+    No longer used by the scan console — over the photograph band it read as a
+    texture on the picture rather than as graph paper under the tool, which is
+    the only thing it was ever for. Still drawn on the results dashboard, where
+    the ground really is flat. */
 export const GRID: React.CSSProperties = {
   backgroundImage:
     'linear-gradient(to right, rgba(231,236,217,.055) 1px, transparent 1px),' +

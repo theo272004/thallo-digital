@@ -44,10 +44,30 @@ export default function SmoothScrollProvider({ children }: { children: ReactNode
     gsap.ticker.add(update);
     gsap.ticker.lagSmoothing(0);
 
+    /* Lenis measures the page once and re-measures when its own ResizeObserver
+       fires. That observer watches `document.documentElement` — and this site
+       sets `h-full` on <html>, so its box is exactly the viewport and never
+       changes size however much content is added below it. The observer
+       therefore never fires, and Lenis clamps every wheel to a scroll limit it
+       worked out at first paint.
+
+       That is not theoretical. On the scan page, moving from step 1 to step 2
+       takes the document from 989px to 1509px: the real limit becomes 574px and
+       Lenis stays on 54, so the page scrolls fifty pixels and stops dead. Every
+       later stage is worse — the full report is several thousand pixels of a
+       page Lenis believes is one screen tall.
+
+       <body> is the element that actually grows (`min-h-full`, not `h-full`),
+       so it is the one worth watching. Anything that changes the height of the
+       page, on any route, now re-measures.  */
+    const remeasure = new ResizeObserver(() => instance.resize());
+    remeasure.observe(document.body);
+
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
     ScrollTrigger.refresh();
 
     return () => {
+      remeasure.disconnect();
       gsap.ticker.remove(update);
       instance.destroy();
       lenis = null;

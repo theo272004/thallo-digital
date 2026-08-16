@@ -6,7 +6,7 @@ import ScanSetup from './ScanSetup';
 import ScanProgress from './ScanProgress';
 import ScanResults from './ScanResults';
 import FullReport from './FullReport';
-import { GRID, GROUND, Micro, Stepper, Tag } from './ui';
+import { GROUND, Micro, Stepper, Tag } from './ui';
 import { IS_LIVE, initialSession, startScan, unlockScan } from '@/lib/scan/engine';
 import { marketLabel } from '@/lib/scan/markets';
 import { BASE } from '@/lib/site';
@@ -198,7 +198,6 @@ export default function ScanFlow() {
               style={{ background: 'linear-gradient(to right, rgba(23,26,16,.88) 0%, rgba(23,26,16,.66) 42%, rgba(23,26,16,.5) 100%)' }}
             />
           </div>
-          <div aria-hidden className="pointer-events-none absolute inset-0" style={GRID} />
         </>
       )}
 
