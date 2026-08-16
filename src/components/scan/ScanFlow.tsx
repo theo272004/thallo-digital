@@ -128,12 +128,22 @@ export default function ScanFlow() {
        is in it, so the photograph runs to the bottom edge instead of stopping
        38px short and leaving a strip of the page showing under it. Only there:
        the later stages are taller than a screen anyway and a minimum would do
-       nothing but add dead space. */
+       nothing but add dead space.
+
+       That first step also gets its own, much smaller padding, and no `2xl`
+       bump. `2xl` is a WIDTH breakpoint, so a wide-but-short window — 1854×935
+       is an ordinary laptop with the browser chrome on — was being given the
+       160/96 padding meant for a tall one. That is 256px, a quarter of the
+       screen, spent on air: the first step needed 1021px to draw 765px of
+       content, so it overflowed by 86 and put a scrollbar on a screen with
+       essentially nowhere to go. The padding does nothing here anyway —
+       `justify-center` is already distributing the spare height — it only has
+       to clear the floating navbar at the top. */
     <section
       ref={sectionRef}
       id="tool"
-      className={`relative isolate overflow-hidden bg-[#F8FAF7] pt-32 pb-16 2xl:pt-40 2xl:pb-24 ${
-        hero ? 'lg:flex lg:min-h-screen lg:flex-col lg:justify-center' : ''
+      className={`relative isolate overflow-hidden bg-[#F8FAF7] ${
+        hero ? 'pt-28 pb-10 lg:flex lg:min-h-screen lg:flex-col lg:justify-center' : 'pt-32 pb-16 2xl:pt-40 2xl:pb-24'
       }`}
       style={hero ? undefined : GROUND}
     >
@@ -240,7 +250,11 @@ export default function ScanFlow() {
             it is a masthead over whatever the stage is showing. */}
         {!hero && <Masthead stage={stage} brand={brand} asked={asked} />}
 
-        {(!IS_LIVE || session.demo) && <DemoNotice configured={IS_LIVE} />}
+        {/* On the first step this rides in the left column instead — see below.
+            Full width there, it was 83px of banner plus 32px of margin stacked
+            above a screen that was already 86px too tall, and the left column
+            has room going spare beside a 589px card. */}
+        {!hero && (!IS_LIVE || session.demo) && <DemoNotice configured={IS_LIVE} />}
 
         <div className={hero ? '' : 'mt-9'}>
           {stage === 'setup' && (
@@ -272,6 +286,7 @@ export default function ScanFlow() {
                 {hero && (
                   <div key="intro">
                     <Masthead stage="setup" brand={brand} asked={asked} />
+                    {(!IS_LIVE || session.demo) && <DemoNotice configured={IS_LIVE} />}
                   </div>
                 )}
 
