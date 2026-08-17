@@ -67,10 +67,28 @@ class Thallo_Vis_LLM {
 			   here more than convenience does: the claim on the report is "this
 			   is what Gemini says when it searches", so it had better be
 			   Google's search doing the looking. */
-			$body['model']              = $model . ':online';
-			$body['web_search_options'] = array(
-				'search_context_size' => Thallo_Vis_Settings::get( 'grounded_context', 'low' ),
-			);
+			$body['model'] = $model . ':online';
+
+			/* `web_search_options` is OpenAI's own parameter, and OpenRouter
+			   only strips it for providers that have no equivalent — Anthropic
+			   and Google never saw it. Sent to an OpenAI model that does not
+			   accept it, it is passed straight through and every call comes
+			   back `HTTP 400: Provider returned error`. That is what blanked the
+			   ChatGPT column of the search reading while Claude and Gemini
+			   answered normally, and it was doing nothing for any of the three
+			   defaults even when it did not fail.
+
+			   OpenRouter publishes which models take it, in the
+			   `supported_parameters` of `GET /api/v1/models` — today the gpt-4o
+			   search family and Perplexity's own models, and none of the three
+			   in the grounded slots. So it goes only where it is accepted. The
+			   search itself is asked for with `:online`, which every model on
+			   the route understands. */
+			if ( self::takes_web_search_options( $model ) ) {
+				$body['web_search_options'] = array(
+					'search_context_size' => Thallo_Vis_Settings::get( 'grounded_context', 'low' ),
+				);
+			}
 
 			return array(
 				'url'     => 'https://openrouter.ai/api/v1/chat/completions',
@@ -212,6 +230,19 @@ class Thallo_Vis_LLM {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Does this model accept `web_search_options`?
+	 *
+	 * A pattern rather than a list, because the alternative is a lookup against
+	 * OpenRouter's models endpoint on a request that is already spending money
+	 * and already slow. Wrong in the safe direction by construction: a model
+	 * that would have accepted it merely searches with the plugin's own default
+	 * breadth, where a model that would not accept it fails every call.
+	 */
+	private static function takes_web_search_options( $model ) {
+		return (bool) preg_match( '#^(openai/gpt-4o|perplexity/)#', (string) $model );
 	}
 
 	private static function openai_body( $model, $system, $question, $json_mode = true ) {

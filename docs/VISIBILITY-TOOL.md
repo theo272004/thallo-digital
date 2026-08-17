@@ -40,6 +40,24 @@ needs no account. Phase 2 (Perplexity, Google AI Overview, the crawl) costs
 money to run and is unlocked with an email. The split is in the type
 definitions, so it cannot get lost in the wiring.
 
+**The headline number is both readings pooled.** A brand is asked about twice —
+once with the models answering from memory, once with the web open — and the
+percentage on the ring is `(mentions from memory + mentions when searching) ÷
+(all answers read)`. Pooled over answers, not averaged over the two
+percentages, because the two halves are deliberately different sizes: the search
+reading is capped at `grounded_questions` to hold the bill down, and an average
+would let five answers weigh as much as fifteen.
+
+It was the memory figure alone until August 2026, and that was a distinction the
+reader had not been told about yet. The ring said 0% while the panel further
+down said the models name you a quarter of the time when they search; both were
+true, and the pair reads as the tool contradicting itself. Whoever reads it then
+checks by asking Claude — which searches — sees their own brand come back, and
+stops believing the report before reaching the section that explains why. The
+split is still printed in three places (under the ring, as its own stat, and
+diagnosed in full in "Do they know you, or can they find you?"). What changed is
+which number is seen first.
+
 ---
 
 ## 2. Installing the plugin
@@ -189,12 +207,13 @@ DEPLOY_TARGET=bluehost npm run build # → href="/services/"
 
 ## 6. What is still outstanding
 
-**1. No API key is saved.** This is the only thing between the tool as built and
-the tool as a product. Checked against production on 7 August 2026: the site is
-deployed, the plugin is installed, the REST namespace answers, and the built
-bundle has `NEXT_PUBLIC_SCAN_API` in it — and `POST /scan` still returns
-`"demo": true`, so every visitor is seeing sample data behind the banner. It is
-a settings-screen task, not a code task. See section 3.
+**1. Settled — the keys are in.** Checked against production on 16 August 2026:
+`POST /scan` returns `"demo": false`, a full run of fifteen calls across the
+three models came back clean, and the grounded reading and Perplexity both
+answered. The models in the live settings are `openai/gpt-4o-mini`,
+`anthropic/claude-haiku-4.5` and `google/gemini-2.5-flash`, with
+`openai/gpt-5.6-luna`, `anthropic/claude-haiku-4.5` and
+`google/gemini-2.5-flash-lite` on the grounded slots.
 
 Re-check it at any time without an admin login:
 
@@ -202,6 +221,21 @@ Re-check it at any time without an admin login:
 curl -s -X POST https://thallodigital.com/blog/wp-json/thallo/v1/scan \
   -H "Content-Type: application/json" \
   -d '{"brand":"x","domain":"example.com","industry":"Professional services"}'
+```
+
+**1a. `Search context` only bites where the provider takes it.** OpenRouter
+passes `web_search_options` straight through to OpenAI and normalises it away
+for Anthropic and Google, so of the three grounded slots only an `openai/gpt-4o`
+model ever read the setting — and an OpenAI model that does *not* take it
+answered every question with `HTTP 400: Provider returned error`, which is what
+blanked the ChatGPT column of the search reading through August 2026. The
+parameter is now sent only to the families that accept it (`openai/gpt-4o*`,
+`perplexity/*`); everywhere else the search runs at `:online`'s own breadth.
+OpenRouter publishes the truth for any model id in the `supported_parameters` of
+`GET /api/v1/models`, which needs no key:
+
+```bash
+curl -s https://openrouter.ai/api/v1/models | grep -o '"id":"openai/gpt-5[^"]*"'
 ```
 
 **2. Outbound email.** "Send the report to the person who unlocked it" needs

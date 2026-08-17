@@ -32,6 +32,32 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
   const scoredSignals = phase2.signals.filter((s) => s.weight > 0);
   const maxTech = scoredSignals.reduce((sum, s) => sum + s.weight, 0);
 
+  /*
+   * The headline counts both readings together.
+   *
+   * It used to be the memory figure alone, and that was a distinction the
+   * reader had not been told about yet: the ring said 0% while the panel two
+   * screens down said the models name you a quarter of the time when they
+   * search. Both were true and the pair reads as the tool contradicting
+   * itself — which is worse than either number being wrong, because it costs
+   * the reader their trust in the whole report before they get to the part
+   * that explains it.
+   *
+   * Pooled over the answers rather than averaged over the two percentages: the
+   * two halves are deliberately different sizes (the search reading is capped
+   * to keep the bill down), and averaging would let five answers weigh as much
+   * as fifteen. One brand named in one answer out of twenty-one is 5%, however
+   * the answers were split.
+   *
+   * The split itself is never hidden — it is named under the ring, given a
+   * stat of its own, and diagnosed in full further down. The change is which
+   * number is the one you see first, not which numbers are printed.
+   */
+  const grounded = phase2.grounded && phase2.grounded.totalAnswers > 0 ? phase2.grounded : null;
+  const overallPct = grounded
+    ? Math.round(((phase1.mentions + grounded.mentions) / (phase1.totalAnswers + grounded.totalAnswers)) * 100)
+    : phase1.sovPct;
+
   return (
     <div className="flex flex-col gap-5">
       {/* ── Headline ─────────────────────────────────────────────────────── */}
@@ -45,7 +71,28 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
 
         <div className="mt-7 grid grid-cols-1 gap-8 border-t border-gray-100 pt-7 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-12">
           <div>
-            <ScoreRing pct={phase1.sovPct} label="Share of voice" size={152} />
+            <ScoreRing
+              pct={overallPct}
+              label={grounded ? 'Share of voice · overall' : 'Share of voice'}
+              caption={
+                grounded
+                  ? `across ${phase1.totalAnswers + grounded.totalAnswers} answers`
+                  : `across ${phase1.totalAnswers} answers`
+              }
+              size={152}
+            />
+
+            {/* The sentence a reader needs at the moment they see a low number,
+                rather than two screens later. A brand the models can find but
+                have never heard of is the common case for a good small company,
+                and reading it as "we are invisible" is the wrong conclusion off
+                the right figure. */}
+            {grounded && phase1.sovPct === 0 && grounded.sovPct > 0 && (
+              <p className="mt-4 text-center text-[12px] font-medium leading-relaxed text-gray-500">
+                From memory the models do not know {phase1.brand} yet. They name it {grounded.sovPct}% of the time once
+                they search.
+              </p>
+            )}
           </div>
 
           <div className="flex flex-col gap-5">
@@ -55,15 +102,16 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
             </Tint>
 
             <div className="grid grid-cols-3 divide-x divide-gray-100 border-y border-gray-100">
-              {/* Named as the memory reading whenever a second one exists. The
-                  headline number is the from-memory percentage, and printing it
-                  as plain "AI share of voice" next to a panel showing a very
-                  different figure for the same brand reads as a contradiction
-                  rather than as two findings. */}
-              <Stat
-                value={`${phase1.sovPct}%`}
-                label={phase2.grounded ? 'Share of voice · from memory' : 'AI share of voice'}
-              />
+              {/* The two readings side by side, in the order they are taken.
+                  The ring above pools them; this is where the pair is legible,
+                  because the gap between them is the finding — the same brand
+                  can be a zero from memory and a third of the answers once the
+                  models look, and those have opposite fixes. */}
+              {grounded ? (
+                <Stat value={`${phase1.sovPct}% → ${grounded.sovPct}%`} label="Memory → searching" />
+              ) : (
+                <Stat value={`${phase1.sovPct}%`} label="AI share of voice" />
+              )}
               <Stat value={`${phase2.techScore}`} label={`Technical / ${maxTech}`} />
               <Stat
                 value={phase2.serpScore < 0 ? '—' : String(phase2.serpScore)}

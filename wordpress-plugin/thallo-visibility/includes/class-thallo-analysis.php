@@ -39,8 +39,27 @@ class Thallo_Vis_Analysis {
 			return '';
 		}
 
-		// Strip trailing legal suffixes, repeatedly — "Vertex Partners Group Ltd".
 		$parts = explode( ' ', $name );
+
+		/* Put a dotted acronym back together first. The punctuation pass above
+		   turns "S.A.S." into "s a s", and the suffix list never sees the "sas"
+		   it knows — so "Vet Claims S.A.S." normalised to something no spelling
+		   of the brand could match. Spanish-language companies are written this
+		   way as a matter of course, and es-CO is the market this tool was built
+		   for, so it is the common case rather than an edge one.
+
+		   Only a trailing run is joined. The legal form goes at the end of a
+		   name; a run of single letters in the middle is more likely to be
+		   initials that belong to it. */
+		$run = array();
+		while ( count( $parts ) > 1 && 1 === strlen( end( $parts ) ) ) {
+			array_unshift( $run, array_pop( $parts ) );
+		}
+		if ( $run ) {
+			$parts[] = implode( '', $run );
+		}
+
+		// Strip trailing legal suffixes, repeatedly — "Vertex Partners Group Ltd".
 		while ( count( $parts ) > 1 && in_array( end( $parts ), self::SUFFIXES, true ) ) {
 			array_pop( $parts );
 		}
@@ -56,9 +75,29 @@ class Thallo_Vis_Analysis {
 	}
 
 	/**
+	 * The same name with the spacing taken out.
+	 *
+	 * No model is consistent about whether a compound brand is one word or two.
+	 * A visitor types "VetClaims", the model writes "Vet Claims", and a matcher
+	 * comparing the two strings finds nothing — so the report said the brand was
+	 * never named while the audit trail underneath it printed the name in every
+	 * answer. That is the worst failure this tool has: not a wrong number, a
+	 * number the reader can see is wrong.
+	 *
+	 * Used only for the whole-string comparisons below, never for the "brand
+	 * plus trailing words" rule. Without spaces there are no word boundaries
+	 * left, and a prefix test on "ledger" would then match "ledgerly" — the
+	 * false positive the matcher exists to avoid.
+	 */
+	public static function despace( $name ) {
+		return str_replace( ' ', '', (string) $name );
+	}
+
+	/**
 	 * Is this candidate the brand we are scanning for?
 	 *
-	 * Exact match after normalising, or the candidate is the brand plus trailing
+	 * Exact match after normalising — spacing ignored, so "Vet Claims" and
+	 * "VetClaims" are one company — or the candidate is the brand plus trailing
 	 * words ("Ledgerly Payments" for "Ledgerly"). Deliberately NOT the other way
 	 * round: "Ledger" would otherwise match "Ledgerly", and short brand names are
 	 * exactly where a false positive is most likely and most damaging.
@@ -76,11 +115,17 @@ class Thallo_Vis_Analysis {
 			return true;
 		}
 
+		$flat = self::despace( $candidate );
+
+		if ( '' !== $brand_norm && $flat === self::despace( $brand_norm ) ) {
+			return true;
+		}
+
 		if ( '' !== $brand_norm && 0 === strpos( $candidate, $brand_norm . ' ' ) ) {
 			return true;
 		}
 
-		if ( strlen( $domain_root ) >= 5 && $candidate === $domain_root ) {
+		if ( strlen( self::despace( $domain_root ) ) >= 5 && $flat === self::despace( $domain_root ) ) {
 			return true;
 		}
 
@@ -252,7 +297,11 @@ class Thallo_Vis_Analysis {
 				$seen = array();
 
 				foreach ( $result['companies'] as $company ) {
-					$key = self::normalize( $company );
+					/* Grouped on the despaced form for the same reason the brand
+					   is matched on it: one model writes "Checkout.com", another
+					   "Checkout com", and two spellings of one rival split its
+					   mentions in half and drop it down the list. */
+					$key = self::despace( self::normalize( $company ) );
 
 					if ( '' === $key || isset( $seen[ $key ] ) ) {
 						continue;

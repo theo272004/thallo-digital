@@ -88,6 +88,11 @@ check( 'ampersand', Thallo_Vis_Analysis::normalize( 'Sable & Co' ), 'sable and' 
 check( 'accents', Thallo_Vis_Analysis::normalize( 'Créditos Solución' ), 'creditos solucion' );
 check( 'punctuation', Thallo_Vis_Analysis::normalize( 'Ledgerly, Inc.' ), 'ledgerly' );
 check( 'digits kept', Thallo_Vis_Analysis::normalize( '37signals' ), '37signals' );
+// The Spanish legal form, which arrives dotted more often than not.
+check( 'dotted acronym suffix', Thallo_Vis_Analysis::normalize( 'Vet Claims S.A.S.' ), 'vet claims' );
+check( 'undotted acronym suffix', Thallo_Vis_Analysis::normalize( 'Vet Claims SAS' ), 'vet claims' );
+// …but a name that is genuinely initials keeps them.
+check( 'initials kept', Thallo_Vis_Analysis::normalize( 'H&M' ), 'h and m' );
 check( 'empty', Thallo_Vis_Analysis::normalize( '   ' ), '' );
 
 echo "=== domain_root ===\n";
@@ -116,6 +121,23 @@ check( 'empty', $is( '' ), false );
 $pay = Thallo_Vis_Analysis::normalize( 'Pay' );
 check( 'short brand vs longer rival', Thallo_Vis_Analysis::is_brand( 'PayPal', $pay, 'pay' ), false );
 check( 'short domain not used', Thallo_Vis_Analysis::is_brand( 'pay', Thallo_Vis_Analysis::normalize( 'Something Else' ), 'pay' ), false );
+
+// Spacing. The visitor types the brand one way and the model writes it the
+// other, and the report then said "never named" over an audit trail printing
+// the name in every answer. Both directions, because either side can be the
+// one that spaces it.
+$vc      = Thallo_Vis_Analysis::normalize( 'VetClaims' );
+$vc_root = Thallo_Vis_Analysis::domain_root( 'vetclaims.com' );
+check( 'model spaces a compound brand', Thallo_Vis_Analysis::is_brand( 'Vet Claims', $vc, $vc_root ), true );
+check( 'model closes up a spaced brand', Thallo_Vis_Analysis::is_brand( 'VetClaims', Thallo_Vis_Analysis::normalize( 'Vet Claims' ), $vc_root ), true );
+check( 'spacing plus suffix', Thallo_Vis_Analysis::is_brand( 'Vet Claims S.A.S.', $vc, $vc_root ), true );
+check( 'hyphenated domain matches closed-up name', Thallo_Vis_Analysis::is_brand( 'VetClaims', Thallo_Vis_Analysis::normalize( 'Something Else' ), Thallo_Vis_Analysis::domain_root( 'vet-claims.com' ) ), true );
+
+// …and the guard the despacing must not undo: without spaces there are no word
+// boundaries, so the prefix rule stays on the spaced form. "Ledger" closed up is
+// a prefix of "ledgerly" and must still not match it.
+check( 'despacing does not revive the prefix trap', $is( 'Ledger' ), false );
+check( 'despacing does not merge distinct names', Thallo_Vis_Analysis::is_brand( 'VetClaims', Thallo_Vis_Analysis::normalize( 'Vet' ), 'vet' ), false );
 
 echo "=== phase1 ===\n";
 $state = array(

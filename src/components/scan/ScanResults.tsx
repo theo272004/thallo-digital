@@ -66,7 +66,13 @@ export default function ScanResults({
         />
 
         <div className="mt-7 grid grid-cols-1 items-center gap-8 border-y border-gray-100 py-7 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
-          <ScoreRing pct={phase1.sovPct} label="Share of voice" />
+          {/* Named as the memory reading even though nothing here shows a second
+              one. This screen is phase 1: the models answering from what they
+              already hold, with the web shut. Calling it plain "share of voice"
+              invites the reader to check it by asking Claude — which searches —
+              and conclude the tool is lying when the two disagree. They are
+              different questions, and the label is where that starts. */}
+          <ScoreRing pct={phase1.sovPct} label="Share of voice · from memory" />
 
           <div className="flex flex-col gap-4">
             {phase1.providers.map((p) => {
