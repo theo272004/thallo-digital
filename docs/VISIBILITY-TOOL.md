@@ -223,16 +223,36 @@ curl -s -X POST https://thallodigital.com/blog/wp-json/thallo/v1/scan \
   -d '{"brand":"x","domain":"example.com","industry":"Professional services"}'
 ```
 
-**1a. `Search context` only bites where the provider takes it.** OpenRouter
-passes `web_search_options` straight through to OpenAI and normalises it away
-for Anthropic and Google, so of the three grounded slots only an `openai/gpt-4o`
-model ever read the setting — and an OpenAI model that does *not* take it
-answered every question with `HTTP 400: Provider returned error`, which is what
-blanked the ChatGPT column of the search reading through August 2026. The
-parameter is now sent only to the families that accept it (`openai/gpt-4o*`,
-`perplexity/*`); everywhere else the search runs at `:online`'s own breadth.
-OpenRouter publishes the truth for any model id in the `supported_parameters` of
-`GET /api/v1/models`, which needs no key:
+**1a. The ChatGPT column of the search reading is still blank.** Every question
+put to `openai/gpt-5.6-luna:online` comes back `HTTP 400: Provider returned
+error`. Reproduced on 16 August 2026 and again after the first attempted fix;
+Claude and Gemini answer normally on the same run, so it is that slot, not the
+route.
+
+The first guess was `web_search_options`: OpenRouter passes it through to OpenAI
+and normalises it away for Anthropic and Google, and OpenRouter's own
+`supported_parameters` say Luna does not accept it. It is now sent only to the
+families that do (`openai/gpt-4o*`, `perplexity/*`) — which is correct on its
+own terms, since it was doing nothing for any of the three grounded defaults —
+**and it was not the cause.** The 400 survived it unchanged. Ruled out since:
+the system prompt does contain the word "JSON", so `response_format:
+json_object` is not being rejected for that reason, and every parameter sent is
+in Luna's published `supported_parameters`.
+
+What the diagnosis was missing is the provider's own sentence. OpenRouter's
+`error.message` is the generic "Provider returned error"; the useful text sits
+under `error.metadata.raw` and was being discarded. It is now read and printed
+into the audit trail, so the next failed run says what OpenAI actually objected
+to instead of repeating eight words that fit any cause.
+
+Two ways forward, in order of cost:
+
+1. **Change the model.** `Grounded ChatGPT model` in Settings to an
+   `openai/gpt-4o` family id, which is OpenAI's own, accepts every parameter
+   this plugin sends, and is the shape known to work. Costs one settings save.
+2. **Read the new error** off the next scan's audit trail and fix the request.
+
+Check any model id against OpenRouter without a key:
 
 ```bash
 curl -s https://openrouter.ai/api/v1/models | grep -o '"id":"openai/gpt-5[^"]*"'

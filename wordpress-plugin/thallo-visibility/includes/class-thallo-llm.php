@@ -245,6 +245,67 @@ class Thallo_Vis_LLM {
 		return (bool) preg_match( '#^(openai/gpt-4o|perplexity/)#', (string) $model );
 	}
 
+	/**
+	 * The part of a failure worth printing.
+	 *
+	 * OpenRouter answers a refused call with `"Provider returned error"`, which
+	 * says only that somebody downstream said no. The sentence that tells you
+	 * *what* was wrong — a rejected parameter, a retired model id, a quota — is
+	 * one level further in, under `error.metadata.raw`, and was being discarded
+	 * for reading only `error.message`.
+	 *
+	 * That cost a working diagnosis. A grounded ChatGPT slot failed every call
+	 * for weeks reporting nothing but "Provider returned error", the cause was
+	 * guessed at from the request shape, the guess was wrong, and the second
+	 * scan said exactly the same eight words as the first. An error that cannot
+	 * distinguish two causes cannot be debugged — only guessed at again.
+	 *
+	 * `raw` is whatever the provider sent, so it is length-capped: some come
+	 * back as a paragraph, and the useful clause is always at the front.
+	 */
+	private static function error_detail( $raw_body ) {
+		$body = json_decode( (string) $raw_body, true );
+		if ( ! is_array( $body ) ) {
+			return '';
+		}
+
+		$parts = array();
+
+		if ( isset( $body['error']['message'] ) ) {
+			$parts[] = (string) $body['error']['message'];
+		} elseif ( isset( $body['message'] ) ) {
+			$parts[] = (string) $body['message'];
+		}
+
+		/* Names the provider that refused, which is the difference between "our
+		   key is wrong" and "OpenAI does not accept this". */
+		if ( isset( $body['error']['metadata']['provider_name'] ) ) {
+			$parts[] = '[' . (string) $body['error']['metadata']['provider_name'] . ']';
+		}
+
+		if ( isset( $body['error']['metadata']['raw'] ) ) {
+			$upstream = $body['error']['metadata']['raw'];
+
+			/* Sometimes a JSON string, sometimes an object already decoded. */
+			if ( is_string( $upstream ) ) {
+				$decoded = json_decode( $upstream, true );
+				if ( isset( $decoded['error']['message'] ) ) {
+					$upstream = $decoded['error']['message'];
+				}
+			} elseif ( is_array( $upstream ) ) {
+				$upstream = isset( $upstream['error']['message'] )
+					? $upstream['error']['message']
+					: wp_json_encode( $upstream );
+			}
+
+			if ( is_string( $upstream ) && '' !== trim( $upstream ) ) {
+				$parts[] = mb_substr( trim( $upstream ), 0, 300 );
+			}
+		}
+
+		return $parts ? ': ' . implode( ' ', $parts ) : '';
+	}
+
 	private static function openai_body( $model, $system, $question, $json_mode = true ) {
 		$body = array(
 			'model'       => $model,
@@ -299,16 +360,7 @@ class Thallo_Vis_LLM {
 		}
 
 		if ( $response['code'] < 200 || $response['code'] >= 300 ) {
-			$detail = '';
-			$body   = json_decode( $response['body'], true );
-			if ( is_array( $body ) ) {
-				if ( isset( $body['error']['message'] ) ) {
-					$detail = ': ' . $body['error']['message'];
-				} elseif ( isset( $body['message'] ) ) {
-					$detail = ': ' . $body['message'];
-				}
-			}
-			$out['error'] = 'HTTP ' . $response['code'] . $detail;
+			$out['error'] = 'HTTP ' . $response['code'] . self::error_detail( $response['body'] );
 			return $out;
 		}
 
