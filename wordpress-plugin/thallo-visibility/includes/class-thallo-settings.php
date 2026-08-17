@@ -85,11 +85,26 @@ class Thallo_Vis_Settings {
 			 *
 			 * It went out once as `gpt-4.1-nano` because Luna rejects
 			 * `temperature` and `openai_body()` sent it unconditionally: five
-			 * failed calls and a blank ChatGPT column. That was the wrong fix —
-			 * changing the model to suit a parameter that this half does not
-			 * need. The parameter is dropped for the grounded reading instead
-			 * (see Thallo_Vis_LLM::build_job), which frees the whole GPT-5 and
-			 * reasoning family to be used here.
+			 * failed calls and a blank ChatGPT column. Dropping the parameter
+			 * for this half looked like the better fix, and the slot moved to
+			 * Luna — where it has answered `HTTP 400: Provider returned error`
+			 * to every question since. So the model goes back.
+			 *
+			 * This is a retreat, not a preference. Luna is the model somebody
+			 * typing into ChatGPT is talking to today, and `gpt-4.1-nano` is a
+			 * generation behind — but a blank column measures nothing at all,
+			 * and a reading that is slightly off the mark beats a reading that
+			 * does not exist. It has what this half actually requires: OpenAI's
+			 * own native search (`web_search` priced at $0.01, same as Luna's,
+			 * so the retreat is free), and it accepts every parameter sent.
+			 *
+			 * The GPT-5 generation is not off the table — what is missing is
+			 * the reason for the 400. OpenRouter's `error.message` is a generic
+			 * wrapper; the provider's own sentence lives in
+			 * `error.metadata.raw` and was being discarded, which is why two
+			 * attempts at this produced the same eight words. That is read and
+			 * printed now, so putting Luna back is a one-field experiment that
+			 * reports its own result.
 			 *
 			 * What is NOT traded away is native search. All three are the
 			 * provider's own model, so `:online` routes to that provider's own
@@ -98,7 +113,7 @@ class Thallo_Vis_Settings {
 			 * make that sentence false.
 			 */
 			'grounded_enabled'    => 0,
-			'gr_model_chatgpt'    => 'openai/gpt-5.6-luna',
+			'gr_model_chatgpt'    => 'openai/gpt-4.1-nano',
 			'gr_model_claude'     => 'anthropic/claude-haiku-4.5',
 			/* Lite here, mainstream on the memory slot, and the reason is the
 			   bill rather than a change of heart: this half sends thousands of

@@ -314,7 +314,7 @@ class Thallo_Vis_Admin {
 						</td>
 					</tr>
 					<?php
-					self::text_field( $name, 'gr_model_chatgpt', $s, __( 'ChatGPT model', 'thallo-visibility' ), __( 'Must be a model with native OpenAI search. gpt-4o-mini has none — asked online it falls back to a third-party index, which measures somebody else\'s search. A current GPT-5-series model is the closest match to what a person typing into ChatGPT gets today.', 'thallo-visibility' ) );
+					self::text_field( $name, 'gr_model_chatgpt', $s, __( 'ChatGPT model', 'thallo-visibility' ), __( 'Must be a model with native OpenAI search — check that OpenRouter prices "web_search" for it, or :online quietly falls back to a third-party index and measures somebody else\'s search. The gpt-4o family has none. GPT-5-series ids currently fail every call with a 400 here; gpt-4.1-nano works, costs the same search fee, and is the recommended value until that is understood.', 'thallo-visibility' ) );
 					self::text_field( $name, 'gr_model_claude', $s, __( 'Claude model', 'thallo-visibility' ) );
 					self::text_field( $name, 'gr_model_gemini', $s, __( 'Gemini model', 'thallo-visibility' ) );
 					self::number_field( $name, 'grounded_questions', $s, __( 'Questions asked a second time', 'thallo-visibility' ), 3, 15, __( 'The search fee is charged per call and cannot be reduced, so this is the only real lever on what this half costs. Five is about US$0.17 a scan, eight about US$0.27, fifteen about US$0.50. Share of voice is a proportion, so five answers per model still separates "never named" from "sometimes named" — which is the only thing this reading is asked to settle. The report prints both answer counts, so the two halves being different sizes is visible rather than hidden.', 'thallo-visibility' ) );
