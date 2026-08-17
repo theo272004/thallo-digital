@@ -44,6 +44,15 @@ class Thallo_Vis_Admin {
 
 		add_submenu_page(
 			'thallo-visibility',
+			__( 'Enquiries', 'thallo-visibility' ),
+			__( 'Enquiries', 'thallo-visibility' ),
+			'manage_options',
+			'thallo-visibility-enquiries',
+			array( __CLASS__, 'enquiries_page' )
+		);
+
+		add_submenu_page(
+			'thallo-visibility',
 			__( 'Monitoring', 'thallo-visibility' ),
 			__( 'Monitoring', 'thallo-visibility' ),
 			'manage_options',
@@ -831,6 +840,73 @@ class Thallo_Vis_Admin {
 				?>
 			</table>
 		</details>
+		<?php
+	}
+
+	/**
+	 * Everyone who wrote in through the site.
+	 *
+	 * Separate from Leads on purpose: a lead is somebody who ran a scan and
+	 * traded an address for the rest of it, an enquiry is somebody who asked a
+	 * question. Reading them in one table would mean sorting the people who want
+	 * something from the people who were curious, every morning, by hand.
+	 *
+	 * The reply column is the point of the screen. If our automatic answer never
+	 * left, this is where that shows — before the person concludes we ignored
+	 * them.
+	 */
+	public static function enquiries_page() {
+		$rows = Thallo_Vis_Enquiries::all();
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Enquiries', 'thallo-visibility' ); ?></h1>
+
+			<p style="max-width:46em">
+				<?php esc_html_e( 'Everybody who wrote to us through the contact form or a plan enquiry. Each one was answered automatically with a note saying a person would come back within a working day — the last column says whether that note actually left.', 'thallo-visibility' ); ?>
+			</p>
+
+			<table class="widefat striped">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Date', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'Who', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'Interested in', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'Message', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'Our reply', 'thallo-visibility' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php if ( empty( $rows ) ) : ?>
+						<tr><td colspan="5"><?php esc_html_e( 'Nobody has written in yet.', 'thallo-visibility' ); ?></td></tr>
+					<?php else : ?>
+						<?php foreach ( $rows as $row ) : ?>
+							<tr>
+								<td><?php echo esc_html( $row['created_at'] ); ?></td>
+								<td>
+									<strong><?php echo esc_html( $row['name'] ? $row['name'] : '—' ); ?></strong>
+									<?php if ( $row['company'] ) : ?>
+										<br><span class="description"><?php echo esc_html( $row['company'] ); ?></span>
+									<?php endif; ?>
+									<br><a href="mailto:<?php echo esc_attr( $row['email'] ); ?>"><?php echo esc_html( $row['email'] ); ?></a>
+								</td>
+								<td><?php echo esc_html( $row['plans'] ? $row['plans'] : '—' ); ?></td>
+								<td style="max-width:28em"><?php echo esc_html( $row['message'] ); ?></td>
+								<td>
+									<?php if ( 'sent' === $row['mail_status'] ) : ?>
+										<span style="color:#2c7a2c"><?php esc_html_e( 'Sent', 'thallo-visibility' ); ?></span>
+									<?php elseif ( 'failed' === $row['mail_status'] ) : ?>
+										<strong style="color:#b32d2e"><?php esc_html_e( 'Never left', 'thallo-visibility' ); ?></strong>
+										<br><span class="description"><?php echo esc_html( $row['mail_error'] ); ?></span>
+									<?php else : ?>
+										<span class="description"><?php esc_html_e( 'not recorded', 'thallo-visibility' ); ?></span>
+									<?php endif; ?>
+								</td>
+							</tr>
+						<?php endforeach; ?>
+					<?php endif; ?>
+				</tbody>
+			</table>
+		</div>
 		<?php
 	}
 

@@ -89,7 +89,20 @@ class Thallo_Vis_Leads {
 	 *
 	 * @return array array( 'ok' => bool, 'error' => string )
 	 */
-	private static function send( $to, $subject, $body, $html = '' ) {
+	/**
+	 * The same door, opened for the enquiry side of the plugin.
+	 *
+	 * One sender for everything this plugin puts in somebody's inbox: one place
+	 * that knows the From, one place that captures the failure, one thing to fix
+	 * when a host changes. `$reply_to` is the one thing an enquiry needs that a
+	 * report does not — hitting reply on "somebody wrote to us" should answer
+	 * the person, not us.
+	 */
+	public static function send_message( $to, $subject, $text, $html = '', $reply_to = '' ) {
+		return self::send( $to, $subject, $text, $html, $reply_to );
+	}
+
+	private static function send( $to, $subject, $body, $html = '', $reply_to = '' ) {
 		$captured = '';
 
 		$listener = static function ( $error ) use ( &$captured ) {
@@ -98,7 +111,7 @@ class Thallo_Vis_Leads {
 			}
 		};
 
-		$headers = self::headers();
+		$headers = self::headers( $reply_to );
 		$alt     = null;
 
 		if ( '' !== $html ) {
@@ -143,10 +156,13 @@ class Thallo_Vis_Leads {
 	 * has to be filled in deliberately, because filling it in wrongly is worse
 	 * than leaving it alone.
 	 */
-	private static function headers() {
+	private static function headers( $reply_to = '' ) {
 		$from = Thallo_Vis_Settings::get( 'from_email', '' );
 		if ( ! $from || ! is_email( $from ) ) {
-			return array();
+			/* No sender configured, so WordPress's own defaults stand — but a
+			   Reply-To still travels, because it is the only way an answer to an
+			   enquiry reaches the person who sent it. */
+			return ( $reply_to && is_email( $reply_to ) ) ? array( sprintf( 'Reply-To: %s', $reply_to ) ) : array();
 		}
 
 		$name    = Thallo_Vis_Settings::get( 'from_name', '' );
@@ -157,8 +173,9 @@ class Thallo_Vis_Leads {
 		);
 
 		/* The report closes by inviting a reply. It should land somewhere a
-		   person reads, which is not necessarily the address it was sent from. */
-		$reply = Thallo_Vis_Settings::get( 'notify_email' );
+		   person reads, which is not necessarily the address it was sent from —
+		   and for a message about somebody's enquiry, the person is them. */
+		$reply = ( $reply_to && is_email( $reply_to ) ) ? $reply_to : Thallo_Vis_Settings::get( 'notify_email' );
 		if ( $reply && is_email( $reply ) ) {
 			$headers[] = sprintf( 'Reply-To: %s', $reply );
 		}

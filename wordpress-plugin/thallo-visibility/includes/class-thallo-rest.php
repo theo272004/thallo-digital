@@ -69,6 +69,28 @@ class Thallo_Vis_REST {
 			)
 		);
 
+		/*
+		 * The contact forms.
+		 *
+		 * Public and unauthenticated, like the scan, and for the same reason:
+		 * the person on the other end has no account and would not make one to
+		 * ask a question. What stands between it and a mailbox full of the same
+		 * form is a honeypot, a per-address daily cap, and the fact that there
+		 * is nothing here worth spamming — no reply is published anywhere.
+		 */
+		register_rest_route(
+			self::NS,
+			'/enquiry',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( __CLASS__, 'enquiry' ),
+				'permission_callback' => '__return_true',
+				'args'                => array(
+					'email' => array( 'required' => true ),
+				),
+			)
+		);
+
 		register_rest_route(
 			self::NS,
 			'/status',
@@ -233,6 +255,75 @@ class Thallo_Vis_REST {
 		$session = Thallo_Vis_Runner::read( $request->get_param( 'id' ) );
 
 		return is_wp_error( $session ) ? $session : rest_ensure_response( $session );
+	}
+
+	/**
+	 * Somebody asking about the work.
+	 *
+	 * Deliberately forgiving about everything except the address: a name, a
+	 * company and a chosen plan are all nice to have, and rejecting an enquiry
+	 * over a missing one would lose the enquiry to protect a database column.
+	 * The address is the exception, because without it there is nobody to
+	 * answer.
+	 */
+	public static function enquiry( WP_REST_Request $request ) {
+		/* The honeypot. Bots fill every field they find; a human never sees this
+		   one. Answered with the same success the form shows a person, because
+		   telling a bot it was caught only teaches whoever wrote it. */
+		if ( '' !== trim( (string) $request->get_param( 'website_url' ) ) ) {
+			return rest_ensure_response( array( 'ok' => true ) );
+		}
+
+		$email = sanitize_email( (string) $request->get_param( 'email' ) );
+
+		if ( ! is_email( $email ) ) {
+			return new WP_Error( 'bad_email', __( 'Enter an email address we can reply to.', 'thallo-visibility' ), array( 'status' => 400 ) );
+		}
+
+		$since = gmdate( 'Y-m-d H:i:s', time() - DAY_IN_SECONDS );
+
+		/* Five a day from one address. High enough that nobody legitimate meets
+		   it — a person who sends a second enquiry because they forgot something
+		   should not be told off — and low enough that a script gets bored. */
+		if ( Thallo_Vis_Enquiries::count_recent_for_ip( $since ) >= 5 ) {
+			return new WP_Error(
+				'rate_limited',
+				__( 'We already have your messages from today and we are reading them. Email us directly if it is urgent.', 'thallo-visibility' ),
+				array( 'status' => 429 )
+			);
+		}
+
+		$plans = $request->get_param( 'plans' );
+		$clean = array();
+
+		if ( is_array( $plans ) ) {
+			foreach ( array_slice( $plans, 0, 8 ) as $plan ) {
+				if ( is_string( $plan ) && '' !== trim( $plan ) ) {
+					$clean[] = mb_substr( sanitize_text_field( $plan ), 0, 80 );
+				}
+			}
+		}
+
+		$id = Thallo_Vis_Enquiries::record(
+			array(
+				'name'    => mb_substr( sanitize_text_field( (string) $request->get_param( 'name' ) ), 0, 120 ),
+				'company' => mb_substr( sanitize_text_field( (string) $request->get_param( 'company' ) ), 0, 120 ),
+				'email'   => $email,
+				'plans'   => $clean,
+				/* `sanitize_textarea_field` rather than `sanitize_text_field`: the
+				   message is where somebody explains what they need, and the
+				   second one flattens their paragraphs into a single line. */
+				'message' => mb_substr( sanitize_textarea_field( (string) $request->get_param( 'message' ) ), 0, 4000 ),
+				'page'    => esc_url_raw( (string) $request->get_param( 'page' ) ),
+				'consent' => (bool) $request->get_param( 'consent' ),
+			)
+		);
+
+		if ( is_wp_error( $id ) ) {
+			return $id;
+		}
+
+		return rest_ensure_response( array( 'ok' => true ) );
 	}
 
 	/** A diagnostics endpoint for whoever installs this. Never reveals a key. */

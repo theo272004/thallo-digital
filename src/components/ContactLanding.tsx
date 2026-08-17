@@ -8,15 +8,16 @@ import ConsentCheck from '@/components/ui/ConsentCheck';
 import { ENQUIRY_PLANS } from '@/components/AuditCTA';
 import { SplitReveal, Magnetic, useRevealBatch } from '@/components/motion';
 import { BASE } from '@/lib/site';
+import { ENQUIRY_ENDPOINT, sendEnquiry } from '@/lib/scan/enquiry';
 
 /**
- * Where the form posts. The site is a static export (GitHub Pages), so there is
- * no server of our own — point this at a form backend that accepts a JSON POST
- * (Formspree, Basin, Formsubmit…), e.g. 'https://formspree.io/f/abcdwxyz'.
- * Left empty, the form falls back to opening the visitor's mail client with
- * every field pre-filled, so an enquiry is never silently dropped.
+ * Where the form posts: the WordPress plugin that already runs the scan, which
+ * records the enquiry, tells us, and sends the person a note saying we have it.
+ * See `lib/scan/enquiry.ts`. Unset at build time, the form falls back to opening
+ * the visitor's mail client with every field pre-filled, so an enquiry is never
+ * silently dropped.
  */
-const FORM_ENDPOINT = '';
+const FORM_ENDPOINT = ENQUIRY_ENDPOINT;
 
 const INBOX = 'hello@thallo.co';
 
@@ -105,13 +106,12 @@ export default function ContactLanding() {
 
     setStatus('sending');
     try {
-      const res = await fetch(FORM_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ ...payload, page: typeof window !== 'undefined' ? window.location.href : '' }),
+      await sendEnquiry({
+        ...payload,
+        page: typeof window !== 'undefined' ? window.location.href : '',
       });
-      if (!res.ok) throw new Error(String(res.status));
       form.reset();
+      setSelectedPlans([]);
       setStatus('sent');
     } catch {
       setStatus('error');

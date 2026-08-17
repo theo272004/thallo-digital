@@ -3,7 +3,7 @@ Contributors: thallodigital
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.6.0
+Stable tag: 1.7.0
 License: GPLv2 or later
 
 Backend for the Check My Visibility tool: asks the AI models the buying
@@ -63,6 +63,21 @@ Leads are kept until you delete them. IP addresses are stored only as a salted
 hash, used to count scans per visitor.
 
 == Changelog ==
+
+= 1.7.0 =
+* The contact forms have a backend. Both of them had an empty endpoint, so
+  submitting opened the visitor's own mail client and hoped: no row, no
+  notification, and nothing at all if they had no mail client set up. They now
+  post to this plugin, which records the enquiry, emails it to the notify
+  address with the sender on Reply-To, and writes back to the person to say a
+  human will answer within a working day. Visibility → Enquiries lists them,
+  including whether that reply actually left.
+* The logo is on both emails, on a white header band — the mark is dark on
+  transparent and was invisible on the olive one. It is a remote image, so the
+  alt text is the company name: blocked, the header still says who it is from.
+* Links in emails point at the website rather than at this WordPress. With the
+  blog at /blog/, `home_url( '/contact/' )` was a 404 nobody at our end would
+  ever have seen.
 
 = 1.6.0 =
 * Which model stands for which assistant now lives in the plugin, dated, and

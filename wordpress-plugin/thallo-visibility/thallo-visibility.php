@@ -3,7 +3,7 @@
  * Plugin Name:       Thallo Visibility Engine
  * Plugin URI:        https://thallodigital.com/
  * Description:       Backend for the Check My Visibility tool. Asks ChatGPT, Claude and Gemini the buying questions in a category, counts how often a brand is named, checks live retrieval and crawls the site — and serves it all to the static front end over the REST API.
- * Version:           1.6.0
+ * Version:           1.7.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Thallo Digital
@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'THALLO_VIS_VERSION', '1.6.0' );
+define( 'THALLO_VIS_VERSION', '1.7.0' );
 define( 'THALLO_VIS_FILE', __FILE__ );
 define( 'THALLO_VIS_DIR', plugin_dir_path( __FILE__ ) );
 define( 'THALLO_VIS_OPTION', 'thallo_visibility_settings' );
@@ -55,6 +55,7 @@ require_once THALLO_VIS_DIR . 'includes/class-thallo-analysis.php';
 require_once THALLO_VIS_DIR . 'includes/class-thallo-runner.php';
 require_once THALLO_VIS_DIR . 'includes/class-thallo-email-template.php';
 require_once THALLO_VIS_DIR . 'includes/class-thallo-leads.php';
+require_once THALLO_VIS_DIR . 'includes/class-thallo-enquiries.php';
 require_once THALLO_VIS_DIR . 'includes/class-thallo-monitors.php';
 require_once THALLO_VIS_DIR . 'includes/class-thallo-rest.php';
 require_once THALLO_VIS_DIR . 'includes/class-thallo-admin.php';

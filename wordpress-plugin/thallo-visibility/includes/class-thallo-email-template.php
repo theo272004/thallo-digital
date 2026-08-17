@@ -14,9 +14,12 @@
  * is stated with what it was measured out of, and there is exactly one call to
  * action at the bottom rather than three scattered through.
  *
- * The one deliberate omission is images. A logo would be a remote image, which
- * most clients block until asked, and a blocked logo is a broken-looking email
- * from a company somebody met four minutes ago.
+ * The only image is the logo, and it is treated as optional by construction:
+ * most clients block remote images until the reader asks, so its alt text is the
+ * company name rather than the word "logo". Blocked, the header still says who
+ * this is from. Nothing else in here is an image — every bar and rule is drawn
+ * with table cells, because a chart that arrives as a broken-image icon is worse
+ * than a number.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -24,6 +27,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Thallo_Vis_Email_Template {
+
+	/**
+	 * Where the logo lives.
+	 *
+	 * The scheme and host of this WordPress, with the path thrown away — not
+	 * `home_url( '/logo.png' )`. WordPress runs at /blog/ on this account, so
+	 * that would point at /blog/logo.png, which does not exist; the file belongs
+	 * to the static site at the domain root. An email cannot use a relative path,
+	 * so it has to be built rather than assumed, and getting it wrong shows as a
+	 * broken image in every inbox rather than as an error anywhere we would see.
+	 */
+	public static function logo_url() {
+		return self::site_url( '/logo.png' );
+	}
+
+	/**
+	 * A link back to the website, which is not this WordPress.
+	 *
+	 * The scheme and host of `home_url()` with the path thrown away. WordPress
+	 * runs at /blog/ on this account, so `home_url( '/contact/' )` would point at
+	 * /blog/contact/ — a page that does not exist. The pages a reader is being
+	 * sent to belong to the static export at the domain root, and a 404 in an
+	 * email is a failure nobody at our end ever sees.
+	 */
+	public static function site_url( $path = '/' ) {
+		$parts  = wp_parse_url( home_url() );
+		$scheme = isset( $parts['scheme'] ) ? $parts['scheme'] : 'https';
+		$host   = isset( $parts['host'] ) ? $parts['host'] : '';
+
+		return $host ? $scheme . '://' . $host . $path : home_url( $path );
+	}
 
 	const OLIVE = '#39471D';
 	const TINT  = '#E7ECD9';
@@ -96,7 +130,7 @@ class Thallo_Vis_Email_Template {
 		$body .= self::paragraph(
 			__( 'Measuring it is the easy half. If you want the content, the citations and the structure that move these numbers, reply to this email — a person reads it.', 'thallo-visibility' )
 		);
-		$body .= self::button( __( 'Talk to us', 'thallo-visibility' ), home_url( '/contact/' ) );
+		$body .= self::button( __( 'Talk to us', 'thallo-visibility' ), self::site_url( '/contact/' ) );
 
 		return self::wrap(
 			sprintf( 'Your AI visibility scan — %s', $state['brand'] ),
@@ -177,7 +211,7 @@ class Thallo_Vis_Email_Template {
 	 *                          email" or a stray heading — one of the cheapest
 	 *                          things to get right and the most often skipped.
 	 */
-	public static function wrap( $title, $preheader, $body ) {
+	public static function wrap( $title, $preheader, $body, $footer = '' ) {
 		$site = get_bloginfo( 'name' );
 
 		return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
@@ -192,20 +226,35 @@ class Thallo_Vis_Email_Template {
 			. '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F3F4F1;">'
 			. '<tr><td align="center" style="padding:28px 12px;">'
 			. '<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:100%;background:#FFFFFF;border:1px solid ' . self::LINE . ';border-radius:14px;overflow:hidden;">'
-			/* Two cells rather than a float: Outlook renders with Word's engine
+			/* The logo sits on white, not on the olive band it used to be.
+			   The mark is a dark wordmark on a transparent background — on olive
+			   it is very nearly invisible, and an invisible logo is worse than
+			   none. The olive stays as the rule under it.
+
+			   Two cells rather than a float: Outlook renders with Word's engine
 			   and ignores float outright, which would drop the right-hand label
-			   onto its own line under the name. */
-			. '<tr><td style="padding:22px 28px;background:' . self::OLIVE . ';">'
+			   onto its own line under the mark.
+
+			   Most clients block remote images until the reader asks for them, so
+			   the alt text is the company name rather than "logo" — blocked, the
+			   header still says who this is from. */
+			. '<tr><td style="padding:22px 28px 18px;background:#FFFFFF;">'
 			. '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>'
-			. '<td style="font:700 15px/1.2 Helvetica,Arial,sans-serif;color:#FFFFFF;letter-spacing:.02em;">' . esc_html( $site ) . '</td>'
-			. '<td align="right" style="font:600 11px/1.2 Helvetica,Arial,sans-serif;color:' . self::TINT . ';letter-spacing:.14em;text-transform:uppercase;">AI visibility scan</td>'
+			. '<td><img src="' . esc_url( self::logo_url() ) . '" width="150" alt="' . esc_attr( $site ) . '"'
+			. ' style="display:block;border:0;outline:none;text-decoration:none;width:150px;max-width:150px;height:auto;font:700 15px/1.2 Helvetica,Arial,sans-serif;color:' . self::INK . ';"></td>'
+			. '<td align="right" style="font:600 10px/1.2 Helvetica,Arial,sans-serif;color:' . self::OLIVE . ';letter-spacing:.14em;text-transform:uppercase;">AI visibility scan</td>'
 			. '</tr></table>'
 			. '</td></tr>'
+			. '<tr><td style="height:4px;background:' . self::OLIVE . ';font-size:0;line-height:0;">&nbsp;</td></tr>'
 			. '<tr><td style="padding:28px;">' . $body . '</td></tr>'
 			. '</table>'
 			. '<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:100%;">'
 			. '<tr><td style="padding:16px 8px;font:400 11px/1.7 Helvetica,Arial,sans-serif;color:' . self::MUTED . ';text-align:center;">'
-			. esc_html__( 'You are receiving this because you asked for this scan on our website. Reply to this email and a person will read it.', 'thallo-visibility' )
+			/* Why this message exists, in the reader's terms — and it is not the
+			   same sentence for a report somebody asked for as for a reply to
+			   somebody who wrote in. A footer explaining the wrong thing is the
+			   detail that makes an email feel automated. */
+			. esc_html( '' !== $footer ? $footer : __( 'You are receiving this because you asked for this scan on our website. Reply to this email and a person will read it.', 'thallo-visibility' ) )
 			. '<br>' . esc_html( $site ) . ' · <a href="' . esc_url( home_url() ) . '" style="color:' . self::MUTED . ';">' . esc_html( wp_parse_url( home_url(), PHP_URL_HOST ) ) . '</a>'
 			. '</td></tr></table>'
 			. '</td></tr></table></body></html>';
@@ -279,6 +328,30 @@ class Thallo_Vis_Email_Template {
 
 	public static function divider() {
 		return '<div style="height:1px;background:' . self::LINE . ';margin:24px 0;font-size:0;line-height:0;">&nbsp;</div>';
+	}
+
+	/** A label and its value, for the messages that are a record rather than a
+	    finding — who wrote in, from where, about what. */
+	public static function detail_row( $label, $value ) {
+		return '<tr>'
+			. '<td style="padding:5px 0;font:400 13px/1.5 Helvetica,Arial,sans-serif;color:' . self::MUTED . ';width:140px;">' . esc_html( $label ) . '</td>'
+			. '<td style="padding:5px 0;font:600 13px/1.5 Helvetica,Arial,sans-serif;color:' . self::INK . ';">' . esc_html( $value ) . '</td>'
+			. '</tr>';
+	}
+
+	/**
+	 * Their own words, quoted back.
+	 *
+	 * `nl2br` because a message typed into a textarea carries its line breaks,
+	 * and HTML throws them away — a paragraph the sender wrote in three parts
+	 * coming back as one block reads as though nobody looked at it.
+	 */
+	public static function quote( $text ) {
+		return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 14px;">'
+			. '<tr><td style="padding:2px 0 2px 14px;border-left:3px solid ' . self::TINT . ';'
+			. 'font:400 14px/1.65 Helvetica,Arial,sans-serif;color:' . self::MUTED . ';">'
+			. nl2br( esc_html( trim( (string) $text ) ) )
+			. '</td></tr></table>';
 	}
 
 	/** Small print under a figure: what it was measured out of, and when. */

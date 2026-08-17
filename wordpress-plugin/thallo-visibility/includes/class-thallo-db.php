@@ -46,6 +46,11 @@ class Thallo_Vis_DB {
 		return $wpdb->prefix . 'thallo_monitors';
 	}
 
+	public static function enquiries_table() {
+		global $wpdb;
+		return $wpdb->prefix . 'thallo_enquiries';
+	}
+
 	public static function install() {
 		global $wpdb;
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -163,10 +168,40 @@ class Thallo_Vis_DB {
 			KEY due (active, next_run_at)
 		) $charset;";
 
+		/*
+		 * Somebody who wrote to us through the site.
+		 *
+		 * Its own table rather than a row in `leads` with the scan columns left
+		 * empty: a lead is a measurement with an address attached, an enquiry is
+		 * a person with a sentence, and the screens that read them want
+		 * different things. Kept until deleted by hand — unlike scan working
+		 * data, which is pruned — because it is correspondence, and `consent` is
+		 * stored with it because consent you cannot show is not much use later.
+		 */
+		$enquiries   = self::enquiries_table();
+		$sql_enquiry = "CREATE TABLE $enquiries (
+			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+			name VARCHAR(190) NOT NULL DEFAULT '',
+			company VARCHAR(190) NOT NULL DEFAULT '',
+			email VARCHAR(190) NOT NULL,
+			plans VARCHAR(255) NOT NULL DEFAULT '',
+			message TEXT,
+			page VARCHAR(255) NOT NULL DEFAULT '',
+			consent TINYINT(1) NOT NULL DEFAULT 0,
+			ip_hash CHAR(64) NOT NULL DEFAULT '',
+			mail_status VARCHAR(20) NOT NULL DEFAULT '',
+			mail_error TEXT,
+			created_at DATETIME NOT NULL,
+			PRIMARY KEY  (id),
+			KEY email (email),
+			KEY created_at (created_at)
+		) $charset;";
+
 		dbDelta( $sql_scans );
 		dbDelta( $sql_leads );
 		dbDelta( $sql_history );
 		dbDelta( $sql_monitors );
+		dbDelta( $sql_enquiry );
 
 		update_option( 'thallo_visibility_db_version', THALLO_VIS_VERSION );
 	}

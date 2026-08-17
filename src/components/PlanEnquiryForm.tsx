@@ -4,11 +4,13 @@ import React, { useRef, useState } from 'react';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import PlanChips from '@/components/ui/PlanChips';
 import ConsentCheck from '@/components/ui/ConsentCheck';
+import { ENQUIRY_ENDPOINT, sendEnquiry } from '@/lib/scan/enquiry';
 
-/* Same arrangement as the contact form: with no endpoint set we fall back to a
-   mailto so an enquiry is never silently swallowed. Fill this in and the fetch
-   path takes over — see ContactLanding.tsx, which does the same thing. */
-const FORM_ENDPOINT = '';
+/* Same arrangement as the contact form, and the same endpoint: the plugin
+   records the enquiry, tells us, and writes back to say we have it. With none
+   configured at build time we fall back to a mailto, so an enquiry is never
+   silently swallowed. See `lib/scan/enquiry.ts`. */
+const FORM_ENDPOINT = ENQUIRY_ENDPOINT;
 const INBOX = 'hello@thallo.co';
 
 /* Compact versions of the contact form's field styles: this sits inside the
@@ -95,12 +97,18 @@ export default function PlanEnquiryForm({
     }
 
     try {
-      const res = await fetch(FORM_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ ...payload, page: window.location.href }),
+      await sendEnquiry({
+        ...payload,
+        /* The website field is this form's only extra, and it belongs with the
+           message rather than in a column of its own — one field on one of two
+           forms is not a schema. */
+        message: payload.website
+          ? `${payload.message}
+
+Website: ${payload.website}`
+          : payload.message,
+        page: window.location.href,
       });
-      if (!res.ok) throw new Error('bad response');
       form.reset();
       setPlanChoice(null);
       setStatus('sent');
