@@ -135,7 +135,11 @@ export default function ThalloAIPage() {
         <Rail
           n="01"
           label="What we ask"
-          blurb="Fifteen questions a buyer would actually type, across five angles. Your brand is never one of the words in them."
+          /* The count is what the visitor is about to be given, not the size of
+             the question bank behind it. A page promising fifteen in front of a
+             form that accepts three is the one kind of copy this tool cannot
+             afford — it sells accuracy. */
+          blurb="Questions a buyer would actually type, across five angles. You write them, and your brand is never one of the words in them."
         />
         <Card className="overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2">

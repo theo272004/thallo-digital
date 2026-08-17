@@ -263,10 +263,21 @@ export interface ScanInput {
   email?: string;
 }
 
-/** Ceiling on the prompt list. Five questions × three models = 15 calls, and
-    with search on each of those carries a per-call fee — so this ceiling is
-    a bill, not a nicety. */
-export const MAX_QUESTIONS = 5;
+/**
+ * Ceiling on the prompt list, and the free tier's whole shape.
+ *
+ * Three questions × three models, asked twice — once from memory, once with
+ * search — is eighteen calls, and every call on the searching half carries a
+ * per-call fee of roughly a cent whatever model answers it. So this ceiling is
+ * a bill rather than a nicety: at three it is about 13 US cents a scan, at five
+ * about 21.
+ *
+ * Three is enough for what a free scan has to prove — whether the models name
+ * you at all, and whether searching changes the answer. It is not enough to be
+ * a measurement anybody should act on, and that is the honest line between this
+ * and a paid tier, which is where a longer list belongs.
+ */
+export const MAX_QUESTIONS = 3;
 
 /** The shape of the steps before the server has said anything about them.
     Used only for the very first paint of the progress screen. */
