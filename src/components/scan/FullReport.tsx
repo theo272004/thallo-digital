@@ -33,30 +33,30 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
   const maxTech = scoredSignals.reduce((sum, s) => sum + s.weight, 0);
 
   /*
-   * The headline counts both readings together.
+   * The headline is the searching reading.
    *
-   * It used to be the memory figure alone, and that was a distinction the
-   * reader had not been told about yet: the ring said 0% while the panel two
-   * screens down said the models name you a quarter of the time when they
-   * search. Both were true and the pair reads as the tool contradicting
-   * itself — which is worse than either number being wrong, because it costs
-   * the reader their trust in the whole report before they get to the part
-   * that explains it.
+   * It has been three things: the memory figure alone, then the two pooled,
+   * and now this. Each move was aimed at the same fault — a reader meeting a
+   * 0% before anyone has told them which question it answers reads it as "we
+   * are invisible" and stops there. Pooling fixed the contradiction between
+   * the ring and the panel below it, but it left the number the client leads
+   * with as an average of two things a buyer never experiences separately.
    *
-   * Pooled over the answers rather than averaged over the two percentages: the
-   * two halves are deliberately different sizes (the search reading is capped
-   * to keep the bill down), and averaging would let five answers weigh as much
-   * as fifteen. One brand named in one answer out of twenty-one is 5%, however
-   * the answers were split.
+   * What a buyer actually does today is type into an assistant that searches.
+   * So that is the figure on the ring, and the memory reading sits beside it,
+   * named, because the gap between the two is the diagnosis and the whole
+   * argument for the work: findable but unknown has a different fix from
+   * unknown and unfindable.
    *
-   * The split itself is never hidden — it is named under the ring, given a
-   * stat of its own, and diagnosed in full further down. The change is which
-   * number is the one you see first, not which numbers are printed.
+   * Nothing is hidden by the choice. Both numbers are on this screen, the
+   * comparison has its own panel further down, and the audit trail prints
+   * every answer of both readings side by side.
    */
   const grounded = phase2.grounded && phase2.grounded.totalAnswers > 0 ? phase2.grounded : null;
-  const overallPct = grounded
-    ? Math.round(((phase1.mentions + grounded.mentions) / (phase1.totalAnswers + grounded.totalAnswers)) * 100)
-    : phase1.sovPct;
+  /* Falls back to memory when the searching half did not run — an
+     installation with it switched off should show the reading it has, not an
+     empty ring. */
+  const headlinePct = grounded ? grounded.sovPct : phase1.sovPct;
 
   return (
     <div className="flex flex-col gap-5">
@@ -72,11 +72,11 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
         <div className="mt-7 grid grid-cols-1 gap-8 border-t border-gray-100 pt-7 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-12">
           <div>
             <ScoreRing
-              pct={overallPct}
-              label={grounded ? 'Share of voice · overall' : 'Share of voice'}
+              pct={headlinePct}
+              label={grounded ? 'Named when they search' : 'Share of voice'}
               caption={
                 grounded
-                  ? `across ${phase1.totalAnswers + grounded.totalAnswers} answers`
+                  ? `across ${grounded.totalAnswers} answers with the web open`
                   : `across ${phase1.totalAnswers} answers`
               }
               size={152}
@@ -107,8 +107,12 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
                   because the gap between them is the finding — the same brand
                   can be a zero from memory and a third of the answers once the
                   models look, and those have opposite fixes. */}
+              {/* The other half of the pair, in the same size as the technical
+                  and retrieval scores rather than buried in a sentence. A
+                  reader who wants one number has it above; a reader who wants
+                  to know what changed when the models looked has it here. */}
               {grounded ? (
-                <Stat value={`${phase1.sovPct}% → ${grounded.sovPct}%`} label="Memory → searching" />
+                <Stat value={`${phase1.sovPct}%`} label="From memory · not searching" />
               ) : (
                 <Stat value={`${phase1.sovPct}%`} label="AI share of voice" />
               )}
@@ -272,7 +276,9 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
 
       {/* ── Method, kept with the report rather than hidden behind it ────── */}
       <Panel>
-        <AuditTrail phase1={phase1} />
+        {/* In the full report both readings are in; on the free screen only the
+            memory half exists, so AuditTrail renders the single column there. */}
+        <AuditTrail phase1={phase1} grounded={phase2.grounded} />
       </Panel>
 
       {/* ── Close ────────────────────────────────────────────────────────── */}

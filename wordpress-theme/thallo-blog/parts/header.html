@@ -12,9 +12,21 @@
      have this URL without the deploy being allowed to write into the folder
      WordPress lives in — and that exclusion is the only thing standing between
      a bad deploy and a deleted blog. A navbar in two files is the cheaper
-     risk. When the real one changes, this file changes with it. -->
+     risk. When the real one changes, this file changes with it.
+
+     The behaviour lives in assets/nav.js rather than in a <script> here:
+     WordPress runs its content filters over a template, and `wptexturize`
+     turns `&&` into `&#038;&#038;` — a syntax error that kills the whole
+     script silently. An enqueued file is not filtered.
+
+     Matched to src/components/Navbar.tsx, including the three things it does
+     that a static copy does not get for free: it firms up its border and
+     shadow once you have scrolled past 20px, it slides out of the way when you
+     scroll down and comes back when you scroll up, and below the desktop
+     breakpoint it collapses into a full-screen drawer. Without the drawer the
+     blog's navbar was a logo alone on a phone, which is not the same navbar. -->
 <!-- wp:html -->
-<nav class="thallo-nav" aria-label="Main">
+<nav class="thallo-nav" aria-label="Main" data-thallo-nav>
   <div class="thallo-nav__bar">
     <a class="thallo-nav__brand" href="https://thallodigital.com/">
       <img src="https://thallodigital.com/logo.png" alt="Thallo Digital" width="150" height="44" />
@@ -31,6 +43,36 @@
       <a class="thallo-btn thallo-btn--ghost" href="https://thallodigital.com/thallo-ai/scan/">Try the scan <span aria-hidden="true">↗</span></a>
       <a class="thallo-btn thallo-btn--solid" href="https://thallodigital.com/contact/">Book an audit <span aria-hidden="true">↗</span></a>
     </div>
+
+    <button class="thallo-nav__burger" type="button" aria-label="Open menu" aria-expanded="false" data-thallo-burger>
+      <span aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
   </div>
 </nav>
+
+<div class="thallo-drawer" hidden data-thallo-drawer>
+  <div class="thallo-drawer__head">
+    <a class="thallo-nav__brand" href="https://thallodigital.com/">
+      <img src="https://thallodigital.com/logo.png" alt="Thallo Digital" width="150" height="44" />
+    </a>
+    <button class="thallo-drawer__close" type="button" aria-label="Close menu" data-thallo-close>✕</button>
+  </div>
+
+  <div class="thallo-drawer__links">
+    <a href="https://thallodigital.com/services/">Our Plans</a>
+    <a href="https://thallodigital.com/industries/">Industries</a>
+    <a href="https://thallodigital.com/results/">Case Studies</a>
+    <a class="is-here" href="https://thallodigital.com/blog/" aria-current="page">Blog</a>
+  </div>
+
+  <div class="thallo-drawer__cta">
+    <a class="thallo-btn thallo-btn--ghost" href="https://thallodigital.com/thallo-ai/scan/">Try the scan <span aria-hidden="true">↗</span></a>
+    <a class="thallo-btn thallo-btn--solid" href="https://thallodigital.com/contact/">Book an audit <span aria-hidden="true">↗</span></a>
+  </div>
+</div>
+
 <!-- /wp:html -->

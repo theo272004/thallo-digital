@@ -69,6 +69,24 @@ function thallo_blog_toc_script() {
 add_action( 'wp_enqueue_scripts', 'thallo_blog_toc_script' );
 
 /**
+ * The navbar, on every page of the blog.
+ *
+ * Not `is_singular` like the contents list: the bar is on the archive too, and
+ * hiding on scroll is most of what makes it feel like the site's navbar rather
+ * than a strip pinned to the top of somebody else's page.
+ */
+function thallo_blog_nav_script() {
+	wp_enqueue_script(
+		'thallo-blog-nav',
+		get_stylesheet_directory_uri() . '/assets/nav.js',
+		array(),
+		wp_get_theme()->get( 'Version' ),
+		array( 'strategy' => 'defer', 'in_footer' => true )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'thallo_blog_nav_script' );
+
+/**
  * The same fonts inside the editor.
  *
  * Without this the editor renders the post in its own default face while

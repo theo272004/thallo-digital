@@ -341,6 +341,28 @@ class Thallo_Vis_LLM {
 			$body['temperature'] = 0.2;
 		}
 
+		/* A thinking model, told not to think.
+		 *
+		 * Reasoning tokens are charged against `max_tokens` before a single
+		 * character of the answer is written, so a reasoning model given a
+		 * 400-token budget spends it deliberating and returns an empty message.
+		 * That is exactly what happened to `google/gemini-3.6-flash`: every call
+		 * came back "Provider returned an empty response", the column rendered
+		 * as "not measured", and the two models that do not reason answered
+		 * normally — which made it look like Gemini's opinion rather than our
+		 * request.
+		 *
+		 * Off rather than budgeted for, and the reason is the measurement, not
+		 * the bill: this asks which companies a model names in a category. That
+		 * is recall, not a problem to work through, and a model that reasons its
+		 * way to an answer is doing something a person typing the same question
+		 * into the app does not get. The budget is raised anyway, so a model
+		 * that ignores the instruction still has room to finish the list. */
+		if ( Thallo_Vis_Models::reasons( $model ) ) {
+			$body['reasoning']  = array( 'enabled' => false );
+			$body['max_tokens'] = 1200;
+		}
+
 		/* Perplexity rejects response_format on some models, and it is the one
 		   provider whose answer we want in prose anyway — the citations are the
 		   point there, not the ranking. */

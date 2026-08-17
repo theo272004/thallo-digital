@@ -83,12 +83,10 @@ Text Domain:  thallo-blog
   flex-direction: column;
 }
 
-.wp-block-post-template .wp-block-post-featured-image img {
-  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.wp-block-post-template > li:hover .wp-block-post-featured-image img {
-  transform: scale(1.02);
-}
+/* Sin zoom en la fotografía. La tarjeta entera sube tres píxeles al pasar por
+   encima y eso ya dice que es pulsable; dos movimientos a la vez — la tarjeta
+   subiendo y la imagen creciendo dentro de ella — es la imagen deslizándose
+   respecto a su propio marco, que es lo que se nota aunque no se sepa nombrar. */
 
 /* A title in an index is a link, and a link that looks like a link in a list
    of twelve of them is twelve underlines. It earns its colour on hover. */
@@ -422,14 +420,135 @@ ul.thallo-filters {
   gap: 0.75rem;
   flex-shrink: 0;
 }
-/* Below 900px the links and buttons come out entirely rather than wrapping.
-   The pill is a fixed bar; a second row inside it covers the article. The
-   logo still goes home, which is the one thing a reader needs from it here. */
-@media (min-width: 900px) {
+/* 768px, which is where the real navbar swaps its links for the burger. It was
+   900 here, so between the two widths the blog showed a bar the rest of the
+   site had already collapsed — the kind of difference nobody reports and
+   everybody feels. Below it, the drawer takes over. */
+@media (min-width: 768px) {
   .thallo-nav__links,
   .thallo-nav__cta {
     display: flex;
   }
+  .thallo-nav__burger {
+    display: none;
+  }
+}
+
+/* Sliding out of the way on the way down, and the firmer border once there is
+   something scrolled behind it. Both are Navbar.tsx's, to the same numbers. */
+.thallo-nav {
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.thallo-nav.is-hidden {
+  transform: translateY(-150%);
+}
+.thallo-nav__bar {
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+.thallo-nav.is-scrolled .thallo-nav__bar {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #e5e7eb;
+  box-shadow: 0 20px 45px -20px rgba(57, 71, 29, 0.35);
+}
+
+/* ── The drawer, below 768px ───────────────────────────────────────────────*/
+.thallo-nav__burger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  border: 1px solid #e5e7eb;
+  background: transparent;
+  color: #1f2937;
+  cursor: pointer;
+}
+.thallo-nav__burger > span {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 1rem;
+  height: 0.75rem;
+}
+.thallo-nav__burger span span {
+  height: 1.5px;
+  width: 100%;
+  border-radius: 9999px;
+  background: currentColor;
+}
+.thallo-nav__burger span span:nth-child(2) {
+  width: 75%;
+  align-self: flex-end;
+}
+/* Después de la definición del botón, no antes: la regla que lo enciende vive
+   más abajo en este archivo, así que esconderlo sólo dentro del bloque de
+   arriba no bastaba — la última gana, y el burger salía también en escritorio
+   junto a los enlaces. */
+@media (min-width: 768px) {
+  .thallo-nav__burger {
+    display: none;
+  }
+}
+
+.thallo-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+  background: #fff;
+  overscroll-behavior: contain;
+}
+.thallo-drawer[hidden] {
+  display: none;
+}
+.thallo-drawer__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.thallo-drawer__close {
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-top: -0.25rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  border: 1px solid #e5e7eb;
+  background: transparent;
+  color: #1f2937;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.thallo-drawer__links {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+.thallo-drawer__links a {
+  color: #1f2937;
+  text-decoration: none;
+}
+.thallo-drawer__links a.is-here {
+  color: var(--wp--preset--color--olive);
+}
+.thallo-drawer__cta {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: auto;
+}
+.thallo-drawer__cta .thallo-btn {
+  width: 100%;
+  justify-content: center;
+  padding-top: 0.875rem;
+  padding-bottom: 0.875rem;
 }
 .thallo-nav__links a {
   font-size: 0.875rem;
@@ -617,6 +736,20 @@ body > main,
   margin-top: 1.75rem;
 }
 
+/* WordPress centra por su cuenta.
+   El layout "constrained" le pone `margin-inline:auto` y un ancho máximo a
+   cada hijo del grupo, así que un bloque corto — la fecha, "Read the article" —
+   se quedaba centrado dentro de una tarjeta cuyo texto está alineado a la
+   izquierda. Las plantillas ya no usan ese layout aquí; esto es el cinturón,
+   para que un bloque insertado desde el editor no vuelva a traérselo. */
+.thallo-feat__body > *,
+.thallo-card__body > *,
+.thallo-scan__body > * {
+  margin-left: 0;
+  margin-right: 0;
+  max-width: none;
+}
+
 /* ── Meta line ─────────────────────────────────────────────────────────────
    Category · date · read time, in one row. WordPress renders each of these as
    its own block, so the row is the flex container and the separators are
@@ -679,7 +812,11 @@ body > main,
   flex-direction: column;
   justify-content: center;
   gap: 1rem;
-  padding: 2.5rem;
+  /* Quitar el layout "constrained" alineó el texto a la izquierda y, de paso,
+     lo dejó corriendo hasta el mismo borde del relleno: lo que antes lo
+     separaba era el ancho máximo que WordPress imponía, no el padding. Así que
+     el aire lo pone ahora el padding, que es donde debía estar. */
+  padding: 3.25rem 3.5rem;
 }
 .thallo-feat .thallo-meta {
   color: rgba(255, 255, 255, 0.45);
@@ -705,7 +842,7 @@ body > main,
 }
 .thallo-feat__excerpt {
   margin: 0;
-  max-width: 52ch;
+  max-width: 46ch;
   font-size: 0.95rem;
   font-weight: 500;
   line-height: 1.65;
@@ -732,7 +869,7 @@ body > main,
     height: 14rem;
   }
   .thallo-feat__body {
-    padding: 1.75rem;
+    padding: 2rem 1.75rem;
   }
 }
 
@@ -770,7 +907,7 @@ body > main,
   flex-direction: column;
   flex-grow: 1;
   gap: 0.75rem;
-  padding: 1.5rem;
+  padding: 1.75rem;
 }
 .thallo-card__title {
   margin: 0;
@@ -821,35 +958,132 @@ body > main,
   font-size: 0.85rem;
 }
 
-/* ── The sign-off ──────────────────────────────────────────────────────────*/
+/* ── The sign-off ──────────────────────────────────────────────────────────
+   The site's closing panel, in the proportions this page needs.
+
+   Stacked — heading, lead, button, each under the last — it ran to most of a
+   screen for a sentence and a link, and after an index of articles that reads
+   as a second page rather than as a sign-off. The invitation goes left and the
+   button goes right, on one line: the same panel, about half the height, and
+   the eye finishes the sentence where the thing to click already is.
+
+   The heading comes down from the site's 6xl too. That size is for a hero with
+   the whole width to itself; here it shares the line, and 6xl in a 60% column
+   wraps to three lines and puts the panel's height back. */
 .thallo-scan {
-  background: #171a10;
-  border-radius: 24px;
-  padding: 3.5rem 2.5rem;
-  margin-top: 3.5rem !important;
+  margin-top: 4.5rem;
+}
+.thallo-scan__panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  padding: 2.5rem 2rem;
+}
+@media (min-width: 640px) {
+  .thallo-scan__panel {
+    padding: 2.75rem 3rem;
+  }
+}
+@media (min-width: 1024px) {
+  .thallo-scan__panel {
+    padding: 3rem 3.5rem;
+  }
+}
+.thallo-scan__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+.thallo-scan__body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+/* One line from 900px, which is where the two halves each still have room to
+   say what they are. Below it they stack, and the button goes full width —
+   a pill floating alone on a phone reads as an afterthought. */
+@media (min-width: 900px) {
+  .thallo-scan__body {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3rem;
+  }
+}
+.thallo-scan__say {
+  max-width: 40rem;
 }
 .thallo-scan__title {
   margin: 0;
   color: #fff;
-  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  font-size: clamp(1.9rem, 3.4vw, 2.75rem);
   font-weight: 700;
+  line-height: 1.08;
   letter-spacing: -0.025em;
 }
+.thallo-scan__title em {
+  font-style: italic;
+}
 .thallo-scan__lead {
-  margin: 0.9rem 0 1.6rem;
-  max-width: 56ch;
-  font-size: 0.95rem;
-  line-height: 1.65;
-  color: rgba(255, 255, 255, 0.62);
+  margin: 1rem 0 0;
+  max-width: 46ch;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.6;
+  color: #cbd0ac;
+}
+.thallo-scan__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+@media (min-width: 900px) {
+  .thallo-scan__actions {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+/* What the reader wants to know before clicking, in the space the button
+   leaves anyway: it costs nothing and it answers "is this going to ask me to
+   sign up" without spending a line of the heading on it. */
+.thallo-scan__note {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
 }
 .thallo-btn--light {
   background: #fff;
-  color: var(--wp--preset--color--ink);
+  color: var(--wp--preset--color--olive);
   border: 1px solid #fff;
+  padding: 0.875rem 1.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
 }
+/* The site darkens the type rather than tinting the button: this sits on a
+   photograph, and any fill behind it would have to clear the same contrast the
+   white already clears. */
 .thallo-btn--light:hover {
-  background: var(--wp--preset--color--olive-soft);
-  border-color: var(--wp--preset--color--olive-soft);
+  background: #fff;
+  border-color: #fff;
+  color: var(--wp--preset--color--ink);
+}
+@media (max-width: 899px) {
+  .thallo-scan__actions .thallo-btn--light {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 /* ── The contents, beside the article ──────────────────────────────────────
@@ -940,4 +1174,46 @@ body > main,
 }
 .thallo-meta .wp-block-post-terms:empty + *::before {
   content: none;
+}
+
+
+/* ── The black frame when you click ────────────────────────────────────────
+   The browser draws a focus ring on anything you click — the logo on its way
+   back to the site, a card, a button — and on a page this quiet it reads as a
+   rendering fault rather than as a state.
+ 
+   Removed with `:focus:not(:focus-visible)`, not with `outline: none`. The two
+   are not the same: the second deletes the ring for everyone, and somebody
+   navigating this blog by keyboard then has no way to tell where they are —
+   a page you can only use with a mouse. `:focus-visible` is the browser's own
+   answer to which of the two just happened, and every browser we support has
+   had it for years.
+
+   So: nothing on a click, and on a keyboard the olive ring below, which is the
+   one the site uses. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--wp--preset--color--olive);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+/* On the dark panels the olive disappears into the background. */
+.thallo-feat a:focus-visible,
+.thallo-scan a:focus-visible,
+.thallo-nav__cta .thallo-btn--solid:focus-visible {
+  outline-color: #fff;
+}
+/* The image links inside a card have no text of their own, so a ring around
+   the picture is the only thing that would show — and the card lifts on focus
+   anyway through the same rule as hover. */
+.thallo-feat__media a:focus-visible,
+.thallo-card__media a:focus-visible {
+  outline-offset: -3px;
 }

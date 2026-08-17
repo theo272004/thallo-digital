@@ -142,6 +142,65 @@ const REMEDY: Record<string, { title: string; detail: string }> = {
   },
 };
 
+/**
+ * The same three models, asked again with the web open.
+ *
+ * Sample data needs this half for the same reason the real report leads with
+ * it: the headline ring, the pair of figures beside it and the two columns in
+ * the audit trail all come from here, and a preview without it shows a report
+ * shaped like the one we stopped shipping. Built from the memory reading rather
+ * than rolled fresh, so the comparison behaves like the real thing — searching
+ * finds a brand more often than memory recalls it, which is the ordinary case
+ * and the one the copy is written for.
+ */
+function demoGrounded(phase1: ScanPhase1): ScanPhase1 {
+  const rand = seeded(phase1.brand + phase1.domain + 'web');
+  /* Fewer questions asked twice, exactly as the plugin does: the search fee is
+     per call, so the second reading is capped. The report prints both answer
+     counts, and this is where a reviewer sees that they differ. */
+  const asked = Math.max(1, phase1.questions.length - 1);
+
+  const providers: ProviderResult[] = phase1.providers.map((p) => {
+    const answers: Answer[] = phase1.questions.slice(0, asked).map((_, q) => {
+      const memory = p.answers.find((a) => a.q === q);
+      /* Named from memory stays named; the rest get a real chance, which is
+         what makes the two columns worth putting side by side. */
+      const mentioned = memory?.mentioned ? true : rand() < 0.45;
+      const position = mentioned ? 1 + Math.floor(rand() * 5) : null;
+      const names = RIVALS.slice(0, 3 + Math.floor(rand() * 3));
+      return {
+        q,
+        mentioned,
+        position,
+        names: mentioned ? [...names.slice(0, position ?? 1), phase1.brand, ...names.slice(position ?? 1)] : names,
+      };
+    });
+    const hits = answers.filter((a) => a.mentioned);
+    return {
+      provider: p.provider,
+      model: `${p.model}:online`,
+      mentions: hits.length,
+      positions: hits.map((a) => a.position as number),
+      answers,
+    };
+  });
+
+  const totalAnswers = providers.reduce((sum, p) => sum + p.answers.length, 0);
+  const mentions = providers.reduce((sum, p) => sum + p.mentions, 0);
+  const allPositions = providers.flatMap((p) => p.positions);
+
+  return {
+    ...phase1,
+    providers,
+    totalAnswers,
+    mentions,
+    sovPct: totalAnswers ? Math.round((mentions / totalAnswers) * 100) : 0,
+    avgPosition: allPositions.length
+      ? Math.round((allPositions.reduce((a, b) => a + b, 0) / allPositions.length) * 10) / 10
+      : null,
+  };
+}
+
 export function demoPhase2(phase1: ScanPhase1): ScanPhase2 {
   const rand = seeded(phase1.brand + phase1.domain + 'p2');
 
@@ -236,6 +295,7 @@ export function demoPhase2(phase1: ScanPhase1): ScanPhase2 {
     signals,
     techScore,
     serpScore,
+    grounded: demoGrounded(phase1),
     grade: gradeFor(combined),
     keyInsight:
       absent.length === 0

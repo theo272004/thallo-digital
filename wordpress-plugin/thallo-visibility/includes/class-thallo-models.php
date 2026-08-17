@@ -123,6 +123,24 @@ class Thallo_Vis_Models {
 		return isset( $caps[ $model ]['temperature'] ) && $caps[ $model ]['temperature'];
 	}
 
+	/**
+	 * Does this model think before it answers?
+	 *
+	 * It matters because thinking is charged against the same `max_tokens` as
+	 * the answer. `google/gemini-3.6-flash` is a reasoning model; asked for a
+	 * short JSON list inside a 400-token budget it spent the budget reasoning
+	 * and returned nothing at all — which arrived as "Provider returned an
+	 * empty response" and read, on the report, as a model that had no opinion
+	 * about the brand. It was the only model of the three that reasons, and the
+	 * only one whose column came back blank.
+	 */
+	public static function reasons( $model ) {
+		$caps  = self::caps();
+		$model = self::key( $model );
+
+		return isset( $caps[ $model ]['reasoning'] ) && $caps[ $model ]['reasoning'];
+	}
+
 	/** True when we have never looked this model up, or the answer has expired. */
 	public static function is_unknown( $model ) {
 		$caps  = self::caps();
@@ -202,6 +220,9 @@ class Thallo_Vis_Models {
 
 			$caps[ self::key( $model ) ] = array(
 				'at'          => time(),
+				/* Whether it reasons, which decides whether the token budget has
+				   to cover thinking as well as answering. */
+				'reasoning'   => in_array( 'reasoning', $supported, true ),
 				/* Any endpoint accepting it is enough: OpenRouter routes to one
 				   of them, and a parameter one provider takes is not rejected by
 				   the request, only ignored by the others. */

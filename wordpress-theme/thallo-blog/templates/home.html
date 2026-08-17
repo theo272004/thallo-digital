@@ -37,7 +37,7 @@
 
 <!-- wp:post-featured-image {"isLink":true,"className":"thallo-feat__media"} /-->
 
-<!-- wp:group {"className":"thallo-feat__body","layout":{"type":"constrained"}} -->
+<!-- wp:group {"className":"thallo-feat__body","layout":{"type":"default"}} -->
 <div class="wp-block-group thallo-feat__body">
 
 <!-- wp:group {"className":"thallo-meta","layout":{"type":"flex","flexWrap":"wrap"}} -->
@@ -87,7 +87,7 @@
 
 <!-- wp:post-featured-image {"isLink":true,"className":"thallo-card__media"} /-->
 
-<!-- wp:group {"className":"thallo-card__body","layout":{"type":"constrained"}} -->
+<!-- wp:group {"className":"thallo-card__body","layout":{"type":"default"}} -->
 <div class="wp-block-group thallo-card__body">
 
 <!-- wp:group {"className":"thallo-meta","layout":{"type":"flex","flexWrap":"wrap"}} -->
@@ -125,23 +125,32 @@
 </div>
 <!-- /wp:query -->
 
-<!-- wp:group {"className":"thallo-scan","layout":{"type":"constrained"}} -->
-<div class="wp-block-group thallo-scan">
+<!-- The closing panel, which is the site's own — the photograph, the 6xl
+     heading with its italic second line, the lead in sage, one white pill.
+     Written as plain HTML for the same reason the navbar is: it has to match a
+     component on the marketing site to the pixel, and block layout kept
+     centring what the site sets flush left.
 
-<!-- wp:heading {"level":2,"className":"thallo-scan__title"} -->
-<h2 class="wp-block-heading thallo-scan__title">Do the models recommend you?</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph {"className":"thallo-scan__lead"} -->
-<p class="thallo-scan__lead">Your buying questions, put to ChatGPT, Claude and Gemini — once from memory and once with the web open. Your brand is never named in the question, and you see every question and every answer. Free, no account, about a minute.</p>
-<!-- /wp:paragraph -->
-
+     Without the form. The form belongs where somebody is being asked to buy
+     something; at the end of an article the ask is "go and measure yourself",
+     which is one button. -->
 <!-- wp:html -->
-<a class="thallo-btn thallo-btn--light" href="https://thallodigital.com/thallo-ai/">Check my visibility ↗</a>
+<section class="thallo-scan">
+  <div class="thallo-scan__panel">
+    <img class="thallo-scan__bg" src="https://thallodigital.com/cta-bg.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+    <div class="thallo-scan__body">
+      <div class="thallo-scan__say">
+        <h2 class="thallo-scan__title">Do the models recommend you <em>or someone else?</em></h2>
+        <p class="thallo-scan__lead">Your buying questions, put to ChatGPT, Claude and Gemini — once from memory and once with the web open. Your brand is never named in the question.</p>
+      </div>
+      <div class="thallo-scan__actions">
+        <a class="thallo-btn thallo-btn--light" href="https://thallodigital.com/thallo-ai/scan/">Check my visibility <span aria-hidden="true">↗</span></a>
+        <span class="thallo-scan__note">Free · no account · about a minute</span>
+      </div>
+    </div>
+  </div>
+</section>
 <!-- /wp:html -->
-
-</div>
-<!-- /wp:group -->
 
 </main>
 <!-- /wp:group -->
