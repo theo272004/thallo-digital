@@ -183,6 +183,21 @@ class Thallo_Vis_Settings {
 			'allowed_origins'     => '',
 			'notify_email'        => '',
 			'send_report_to_lead' => 1,
+			/*
+			 * Who the report comes from.
+			 *
+			 * Empty leaves WordPress's own default alone, which is
+			 * `wordpress@<domain>` — a mailbox that on most shared hosting does
+			 * not exist. Some hosts send it anyway, some refuse it, and a
+			 * receiving server is within its rights to bin a message claiming
+			 * to come from an address the domain will not vouch for. Filling
+			 * this in with a real mailbox is the cheapest thing that moves the
+			 * report from the spam folder to the inbox; filling it in with an
+			 * address that does not exist is worse than leaving it blank, which
+			 * is why there is no plausible-looking default here to inherit.
+			 */
+			'from_email'          => '',
+			'from_name'           => '',
 
 			/*
 			 * Scheduled re-scans. Off by default, and deliberately so: this is
@@ -283,6 +298,17 @@ class Thallo_Vis_Settings {
 
 		$out['notify_email'] = isset( $input['notify_email'] ) && is_email( $input['notify_email'] )
 			? sanitize_email( $input['notify_email'] )
+			: '';
+
+		/* An address that does not validate is dropped rather than stored, so a
+		   typo falls back to WordPress's default sender instead of setting a
+		   From header no receiving server will accept. */
+		$out['from_email'] = isset( $input['from_email'] ) && is_email( $input['from_email'] )
+			? sanitize_email( $input['from_email'] )
+			: '';
+
+		$out['from_name'] = isset( $input['from_name'] )
+			? sanitize_text_field( $input['from_name'] )
 			: '';
 
 		$out['monitor_daily_cap'] = self::clamp_int( $input, 'monitor_daily_cap', 1, 500, $defaults['monitor_daily_cap'] );

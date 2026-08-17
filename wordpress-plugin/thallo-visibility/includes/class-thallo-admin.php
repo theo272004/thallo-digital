@@ -220,6 +220,19 @@ class Thallo_Vis_Admin {
 		<?php
 	}
 
+	/** The resend button. POST for the same reason the monitor actions are. */
+	private static function mail_button( $label, $lead_id ) {
+		?>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline">
+			<?php wp_nonce_field( 'thallo_mail_action' ); ?>
+			<input type="hidden" name="action" value="thallo_mail_action">
+			<input type="hidden" name="mail_action" value="resend">
+			<input type="hidden" name="lead_id" value="<?php echo esc_attr( $lead_id ); ?>">
+			<button type="submit" class="button button-small"><?php echo esc_html( $label ); ?></button>
+		</form>
+		<?php
+	}
+
 	public static function settings_page() {
 		$s    = Thallo_Vis_Settings::all();
 		$demo = Thallo_Vis_Settings::is_demo();
@@ -382,7 +395,9 @@ class Thallo_Vis_Admin {
 
 				<h2><?php esc_html_e( 'Leads and access', 'thallo-visibility' ); ?></h2>
 				<table class="form-table" role="presentation">
-					<?php self::text_field( $name, 'notify_email', $s, __( 'Notify this address', 'thallo-visibility' ), __( 'Emailed a summary each time somebody unlocks a report. Leave empty for none.', 'thallo-visibility' ) ); ?>
+					<?php self::text_field( $name, 'notify_email', $s, __( 'Notify this address', 'thallo-visibility' ), __( 'Emailed a summary each time somebody unlocks a report. Leave empty for none. Replies to the report come back here too.', 'thallo-visibility' ) ); ?>
+					<?php self::text_field( $name, 'from_email', $s, __( 'Send mail from', 'thallo-visibility' ), __( 'Must be a real, working mailbox on this domain — hello@yourdomain.com, not no-reply@. Left empty, WordPress sends as wordpress@yourdomain.com, which usually does not exist and is the most common reason a report never arrives.', 'thallo-visibility' ) ); ?>
+					<?php self::text_field( $name, 'from_name', $s, __( 'Sender name', 'thallo-visibility' ), __( 'The name on the From line, e.g. Thallo Digital.', 'thallo-visibility' ) ); ?>
 					<tr>
 						<th scope="row"><?php esc_html_e( 'Send the report', 'thallo-visibility' ); ?></th>
 						<td>
@@ -417,6 +432,90 @@ class Thallo_Vis_Admin {
 
 				<?php submit_button(); ?>
 			</form>
+
+			<?php
+			/*
+			 * Outside the settings form, and not only because HTML forbids
+			 * nesting one form in another. This button acts on the settings that
+			 * are already saved, where Save acts on what is on screen — putting
+			 * them in one form would make a test that silently reported on the
+			 * wrong configuration, which is worse than no test at all.
+			 */
+			?>
+			<h2><?php esc_html_e( 'Does outbound mail work?', 'thallo-visibility' ); ?></h2>
+			<p class="description" style="max-width:46em">
+				<?php esc_html_e( 'Sends one plain message using the settings as saved. A report that never arrives is almost never the report — it is the host refusing to send anything at all, and this is how to find that out in ten seconds instead of after a client tells you. If it does not arrive, install an SMTP plugin and send through a real mailbox; nothing on this screen can fix it.', 'thallo-visibility' ); ?>
+			</p>
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<?php wp_nonce_field( 'thallo_mail_action' ); ?>
+				<input type="hidden" name="action" value="thallo_mail_action">
+				<input type="hidden" name="mail_action" value="test">
+				<input type="email" name="test_email" class="regular-text" required
+					value="<?php echo esc_attr( $s['notify_email'] ? $s['notify_email'] : get_option( 'admin_email' ) ); ?>">
+				<button type="submit" class="button"><?php esc_html_e( 'Send a test email', 'thallo-visibility' ); ?></button>
+			</form>
+		</div>
+		<?php
+	}
+
+	/**
+	 * The test send, and the resend.
+	 *
+	 * Both report back through a transient rather than a query argument: the
+	 * useful half of a failure is the SMTP server's own sentence about why, and
+	 * that does not belong in a URL.
+	 */
+	public static function handle_mail_action() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You are not allowed to do that.', 'thallo-visibility' ) );
+		}
+
+		check_admin_referer( 'thallo_mail_action' );
+
+		$action = isset( $_POST['mail_action'] ) ? sanitize_key( wp_unslash( $_POST['mail_action'] ) ) : '';
+
+		if ( 'resend' === $action ) {
+			$result   = Thallo_Vis_Leads::resend( isset( $_POST['lead_id'] ) ? (int) $_POST['lead_id'] : 0 );
+			$redirect = admin_url( 'admin.php?page=thallo-visibility-leads' );
+			$success  = __( 'The report was sent again.', 'thallo-visibility' );
+		} else {
+			$to       = isset( $_POST['test_email'] ) ? sanitize_email( wp_unslash( $_POST['test_email'] ) ) : '';
+			$result   = Thallo_Vis_Leads::send_test( $to );
+			$redirect = admin_url( 'admin.php?page=thallo-visibility' );
+			/* Handed off, not delivered — and the difference is the whole reason
+			   somebody is on this screen. Overstating it here would send them
+			   looking for the fault somewhere else. */
+			$success  = sprintf(
+				/* translators: %s: email address the test was sent to. */
+				__( 'The test message was accepted for delivery to %s. If it does not turn up, including in spam, the host took it and dropped it — install an SMTP plugin.', 'thallo-visibility' ),
+				$to
+			);
+		}
+
+		set_transient(
+			'thallo_vis_mail_notice',
+			array(
+				'ok'      => ! empty( $result['ok'] ),
+				'message' => ! empty( $result['ok'] ) ? $success : $result['error'],
+			),
+			60
+		);
+
+		wp_safe_redirect( $redirect );
+		exit;
+	}
+
+	/** Prints whatever the last mail action had to say, once. */
+	public static function mail_notice() {
+		$notice = get_transient( 'thallo_vis_mail_notice' );
+		if ( ! $notice ) {
+			return;
+		}
+
+		delete_transient( 'thallo_vis_mail_notice' );
+		?>
+		<div class="notice <?php echo empty( $notice['ok'] ) ? 'notice-error' : 'notice-success'; ?>">
+			<p><?php echo esc_html( $notice['message'] ); ?></p>
 		</div>
 		<?php
 	}
@@ -443,12 +542,13 @@ class Thallo_Vis_Admin {
 						<th><?php esc_html_e( 'Category', 'thallo-visibility' ); ?></th>
 						<th><?php esc_html_e( 'Share of voice', 'thallo-visibility' ); ?></th>
 						<th><?php esc_html_e( 'Grade', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'Report email', 'thallo-visibility' ); ?></th>
 						<th><?php esc_html_e( 'Monitor', 'thallo-visibility' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
 					<?php if ( empty( $leads ) ) : ?>
-						<tr><td colspan="8"><?php esc_html_e( 'Nobody has unlocked a report yet.', 'thallo-visibility' ); ?></td></tr>
+						<tr><td colspan="9"><?php esc_html_e( 'Nobody has unlocked a report yet.', 'thallo-visibility' ); ?></td></tr>
 					<?php else : ?>
 						<?php foreach ( $leads as $lead ) : ?>
 							<tr>
@@ -459,6 +559,34 @@ class Thallo_Vis_Admin {
 								<td><?php echo esc_html( $lead['industry'] ); ?></td>
 								<td><?php echo esc_html( $lead['sov_pct'] . '%' ); ?></td>
 								<td><?php echo esc_html( $lead['grade'] ? $lead['grade'] : '—' ); ?></td>
+								<td>
+									<?php
+									/* Four states, and they are four different
+									   problems: sent, refused (with the reason),
+									   switched off, and a row from before this
+									   was recorded at all. Collapsing the last
+									   into "not sent" would invent a failure. */
+									$status = isset( $lead['mail_status'] ) ? $lead['mail_status'] : '';
+
+									if ( 'sent' === $status ) {
+										echo esc_html__( 'Sent', 'thallo-visibility' );
+										if ( ! empty( $lead['mail_sent_at'] ) ) {
+											echo '<br><span class="description">' . esc_html( $lead['mail_sent_at'] ) . '</span>';
+										}
+									} elseif ( 'failed' === $status ) {
+										echo '<strong>' . esc_html__( 'Failed', 'thallo-visibility' ) . '</strong>';
+										if ( ! empty( $lead['mail_error'] ) ) {
+											echo '<br><span class="description">' . esc_html( $lead['mail_error'] ) . '</span>';
+										}
+									} elseif ( 'off' === $status ) {
+										echo esc_html__( 'Not sent — the setting was off', 'thallo-visibility' );
+									} else {
+										echo esc_html__( 'Not recorded', 'thallo-visibility' );
+									}
+									?>
+									<br>
+									<?php self::mail_button( __( 'Send it again', 'thallo-visibility' ), (int) $lead['id'] ); ?>
+								</td>
 								<td>
 									<?php
 									$market   = isset( $lead['market'] ) ? $lead['market'] : Thallo_Vis_Questions::DEFAULT_MARKET;

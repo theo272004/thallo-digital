@@ -6,6 +6,14 @@
  * moment it is given — before phase 2 runs, not after. A scan that falls over
  * halfway must not also lose the contact, because the person still handed it
  * over in good faith and we still owe them the report.
+ *
+ * Whether the report actually reached them is stored too, on the same row.
+ * `wp_mail()` returns false when the message was not handed off, and the reason
+ * arrives separately on the `wp_mail_failed` action — both were being thrown
+ * away, so a shared host quietly refusing every message looked exactly like a
+ * host delivering every message, and the first anybody knew of it was a client
+ * saying the report never came. A promise made on the screen ("we will send you
+ * the report") has to leave a record of whether it was kept.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -53,9 +61,179 @@ class Thallo_Vis_Leads {
 
 		self::notify_owner( $state );
 
-		if ( Thallo_Vis_Settings::get( 'send_report_to_lead' ) ) {
-			self::send_report( $state );
+		if ( ! Thallo_Vis_Settings::get( 'send_report_to_lead' ) ) {
+			/* Recorded rather than left blank. "Switched off" and "tried and
+			   failed" are different answers to "why did they not get it", and
+			   the setting can be turned off by accident on a screen with
+			   fourteen other fields on it. */
+			self::record_mail_result( $state['scan_id'], 'off', '' );
+			return;
 		}
+
+		self::send_report( $state );
+	}
+
+	/**
+	 * One place every message goes out through.
+	 *
+	 * `wp_mail()` answers only whether PHPMailer accepted the message; the
+	 * reason it did not arrives on `wp_mail_failed` as a WP_Error, and only if
+	 * something is listening at the time. So the listener is added around the
+	 * call and taken off again, and the pair is returned together.
+	 *
+	 * @return array array( 'ok' => bool, 'error' => string )
+	 */
+	private static function send( $to, $subject, $body ) {
+		$captured = '';
+
+		$listener = static function ( $error ) use ( &$captured ) {
+			if ( is_wp_error( $error ) ) {
+				$captured = $error->get_error_message();
+			}
+		};
+
+		add_action( 'wp_mail_failed', $listener );
+		$ok = wp_mail( $to, $subject, $body, self::headers() );
+		remove_action( 'wp_mail_failed', $listener );
+
+		return array(
+			'ok'    => (bool) $ok,
+			/* A refusal with no message attached is still a refusal, and an
+			   empty cell in the admin table would read as "no problem". */
+			'error' => $ok ? '' : ( '' !== $captured ? $captured : 'wp_mail() returned false without saying why' ),
+		);
+	}
+
+	/**
+	 * From, and Reply-To.
+	 *
+	 * WordPress defaults the sender to `wordpress@<domain>`, which on most
+	 * shared hosting is a mailbox that does not exist. Some hosts deliver it
+	 * anyway, some refuse it outright, and the receiving end is entitled to bin
+	 * anything claiming to be from an address the domain cannot vouch for. So
+	 * the sender is a setting, and the field says in as many words that it has
+	 * to be a real mailbox on this domain.
+	 *
+	 * Empty by default, which leaves WordPress's own behaviour untouched: this
+	 * has to be filled in deliberately, because filling it in wrongly is worse
+	 * than leaving it alone.
+	 */
+	private static function headers() {
+		$from = Thallo_Vis_Settings::get( 'from_email', '' );
+		if ( ! $from || ! is_email( $from ) ) {
+			return array();
+		}
+
+		$name    = Thallo_Vis_Settings::get( 'from_name', '' );
+		$headers = array(
+			'' !== $name
+				? sprintf( 'From: %s <%s>', $name, $from )
+				: sprintf( 'From: %s', $from ),
+		);
+
+		/* The report closes by inviting a reply. It should land somewhere a
+		   person reads, which is not necessarily the address it was sent from. */
+		$reply = Thallo_Vis_Settings::get( 'notify_email' );
+		if ( $reply && is_email( $reply ) ) {
+			$headers[] = sprintf( 'Reply-To: %s', $reply );
+		}
+
+		return $headers;
+	}
+
+	/** Writes the outcome onto the lead, so the Leads screen can show it. */
+	private static function record_mail_result( $scan_id, $status, $error ) {
+		global $wpdb;
+
+		$data = array(
+			'mail_status' => $status,
+			/* Truncated: some SMTP refusals come back as a paragraph, and the
+			   useful part is always at the front. */
+			'mail_error'  => mb_substr( (string) $error, 0, 500 ),
+		);
+
+		/* Only written on success, and left alone otherwise. `$wpdb->update()`
+		   passes a null through `prepare()`, which turns it into an empty
+		   string — and an empty string in a DATETIME column is either a
+		   database error or a row claiming the report was sent in the year
+		   zero, depending on how strict the host's MySQL happens to be. */
+		if ( 'sent' === $status ) {
+			$data['mail_sent_at'] = current_time( 'mysql', true );
+		}
+
+		$wpdb->update(
+			Thallo_Vis_DB::leads_table(),
+			$data,
+			array( 'scan_id' => $scan_id )
+		);
+	}
+
+	/**
+	 * Sends the report again for a lead that never got it.
+	 *
+	 * Rebuilt from the stored scan rather than from anything kept on the lead,
+	 * so the person receives the report that was actually run for them. That
+	 * ties it to the retention window: once the scan row has been pruned there
+	 * is nothing left to send, and saying so is better than sending a report
+	 * assembled out of the four columns the lead row happens to keep.
+	 *
+	 * @return array array( 'ok' => bool, 'error' => string )
+	 */
+	public static function resend( $lead_id ) {
+		$lead = self::get( $lead_id );
+		if ( ! $lead ) {
+			return array(
+				'ok'    => false,
+				'error' => __( 'That lead no longer exists.', 'thallo-visibility' ),
+			);
+		}
+
+		$row = Thallo_Vis_DB::get( $lead['scan_id'] );
+		if ( ! $row || empty( $row['state']['phase1'] ) ) {
+			return array(
+				'ok'    => false,
+				'error' => __( 'The scan behind this lead has been pruned, so there is no report left to send. Run a fresh scan for this brand instead.', 'thallo-visibility' ),
+			);
+		}
+
+		$state          = $row['state'];
+		$state['email'] = $lead['email'];
+
+		return self::send_report( $state );
+	}
+
+	/**
+	 * Sends nothing but proof that sending works.
+	 *
+	 * The alternative way to find out is to run a whole scan and wait, which
+	 * costs money and tells you about one address on one day. This is the check
+	 * you want before switching anything on.
+	 *
+	 * @return array array( 'ok' => bool, 'error' => string )
+	 */
+	public static function send_test( $to ) {
+		if ( ! is_email( $to ) ) {
+			return array(
+				'ok'    => false,
+				'error' => __( 'That is not a valid email address.', 'thallo-visibility' ),
+			);
+		}
+
+		return self::send(
+			$to,
+			__( '[Thallo] Test — outbound email is working', 'thallo-visibility' ),
+			implode(
+				"\n",
+				array(
+					'This is the test message from Visibility → Settings.',
+					'',
+					'If you are reading it, WordPress on this host can send mail and the',
+					'visibility report will reach the people who ask for one.',
+					'',
+					'Sent from: ' . home_url(),
+				)
+			)
+		);
 	}
 
 	private static function notify_owner( array $state ) {
@@ -93,7 +271,7 @@ class Thallo_Vis_Leads {
 			$lines[] = 'Key insight: ' . $phase2['keyInsight'];
 		}
 
-		wp_mail(
+		self::send(
 			$to,
 			sprintf( '[Thallo] Visibility scan · %s (%s)', $state['brand'], $state['domain'] ),
 			implode( "\n", $lines )
@@ -167,11 +345,15 @@ class Thallo_Vis_Leads {
 		$lines[] = '— Thallo Digital';
 		$lines[] = home_url();
 
-		wp_mail(
+		$result = self::send(
 			$state['email'],
 			sprintf( 'Your AI visibility scan — %s', $state['brand'] ),
 			implode( "\n", $lines )
 		);
+
+		self::record_mail_result( $state['scan_id'], $result['ok'] ? 'sent' : 'failed', $result['error'] );
+
+		return $result;
 	}
 
 	/** One lead, by row id. What the "monitor this brand" button acts on. */
@@ -202,14 +384,14 @@ class Thallo_Vis_Leads {
 		$table = Thallo_Vis_DB::leads_table();
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is not user input.
-		$rows = $wpdb->get_results( "SELECT created_at, email, brand, domain, industry, sov_pct, grade FROM $table ORDER BY created_at DESC", ARRAY_A );
+		$rows = $wpdb->get_results( "SELECT created_at, email, brand, domain, industry, sov_pct, grade, mail_status FROM $table ORDER BY created_at DESC", ARRAY_A );
 
 		nocache_headers();
 		header( 'Content-Type: text/csv; charset=utf-8' );
 		header( 'Content-Disposition: attachment; filename=thallo-visibility-leads-' . gmdate( 'Y-m-d' ) . '.csv' );
 
 		$out = fopen( 'php://output', 'w' );
-		fputcsv( $out, array( 'Date (UTC)', 'Email', 'Brand', 'Website', 'Category', 'Share of voice %', 'Grade' ) );
+		fputcsv( $out, array( 'Date (UTC)', 'Email', 'Brand', 'Website', 'Category', 'Share of voice %', 'Grade', 'Report email' ) );
 
 		foreach ( (array) $rows as $row ) {
 			fputcsv( $out, $row );

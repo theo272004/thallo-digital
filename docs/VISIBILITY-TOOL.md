@@ -238,11 +238,38 @@ OpenRouter publishes the truth for any model id in the `supported_parameters` of
 curl -s https://openrouter.ai/api/v1/models | grep -o '"id":"openai/gpt-5[^"]*"'
 ```
 
-**2. Outbound email.** "Send the report to the person who unlocked it" needs
-working `wp_mail`, and it is now load-bearing twice over — a monitored brand's
-whole value is the email that arrives without anyone asking. Bluehost's default
-PHP mail lands in spam; install an SMTP plugin and send through a real mailbox
-before switching either on.
+**2. Outbound email — the report is not arriving.** Reported by a client on 16
+August 2026: the scan ran, the report was on screen, no email came. The sending
+itself is the open item; what has been fixed is that a failure is now visible
+instead of silent.
+
+`wp_mail()` returns false when nothing was handed off, and the reason arrives
+separately on the `wp_mail_failed` action. Both were being discarded, so a host
+refusing every message looked exactly like a host delivering every message. Now:
+
+- every message goes out through one wrapper that captures both;
+- the outcome is written onto the lead — **sent**, **failed** with the server's
+  own sentence, **not sent — the setting was off**, or **not recorded** for rows
+  predating this;
+- **Visibility → Leads** shows that column and carries a **Send it again**
+  button per row, which rebuilds the report from the stored scan (so it stops
+  working once that scan is pruned — see retention);
+- **Visibility → Settings** has a **Send a test email** button. Use it first.
+  It costs nothing and separates "the report is broken" from "this host does not
+  send mail", which are different problems with different fixes.
+
+Two things to set on that screen before blaming the code. **Send mail from** must
+be a real, working mailbox on the domain — left empty, WordPress sends as
+`wordpress@thallodigital.com`, which does not exist, and a receiving server is
+entitled to bin a message from an address the domain will not vouch for. That is
+the single most common cause of this exact symptom. And **Send the report** must
+be ticked; it defaults on, but a save with the box clear turns it off silently,
+which is why "the setting was off" is now one of the recorded outcomes rather
+than an indistinguishable blank.
+
+The real fix for delivery on Bluehost remains an SMTP plugin sending through a
+real mailbox. Nothing in this plugin can substitute for it — it can only stop
+the failure being invisible.
 
 **3. No SERP provider,** so the AI Overview reads as "not measured". Deliberate
 and honest, but it is an empty box in a paid deliverable. See section 3.
@@ -281,6 +308,19 @@ address** to get an email each time one arrives.
 The email is stored the moment it is given — before phase 2 runs, not after. A
 scan that falls over halfway must not also lose the contact, because the person
 handed it over in good faith and we still owe them the report.
+
+**This screen is the record of who searched for what.** Since the address is
+collected before the scan runs, every scan lands here: date, email, brand,
+website, category, share of voice, grade, and whether the report reached them.
+Lead rows are never pruned.
+
+What *is* pruned is the report behind them. The scan row holds the questions,
+every answer and both phases, and it is deleted after **Keep scan data for**
+days — fourteen by default. After that the lead still says a scan happened and
+what it scored, the trend table still holds its point, and the report itself is
+gone: "Send it again" will say so rather than sending a reconstruction. Raise
+the setting if these need to be answerable for longer; the cost is database
+size, and at this volume that is nothing.
 
 ---
 
