@@ -42,7 +42,7 @@ class Thallo_Vis_LLM {
 			}
 
 			$key   = Thallo_Vis_Settings::get( 'openrouter_key' );
-			$model = Thallo_Vis_Settings::get( 'gr_model_' . $provider, '' );
+			$model = Thallo_Vis_Settings::model_for( $provider, 'grounded' );
 			$body  = self::openai_body( $model, $system, $question );
 
 			/* No `temperature` on this half, deliberately.
@@ -106,7 +106,7 @@ class Thallo_Vis_LLM {
 
 		if ( 'openrouter' === $mode ) {
 			$key   = Thallo_Vis_Settings::get( 'openrouter_key' );
-			$model = Thallo_Vis_Settings::get( 'or_model_' . $provider, '' );
+			$model = Thallo_Vis_Settings::model_for( $provider );
 			if ( '' === $key || '' === $model ) {
 				return null;
 			}
@@ -136,7 +136,7 @@ class Thallo_Vis_LLM {
 		switch ( $provider ) {
 			case 'chatgpt':
 				$key   = Thallo_Vis_Settings::get( 'openai_key' );
-				$model = Thallo_Vis_Settings::get( 'nv_model_chatgpt' );
+				$model = Thallo_Vis_Settings::model_for( 'chatgpt' );
 				if ( '' === $key ) {
 					return null;
 				}
@@ -153,7 +153,7 @@ class Thallo_Vis_LLM {
 
 			case 'claude':
 				$key   = Thallo_Vis_Settings::get( 'anthropic_key' );
-				$model = Thallo_Vis_Settings::get( 'nv_model_claude' );
+				$model = Thallo_Vis_Settings::model_for( 'claude' );
 				if ( '' === $key ) {
 					return null;
 				}
@@ -183,7 +183,7 @@ class Thallo_Vis_LLM {
 
 			case 'gemini':
 				$key   = Thallo_Vis_Settings::get( 'google_key' );
-				$model = Thallo_Vis_Settings::get( 'nv_model_gemini' );
+				$model = Thallo_Vis_Settings::model_for( 'gemini' );
 				if ( '' === $key ) {
 					return null;
 				}
@@ -213,7 +213,7 @@ class Thallo_Vis_LLM {
 
 			case 'perplexity':
 				$key   = Thallo_Vis_Settings::get( 'perplexity_key' );
-				$model = Thallo_Vis_Settings::get( 'nv_model_perplexity' );
+				$model = Thallo_Vis_Settings::model_for( 'perplexity' );
 				if ( '' === $key ) {
 					return null;
 				}
@@ -309,7 +309,6 @@ class Thallo_Vis_LLM {
 	private static function openai_body( $model, $system, $question, $json_mode = true ) {
 		$body = array(
 			'model'       => $model,
-			'temperature' => 0.2,
 			'max_tokens'  => 400,
 			'messages'    => array(
 				array(
@@ -322,6 +321,25 @@ class Thallo_Vis_LLM {
 				),
 			),
 		);
+
+		/* `temperature` only where it is taken.
+		 *
+		 * It is worth having: two scans of the same brand a month apart are only
+		 * comparable if the sampling was the same, and that series is the
+		 * product. But OpenAI's entire current lineup has dropped the parameter —
+		 * nano, mini and Luna alike — and a rejected parameter is not a slightly
+		 * worse answer, it is a 400 on every call and an empty column on the
+		 * report. That asymmetry decides the default: a model that accepts it
+		 * answers fine without it; a model that refuses it answers nothing.
+		 *
+		 * `Thallo_Vis_Models::learn()` fills this in when a scan starts, so for a
+		 * configured model the answer is known rather than assumed. It is also
+		 * what makes the model field safe to edit again: an id that has dropped
+		 * the parameter no longer takes the column down with it.
+		 */
+		if ( Thallo_Vis_Models::accepts_temperature( $model ) ) {
+			$body['temperature'] = 0.2;
+		}
 
 		/* Perplexity rejects response_format on some models, and it is the one
 		   provider whose answer we want in prose anyway — the citations are the
@@ -351,6 +369,13 @@ class Thallo_Vis_LLM {
 			'text'      => '',
 			'companies' => array(),
 			'citations' => array(),
+			/* Which model actually answered, in its own words, rather than the id
+			   we asked for. They are not always the same thing — an alias
+			   resolves to a dated snapshot, and a router is free to serve a
+			   request from whatever it has. The report prints a model id beside
+			   every column, and that line is a claim about how the number was
+			   produced, so it should be the answer's own account of itself. */
+			'model'     => '',
 			'error'     => '',
 		);
 
@@ -368,6 +393,28 @@ class Thallo_Vis_LLM {
 		if ( ! is_array( $body ) ) {
 			$out['error'] = 'unreadable response';
 			return $out;
+		}
+
+		/* A 200 that carries an error. OpenRouter answers this way when the
+		   upstream provider refuses mid-stream, and so does Google when a
+		   request is filtered — the HTTP call succeeded, the generation did not.
+		   Read only for `choices`, that body has no text in it and came back as
+		   "empty answer", throwing away the one sentence that says what went
+		   wrong. Same reader as the non-200 path, so it names the provider too. */
+		if ( isset( $body['error'] ) ) {
+			$detail       = trim( self::error_detail( $response['body'] ), ': ' );
+			$out['error'] = '' !== $detail ? $detail : 'the provider returned an error';
+			return $out;
+		}
+
+		/* Read before the text, and kept even when the answer turns out to be
+		   unusable: "gpt-4.1-nano answered and the JSON was malformed" is a
+		   different problem from "something else answered". */
+		if ( isset( $body['model'] ) && is_string( $body['model'] ) ) {
+			$out['model'] = $body['model'];
+		} elseif ( isset( $body['modelVersion'] ) && is_string( $body['modelVersion'] ) ) {
+			// Google's name for the same field.
+			$out['model'] = $body['modelVersion'];
 		}
 
 		switch ( $shape ) {
@@ -464,5 +511,356 @@ class Thallo_Vis_LLM {
 		}
 
 		return $out;
+	}
+
+	// -----------------------------------------------------------------------
+	// Checking the models before a visitor does it for us
+	// -----------------------------------------------------------------------
+
+	/**
+	 * Who each column is supposed to be.
+	 *
+	 * The report prints "ChatGPT" over a column, and that word is the finding as
+	 * much as the percentage under it is: a client reads it as what the assistant
+	 * they use says about them. So the id in the ChatGPT slot has to be an OpenAI
+	 * model. A router will happily serve `anthropic/claude-haiku-4.5` from the
+	 * field labelled ChatGPT, answer every call successfully, and produce a report
+	 * that is wrong in the one way nobody would think to check.
+	 */
+	const EXPECTED_AUTHOR = array(
+		'chatgpt'    => 'openai',
+		'claude'     => 'anthropic',
+		'gemini'     => 'google',
+		'perplexity' => 'perplexity',
+	);
+
+	/**
+	 * Is the model that answered the model we asked for?
+	 *
+	 * Not a string comparison, because an exact match is not what "the right
+	 * model" means on any of these APIs. Aliases resolve to dated snapshots —
+	 * `claude-3-5-haiku-latest` answers as `claude-3-5-haiku-20241022`,
+	 * `gpt-4.1-nano` as `gpt-4.1-nano-2025-04-14` — and that is the id doing
+	 * exactly what it was asked to. What is worth flagging is a different model
+	 * altogether.
+	 *
+	 * @return bool|null Null when the response carried no model id to compare.
+	 */
+	public static function same_model( $requested, $answered ) {
+		$answered = strtolower( trim( (string) $answered ) );
+		if ( '' === $answered ) {
+			return null;
+		}
+
+		$requested = strtolower( trim( (string) $requested ) );
+		/* `:online` is a routing instruction, not part of the id, and OpenRouter
+		   answers with the bare model. */
+		$requested = preg_replace( '/:online$/', '', $requested );
+		$requested = preg_replace( '/-latest$/', '', $requested );
+
+		if ( '' === $requested ) {
+			return null;
+		}
+
+		return $requested === $answered || 0 === strpos( $answered, $requested );
+	}
+
+	/** The author half of an OpenRouter id: `openai/gpt-4.1-nano` → `openai`. */
+	private static function author_of( $model ) {
+		$model = strtolower( trim( (string) $model ) );
+		$slash = strpos( $model, '/' );
+
+		return false === $slash ? '' : substr( $model, 0, $slash );
+	}
+
+	/**
+	 * Every configured model, checked.
+	 *
+	 * Run from the settings screen. Model ids are the one part of this plugin
+	 * with an expiry date — a provider retires one and every scan afterwards
+	 * reports that column as unavailable, which the visitor reads as a finding
+	 * about their brand rather than as our configuration going stale. This is the
+	 * screen that says so before a visitor finds out.
+	 *
+	 * @return array[] One row per configured slot.
+	 */
+	public static function verify_all() {
+		$slots = array();
+
+		foreach ( array( 'chatgpt', 'claude', 'gemini', 'perplexity' ) as $provider ) {
+			$slots[] = array( $provider, false );
+		}
+
+		if ( Thallo_Vis_Settings::get( 'grounded_enabled' ) ) {
+			foreach ( array( 'chatgpt', 'claude', 'gemini' ) as $provider ) {
+				$slots[] = array( $provider, true );
+			}
+		}
+
+		/* Look up what these models accept before calling them, so the check
+		   sends the same body a scan will and a "Working" verdict means the real
+		   call works. Without it the first check after a model change would send
+		   no `temperature` and the first scan afterwards would send one. */
+		$learn = array();
+		foreach ( $slots as $slot ) {
+			$learn[] = Thallo_Vis_Settings::model_for( $slot[0], $slot[1] ? 'grounded' : 'memory' );
+		}
+		Thallo_Vis_Models::learn( $learn );
+
+		$checks   = array();
+		$requests = array();
+
+		foreach ( $slots as $slot ) {
+			$check    = self::prepare( $slot[0], $slot[1] );
+			$checks[] = $check;
+
+			if ( $check['request'] ) {
+				$requests[ count( $checks ) - 1 ] = $check['request'];
+			}
+		}
+
+		/* All of them at once, and on a short leash.
+		 *
+		 * Seven slots asked one after another at the scan's own timeout is over
+		 * two minutes of wall clock, and a shared host will cut the request off
+		 * long before that — leaving somebody looking at a white screen having
+		 * been charged for whichever calls did complete. They have nothing to do
+		 * with each other, so they go out together, and a model too slow to
+		 * answer a one-line question in fifteen seconds is a finding in itself. */
+		$responses = Thallo_Vis_HTTP::post_many( array_values( $requests ), 15 );
+		$positions = array_keys( $requests );
+		$rows      = array();
+
+		foreach ( $positions as $offset => $position ) {
+			$checks[ $position ]['response'] = $responses[ $offset ];
+		}
+
+		foreach ( $checks as $check ) {
+			$rows[] = self::finish( $check );
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * One slot, checked the way the scan will use it.
+	 *
+	 * The memory slots are checked by making the call — the same job the runner
+	 * builds, with the same body — because that is the only thing that proves the
+	 * key, the id and the parameters all work together. It is one short call,
+	 * a hundredth of a cent, and it answers the question the settings screen
+	 * cannot: not "is this id plausible" but "what came back when we asked".
+	 *
+	 * The grounded slots are checked against OpenRouter's catalogue instead, and
+	 * deliberately not called: `:online` carries a per-call search fee, and
+	 * pressing a button on a settings screen should not cost fifteen cents. The
+	 * catalogue answers the two things that actually go wrong there — the id has
+	 * been retired, or it belongs to the wrong provider so `:online` would route
+	 * to a third-party index rather than that provider's own search.
+	 *
+	 * Split in two — everything that can be decided without the network here,
+	 * everything that reads a response in `finish()` — so that all of the calls
+	 * can go out in one batch between them.
+	 *
+	 * @return array array( 'row' => array, 'kind' => 'done'|'call'|'catalogue', 'job' => array|null, 'request' => array|null )
+	 */
+	private static function prepare( $provider, $grounded = false ) {
+		$check = array(
+			'row'      => array(),
+			'kind'     => 'done',
+			'job'      => null,
+			'request'  => null,
+			'response' => null,
+		);
+
+		$row = array(
+			'provider'  => $provider,
+			'slot'      => $grounded ? 'grounded' : 'memory',
+			'requested' => '',
+			'answered'  => '',
+			'status'    => 'unconfigured',
+			'detail'    => '',
+		);
+
+		$mode             = Thallo_Vis_Settings::get( 'provider_mode' );
+		$row['requested'] = Thallo_Vis_Settings::model_for( $provider, $grounded ? 'grounded' : 'memory' );
+
+		$job = self::build_job(
+			$provider,
+			/* A real question in the real format, not a "say OK". The point of
+			   asking at all is to exercise the exact call the scan makes — a
+			   model that answers a greeting and then refuses `response_format`
+			   would pass a cheaper check and fail every scan. */
+			'Which companies would you recommend for business accounting software?',
+			null,
+			$grounded
+		);
+
+		if ( ! $job ) {
+			$row['detail'] = $grounded
+				? __( 'Not checked — the second reading is off, or this installation is not on OpenRouter.', 'thallo-visibility' )
+				: __( 'No key or no model id configured for this slot, so the scan will skip it and the report will say so.', 'thallo-visibility' );
+
+			$check['row'] = $row;
+			return $check;
+		}
+
+		/* The family check first, because it needs no network and it is the
+		   failure that hides best: everything works, and the column is labelled
+		   with somebody else's name. Only on the OpenRouter path — a native id
+		   carries no author, and the key it goes out with is the provider. */
+		if ( 'openrouter' === $mode || $grounded ) {
+			$author   = self::author_of( $row['requested'] );
+			$expected = isset( self::EXPECTED_AUTHOR[ $provider ] ) ? self::EXPECTED_AUTHOR[ $provider ] : '';
+
+			if ( '' === $author ) {
+				$row['status'] = 'wrong-model';
+				$row['detail'] = sprintf(
+					/* translators: %s: the model id as configured. */
+					__( '“%s” is not an OpenRouter id. They are written author/model, for example openai/gpt-4.1-nano.', 'thallo-visibility' ),
+					$row['requested']
+				);
+
+				$check['row'] = $row;
+				return $check;
+			}
+
+			if ( '' !== $expected && $author !== $expected ) {
+				$row['status'] = 'wrong-model';
+				$row['detail'] = sprintf(
+					/* translators: 1: expected author, 2: configured author. */
+					__( 'This column is reported to the client as %1$s, but the id belongs to %2$s. The scan would run, and the report would be wrong in the one way nobody checks.', 'thallo-visibility' ),
+					ucfirst( $expected ),
+					ucfirst( $author )
+				);
+
+				$check['row'] = $row;
+				return $check;
+			}
+		}
+
+		$check['row'] = $row;
+		$check['job'] = $job;
+
+		if ( $grounded ) {
+			$check['kind']    = 'catalogue';
+			$check['request'] = array(
+				'url'     => 'https://openrouter.ai/api/v1/models/' . $row['requested'] . '/endpoints',
+				'headers' => array( 'Authorization' => 'Bearer ' . Thallo_Vis_Settings::get( 'openrouter_key' ) ),
+				'body'    => null,
+				'method'  => 'GET',
+			);
+
+			return $check;
+		}
+
+		$check['kind']    = 'call';
+		$check['request'] = $job;
+
+		return $check;
+	}
+
+	/** Reads whatever came back for one slot. */
+	private static function finish( array $check ) {
+		if ( 'done' === $check['kind'] ) {
+			return $check['row'];
+		}
+
+		$row      = $check['row'];
+		$response = $check['response'];
+
+		if ( ! is_array( $response ) ) {
+			$row['status'] = 'error';
+			$row['detail'] = __( 'No response — the request was never made.', 'thallo-visibility' );
+			return $row;
+		}
+
+		return 'catalogue' === $check['kind']
+			? self::finish_catalogue( $row, $response )
+			: self::finish_call( $row, $check['job'], $response );
+	}
+
+	private static function finish_call( array $row, array $job, array $response ) {
+		$parsed          = self::parse( $job['shape'], $response, 'perplexity' !== $row['provider'] );
+		$row['answered'] = $parsed['model'];
+
+		if ( '' !== $parsed['error'] ) {
+			$row['status'] = 'error';
+			$row['detail'] = $parsed['error'];
+			return $row;
+		}
+
+		$same = self::same_model( $job['model'], $parsed['model'] );
+
+		if ( false === $same ) {
+			$row['status'] = 'wrong-model';
+			$row['detail'] = sprintf(
+				/* translators: 1: the id asked for, 2: the id that answered. */
+				__( 'Asked for %1$s and %2$s answered. The report would print the id we asked for over numbers somebody else produced.', 'thallo-visibility' ),
+				$job['model'],
+				$parsed['model']
+			);
+			return $row;
+		}
+
+		$row['status'] = 'ok';
+		$row['detail'] = null === $same
+			? __( 'Answered, and the answer was readable. This API does not say which model produced it, so the id cannot be confirmed from the response.', 'thallo-visibility' )
+			: __( 'Answered, in the format the scan needs, as the model asked for.', 'thallo-visibility' );
+
+		return $row;
+	}
+
+	/**
+	 * Is this id still served? OpenRouter keeps the metadata for models nobody
+	 * runs any more, so `/models/{id}` resolving proves nothing — the endpoints
+	 * list is what says whether a call would find a provider to answer it. This
+	 * is how the two retired defaults were caught, by hand, in August.
+	 */
+	private static function finish_catalogue( array $row, array $response ) {
+		if ( $response['error'] ) {
+			$row['status'] = 'error';
+			$row['detail'] = $response['error'];
+			return $row;
+		}
+
+		if ( 404 === (int) $response['code'] ) {
+			$row['status'] = 'wrong-model';
+			$row['detail'] = __( 'OpenRouter has no model with that id.', 'thallo-visibility' );
+			return $row;
+		}
+
+		$body = json_decode( $response['body'], true );
+
+		if ( $response['code'] < 200 || $response['code'] >= 300 || ! is_array( $body ) ) {
+			$row['status'] = 'error';
+			$row['detail'] = 'HTTP ' . $response['code'];
+			return $row;
+		}
+
+		$endpoints = isset( $body['data']['endpoints'] ) && is_array( $body['data']['endpoints'] )
+			? $body['data']['endpoints']
+			: array();
+
+		if ( ! $endpoints ) {
+			$row['status'] = 'wrong-model';
+			$row['detail'] = __( 'The id still resolves but nothing serves it any more — a retired model. Every call would fail and the column would report as unavailable.', 'thallo-visibility' );
+			return $row;
+		}
+
+		$row['answered'] = isset( $body['data']['id'] ) ? (string) $body['data']['id'] : $row['requested'];
+		$row['status']   = 'ok';
+		$row['detail']   = sprintf(
+			/* translators: %d: how many providers serve the model. */
+			_n(
+				'Served by %d provider. Not called: with search on, a test call carries the same per-call search fee a real scan does.',
+				'Served by %d providers. Not called: with search on, a test call carries the same per-call search fee a real scan does.',
+				count( $endpoints ),
+				'thallo-visibility'
+			),
+			count( $endpoints )
+		);
+
+		return $row;
 	}
 }

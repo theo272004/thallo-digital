@@ -50,6 +50,9 @@ function wp_json_encode( $v ) {
 $dir = __DIR__ . '/../thallo-visibility/includes/';
 require_once $dir . 'class-thallo-questions.php';
 require_once $dir . 'class-thallo-http.php';
+/* Only the pure half of it is exercised here — `same_model()` and `parse()`
+   touch no settings and no network, and the analysis calls the first of them. */
+require_once $dir . 'class-thallo-llm.php';
 require_once $dir . 'class-thallo-analysis.php';
 require_once $dir . 'class-thallo-tech.php';
 require_once $dir . 'class-thallo-retrieval.php';
@@ -173,6 +176,56 @@ check( 'chatgpt rank 2 then 1', $p1['providers'][0]['positions'], array( 2, 1 ) 
 check( 'claude named nobody', $p1['providers'][1]['mentions'], 0 );
 check( 'skipped provider carries a reason', $p1['providers'][2]['error'], 'no API key configured' );
 check( 'skipped provider is not a zero', $p1['providers'][2]['answers'], array() );
+
+/* Claude's first call failed, so its answers start at question 2. The index has
+   to travel with the answer: the audit trail lines these rows up against the
+   questions by it, and reading them positionally put every Claude verdict one
+   question early on any run where a call failed. */
+check( 'answers carry their question index', array_column( $p1['providers'][1]['answers'], 'q' ), array( 1, 2 ) );
+
+echo "=== which model answered ===\n";
+check( 'exact', Thallo_Vis_LLM::same_model( 'openai/gpt-4.1-nano', 'openai/gpt-4.1-nano' ), true );
+check( 'alias resolves to a dated snapshot', Thallo_Vis_LLM::same_model( 'claude-3-5-haiku-latest', 'claude-3-5-haiku-20241022' ), true );
+check( 'openrouter :online is routing, not identity', Thallo_Vis_LLM::same_model( 'openai/gpt-5.6-luna:online', 'openai/gpt-5.6-luna' ), true );
+check( 'someone else answered', Thallo_Vis_LLM::same_model( 'openai/gpt-4.1-nano', 'anthropic/claude-haiku-4.5' ), false );
+check( 'nothing to compare', Thallo_Vis_LLM::same_model( 'openai/gpt-4.1-nano', '' ), null );
+
+$swapped                          = $state;
+$swapped['skipped']               = array();
+$swapped['models']                = array( 'chatgpt' => 'openai/gpt-4.1-nano' );
+$swapped['results']               = array(
+	'chatgpt' => array(
+		0 => array( 'companies' => array( 'Northwind' ), 'error' => '', 'model' => 'anthropic/claude-haiku-4.5' ),
+		1 => array( 'companies' => array( 'Northwind' ), 'error' => '', 'model' => 'anthropic/claude-haiku-4.5' ),
+		2 => array( 'companies' => array( 'Ledgerly' ), 'error' => '', 'model' => 'anthropic/claude-haiku-4.5' ),
+	),
+);
+$swap = Thallo_Vis_Analysis::phase1( $swapped );
+check( 'a different model answering is reported', $swap['providers'][0]['modelUsed'], 'anthropic/claude-haiku-4.5' );
+
+$honest                    = $swapped;
+$honest['results']['chatgpt'][0]['model'] = 'openai/gpt-4.1-nano-2025-04-14';
+$honest['results']['chatgpt'][1]['model'] = 'openai/gpt-4.1-nano-2025-04-14';
+$honest['results']['chatgpt'][2]['model'] = 'openai/gpt-4.1-nano-2025-04-14';
+$honest_row = Thallo_Vis_Analysis::phase1( $honest )['providers'][0];
+check( 'a snapshot of the id asked for is not a mismatch', isset( $honest_row['modelUsed'] ), false );
+
+echo "=== reading a response ===\n";
+$ok = Thallo_Vis_LLM::parse(
+	'openai',
+	array( 'code' => 200, 'error' => '', 'body' => '{"model":"openai/gpt-4.1-nano","choices":[{"message":{"content":"{\"companies\":[\"Northwind\"]}"}}]}' )
+);
+check( 'names read', $ok['companies'], array( 'Northwind' ) );
+check( 'answering model read', $ok['model'], 'openai/gpt-4.1-nano' );
+
+/* A 200 carrying an error object. Read only for `choices` this came back as
+   "empty answer", which told the operator nothing about a key or a retired id. */
+$refused = Thallo_Vis_LLM::parse(
+	'openai',
+	array( 'code' => 200, 'error' => '', 'body' => '{"error":{"message":"No endpoints found for openai/gpt-4.1-nano."}}' )
+);
+check( 'a 200 that carries an error says what it was', $refused['error'], 'No endpoints found for openai/gpt-4.1-nano.' );
+
 
 echo "=== competitors ===\n";
 $rivals = Thallo_Vis_Analysis::competitors( $state );

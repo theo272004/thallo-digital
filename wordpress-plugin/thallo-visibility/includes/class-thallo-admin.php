@@ -285,22 +285,18 @@ class Thallo_Vis_Admin {
 
 				<h3><?php esc_html_e( 'OpenRouter', 'thallo-visibility' ); ?></h3>
 				<table class="form-table" role="presentation">
-					<?php
-					self::password_field( $name, 'openrouter_key', $s, __( 'API key', 'thallo-visibility' ), 'openrouter.ai → Keys' );
-					self::text_field( $name, 'or_model_chatgpt', $s, __( 'ChatGPT model', 'thallo-visibility' ) );
-					self::text_field( $name, 'or_model_claude', $s, __( 'Claude model', 'thallo-visibility' ) );
-					self::text_field( $name, 'or_model_gemini', $s, __( 'Gemini model', 'thallo-visibility' ) );
-					self::text_field( $name, 'or_model_perplexity', $s, __( 'Perplexity model', 'thallo-visibility' ), __( 'Used for live retrieval in the second half. Must be a model that searches the web.', 'thallo-visibility' ) );
-					?>
+					<?php self::password_field( $name, 'openrouter_key', $s, __( 'API key', 'thallo-visibility' ), 'openrouter.ai → Keys' ); ?>
 				</table>
 
-				<h2><?php esc_html_e( 'The second reading: the same models, searching', 'thallo-visibility' ); ?></h2>
+				<?php self::models_section( $name, $s ); ?>
+
+				<h2><?php esc_html_e( 'Ask again, with the web open', 'thallo-visibility' ); ?></h2>
 				<p style="max-width:46em" class="description">
-					<?php esc_html_e( 'The scan above asks the three models from memory, which measures whether they know you. This asks them the same questions again with web search on, which measures whether they pick you once they have looked. The two come apart, and the gap is the finding: named when they search but not from memory means your pages are fine and your reputation has not reached the model yet.', 'thallo-visibility' ); ?>
+					<?php esc_html_e( 'The scan asks the models what they already know about a category. This asks the same questions a second time with the web open — whether they pick you once they have looked. The gap between the two readings is the finding.', 'thallo-visibility' ); ?>
 				</p>
 				<p style="max-width:46em" class="description">
-					<strong><?php esc_html_e( 'This is the expensive half.', 'thallo-visibility' ); ?></strong>
-					<?php esc_html_e( 'Search is billed per call on top of the tokens — about US$0.17 a scan at the default of five questions, against US$0.01–0.03 for the memory reading. It runs only after somebody has handed over an email, so it is charged per lead rather than per visitor. Leave it off until you have watched one scan with it on and seen the bill.', 'thallo-visibility' ); ?>
+					<strong><?php esc_html_e( 'This is the expensive half:', 'thallo-visibility' ); ?></strong>
+					<?php esc_html_e( 'about US$0.17 a scan against US$0.01–0.03, and it only runs after somebody leaves an email — so it is charged per lead, not per visitor.', 'thallo-visibility' ); ?>
 				</p>
 				<table class="form-table" role="presentation">
 					<tr>
@@ -308,17 +304,12 @@ class Thallo_Vis_Admin {
 						<td>
 							<label>
 								<input type="checkbox" name="<?php echo esc_attr( $name ); ?>[grounded_enabled]" value="1" <?php checked( $s['grounded_enabled'], 1 ); ?>>
-								<?php esc_html_e( 'Ask the three models again with web search on, after the email', 'thallo-visibility' ); ?>
+								<?php esc_html_e( 'Ask the three models again, with the web open, after the email', 'thallo-visibility' ); ?>
 							</label>
-							<p class="description"><?php esc_html_e( 'OpenRouter only. On the native path this is not offered, and the report simply does not show the section.', 'thallo-visibility' ); ?></p>
+							<p class="description"><?php esc_html_e( 'OpenRouter only. The searching is done by OpenRouter and the results handed to the model — no current Anthropic or Google model does its own. Not offered on the native path, where the report shows no section rather than an empty one.', 'thallo-visibility' ); ?></p>
 						</td>
 					</tr>
-					<?php
-					self::text_field( $name, 'gr_model_chatgpt', $s, __( 'ChatGPT model', 'thallo-visibility' ), __( 'Must be a model with native OpenAI search — check that OpenRouter prices "web_search" for it, or :online quietly falls back to a third-party index and measures somebody else\'s search. The gpt-4o family has none. GPT-5-series ids currently fail every call with a 400 here; gpt-4.1-nano works, costs the same search fee, and is the recommended value until that is understood.', 'thallo-visibility' ) );
-					self::text_field( $name, 'gr_model_claude', $s, __( 'Claude model', 'thallo-visibility' ) );
-					self::text_field( $name, 'gr_model_gemini', $s, __( 'Gemini model', 'thallo-visibility' ) );
-					self::number_field( $name, 'grounded_questions', $s, __( 'Questions asked a second time', 'thallo-visibility' ), 3, 15, __( 'The search fee is charged per call and cannot be reduced, so this is the only real lever on what this half costs. Five is about US$0.17 a scan, eight about US$0.27, fifteen about US$0.50. Share of voice is a proportion, so five answers per model still separates "never named" from "sometimes named" — which is the only thing this reading is asked to settle. The report prints both answer counts, so the two halves being different sizes is visible rather than hidden.', 'thallo-visibility' ) );
-					?>
+					<?php self::number_field( $name, 'grounded_questions', $s, __( 'Questions asked a second time', 'thallo-visibility' ), 3, 15, __( 'The search fee is per call, so this is the only real lever on what this half costs: five ≈ US$0.17, eight ≈ US$0.27, fifteen ≈ US$0.50. Five still separates "never named" from "sometimes named", which is all this reading is asked to settle.', 'thallo-visibility' ) ); ?>
 					<tr>
 						<th scope="row"><?php esc_html_e( 'Search depth', 'thallo-visibility' ); ?></th>
 						<td>
@@ -330,20 +321,6 @@ class Thallo_Vis_Admin {
 							<p class="description"><?php esc_html_e( 'How much of each page the search feeds back to the model. Charged as prompt tokens, so this is the half of the bill that is easy to miss.', 'thallo-visibility' ); ?></p>
 						</td>
 					</tr>
-				</table>
-
-				<h3><?php esc_html_e( 'Native keys', 'thallo-visibility' ); ?></h3>
-				<table class="form-table" role="presentation">
-					<?php
-					self::password_field( $name, 'openai_key', $s, __( 'OpenAI key', 'thallo-visibility' ) );
-					self::password_field( $name, 'anthropic_key', $s, __( 'Anthropic key', 'thallo-visibility' ) );
-					self::password_field( $name, 'google_key', $s, __( 'Google AI Studio key', 'thallo-visibility' ) );
-					self::password_field( $name, 'perplexity_key', $s, __( 'Perplexity key', 'thallo-visibility' ) );
-					self::text_field( $name, 'nv_model_chatgpt', $s, __( 'OpenAI model', 'thallo-visibility' ) );
-					self::text_field( $name, 'nv_model_claude', $s, __( 'Anthropic model', 'thallo-visibility' ) );
-					self::text_field( $name, 'nv_model_gemini', $s, __( 'Gemini model', 'thallo-visibility' ) );
-					self::text_field( $name, 'nv_model_perplexity', $s, __( 'Perplexity model', 'thallo-visibility' ) );
-					?>
 				</table>
 
 				<h2><?php esc_html_e( 'Google AI Overview', 'thallo-visibility' ); ?></h2>
@@ -442,6 +419,8 @@ class Thallo_Vis_Admin {
 			 * wrong configuration, which is worse than no test at all.
 			 */
 			?>
+			<?php self::model_check_panel(); ?>
+
 			<h2><?php esc_html_e( 'Does outbound mail work?', 'thallo-visibility' ); ?></h2>
 			<p class="description" style="max-width:46em">
 				<?php esc_html_e( 'Sends one plain message using the settings as saved. A report that never arrives is almost never the report — it is the host refusing to send anything at all, and this is how to find that out in ten seconds instead of after a client tells you. If it does not arrive, install an SMTP plugin and send through a real mailbox; nothing on this screen can fix it.', 'thallo-visibility' ); ?>
@@ -517,6 +496,341 @@ class Thallo_Vis_Admin {
 		<div class="notice <?php echo empty( $notice['ok'] ) ? 'notice-error' : 'notice-success'; ?>">
 			<p><?php echo esc_html( $notice['message'] ); ?></p>
 		</div>
+		<?php
+	}
+
+	/**
+	 * Checks every configured model and parks the result for the settings screen
+	 * to render after the redirect.
+	 *
+	 * A transient rather than a property, because this is a POST that redirects —
+	 * without it the result would have to survive in a query string, and a
+	 * findings table is not a URL. An hour is long enough to still be on screen
+	 * after a save and short enough that nobody mistakes a stale table for a
+	 * fresh one; the timestamp is printed with it either way.
+	 */
+	const CHECK_TRANSIENT = 'thallo_vis_model_check';
+
+	public static function handle_model_check() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You are not allowed to do that.', 'thallo-visibility' ) );
+		}
+
+		check_admin_referer( 'thallo_check_models' );
+
+		set_transient(
+			self::CHECK_TRANSIENT,
+			array(
+				'at'   => time(),
+				'rows' => Thallo_Vis_LLM::verify_all(),
+			),
+			HOUR_IN_SECONDS
+		);
+
+		wp_safe_redirect( admin_url( 'admin.php?page=thallo-visibility&thallo_checked=1#thallo-model-check' ) );
+		exit;
+	}
+
+	/**
+	 * The result of that check.
+	 *
+	 * Worth the screen space it takes: a retired model id is the single most
+	 * likely way this plugin goes quietly wrong, and its symptom — one column
+	 * reporting "unavailable" — looks like a finding about the visitor's brand
+	 * rather than like our configuration having expired.
+	 */
+	private static function model_check_panel() {
+		$report = get_transient( self::CHECK_TRANSIENT );
+		$tone   = array(
+			'ok'           => array( '#2c7a2c', __( 'Working', 'thallo-visibility' ) ),
+			'wrong-model'  => array( '#b32d2e', __( 'Wrong model', 'thallo-visibility' ) ),
+			'error'        => array( '#b32d2e', __( 'Failed', 'thallo-visibility' ) ),
+			'unconfigured' => array( '#8c8f94', __( 'Not configured', 'thallo-visibility' ) ),
+		);
+		?>
+		<h2 id="thallo-model-check"><?php esc_html_e( 'Check the models', 'thallo-visibility' ); ?></h2>
+		<p style="max-width:46em" class="description">
+			<?php esc_html_e( 'Model ids are the one part of this plugin with an expiry date. Providers retire them, and when that happens every scan reports that column as unavailable — which reads to the client as a finding about their brand rather than as our settings having gone stale. This asks each configured model one real question and reports what came back, including which model actually answered: an id in the ChatGPT field that belongs to somebody else will answer every call quite happily and put the wrong name over the numbers.', 'thallo-visibility' ); ?>
+		</p>
+		<p style="max-width:46em" class="description">
+			<?php esc_html_e( 'It costs about a hundredth of a cent. The second-reading models are checked against OpenRouter\'s catalogue instead of being called, because with search on a test call is charged the same per-call search fee a real scan is.', 'thallo-visibility' ); ?>
+		</p>
+
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<?php wp_nonce_field( 'thallo_check_models' ); ?>
+			<input type="hidden" name="action" value="thallo_check_models">
+			<button type="submit" class="button button-secondary"><?php esc_html_e( 'Check the models now', 'thallo-visibility' ); ?></button>
+		</form>
+
+		<?php if ( is_array( $report ) && ! empty( $report['rows'] ) ) : ?>
+			<table class="widefat striped" style="max-width:60em;margin-top:1em">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Column', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'Asked for', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'Answered as', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'Verdict', 'thallo-visibility' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $report['rows'] as $row ) : ?>
+						<?php $style = isset( $tone[ $row['status'] ] ) ? $tone[ $row['status'] ] : $tone['error']; ?>
+						<tr>
+							<td>
+								<?php $labels = Thallo_Vis_Runner::STEP_LABELS; ?>
+								<strong><?php echo esc_html( isset( $labels[ $row['provider'] ] ) ? $labels[ $row['provider'] ] : $row['provider'] ); ?></strong>
+								<?php if ( 'grounded' === $row['slot'] ) : ?>
+									<br><span class="description"><?php esc_html_e( 'with search on', 'thallo-visibility' ); ?></span>
+								<?php endif; ?>
+							</td>
+							<td><code><?php echo esc_html( '' !== $row['requested'] ? $row['requested'] : '—' ); ?></code></td>
+							<td><code><?php echo esc_html( '' !== $row['answered'] ? $row['answered'] : '—' ); ?></code></td>
+							<td>
+								<strong style="color:<?php echo esc_attr( $style[0] ); ?>"><?php echo esc_html( $style[1] ); ?></strong>
+								<br><span class="description"><?php echo esc_html( $row['detail'] ); ?></span>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+			<p class="description">
+				<?php
+				printf(
+					/* translators: %s: how long ago the check was run. */
+					esc_html__( 'Checked %s ago.', 'thallo-visibility' ),
+					esc_html( human_time_diff( (int) $report['at'], time() ) )
+				);
+				?>
+			</p>
+		<?php endif; ?>
+		<?php
+	}
+
+	/**
+	 * Sends the real report email, filled with sample figures, to whoever is
+	 * reading the settings screen.
+	 *
+	 * The alternative is finding out from a lead, and by then the lead is the
+	 * person who did not get it. It goes through exactly the code path a live
+	 * report does — same template, same sender, same log — because a test that
+	 * proves a different path works proves nothing.
+	 */
+	public static function handle_test_email() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You are not allowed to do that.', 'thallo-visibility' ) );
+		}
+
+		check_admin_referer( 'thallo_test_email' );
+
+		$to = trim( (string) Thallo_Vis_Settings::get( 'notify_email', '' ) );
+
+		if ( ! is_email( $to ) ) {
+			$user = wp_get_current_user();
+			$to   = $user ? $user->user_email : '';
+		}
+
+		if ( is_email( $to ) ) {
+			Thallo_Vis_Leads::send_test( $to );
+		}
+
+		wp_safe_redirect( admin_url( 'admin.php?page=thallo-visibility&thallo_tested=1#thallo-mail' ) );
+		exit;
+	}
+
+	/**
+	 * What happened to the last few messages.
+	 *
+	 * `wp_mail()` returning false was the only warning WordPress gave and nobody
+	 * was reading it: the lead landed in the table, the report never left the
+	 * building, and every screen said the same thing either way. Now the failure
+	 * is on the screen you would go and look at.
+	 */
+	private static function mail_panel() {
+		$entries = Thallo_Vis_Mail::log_entries();
+		$via     = '' !== (string) Thallo_Vis_Settings::get( 'resend_key', '' )
+			? __( 'Resend', 'thallo-visibility' )
+			: __( 'WordPress (wp_mail)', 'thallo-visibility' );
+		?>
+		<h2 id="thallo-mail"><?php esc_html_e( 'Mail', 'thallo-visibility' ); ?></h2>
+		<p style="max-width:46em" class="description">
+			<?php
+			printf(
+				/* translators: 1: how mail is sent, 2: the From address. */
+				esc_html__( 'Sending through %1$s, as %2$s. The report is the second half of a trade — somebody gave an address to get it — so it is worth proving it arrives before a lead finds out it does not.', 'thallo-visibility' ),
+				'<strong>' . esc_html( $via ) . '</strong>',
+				'<code>' . esc_html( Thallo_Vis_Mail::from_address() ) . '</code>'
+			);
+			?>
+		</p>
+
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<?php wp_nonce_field( 'thallo_test_email' ); ?>
+			<input type="hidden" name="action" value="thallo_test_email">
+			<button type="submit" class="button button-secondary"><?php esc_html_e( 'Send myself a test report', 'thallo-visibility' ); ?></button>
+			<span class="description"><?php esc_html_e( 'Goes to the notify address, or to your own if that is empty.', 'thallo-visibility' ); ?></span>
+		</form>
+
+		<?php if ( $entries ) : ?>
+			<table class="widefat striped" style="max-width:60em;margin-top:1em">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'When', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'To', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'Subject', 'thallo-visibility' ); ?></th>
+						<th><?php esc_html_e( 'Result', 'thallo-visibility' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( array_slice( $entries, 0, 10 ) as $entry ) : ?>
+						<tr>
+							<td>
+								<?php
+								printf(
+									/* translators: %s: a human-readable interval. */
+									esc_html__( '%s ago', 'thallo-visibility' ),
+									esc_html( human_time_diff( (int) $entry['at'], time() ) )
+								);
+								?>
+							</td>
+							<td><?php echo esc_html( $entry['to'] ); ?></td>
+							<td><?php echo esc_html( $entry['subject'] ); ?></td>
+							<td>
+								<?php if ( ! empty( $entry['ok'] ) ) : ?>
+									<strong style="color:#2c7a2c"><?php esc_html_e( 'Accepted', 'thallo-visibility' ); ?></strong>
+									<span class="description"><?php echo esc_html( $entry['via'] ); ?></span>
+								<?php else : ?>
+									<strong style="color:#b32d2e"><?php esc_html_e( 'Failed', 'thallo-visibility' ); ?></strong>
+									<br><span class="description"><?php echo esc_html( $entry['error'] ); ?></span>
+								<?php endif; ?>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+			<p class="description">
+				<?php esc_html_e( '“Accepted” means the sender took the message, not that a human read it. It is the strongest thing any sender can honestly tell you.', 'thallo-visibility' ); ?>
+			</p>
+		<?php endif; ?>
+		<?php
+	}
+
+	/**
+	 * Which model stands behind each column, and the way out if you disagree.
+	 *
+	 * Read-only by default, and that is the point of it. A model id typed into a
+	 * text field is right on the day it is typed and ages from then on with
+	 * nothing on the screen to say so — this installation was still asking a
+	 * model from 2024 and printing "this is what ChatGPT says" over the answer.
+	 * The list ships with the plugin, is dated, and moves when the plugin is
+	 * updated. Anyone who wants a different model can still have one; they just
+	 * have to say so rather than inherit it by neglect.
+	 */
+	private static function models_section( $name, $s ) {
+		$auto = ! empty( $s['models_auto'] );
+		?>
+		<h2><?php esc_html_e( 'Which models we ask', 'thallo-visibility' ); ?></h2>
+		<p style="max-width:46em" class="description">
+			<?php esc_html_e( 'Each row stands for what that assistant says, and the report prints its name over the number — so the model behind it has to be the generation people are actually talking to.', 'thallo-visibility' ); ?>
+			<?php
+			printf(
+				/* translators: %s: the date the shipped model list was last reviewed. */
+				esc_html__( 'The plugin keeps this list and it moves when the plugin is updated; last reviewed %s. Use “Check the models” at the bottom of this page to confirm they still answer.', 'thallo-visibility' ),
+				esc_html( Thallo_Vis_Models::REVIEWED )
+			);
+			?>
+		</p>
+
+		<table class="widefat striped" style="max-width:46em;margin-bottom:1em">
+			<thead>
+				<tr>
+					<th><?php esc_html_e( 'Column', 'thallo-visibility' ); ?></th>
+					<th><?php esc_html_e( 'Model', 'thallo-visibility' ); ?></th>
+					<th><?php esc_html_e( 'With the web open', 'thallo-visibility' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ( array( 'chatgpt', 'claude', 'gemini', 'perplexity' ) as $provider ) : ?>
+					<?php
+					$memory   = Thallo_Vis_Settings::model_for( $provider );
+					$grounded = 'perplexity' === $provider
+						? ''
+						: Thallo_Vis_Settings::model_for( $provider, 'grounded' );
+					$labels   = Thallo_Vis_Runner::STEP_LABELS;
+					?>
+					<tr>
+						<td><strong><?php echo esc_html( isset( $labels[ $provider ] ) ? $labels[ $provider ] : $provider ); ?></strong></td>
+						<td>
+							<code><?php echo esc_html( '' !== $memory ? $memory : '—' ); ?></code>
+							<?php if ( 'perplexity' === $provider ) : ?>
+								<br><span class="description"><?php esc_html_e( 'Live retrieval in the second half — it searches by default, which is why it is here rather than above.', 'thallo-visibility' ); ?></span>
+							<?php endif; ?>
+						</td>
+						<td>
+							<?php if ( '' === $grounded ) : ?>
+								<span class="description">—</span>
+							<?php elseif ( empty( $s['grounded_enabled'] ) ) : ?>
+								<span class="description"><?php esc_html_e( 'off', 'thallo-visibility' ); ?></span>
+							<?php else : ?>
+								<code><?php echo esc_html( $grounded . ':online' ); ?></code>
+							<?php endif; ?>
+						</td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+
+		<details <?php echo $auto ? '' : 'open'; ?>>
+			<summary style="cursor:pointer;margin-bottom:1em"><?php esc_html_e( 'Advanced — choose the model ids yourself, or use the providers directly', 'thallo-visibility' ); ?></summary>
+
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row"><?php esc_html_e( 'Model list', 'thallo-visibility' ); ?></th>
+					<td>
+						<label>
+							<input type="checkbox" name="<?php echo esc_attr( $name ); ?>[models_auto]" value="1" <?php checked( $auto, true ); ?>>
+							<?php esc_html_e( 'Use the models that ship with the plugin (recommended)', 'thallo-visibility' ); ?>
+						</label>
+						<p class="description"><?php esc_html_e( 'Untick to use the ids below instead. They are then yours to keep current — nothing else will update them, and a retired id shows up as a column the report cannot measure.', 'thallo-visibility' ); ?></p>
+					</td>
+				</tr>
+			</table>
+
+			<h3><?php esc_html_e( 'Your own ids, through OpenRouter', 'thallo-visibility' ); ?></h3>
+			<table class="form-table" role="presentation">
+				<?php
+				self::text_field( $name, 'or_model_chatgpt', $s, __( 'ChatGPT model', 'thallo-visibility' ) );
+				self::text_field( $name, 'or_model_claude', $s, __( 'Claude model', 'thallo-visibility' ) );
+				self::text_field( $name, 'or_model_gemini', $s, __( 'Gemini model', 'thallo-visibility' ) );
+				self::text_field( $name, 'or_model_perplexity', $s, __( 'Perplexity model', 'thallo-visibility' ), __( 'Must be a model that searches the web.', 'thallo-visibility' ) );
+				?>
+			</table>
+
+			<h3><?php esc_html_e( 'Your own ids, with the web open', 'thallo-visibility' ); ?></h3>
+			<table class="form-table" role="presentation">
+				<?php
+				self::text_field( $name, 'gr_model_chatgpt', $s, __( 'ChatGPT model', 'thallo-visibility' ), __( 'Same ids as above by default, on purpose: the finding is the gap between the two readings, and a gap measured across two different models is partly a difference between the models.', 'thallo-visibility' ) );
+				self::text_field( $name, 'gr_model_claude', $s, __( 'Claude model', 'thallo-visibility' ) );
+				self::text_field( $name, 'gr_model_gemini', $s, __( 'Gemini model', 'thallo-visibility' ) );
+				?>
+			</table>
+
+			<h3><?php esc_html_e( 'Native keys', 'thallo-visibility' ); ?></h3>
+			<p style="max-width:46em" class="description">
+				<?php esc_html_e( 'Only used when “Native” is selected at the top of this page. Four accounts to keep working instead of one, in exchange for slightly cheaper tokens.', 'thallo-visibility' ); ?>
+			</p>
+			<table class="form-table" role="presentation">
+				<?php
+				self::password_field( $name, 'openai_key', $s, __( 'OpenAI key', 'thallo-visibility' ) );
+				self::password_field( $name, 'anthropic_key', $s, __( 'Anthropic key', 'thallo-visibility' ) );
+				self::password_field( $name, 'google_key', $s, __( 'Google AI Studio key', 'thallo-visibility' ) );
+				self::password_field( $name, 'perplexity_key', $s, __( 'Perplexity key', 'thallo-visibility' ) );
+				self::text_field( $name, 'nv_model_chatgpt', $s, __( 'OpenAI model', 'thallo-visibility' ) );
+				self::text_field( $name, 'nv_model_claude', $s, __( 'Anthropic model', 'thallo-visibility' ) );
+				self::text_field( $name, 'nv_model_gemini', $s, __( 'Gemini model', 'thallo-visibility' ) );
+				self::text_field( $name, 'nv_model_perplexity', $s, __( 'Perplexity model', 'thallo-visibility' ) );
+				?>
+			</table>
+		</details>
 		<?php
 	}
 

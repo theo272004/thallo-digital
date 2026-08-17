@@ -26,6 +26,21 @@ class Thallo_Vis_Settings {
 			'provider_mode'       => 'openrouter',
 
 			/*
+			 * On: the plugin asks the models in Thallo_Vis_Models, which ships
+			 * with the plugin and is reviewed with it. Off: the ids in the fields
+			 * below are used instead.
+			 *
+			 * On by default, and switched on for existing installations by the
+			 * upgrade, because the failure it prevents was silent and real. A
+			 * model id typed into a settings field is correct on the day it is
+			 * typed and ages from then on with nothing on screen to say so — this
+			 * installation was still asking `gpt-4o-mini`, a model from 2024,
+			 * under a heading that reads "what ChatGPT says". The overrides are
+			 * not deleted; they wait under Advanced for whoever turns this off.
+			 */
+			'models_auto'         => 1,
+
+			/*
 			 * Checked against OpenRouter's live catalogue on 2026-08-09.
 			 *
 			 * `anthropic/claude-3.5-haiku` and `google/gemini-2.0-flash-001` were
@@ -173,7 +188,19 @@ class Thallo_Vis_Settings {
 			 * the rest.
 			 */
 
-			'questions'           => 5,
+			/*
+			 * The free tier while there is no paid one: three questions, put to
+			 * three models, nine calls. Enough for the number to mean something —
+			 * named in one answer of three is a different finding from named in
+			 * none — and few enough that a stranger cannot spend much before
+			 * deciding whether to leave an email.
+			 *
+			 * The site ships the same ceiling in MAX_QUESTIONS, but this is the
+			 * one that binds: the site is a static export, so its copy of the
+			 * number is baked in at build time and a cached bundle must not be
+			 * able to ask for more than this agreed to.
+			 */
+			'questions'           => 3,
 			'jobs_per_tick'       => 5,
 			'request_timeout'     => 25,
 
@@ -191,7 +218,11 @@ class Thallo_Vis_Settings {
 			 * a tap. The real gates are further down and cost more to pass:
 			 * phase 2 asks for an email, monitoring asks for an account.
 			 */
-			'rate_per_ip'         => 1,
+			/* Five while we are testing; one is the rule. Testing a change means
+			   running it repeatedly from one address, and a limit that locks out
+			   the person building the thing gets switched off and left off. Put
+			   it back to 1 before this is in front of anybody. */
+			'rate_per_ip'         => 5,
 			'rate_global'         => 200,
 			'retention_days'      => 14,
 
@@ -333,6 +364,7 @@ class Thallo_Vis_Settings {
 		$context               = isset( $input['grounded_context'] ) ? $input['grounded_context'] : 'low';
 		$out['grounded_context'] = in_array( $context, array( 'low', 'medium', 'high' ), true ) ? $context : 'low';
 
+		$out['models_auto']         = empty( $input['models_auto'] ) ? 0 : 1;
 		$out['grounded_enabled']    = empty( $input['grounded_enabled'] ) ? 0 : 1;
 		$out['send_report_to_lead'] = empty( $input['send_report_to_lead'] ) ? 0 : 1;
 		$out['monitoring_enabled']  = empty( $input['monitoring_enabled'] ) ? 0 : 1;
@@ -354,9 +386,25 @@ class Thallo_Vis_Settings {
 	 * not "you were not named", and conflating the two would put a false finding
 	 * in front of someone.
 	 */
+	public static function model_for( $provider, $slot = 'memory' ) {
+		$native = 'openrouter' !== self::get( 'provider_mode' );
+
+		if ( self::get( 'models_auto' ) ) {
+			/* The grounded reading is OpenRouter-only, so its ids are never the
+			   bare native ones. */
+			return Thallo_Vis_Models::recommended( $provider, $slot, 'grounded' === $slot ? false : $native );
+		}
+
+		if ( 'grounded' === $slot ) {
+			return (string) self::get( 'gr_model_' . $provider, '' );
+		}
+
+		return (string) self::get( ( $native ? 'nv_model_' : 'or_model_' ) . $provider, '' );
+	}
+
 	public static function has_model( $provider ) {
 		if ( 'openrouter' === self::get( 'provider_mode' ) ) {
-			return '' !== self::get( 'openrouter_key' ) && '' !== self::get( 'or_model_' . $provider, '' );
+			return '' !== self::get( 'openrouter_key' ) && '' !== self::model_for( $provider );
 		}
 
 		$map = array(
@@ -385,7 +433,7 @@ class Thallo_Vis_Settings {
 		if ( 'openrouter' !== self::get( 'provider_mode' ) ) {
 			return false;
 		}
-		return '' !== self::get( 'openrouter_key' ) && '' !== self::get( 'gr_model_' . $provider, '' );
+		return '' !== self::get( 'openrouter_key' ) && '' !== self::model_for( $provider, 'grounded' );
 	}
 
 	/** True when nothing can be called and the API must return sample data. */

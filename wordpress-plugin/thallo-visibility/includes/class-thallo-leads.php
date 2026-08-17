@@ -81,9 +81,15 @@ class Thallo_Vis_Leads {
 	 * something is listening at the time. So the listener is added around the
 	 * call and taken off again, and the pair is returned together.
 	 *
+	 * @param string $html When the message is a designed one. The plain body is
+	 *                     still passed and still sent — as the text alternative
+	 *                     rather than instead of it. A message with no text part
+	 *                     scores worse with every filter that looks, and some
+	 *                     people do read mail as text.
+	 *
 	 * @return array array( 'ok' => bool, 'error' => string )
 	 */
-	private static function send( $to, $subject, $body ) {
+	private static function send( $to, $subject, $body, $html = '' ) {
 		$captured = '';
 
 		$listener = static function ( $error ) use ( &$captured ) {
@@ -92,9 +98,28 @@ class Thallo_Vis_Leads {
 			}
 		};
 
+		$headers = self::headers();
+		$alt     = null;
+
+		if ( '' !== $html ) {
+			$headers[] = 'Content-Type: text/html; charset=UTF-8';
+
+			/* The text half has to go on through PHPMailer: `wp_mail()` has no
+			   way to say "these two are the same message". */
+			$alt = static function ( $phpmailer ) use ( $body ) {
+				$phpmailer->AltBody = $body; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCase
+			};
+
+			add_action( 'phpmailer_init', $alt );
+		}
+
 		add_action( 'wp_mail_failed', $listener );
-		$ok = wp_mail( $to, $subject, $body, self::headers() );
+		$ok = wp_mail( $to, $subject, '' !== $html ? $html : $body, $headers );
 		remove_action( 'wp_mail_failed', $listener );
+
+		if ( $alt ) {
+			remove_action( 'phpmailer_init', $alt );
+		}
 
 		return array(
 			'ok'    => (bool) $ok,
@@ -281,9 +306,16 @@ class Thallo_Vis_Leads {
 	/**
 	 * The report, sent to the person who asked for it.
 	 *
-	 * Plain text on purpose. The full thing is on screen in front of them; this
-	 * is the copy they forward to a colleague, and a wall of styled HTML from a
-	 * company they met four minutes ago is what gets marked as spam.
+	 * It went out as plain text on the argument that styled HTML from a company
+	 * you met four minutes ago is what gets marked as spam. The argument was
+	 * aimed at the wrong thing: what got it marked as spam was an unauthenticated
+	 * From, and that is fixed above in headers(). What the text-only version cost
+	 * was the report — a monospaced column of numbers is not something anybody
+	 * forwards to a colleague, and being forwarded is most of why it is sent.
+	 *
+	 * So: a designed message, and the text version still goes with it as the
+	 * alternative part rather than being dropped. Both are built here from the
+	 * same figures, in the same order, so they cannot drift apart.
 	 */
 	private static function send_report( array $state ) {
 		$phase1 = $state['phase1'];
@@ -310,9 +342,19 @@ class Thallo_Vis_Leads {
 
 		foreach ( $phase1['providers'] as $provider ) {
 			$label = ucfirst( $provider['provider'] );
-			$lines[] = empty( $provider['error'] )
-				? sprintf( '  %-10s %d of %d answers', $label, $provider['mentions'], count( $phase1['questions'] ) )
-				: sprintf( '  %-10s not measured (%s)', $label, $provider['error'] );
+
+			if ( ! empty( $provider['error'] ) ) {
+				$lines[] = sprintf( '  %-10s not measured (%s)', $label, $provider['error'] );
+				continue;
+			}
+
+			/* Out of the answers this model gave, not the questions it was asked.
+			   The two differ whenever a call fails, and the share of voice above
+			   counts only answers that came back — so dividing by questions here
+			   reported a model whose call failed as having said nothing about the
+			   brand, in a message the reader cannot cross-check against the
+			   screen. */
+			$lines[] = sprintf( '  %-10s %d of %d answers', $label, $provider['mentions'], count( $provider['answers'] ) );
 		}
 
 		if ( ! empty( $phase2['keyInsight'] ) ) {
@@ -347,8 +389,17 @@ class Thallo_Vis_Leads {
 
 		$result = self::send(
 			$state['email'],
-			sprintf( 'Your AI visibility scan — %s', $state['brand'] ),
-			implode( "\n", $lines )
+			/* The figure goes in the subject line. "Your AI visibility scan" says
+			   only that we sent something; the number is the reason to open it,
+			   and it is the same number the screen showed them. */
+			sprintf(
+				/* translators: 1: brand, 2: share of voice percentage. */
+				__( '%1$s: named in %2$d%% of AI answers', 'thallo-visibility' ),
+				$state['brand'],
+				(int) $phase1['sovPct']
+			),
+			implode( "\n", $lines ),
+			Thallo_Vis_Email_Template::report( $state, $phase1, $phase2 )
 		);
 
 		self::record_mail_result( $state['scan_id'], $result['ok'] ? 'sent' : 'failed', $result['error'] );

@@ -19,7 +19,8 @@
  *
  * ## Step 2 — what gets asked
  *
- * The visitor writes their own prompts, up to fifteen. This is a deliberate
+ * The visitor writes their own prompts, up to `MAX_QUESTIONS` — three on the
+ * free tier as it stands. This is a deliberate
  * trade: a fixed question set makes two brands comparable and makes the same
  * brand comparable to itself next month, and letting people write their own
  * gives that up. What it buys is a tool that fits businesses the eight-item

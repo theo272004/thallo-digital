@@ -68,6 +68,17 @@ export interface ProviderResult {
   provider: MemoryProvider;
   /** Exact model id — printed in the audit trail so the run is reproducible. */
   model: string;
+  /**
+   * The model the API said actually answered, when it is not the one we asked
+   * for. Absent in the normal case, including when an alias resolves to its own
+   * dated snapshot — that is the id doing its job.
+   *
+   * Present, it means the call was served from somewhere else, and the audit
+   * trail says so rather than printing the requested id over numbers another
+   * model produced. A reproducible method is the whole claim of this report;
+   * an unverified model id is the quietest way to lose it.
+   */
+  modelUsed?: string;
   /** How many of the questions returned an answer naming the brand. */
   mentions: number;
   /** Rank the brand held in each answer that named it (1 = listed first). */

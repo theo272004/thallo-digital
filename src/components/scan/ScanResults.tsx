@@ -17,9 +17,24 @@ const LOCKED = [
   'A prioritised action plan',
 ];
 
-function toneFor(p: ProviderResult, total: number): { tone: Tone; verdict: string } {
+/**
+ * The denominator is the answers this model actually gave, not the questions it
+ * was asked.
+ *
+ * They are the same number on a clean run and come apart the moment one call
+ * fails — and the headline above these bars has always counted only answers
+ * that came back. Dividing by questions here meant a model that answered three
+ * of five and named the brand in two was drawn at 40% beside a ring reading
+ * 67%, from the same run, with the smaller figure understating the brand for a
+ * reason that was our fault rather than theirs.
+ */
+function shareFor(p: ProviderResult): { answers: number; pct: number } {
+  const answers = p.answers.length;
+  return { answers, pct: answers ? Math.round((p.mentions / answers) * 100) : 0 };
+}
+
+function toneFor(p: ProviderResult, pct: number): { tone: Tone; verdict: string } {
   if (p.error) return { tone: 'off', verdict: 'Unavailable' };
-  const pct = total ? (p.mentions / total) * 100 : 0;
   if (pct >= 40) return { tone: 'on', verdict: 'Recommended' };
   if (pct > 0) return { tone: 'mid', verdict: 'Mentioned' };
   return { tone: 'off', verdict: 'Not mentioned' };
@@ -45,7 +60,6 @@ export default function ScanResults({
   error?: string;
 }) {
   const [email, setEmail] = useState('');
-  const perProvider = phase1.questions.length;
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,8 +90,8 @@ export default function ScanResults({
 
           <div className="flex flex-col gap-4">
             {phase1.providers.map((p) => {
-              const { tone, verdict } = toneFor(p, perProvider);
-              const pct = perProvider ? Math.round((p.mentions / perProvider) * 100) : 0;
+              const { answers, pct } = shareFor(p);
+              const { tone, verdict } = toneFor(p, pct);
               return (
                 <div key={p.provider} className="flex items-center gap-3">
                   <ProviderMark provider={p.provider} />
@@ -91,7 +105,11 @@ export default function ScanResults({
                     {p.error ? '—' : `${pct}%`}
                   </span>
                   <span className="hidden w-[76px] shrink-0 text-right sm:block">
-                    <Micro className="text-gray-400">{p.error ? 'no answer' : `${p.mentions} of ${perProvider}`}</Micro>
+                    {/* "of 4" when a fifth call failed. The count of questions
+                        asked is printed under the audit trail, so a reader can
+                        see the difference rather than be handed a rounder
+                        number that quietly disagrees with the ring. */}
+                    <Micro className="text-gray-400">{p.error ? 'no answer' : `${p.mentions} of ${answers}`}</Micro>
                   </span>
                   <Verdict tone={tone}>{verdict}</Verdict>
                 </div>

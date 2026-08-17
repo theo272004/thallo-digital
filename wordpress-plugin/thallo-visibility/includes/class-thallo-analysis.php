@@ -179,6 +179,7 @@ class Thallo_Vis_Analysis {
 			$hits           = 0;
 			$provider_ranks = array();
 			$errors         = 0;
+			$answered_by    = array();
 
 			foreach ( $questions as $i => $unused ) {
 				$result = isset( $results[ $i ] ) ? $results[ $i ] : null;
@@ -186,6 +187,16 @@ class Thallo_Vis_Analysis {
 				if ( ! $result || ! empty( $result['error'] ) ) {
 					++$errors;
 					continue;
+				}
+
+				/* Tallied rather than taken from the last answer: a router can
+				   serve one call from one model and the next from another, and an
+				   id printed on a report should be the one that produced most of
+				   it. Scans that ran before this was recorded carry no `model`
+				   key and simply contribute nothing here. */
+				if ( ! empty( $result['model'] ) ) {
+					$key                 = (string) $result['model'];
+					$answered_by[ $key ] = isset( $answered_by[ $key ] ) ? $answered_by[ $key ] + 1 : 1;
 				}
 
 				$position = null;
@@ -246,13 +257,31 @@ class Thallo_Vis_Analysis {
 			$mentions += $hits;
 			$total    += count( $answers );
 
-			$providers[] = array(
+			$requested = isset( $state[ $models_key ][ $provider ] ) ? $state[ $models_key ][ $provider ] : '';
+			$used      = '';
+			if ( $answered_by ) {
+				arsort( $answered_by );
+				$used = (string) array_key_first( $answered_by );
+			}
+
+			$row = array(
 				'provider'  => $provider,
-				'model'     => isset( $state[ $models_key ][ $provider ] ) ? $state[ $models_key ][ $provider ] : '',
+				'model'     => $requested,
 				'mentions'  => $hits,
 				'positions' => $provider_ranks,
 				'answers'   => $answers,
 			);
+
+			/* Only when it disagrees with what we asked for. An alias resolving
+			   to its own dated snapshot is the id doing its job and does not need
+			   saying; a different model answering does, because the column is
+			   labelled with an assistant's name and that label is part of the
+			   finding. */
+			if ( '' !== $used && false === Thallo_Vis_LLM::same_model( $requested, $used ) ) {
+				$row['modelUsed'] = $used;
+			}
+
+			$providers[] = $row;
 		}
 
 		return array(

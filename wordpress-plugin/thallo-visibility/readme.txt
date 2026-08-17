@@ -3,7 +3,7 @@ Contributors: thallodigital
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.5.2
+Stable tag: 1.6.0
 License: GPLv2 or later
 
 Backend for the Check My Visibility tool: asks the AI models the buying
@@ -63,6 +63,37 @@ Leads are kept until you delete them. IP addresses are stored only as a salted
 hash, used to count scans per visitor.
 
 == Changelog ==
+
+= 1.6.0 =
+* Which model stands for which assistant now lives in the plugin, dated, and
+  moves when the plugin is updated. A model id typed into a settings field is
+  right on the day it is typed and ages from then on with nothing on screen to
+  say so — this installation was still asking `gpt-4o-mini`, a model from 2024,
+  under a heading reading "what ChatGPT says". Your own ids are still there,
+  under Advanced, and existing ones are kept rather than deleted.
+* Settings → "Check the models": asks each configured model one real question
+  and reports what came back, including which model actually answered. An id in
+  the ChatGPT field belonging to another provider answers every call quite
+  happily and puts the wrong name over the numbers.
+* Every answer records the model the API says produced it, and the audit trail
+  says so when it is not the one asked for.
+* `temperature` goes only to models that accept it. OpenAI's current lineup has
+  dropped it, so sending it always is what made an old id the only one that
+  worked in the ChatGPT slot.
+* A 200 response carrying an error object was read as "empty answer"; it now
+  reports the provider's own sentence, the same one 1.5.1 taught the non-200
+  path to print.
+* The audit trail read each model's answers by position, but a failed call
+  leaves no row — so every verdict after a failure was printed against the wrong
+  question. The per-model bars, and the same line in the report email, counted
+  mentions out of questions asked rather than answers received, disagreeing with
+  the headline on any run where a call failed. The searching half's progress row
+  counted questions it was never going to ask.
+* The report email is a designed message rather than a monospaced column of
+  numbers — tables and inline styles so it survives Outlook, with the plain-text
+  version still sent as the alternative part.
+* The free tier is three questions server-side too, and the per-visitor limit
+  ships at five while the tool is being tested.
 
 = 1.0.0 =
 * First release.

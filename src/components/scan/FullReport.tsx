@@ -324,6 +324,15 @@ function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded
 
   const delta = grounded.sovPct - memory.sovPct;
 
+  /* How many questions were actually put a second time, read off the answers
+     rather than assumed to be all of them. The searching half carries a
+     per-call fee, so the settings screen lets it run over the first few
+     questions only — and this panel said "we asked the same 15 questions
+     twice" over a run of five. The worth of the panel is that the two halves
+     are comparable; a miscounted method note is the first thing that would
+     make a reader doubt it. */
+  const askedTwice = Math.max(0, ...grounded.providers.map((p) => p.answers.length));
+
   /* Ordered by which is most actionable, not by size of the gap. "Findable but
      unknown" is the common case for a good small company and has a clear fix;
      the reverse is rarer and more urgent, because it means the pages are the
@@ -364,7 +373,7 @@ function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded
       <Head
         badge={<Compass size={18} />}
         title="Do they know you, or can they find you?"
-        sub={`We asked the same ${memory.questions.length} questions twice. Once with the models answering from memory, the way they do when nobody is looking anything up. Once with web search switched on, the way most people use them today. Those are different questions about you, and the answers come apart.`}
+        sub={`We asked ${askedTwice === memory.questions.length ? `the same ${askedTwice} questions` : `${askedTwice} of the same ${memory.questions.length} questions`} twice. Once with the models answering from memory, the way they do when nobody is looking anything up. Once with web search switched on, the way most people use them today. Those are different questions about you, and the answers come apart.`}
       />
 
       <div className="mt-7 grid grid-cols-1 gap-px overflow-hidden rounded-xl bg-gray-100 sm:grid-cols-2">

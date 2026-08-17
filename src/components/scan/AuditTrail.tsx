@@ -16,6 +16,14 @@ export default function AuditTrail({ phase1 }: { phase1: ScanPhase1 }) {
   const [open, setOpen] = useState(false);
   const answered = phase1.providers.filter((p) => !p.error);
 
+  /* Keyed on the question index the backend stamped on each answer, not on its
+     position in the array. `answers` holds only the questions that came back —
+     a call that failed leaves no row — so reading it positionally shifted every
+     answer after a failure up by one, and the table then reported model A's
+     verdict on question 4 against question 3. Silently, and only on the runs
+     where something went wrong: exactly the runs somebody would be checking. */
+  const byQuestion = answered.map((p) => new Map(p.answers.map((a) => [a.q, a])));
+
   return (
     <div className="rounded-xl border border-gray-200">
       <button
@@ -53,7 +61,13 @@ export default function AuditTrail({ phase1 }: { phase1: ScanPhase1 }) {
                 <ProviderMark provider={p.provider} />
                 <span>
                   <Micro className="block text-gray-700">{PROVIDER_LABEL[p.provider]}</Micro>
+                  {/* The id we asked for, and — on the rare occasion they differ
+                      — the one that answered. Printing only the first would be
+                      claiming a method we did not run. */}
                   <span className="block font-mono text-[10px] text-gray-400">{p.model}</span>
+                  {p.modelUsed && (
+                    <span className="block font-mono text-[10px] text-amber-700">answered by {p.modelUsed}</span>
+                  )}
                 </span>
               </span>
             ))}
@@ -84,8 +98,11 @@ export default function AuditTrail({ phase1 }: { phase1: ScanPhase1 }) {
                         <span className="text-[13px] font-medium leading-snug text-gray-700">{q}</span>
                       </span>
                     </td>
-                    {answered.map((p) => {
-                      const a = p.answers[i];
+                    {answered.map((p, col) => {
+                      const a = byQuestion[col].get(i);
+                      /* No row means this one question was never answered by
+                         this model. Blank, not a dash: a dash is the mark for
+                         "asked and not named". */
                       if (!a) return <td key={p.provider} className="px-3 py-3 text-right align-top" />;
                       return (
                         <td key={p.provider} className="px-3 py-3 text-right align-top">

@@ -68,6 +68,20 @@ class Thallo_Vis_Runner {
 		$models  = array();
 		$skipped = array();
 
+		/* Once per model id per week, here rather than per call: what a model
+		   accepts decides what goes in the body, and finding that out mid-scan
+		   would mean the fifth question was asked differently from the first. A
+		   lookup that fails changes nothing — the answer stays unknown, and
+		   unknown means the optional parameter is left out. */
+		if ( ! $demo ) {
+			$wanted = array();
+			foreach ( self::MEMORY_PROVIDERS as $provider ) {
+				$wanted[] = Thallo_Vis_Settings::model_for( $provider );
+				$wanted[] = Thallo_Vis_Settings::model_for( $provider, 'grounded' );
+			}
+			Thallo_Vis_Models::learn( $wanted );
+		}
+
 		foreach ( self::MEMORY_PROVIDERS as $provider ) {
 			if ( ! $demo && ! Thallo_Vis_Settings::has_model( $provider ) ) {
 				/* Recorded as skipped rather than queued, so the report can say
@@ -145,13 +159,7 @@ class Thallo_Vis_Runner {
 	}
 
 	private static function model_id( $provider, $demo ) {
-		if ( $demo ) {
-			return 'sample data';
-		}
-
-		return 'openrouter' === Thallo_Vis_Settings::get( 'provider_mode' )
-			? Thallo_Vis_Settings::get( 'or_model_' . $provider, '' )
-			: Thallo_Vis_Settings::get( 'nv_model_' . $provider, '' );
+		return $demo ? 'sample data' : Thallo_Vis_Settings::model_for( $provider );
 	}
 
 	// -----------------------------------------------------------------------
@@ -256,6 +264,12 @@ class Thallo_Vis_Runner {
 				$state['results'][ $item['p'] ][ $item['q'] ] = array(
 					'companies' => $parsed['companies'],
 					'error'     => $parsed['error'],
+					/* Which model the API says answered, kept per answer rather
+					   than per provider. The id we asked for is a setting; this
+					   is evidence, and the two coming apart is the fault worth
+					   surfacing — a report is only reproducible if the model
+					   named on it is the one that produced the numbers. */
+					'model'     => $parsed['model'],
 				);
 
 				unset( $state['queue'][ $position ] );
@@ -355,7 +369,7 @@ class Thallo_Vis_Runner {
 
 			$models_grounded[ $provider ] = $demo
 				? 'sample data'
-				: Thallo_Vis_Settings::get( 'gr_model_' . $provider, '' ) . ':online';
+				: Thallo_Vis_Settings::model_for( $provider, 'grounded' ) . ':online';
 
 			/* The first N, not a sample of them: the audit trail prints the
 			   questions in order and a reader comparing the two halves should be
@@ -376,6 +390,13 @@ class Thallo_Vis_Runner {
 		$state['models_grounded']  = $models_grounded;
 		$state['skipped_grounded'] = $skipped_grounded;
 		$state['grounded_queue']   = $grounded_queue;
+		/* How many calls this half is actually going to make, recorded where the
+		   queue is built. The progress row worked it out as models × every
+		   question — but this half asks only the first `grounded_questions` of
+		   them, so with more questions than that it opened at "30 of 45" before
+		   a call had gone out and finished claiming forty-five answers behind
+		   fifteen. A count of work done should be read off the work. */
+		$state['grounded_total']   = count( $grounded_queue );
 
 		/* 'grounded' leads, and only when there is something to ask. It is the
 		   expensive step and the one the visitor is waiting on, so it runs while
@@ -578,6 +599,7 @@ class Thallo_Vis_Runner {
 				$state['results_grounded'][ $item['p'] ][ $item['q'] ] = array(
 					'companies' => $parsed['companies'],
 					'error'     => $parsed['error'],
+					'model'     => $parsed['model'],
 				);
 
 				unset( $state['grounded_queue'][ $position ] );
@@ -745,7 +767,12 @@ class Thallo_Vis_Runner {
 		/* Shown only once it is real. Before the unlock we do not yet know
 		   whether it will run — the setting is read at unlock — and a locked row
 		   promising a reading that never arrives is worse than no row. */
-		$grounded_total = isset( $state['models_grounded'] ) ? count( $state['models_grounded'] ) * $total : 0;
+		/* A scan already in flight when this deployed has no `grounded_total`,
+		   and models × questions is what it was being counted by, so that is
+		   what it keeps being counted by rather than dividing by zero. */
+		$grounded_total = isset( $state['grounded_total'] )
+			? (int) $state['grounded_total']
+			: ( isset( $state['models_grounded'] ) ? count( $state['models_grounded'] ) * $total : 0 );
 
 		if ( ! $locked && $grounded_total > 0 ) {
 			$left = isset( $state['grounded_queue'] ) ? count( $state['grounded_queue'] ) : 0;
