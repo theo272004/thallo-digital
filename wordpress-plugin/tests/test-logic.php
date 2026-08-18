@@ -46,6 +46,11 @@ function wp_parse_url( $url, $component = -1 ) {
 function wp_json_encode( $v ) {
 	return json_encode( $v );
 }
+/* Sin base de datos no hay cache de capacidades, que es justamente el caso que
+   se quiere probar: `reasons()` cae entonces en el patron estatico. */
+function get_option( $name, $default = false ) {
+	return $default;
+}
 
 $dir = __DIR__ . '/../thallo-visibility/includes/';
 require_once $dir . 'class-thallo-questions.php';
@@ -53,6 +58,9 @@ require_once $dir . 'class-thallo-http.php';
 /* Only the pure half of it is exercised here — `same_model()` and `parse()`
    touch no settings and no network, and the analysis calls the first of them. */
 require_once $dir . 'class-thallo-llm.php';
+/* Solo se ejercita el patron estatico: `reasons()` mira primero la cache de
+   capacidades, que aqui no existe, asi que cae en el. */
+require_once $dir . 'class-thallo-models.php';
 require_once $dir . 'class-thallo-analysis.php';
 require_once $dir . 'class-thallo-tech.php';
 require_once $dir . 'class-thallo-retrieval.php';
@@ -209,6 +217,18 @@ $honest['results']['chatgpt'][1]['model'] = 'openai/gpt-4.1-nano-2025-04-14';
 $honest['results']['chatgpt'][2]['model'] = 'openai/gpt-4.1-nano-2025-04-14';
 $honest_row = Thallo_Vis_Analysis::phase1( $honest )['providers'][0];
 check( 'a snapshot of the id asked for is not a mismatch', isset( $honest_row['modelUsed'] ), false );
+
+echo "=== which models think before answering ===\n";
+/* La deteccion por catalogo puede no llegar: la llamada falla, o el scan corre
+   sin red hacia OpenRouter. Cuando eso pasa, este patron es lo unico que impide
+   que un modelo que razona se quede sin presupuesto y devuelva vacio, que es
+   como Gemini paso una version entera con la columna en blanco. */
+check( 'gemini 3 razona', Thallo_Vis_Models::reasons( 'google/gemini-3.6-flash' ), true );
+check( 'gemini 3 con :online tambien', Thallo_Vis_Models::reasons( 'google/gemini-3.6-flash:online' ), true );
+check( 'la familia gpt-5 razona', Thallo_Vis_Models::reasons( 'openai/gpt-5.6-luna' ), true );
+check( 'gpt-4.1 no', Thallo_Vis_Models::reasons( 'openai/gpt-4.1-nano' ), false );
+check( 'haiku no', Thallo_Vis_Models::reasons( 'anthropic/claude-haiku-4.5' ), false );
+check( 'gemini 2.5 no', Thallo_Vis_Models::reasons( 'google/gemini-2.5-flash' ), false );
 
 echo "=== reading a response ===\n";
 $ok = Thallo_Vis_LLM::parse(

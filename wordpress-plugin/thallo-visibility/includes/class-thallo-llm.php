@@ -43,7 +43,22 @@ class Thallo_Vis_LLM {
 
 			$key   = Thallo_Vis_Settings::get( 'openrouter_key' );
 			$model = Thallo_Vis_Settings::model_for( $provider, 'grounded' );
-			$body  = self::openai_body( $model, $system, $question );
+			/* No JSON mode on this half, and this one is not a preference.
+			 *
+			 * "[Azure] Web Search cannot be used with JSON mode." — the
+			 * provider's own sentence, printed at last by the error reader added
+			 * in 1.5.1. Searching and `response_format: json_object` cannot be
+			 * asked for in the same call, and every grounded ChatGPT call had
+			 * been asking for both. That is the 400 that emptied this column for
+			 * weeks, through three attempts at fixing it: the parameter was
+			 * never the problem, the pair was.
+			 *
+			 * The format is still asked for, in words, by the system prompt —
+			 * and `Thallo_Vis_HTTP::extract_json()` already reads a JSON object
+			 * out of an answer that arrives wrapped in prose or a fence, which is
+			 * exactly the case this creates. What is lost is the guarantee; what
+			 * is gained is the reading existing at all. */
+			$body  = self::openai_body( $model, $system, $question, false );
 
 			/* No `temperature` on this half, deliberately.
 			 *
@@ -360,7 +375,13 @@ class Thallo_Vis_LLM {
 		 * that ignores the instruction still has room to finish the list. */
 		if ( Thallo_Vis_Models::reasons( $model ) ) {
 			$body['reasoning']  = array( 'enabled' => false );
-			$body['max_tokens'] = 1200;
+			/* And room to answer even if the instruction is ignored. Providers
+			   differ on whether reasoning can be switched off at all, and a
+			   model that thinks anyway needs the budget to cover the thinking
+			   and the list. `max_tokens` is a ceiling, not a purchase: what is
+			   billed is what is generated, and the answer this asks for is eight
+			   company names. */
+			$body['max_tokens'] = 1600;
 		}
 
 		/* Perplexity rejects response_format on some models, and it is the one

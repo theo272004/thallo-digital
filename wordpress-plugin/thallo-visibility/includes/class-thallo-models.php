@@ -147,10 +147,32 @@ class Thallo_Vis_Models {
 	 */
 	public static function reasons( $model ) {
 		$caps  = self::caps();
-		$model = self::key( $model );
+		$key   = self::key( $model );
 
-		return isset( $caps[ $model ]['reasoning'] ) && $caps[ $model ]['reasoning'];
+		if ( isset( $caps[ $key ]['reasoning'] ) ) {
+			return (bool) $caps[ $key ]['reasoning'];
+		}
+
+		/* Nothing in the cache, which happens whenever the catalogue call did
+		   not come back — and a lookup that quietly fails must not decide a
+		   model's answer. So the families that reason are named here as well.
+		   Gemini's column stayed empty through a release that was supposed to
+		   fix it, and this is the gap it fell through: the fix was real, the
+		   fact it depended on was missing. */
+		return (bool) preg_match( self::REASONING_FAMILIES, $key );
 	}
+
+	/**
+	 * Model families that think before answering.
+	 *
+	 * A pattern rather than a list of exact ids, because these families gain
+	 * members faster than a plugin ships. Wrong in the safe direction by
+	 * construction: a model wrongly treated as a reasoner is asked not to reason
+	 * — which it was not going to do anyway — and given a bigger ceiling it does
+	 * not use. A reasoner wrongly treated as a plain model returns nothing at
+	 * all.
+	 */
+	const REASONING_FAMILIES = '#^(google/gemini-[3-9]|openai/(gpt-[5-9]|o[1-9])|anthropic/claude-.*-thinking|deepseek/deepseek-r|qwen/qwq)#';
 
 	/** True when we have never looked this model up, or the answer has expired. */
 	public static function is_unknown( $model ) {

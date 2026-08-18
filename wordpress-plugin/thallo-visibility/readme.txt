@@ -3,7 +3,7 @@ Contributors: thallodigital
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.7.2
+Stable tag: 1.7.3
 License: GPLv2 or later
 
 Backend for the Check My Visibility tool: asks the AI models the buying
@@ -64,6 +64,16 @@ hash, used to count scans per visitor.
 
 == Changelog ==
 
+= 1.7.3 =
+* The searching reading stops asking for JSON mode. The provider finally said
+  why every grounded ChatGPT call had been failing: "[Azure] Web Search cannot
+  be used with JSON mode." Search and `response_format` cannot be requested in
+  the same call, and every one of those calls asked for both. Three previous
+  attempts blamed a parameter; it was the pair. The format is still asked for in
+  the prompt, and the parser already reads JSON out of a prose answer.
+* Models that reason are recognised by family as well as by catalogue lookup.
+  The lookup can fail — and when it does, silently — which is how Gemini spent a
+  whole release with an empty column after the release that fixed it.
 = 1.7.2 =
 * ChatGPT is asked as `openai/gpt-5.6-luna` again — the current generation,
   the model a person typing into ChatGPT is talking to. It was pulled once for
