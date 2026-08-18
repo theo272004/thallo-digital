@@ -47,12 +47,23 @@ class Thallo_Vis_Models {
 	 * while the report showed an empty column. A reading that is a generation
 	 * behind beats a reading that does not exist.
 	 *
-	 *   ChatGPT · openai/gpt-4.1-nano. A generation behind, and written down as
-	 *   a retreat rather than a preference. It accepts every parameter this
-	 *   plugin sends and it has OpenAI's own search for the grounded half at the
-	 *   same $0.01 a call. Moving to the GPT-5 family is a one-field experiment
-	 *   now that the provider's own error message is printed — try it from the
-	 *   "Check the models" button before trusting it to a live scan.
+	 *   ChatGPT · openai/gpt-5.6-luna. The model somebody typing into ChatGPT is
+	 *   talking to today, at the same price per token as the nano it replaces.
+	 *
+	 *   It was pulled out once, and it is worth writing down why it is back
+	 *   rather than pretending the first attempt was careless. Luna failed for
+	 *   three reasons at once, and each was found separately:
+	 *     · it does not accept `temperature`, which the memory reading sent to
+	 *       every model — a 400 on every call;
+	 *     · it does not accept `web_search_options`, which the searching reading
+	 *       sent to every model — a 400 on every call of that half too;
+	 *     · and it reasons, so even once those were fixed a 400-token budget
+	 *       would have gone on thinking and come back empty, which is the shape
+	 *       Gemini's failure took.
+	 *   All three are handled now, each from the provider's published parameter
+	 *   list rather than from a guess. Confirm with "Check the models" after any
+	 *   change here: it makes the same call a scan makes and prints what came
+	 *   back.
 	 *
 	 *   Claude · anthropic/claude-haiku-4.5. Still the newest model in its tier;
 	 *   the only step up is Sonnet at five times the price for a reading this
@@ -69,13 +80,13 @@ class Thallo_Vis_Models {
 	 */
 	const RECOMMENDED = array(
 		'memory'   => array(
-			'chatgpt'    => 'openai/gpt-4.1-nano',
+			'chatgpt'    => 'openai/gpt-5.6-luna',
 			'claude'     => 'anthropic/claude-haiku-4.5',
 			'gemini'     => 'google/gemini-3.6-flash',
 			'perplexity' => 'perplexity/sonar',
 		),
 		'grounded' => array(
-			'chatgpt'    => 'openai/gpt-4.1-nano',
+			'chatgpt'    => 'openai/gpt-5.6-luna',
 			'claude'     => 'anthropic/claude-haiku-4.5',
 			'gemini'     => 'google/gemini-3.5-flash-lite',
 		),

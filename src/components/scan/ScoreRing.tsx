@@ -27,7 +27,16 @@ export default function ScoreRing({
   const safe = Math.max(0, Math.min(100, pct));
 
   return (
-    <div className="relative mx-auto" style={{ width: size, height: size }}>
+    /* The caption sits under the ring, not inside it.
+     *
+     * Inside, it had the width of a circle to live in: "across 6 answers with
+     * the web open" wrapped to three lines, pushed the label into the arc and
+     * spilled out of the disc. Anything that varies in length — and a caption
+     * naming a count always does — cannot be laid out in a hole whose width is
+     * fixed by a stroke. The label stays in, because it is short by
+     * construction; the sentence goes below, where it has the column. */
+    <div className="mx-auto flex flex-col items-center" style={{ width: size }}>
+    <div className="relative" style={{ width: size, height: size }}>
       <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
         <circle cx="60" cy="60" r={r} fill="none" stroke="#F2F1ED" strokeWidth="10" />
         <circle
@@ -44,9 +53,12 @@ export default function ScoreRing({
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
         <span className="text-4xl font-bold leading-none tracking-tight text-gray-900 tabular-nums">{safe}%</span>
-        <Micro className="mt-2.5 block max-w-[12ch] leading-tight text-gray-400">{label}</Micro>
-        {caption && <span className="mt-1.5 text-[11px] font-medium text-gray-400">{caption}</span>}
+        <Micro className="mt-2.5 block max-w-[11ch] leading-tight text-gray-400">{label}</Micro>
       </div>
+    </div>
+    {caption && (
+      <span className="mt-3 block text-center text-[11px] font-medium leading-snug text-gray-400">{caption}</span>
+    )}
     </div>
   );
 }

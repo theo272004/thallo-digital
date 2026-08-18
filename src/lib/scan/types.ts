@@ -44,6 +44,10 @@ export const PROVIDER_LOGO: Partial<Record<AnyProvider, string>> = {
   /* Gemini the model wears the Gemini spark; Google AI Overview wears Google's
      "G". They are different products and had been sharing the one mark. */
   gemini: 'gemini.svg',
+  /* Claude was the only one of the three wearing the fallback glyph — a globe,
+     which in a row of three named assistants reads as a provider we could not
+     identify rather than as a missing file. */
+  claude: 'claude.svg',
   'ai-overview': 'google.svg',
   perplexity: 'perplexity.png',
 };

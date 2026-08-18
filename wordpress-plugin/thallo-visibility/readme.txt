@@ -3,7 +3,7 @@ Contributors: thallodigital
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.7.1
+Stable tag: 1.7.2
 License: GPLv2 or later
 
 Backend for the Check My Visibility tool: asks the AI models the buying
@@ -63,6 +63,14 @@ Leads are kept until you delete them. IP addresses are stored only as a salted
 hash, used to count scans per visitor.
 
 == Changelog ==
+
+= 1.7.2 =
+* ChatGPT is asked as `openai/gpt-5.6-luna` again — the current generation,
+  the model a person typing into ChatGPT is talking to. It was pulled once for
+  failing every call, and the cause turned out to be three separate parameters
+  it does not take: `temperature`, `web_search_options` and a token budget
+  that its reasoning spent before it could answer. All three are handled from
+  the provider's published parameter list now.
 
 = 1.7.1 =
 * Reasoning is switched off for models that do it. A reasoning model is charged
