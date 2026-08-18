@@ -364,6 +364,47 @@ ul.thallo-filters {
    different — the reader cannot say what changed, only that something did.
    ══════════════════════════════════════════════════════════════════════════ */
 
+/* Dos reglas que el sitio aplica en globals.css y que este tema no tenía. Sin
+   ellas el navbar del blog y el del resto de páginas no coinciden: medidos a
+   1440px, la barra de allí mide 1283px y la de aquí 1377, y el logo empieza
+   47px más a la izquierda. El lector cruza de una página a otra y ve la barra
+   dar un salto.
+
+   1. El hueco de la barra de scroll, reservado siempre. Una página que scrollea
+      se dibuja en 1425px y una que no, en 1440; sin reservarlo, todo lo
+      centrado se mueve media barra según el largo de la página. El sitio ya
+      arregló esto una vez para sí mismo.
+   2. El rango portátil: entre 1024 y 1700px el contenedor de 1440 del sitio se
+      queda en 90vw. Es donde está la mayoría de las pantallas, así que sin esta
+      regla el blog es más ancho que el sitio casi siempre. */
+html {
+  scrollbar-gutter: stable;
+}
+
+
+/* El sitio usa border-box en todo (viene de Tailwind); WordPress no lo garantiza
+   aquí. Sin esto el `max-width` de la barra se aplicaba al contenido y el
+   relleno de 24px a cada lado más el borde se sumaban por fuera: 1282,5 de tope
+   y 1333 medidos, es decir, 50px más ancha que la misma barra en el sitio. */
+.thallo-nav,
+.thallo-nav *,
+.thallo-drawer,
+.thallo-drawer * {
+  box-sizing: border-box;
+}
+
+/* La flecha, dibujada y no escrita. U+2197 lleva presentacion de emoji y los
+   telefonos la eligen por defecto: el boton acababa con una flecha de color en
+   vez de la de la marca. El sitio la dibuja por eso mismo, y dibujarla aqui
+   tambien es lo que hace que los botones midan lo mismo -- el caracter es 7px
+   mas estrecho que el glifo. */
+.thallo-arrow {
+  display: inline-block;
+  flex-shrink: 0;
+  margin-left: 0.125rem;
+  vertical-align: -0.05em;
+}
+
 .thallo-nav {
   position: fixed;
   top: 0.75rem;
@@ -1332,5 +1373,17 @@ select:focus-visible,
 @media (max-width: 700px) {
   .thallo-hero {
     min-height: 0 !important;
+  }
+}
+
+/* Al final del archivo a propósito: la regla que fija el ancho de la barra
+   vive más arriba, y entre dos declaraciones con la misma especificidad gana la
+   última — un media query no suma especificidad, así que puesta antes no hacía
+   nada. */
+@media (min-width: 1024px) and (max-width: 1699.98px) {
+  .thallo-nav__bar,
+  .thallo-archive > *,
+  .thallo-archive .thallo-scan__panel {
+    max-width: 90vw;
   }
 }
