@@ -324,7 +324,9 @@ class Thallo_Vis_LLM {
 	private static function openai_body( $model, $system, $question, $json_mode = true ) {
 		$body = array(
 			'model'       => $model,
-			'max_tokens'  => 400,
+			/* Replaced below once the model is known — this is only the value a
+			   caller sees if that line is ever removed. */
+			'max_tokens'  => 900,
 			'messages'    => array(
 				array(
 					'role'    => 'system',
@@ -356,33 +358,33 @@ class Thallo_Vis_LLM {
 			$body['temperature'] = 0.2;
 		}
 
-		/* A thinking model, told not to think.
+		/* A thinking model, given room to think — not told to stop.
 		 *
-		 * Reasoning tokens are charged against `max_tokens` before a single
-		 * character of the answer is written, so a reasoning model given a
-		 * 400-token budget spends it deliberating and returns an empty message.
-		 * That is exactly what happened to `google/gemini-3.6-flash`: every call
-		 * came back "Provider returned an empty response", the column rendered
-		 * as "not measured", and the two models that do not reason answered
-		 * normally — which made it look like Gemini's opinion rather than our
-		 * request.
+		 * Telling it to stop was the previous attempt and it is what kept Gemini's
+		 * column empty through two releases: `reasoning: {enabled: false}` comes
+		 * back from Google as `HTTP 400: Reasoning is mandatory for this endpoint
+		 * and cannot be disabled`. The parameter that was meant to rescue the
+		 * reading was the thing killing it.
 		 *
-		 * Off rather than budgeted for, and the reason is the measurement, not
-		 * the bill: this asks which companies a model names in a category. That
-		 * is recall, not a problem to work through, and a model that reasons its
-		 * way to an answer is doing something a person typing the same question
-		 * into the app does not get. The budget is raised anyway, so a model
-		 * that ignores the instruction still has room to finish the list. */
-		if ( Thallo_Vis_Models::reasons( $model ) ) {
-			$body['reasoning']  = array( 'enabled' => false );
-			/* And room to answer even if the instruction is ignored. Providers
-			   differ on whether reasoning can be switched off at all, and a
-			   model that thinks anyway needs the budget to cover the thinking
-			   and the list. `max_tokens` is a ceiling, not a purchase: what is
-			   billed is what is generated, and the answer this asks for is eight
-			   company names. */
-			$body['max_tokens'] = 1600;
-		}
+		 * Tried against both models with the real key, one short question each:
+		 *
+		 *   no reasoning field, 400 tokens    Gemini HTTP 200, finish=length  ← truncated
+		 *   no reasoning field, 1600 tokens   Gemini HTTP 200, finish=stop
+		 *   reasoning enabled:false           Gemini HTTP 400
+		 *   every other shape                 both HTTP 200
+		 *
+		 * So the answer is the boring one: send nothing about reasoning, and give
+		 * the call a ceiling that covers the thinking as well as the list. Fewer
+		 * parameters is fewer things a provider can refuse, and letting the model
+		 * think is also the truer measurement — the assistant a person uses today
+		 * thinks before it answers.
+		 *
+		 * `max_tokens` is a ceiling, not a purchase: what is billed is what is
+		 * generated, and the answer asked for here is eight company names. That is
+		 * why the floor for every model goes up too — the 400 that truncated
+		 * Gemini would truncate the next reasoning model nobody has recognised
+		 * yet, and the ceiling costs nothing when it is not reached. */
+		$body['max_tokens'] = Thallo_Vis_Models::reasons( $model ) ? 1600 : 900;
 
 		/* Perplexity rejects response_format on some models, and it is the one
 		   provider whose answer we want in prose anyway — the citations are the

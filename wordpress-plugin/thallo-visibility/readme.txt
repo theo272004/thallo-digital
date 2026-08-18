@@ -3,7 +3,7 @@ Contributors: thallodigital
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.7.4
+Stable tag: 1.7.5
 License: GPLv2 or later
 
 Backend for the Check My Visibility tool: asks the AI models the buying
@@ -64,6 +64,17 @@ hash, used to count scans per visitor.
 
 == Changelog ==
 
+= 1.7.5 =
+* Gemini answers. Reasoning is no longer switched off — Google refuses that
+  outright ("Reasoning is mandatory for this endpoint and cannot be disabled"),
+  and the parameter meant to rescue the reading was what kept killing it. What
+  the model needed was room: at 400 tokens it spent the budget thinking and the
+  answer came back truncated. Nothing is sent about reasoning now, and the
+  ceiling covers the thinking as well as the list — 1600 for a model that
+  reasons, 900 for the rest, and a ceiling costs nothing when it is not reached.
+* Verified against the real API rather than reasoned about: seven request shapes
+  put to Gemini and to Luna, one short question each. All four models now pass
+  the model check.
 = 1.7.4 =
 * Gemini is asked as `google/gemini-3.7-flash`, in both readings. Newer than the
   3.6 it replaces and half its price on input and output alike. The same id in
