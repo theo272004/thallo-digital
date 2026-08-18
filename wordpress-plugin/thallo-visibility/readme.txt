@@ -3,7 +3,7 @@ Contributors: thallodigital
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.7.3
+Stable tag: 1.7.4
 License: GPLv2 or later
 
 Backend for the Check My Visibility tool: asks the AI models the buying
@@ -64,6 +64,11 @@ hash, used to count scans per visitor.
 
 == Changelog ==
 
+= 1.7.4 =
+* Gemini is asked as `google/gemini-3.7-flash`, in both readings. Newer than the
+  3.6 it replaces and half its price on input and output alike. The same id in
+  both halves, because the finding is the gap between them and a gap measured
+  across two different models is partly a difference between the models.
 = 1.7.3 =
 * The searching reading stops asking for JSON mode. The provider finally said
   why every grounded ChatGPT call had been failing: "[Azure] Web Search cannot

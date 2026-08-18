@@ -69,11 +69,17 @@ class Thallo_Vis_Models {
 	 *   the only step up is Sonnet at five times the price for a reading this
 	 *   size.
 	 *
-	 *   Gemini · google/gemini-3.6-flash for memory, 3.5-flash-lite with the web
-	 *   open, where the search excerpts make prompt tokens the bill. Checked on
-	 *   2026-08-17: `google/gemini-3.7-flash` exists, is served, and is cheaper
-	 *   than 3.6 on both halves — the obvious next move, and deliberately not
-	 *   made blind. Check it first.
+	 *   Gemini · google/gemini-3.7-flash, in both halves. Newer than the 3.6 it
+	 *   replaces and half its price on input and output alike, which is the rare
+	 *   case where the newer model is also the cheaper one and there is nothing
+	 *   to weigh.
+	 *
+	 *   The same id in both readings, as with the other two: the finding is the
+	 *   gap between memory and searching, and a gap measured across two
+	 *   different models is partly a difference between the models. It cost
+	 *   0.075 per million prompt tokens over the lite it replaces on the
+	 *   searching half — fractions of a cent on a scan — and bought a comparison
+	 *   that means what it says.
 	 *
 	 *   Perplexity · perplexity/sonar. The base search model; the pro tiers buy
 	 *   depth this reading does not use.
@@ -82,13 +88,13 @@ class Thallo_Vis_Models {
 		'memory'   => array(
 			'chatgpt'    => 'openai/gpt-5.6-luna',
 			'claude'     => 'anthropic/claude-haiku-4.5',
-			'gemini'     => 'google/gemini-3.6-flash',
+			'gemini'     => 'google/gemini-3.7-flash',
 			'perplexity' => 'perplexity/sonar',
 		),
 		'grounded' => array(
 			'chatgpt'    => 'openai/gpt-5.6-luna',
 			'claude'     => 'anthropic/claude-haiku-4.5',
-			'gemini'     => 'google/gemini-3.5-flash-lite',
+			'gemini'     => 'google/gemini-3.7-flash',
 		),
 	);
 
