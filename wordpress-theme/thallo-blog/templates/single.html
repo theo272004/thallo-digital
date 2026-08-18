@@ -19,15 +19,20 @@
 <span aria-hidden="true" class="wp-block-cover__background has-ink-background-color has-background-dim-70 has-background-dim"></span>
 <div class="wp-block-cover__inner-container">
 
-<!-- wp:paragraph {"fontSize":"small","className":"thallo-hero__back","style":{"spacing":{"margin":{"bottom":"var:preset|spacing|40"}}}} -->
-<p class="thallo-hero__back has-small-font-size" style="margin-bottom:var(--wp--preset--spacing--40)"><a href="https://thallodigital.com/blog/">Notes</a></p>
-<!-- /wp:paragraph -->
+<!-- Where you are and how long this takes, in the corner.
 
-<!-- wp:group {"className":"thallo-hero__meta","style":{"spacing":{"blockGap":"0.75rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
-<div class="wp-block-group thallo-hero__meta">
-<!-- wp:post-terms {"term":"category","fontSize":"small"} /-->
-<!-- wp:post-date {"format":"j F Y","fontSize":"small"} /-->
-<!-- wp:shortcode {"fontSize":"small"} -->
+     It was stacked over the title at the width of the text column, which gave
+     a date and a reading time the same standing as the headline they sit
+     above. Neither is why anybody opened the page. In the corner, on one line,
+     they are chrome: there when looked for, out of the way when not. -->
+<!-- wp:group {"className":"thallo-hero__top","style":{"spacing":{"blockGap":"0.6rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
+<div class="wp-block-group thallo-hero__top">
+<!-- wp:paragraph {"className":"thallo-hero__back"} -->
+<p class="thallo-hero__back"><a href="https://thallodigital.com/blog/">Blog</a></p>
+<!-- /wp:paragraph -->
+<!-- wp:post-terms {"term":"category"} /-->
+<!-- wp:post-date {"format":"j F Y"} /-->
+<!-- wp:shortcode -->
 [thallo_reading_time]
 <!-- /wp:shortcode -->
 </div>

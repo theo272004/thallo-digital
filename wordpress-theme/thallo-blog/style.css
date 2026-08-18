@@ -1227,29 +1227,80 @@ select:focus-visible,
    fifth, and the fifth is the one Camila will want to use. */
 .thallo-hero {
   overflow: hidden;
+  position: relative;
+}
+/* El contenedor interno del cover viene posicionado, así que una caja absoluta
+   dentro se cuelga de él — de la columna de texto, no del panel. Devolverlo a
+   `static` es lo que hace que la esquina sea la esquina. */
+.thallo-hero .wp-block-cover__inner-container {
+  position: static;
 }
 .thallo-hero .wp-block-cover__inner-container > * {
   color: #fff;
 }
+/* The corner line: where you are, when it was written, how long it takes.
+   Absolute rather than in the flow, because in the flow it inherits the text
+   column's left edge and lines up with the headline — which is what gave a
+   date the same standing as the title. Pinned to the panel's own padding it
+   reads as the frame around the piece instead of as the first thing in it. */
+.thallo-hero .wp-block-cover__inner-container > .thallo-hero__top,
+.thallo-hero__top {
+  position: absolute;
+  top: 1.6rem;
+  left: 2rem;
+  right: 2rem;
+  z-index: 2;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+.thallo-hero .wp-block-cover__inner-container > .thallo-hero__top {
+  /* Gana a la regla que pinta de blanco todo lo que hay dentro del cover: esta
+     línea es marco, no texto, y en blanco puro compite con el titular. */
+  color: rgba(255, 255, 255, 0.45);
+  /* Y al layout "constrained" del cover, que le pone `margin-inline:auto` y el
+     ancho de la columna de texto a cada hijo. En una caja absoluta ese margen
+     no se ve como un centrado: se suma al `left` y la deja justo donde empieza
+     el titular, que es de donde la queríamos sacar. */
+  margin: 0;
+  width: auto;
+  max-width: none;
+}
+.thallo-hero__top > *,
+.thallo-hero__top > * a {
+  margin: 0;
+  font-size: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+}
+/* A dot between each pair, drawn rather than typed, so a missing category does
+   not leave a separator with nothing on one side of it. */
+.thallo-hero__top > * + *::before {
+  content: '·';
+  margin-right: 0.6rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+.thallo-hero__top a {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+}
+.thallo-hero__top a:hover {
+  color: #fff;
+}
 .thallo-hero__back a {
-  color: rgba(255, 255, 255, 0.7);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.thallo-hero__back a:hover {
-  color: #fff;
-}
-.thallo-hero__meta {
-  align-items: center;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.65);
-}
-.thallo-hero__meta a {
-  color: rgba(255, 255, 255, 0.9);
-  text-decoration: none;
+@media (max-width: 700px) {
+  .thallo-hero__top {
+    top: 1.25rem;
+    left: 1.25rem;
+    right: 1.25rem;
+  }
 }
 .thallo-hero__title {
   color: #fff;
