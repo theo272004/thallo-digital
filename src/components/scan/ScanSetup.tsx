@@ -342,6 +342,38 @@ export default function ScanSetup({
                 type="text"
                 value={question}
                 onChange={(e) => editQuestion(i, e.target.value)}
+                onPaste={(e) => {
+                  /* A list pasted in one go becomes a list.
+                   *
+                   * An <input> flattens newlines, so pasting three questions
+                   * into one field silently produced one 200-character question
+                   * with all three inside it — and the scan then asked that,
+                   * three times, of three models. It looked like a typo in the
+                   * report and it was really the form throwing the shape of what
+                   * was pasted away. Writing questions somewhere else and
+                   * bringing them over is the normal way to arrive here, so the
+                   * form should expect it. */
+                  const lines = e.clipboardData
+                    .getData('text')
+                    .split(/\r?\n/)
+                    .map((l) => l.trim())
+                    .filter(Boolean);
+
+                  if (lines.length < 2) return;
+                  e.preventDefault();
+
+                  setQuestions((prev) => {
+                    const next = [...prev];
+                    /* Fills from the field that was pasted into, and stops at
+                       the ceiling rather than dropping the overflow silently —
+                       the counter above says how many were taken. */
+                    lines.forEach((line, offset) => {
+                      const at = i + offset;
+                      if (at < MAX_QUESTIONS) next[at] = line.slice(0, 200);
+                    });
+                    return next.slice(0, MAX_QUESTIONS);
+                  });
+                }}
                 onKeyDown={(e) => {
                   /* Enter adds the next row instead of submitting — this list
                      is the whole screen, and typing fifteen questions should

@@ -3,7 +3,7 @@ Contributors: thallodigital
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.7.0
+Stable tag: 1.7.1
 License: GPLv2 or later
 
 Backend for the Check My Visibility tool: asks the AI models the buying
@@ -63,6 +63,18 @@ Leads are kept until you delete them. IP addresses are stored only as a salted
 hash, used to count scans per visitor.
 
 == Changelog ==
+
+= 1.7.1 =
+* Reasoning is switched off for models that do it. A reasoning model is charged
+  its thinking against `max_tokens` before it writes a character of the answer,
+  so `google/gemini-3.6-flash` spent a 400-token budget deliberating and
+  returned nothing — "Provider returned an empty response", on every question,
+  while the two models that do not reason answered normally. The column read as
+  Gemini having no opinion about the brand.
+* Its own version number, which 1.7.0 did not get. The fix above shipped inside
+  1.7.0 after 1.7.0 had already been installed, so there was no way to tell from
+  the plugins screen which of the two builds was running — and the obvious
+  reading of a scan that still failed was that the fix had not worked.
 
 = 1.7.0 =
 * The contact forms have a backend. Both of them had an empty endpoint, so
