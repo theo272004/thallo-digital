@@ -3,12 +3,28 @@
 <!-- wp:group {"tagName":"main","style":{"spacing":{"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60"}}},"layout":{"type":"constrained","contentSize":"44rem","wideSize":"72rem"}} -->
 <main class="wp-block-group" style="padding-top:var(--wp--preset--spacing--60);padding-bottom:var(--wp--preset--spacing--60)">
 
-<!-- wp:paragraph {"fontSize":"small","textColor":"grey-500","style":{"spacing":{"margin":{"bottom":"var:preset|spacing|40"}}}} -->
-<p class="has-grey-500-color has-text-color has-small-font-size" style="margin-bottom:var(--wp--preset--spacing--40)"><a href="https://thallodigital.com/blog/">Notes</a></p>
+<!-- The opening, on the photograph.
+
+     The picture used to sit under the excerpt as an illustration, which is the
+     one job it was not doing: it is the only thing on the page that says what
+     the piece feels like before a word is read. As the ground under the title
+     it does that work, and the article starts on the white below it — the
+     reading measure is unaffected, which is the thing a hero usually costs.
+
+     `wp:cover` with `useFeaturedImage` rather than a background-image in CSS,
+     so the editor shows the writer the same thing the reader gets, and a post
+     with no picture falls back to the ink overlay instead of a broken panel. -->
+<!-- wp:cover {"useFeaturedImage":true,"dimRatio":70,"overlayColor":"ink","isUserOverlayColor":true,"minHeight":460,"minHeightUnit":"px","align":"wide","className":"thallo-hero","style":{"border":{"radius":"24px"},"spacing":{"padding":{"top":"var:preset|spacing|60","bottom":"var:preset|spacing|60","left":"var:preset|spacing|50","right":"var:preset|spacing|50"},"margin":{"bottom":"var:preset|spacing|60"}}},"layout":{"type":"constrained","contentSize":"44rem"}} -->
+<div class="wp-block-cover alignwide thallo-hero" style="border-radius:24px;margin-bottom:var(--wp--preset--spacing--60);padding-top:var(--wp--preset--spacing--60);padding-right:var(--wp--preset--spacing--50);padding-bottom:var(--wp--preset--spacing--60);padding-left:var(--wp--preset--spacing--50);min-height:460px">
+<span aria-hidden="true" class="wp-block-cover__background has-ink-background-color has-background-dim-70 has-background-dim"></span>
+<div class="wp-block-cover__inner-container">
+
+<!-- wp:paragraph {"fontSize":"small","className":"thallo-hero__back","style":{"spacing":{"margin":{"bottom":"var:preset|spacing|40"}}}} -->
+<p class="thallo-hero__back has-small-font-size" style="margin-bottom:var(--wp--preset--spacing--40)"><a href="https://thallodigital.com/blog/">Notes</a></p>
 <!-- /wp:paragraph -->
 
-<!-- wp:group {"style":{"spacing":{"blockGap":"0.75rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
-<div class="wp-block-group">
+<!-- wp:group {"className":"thallo-hero__meta","style":{"spacing":{"blockGap":"0.75rem"}},"layout":{"type":"flex","flexWrap":"wrap"}} -->
+<div class="wp-block-group thallo-hero__meta">
 <!-- wp:post-terms {"term":"category","fontSize":"small"} /-->
 <!-- wp:post-date {"format":"j F Y","fontSize":"small"} /-->
 <!-- wp:shortcode {"fontSize":"small"} -->
@@ -17,11 +33,13 @@
 </div>
 <!-- /wp:group -->
 
-<!-- wp:post-title {"level":1,"fontSize":"xx-large","style":{"spacing":{"margin":{"top":"1.25rem","bottom":"var:preset|spacing|40"}}}} /-->
+<!-- wp:post-title {"level":1,"fontSize":"xx-large","className":"thallo-hero__title","style":{"spacing":{"margin":{"top":"1.25rem","bottom":"var:preset|spacing|40"}}}} /-->
 
-<!-- wp:post-excerpt {"fontSize":"large","style":{"spacing":{"margin":{"bottom":"var:preset|spacing|50"}}}} /-->
+<!-- wp:post-excerpt {"fontSize":"large","className":"thallo-hero__lead"} /-->
 
-<!-- wp:post-featured-image {"align":"wide","aspectRatio":"21/9","style":{"border":{"radius":"18px"},"spacing":{"margin":{"bottom":"var:preset|spacing|50"}}}} /-->
+</div>
+</div>
+<!-- /wp:cover -->
 
 <!-- The article, with its contents beside it.
 

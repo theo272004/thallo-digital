@@ -275,7 +275,20 @@ export function Verdict({ tone, children }: { tone: Tone; children: React.ReactN
 }
 
 /** A dense readout cell — the console's headline figures. */
-export function Stat({ value, label, muted = false }: { value: string; label: string; muted?: boolean }) {
+export function Stat({
+  value,
+  label,
+  note,
+  muted = false,
+}: {
+  value: string;
+  label: string;
+  /** What the figure means, in the reader's words. A number with a name is
+      still not a finding: "Retrieval / 100" tells a client nothing they can act
+      on, and a client who cannot read a number decides it was invented. */
+  note?: string;
+  muted?: boolean;
+}) {
   return (
     <div className="px-4 py-4 first:pl-0">
       <p
@@ -289,6 +302,7 @@ export function Stat({ value, label, muted = false }: { value: string; label: st
           machine's column headers, which is the dialect the setup card — the
           screen right before this one — does not speak. */}
       <span className="mt-2 block text-[12px] font-semibold leading-snug text-gray-500">{label}</span>
+      {note && <span className="mt-1 block text-[11px] font-medium leading-snug text-gray-400">{note}</span>}
     </div>
   );
 }

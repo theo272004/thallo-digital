@@ -34,7 +34,10 @@ function shareFor(p: ProviderResult): { answers: number; pct: number } {
 }
 
 function toneFor(p: ProviderResult, pct: number): { tone: Tone; verdict: string } {
-  if (p.error) return { tone: 'off', verdict: 'Unavailable' };
+  /* "Unavailable", not "Not mentioned". The row for a model we could not reach
+     must not look like the row for a model that did not name the brand — one is
+     our fault and the other is the finding. */
+  if (p.error) return { tone: 'off', verdict: 'Not measured' };
   if (pct >= 40) return { tone: 'on', verdict: 'Recommended' };
   if (pct > 0) return { tone: 'mid', verdict: 'Mentioned' };
   return { tone: 'off', verdict: 'Not mentioned' };
@@ -109,7 +112,7 @@ export default function ScanResults({
                         asked is printed under the audit trail, so a reader can
                         see the difference rather than be handed a rounder
                         number that quietly disagrees with the ring. */}
-                    <Micro className="text-gray-400">{p.error ? 'no answer' : `${p.mentions} of ${answers}`}</Micro>
+                    <Micro className="text-gray-400">{p.error ? 'our end' : `${p.mentions} of ${answers}`}</Micro>
                   </span>
                   <Verdict tone={tone}>{verdict}</Verdict>
                 </div>

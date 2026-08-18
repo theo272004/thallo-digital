@@ -1217,3 +1217,69 @@ select:focus-visible,
 .thallo-card__media a:focus-visible {
   outline-offset: -3px;
 }
+
+
+/* ── The article's opening, on its photograph ──────────────────────────────
+   Everything inside the cover is white, and stays white whatever the picture
+   is: the overlay is a flat 70% of ink rather than a gradient, so there is no
+   corner of a photograph where the type lands on something bright. A hero that
+   is legible on four out of five images is a hero that is illegible on the
+   fifth, and the fifth is the one Camila will want to use. */
+.thallo-hero {
+  overflow: hidden;
+}
+.thallo-hero .wp-block-cover__inner-container > * {
+  color: #fff;
+}
+.thallo-hero__back a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.thallo-hero__back a:hover {
+  color: #fff;
+}
+.thallo-hero__meta {
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.65);
+}
+.thallo-hero__meta a {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+}
+.thallo-hero__title {
+  color: #fff;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+/* The excerpt is the promise the title makes, so it reads as prose rather than
+   as a caption — the same size it had on white, with enough contrast against
+   the photograph to be read rather than glanced at. */
+.thallo-hero__lead {
+  margin: 0;
+  max-width: 46ch;
+  line-height: 1.6;
+}
+/* The excerpt block renders the text in a child paragraph that carries the
+   theme's own grey, so colouring the wrapper did nothing — grey on a
+   photograph, which is the one combination that cannot be read. The child is
+   what has to be told. */
+.thallo-hero__lead .wp-block-post-excerpt__excerpt {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+}
+.thallo-hero__lead .wp-block-post-excerpt__more-text {
+  display: none;
+}
+/* The picture leads on a phone as much as on a laptop, but 460px of it under a
+   title that now wraps to four lines is a screen and a half before the article
+   starts. */
+@media (max-width: 700px) {
+  .thallo-hero {
+    min-height: 0 !important;
+  }
+}

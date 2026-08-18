@@ -65,7 +65,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
         <Head
           badge={<FileText size={18} />}
           title={`The full report for ${phase1.brand}`}
-          sub={`Measured against ${phase1.domain}. Every figure below traces to a row further down — nothing here is an estimate.`}
+          sub={`Measured against ${phase1.domain}. Every figure below traces to a row further down — nothing here is an estimate. The grade averages the three scores under the ring.`}
           chip={phase2.grade}
         />
 
@@ -112,14 +112,27 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
                   reader who wants one number has it above; a reader who wants
                   to know what changed when the models looked has it here. */}
               {grounded ? (
-                <Stat value={`${phase1.sovPct}%`} label="From memory · not searching" />
+                <Stat
+                  value={`${phase1.sovPct}%`}
+                  label="From memory · not searching"
+                  note="What the models already knew, with the web shut"
+                />
               ) : (
                 <Stat value={`${phase1.sovPct}%`} label="AI share of voice" />
               )}
-              <Stat value={`${phase2.techScore}`} label={`Technical / ${maxTech}`} />
+              <Stat
+                value={`${phase2.techScore}`}
+                label={`Your site · ${phase2.techScore} of ${maxTech}`}
+                note="Whether the crawlers can read you at all"
+              />
               <Stat
                 value={phase2.serpScore < 0 ? '—' : String(phase2.serpScore)}
-                label="Retrieval / 100"
+                label="Live retrieval / 100"
+                note={
+                  phase2.serpScore < 0
+                    ? 'Not measured on this scan'
+                    : 'Whether Perplexity and Google can find you now'
+                }
                 muted={phase2.serpScore < 0}
               />
             </div>
@@ -418,7 +431,17 @@ function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded
                 {PROVIDER_LABEL[g.provider]}
               </span>
               {gPct === null ? (
-                <span className="text-[12px] font-medium text-gray-400">{g.error ?? 'not measured'}</span>
+                /* A model that could not be reached is a fault at our end, and
+                   the report has to say so in those words. It printed the raw
+                   provider error — "every request failed — Provider returned an
+                   empty response" — beside two models that answered, which
+                   reads as this model having nothing to say about the brand.
+                   The detail stays, small and grey, because it is what makes
+                   the failure fixable. */
+                <span className="flex flex-col items-start gap-0.5">
+                  <span className="text-[12px] font-medium text-gray-500">Could not be reached — not a finding</span>
+                  {g.error && <span className="font-mono text-[10px] text-gray-300">{g.error}</span>}
+                </span>
               ) : (
                 <>
                   <div className="min-w-0 flex-1">
