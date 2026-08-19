@@ -175,7 +175,7 @@ export default function ScanResults({
           </div>
 
           <Tint className="w-full">
-            <Micro className="text-[#39471D]">Still locked</Micro>
+            <Micro className="text-[#CBD0AC]">Still locked</Micro>
             <ul className="mt-4 flex flex-col gap-3">
               {LOCKED.map((l) => (
                 <li key={l} className="flex items-start gap-2.5">
@@ -184,14 +184,14 @@ export default function ScanResults({
                     width="13"
                     height="13"
                     fill="none"
-                    stroke="#39471D"
+                    stroke="#CBD0AC"
                     strokeWidth="2.2"
                     className="mt-0.5 shrink-0"
                   >
                     <rect x="4" y="11" width="16" height="10" rx="2" />
                     <path d="M8 11V7a4 4 0 0 1 8 0v4" />
                   </svg>
-                  <span className="text-[13px] font-medium leading-snug text-gray-600">{l}</span>
+                  <span className="text-[13px] font-medium leading-snug text-[#E7ECD9]">{l}</span>
                 </li>
               ))}
             </ul>

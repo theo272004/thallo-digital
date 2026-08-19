@@ -92,9 +92,9 @@ export default function ScanProgress({
         </div>
 
         <Tint edged className="mt-7 flex items-start gap-3">
-          <Spinner className="mt-0.5 h-4 w-4 shrink-0" />
-          <p className="text-[12.5px] font-medium leading-relaxed text-[#55672E]">
-            <strong className="font-bold">Nothing here is on a timer.</strong>{' '}
+          <Spinner className="mt-0.5 h-4 w-4 shrink-0 text-[#CBD0AC]" />
+          <p className="text-[12.5px] font-medium leading-relaxed text-[#E7ECD9]">
+            <strong className="font-bold text-white">Nothing here is on a timer.</strong>{' '}
             Each row above finishes when that model actually answers, so a slow one holds the line up — which is the
             point. A bar that filled at a steady rate would be telling you nothing at all.
           </p>

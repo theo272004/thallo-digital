@@ -292,10 +292,25 @@ class Thallo_Vis_Questions {
 			sprintf( 'Recommend companies that a buyer in %s could actually hire — local and international firms both count, but a company that does not serve that market does not.', $country ),
 			'Answer with the companies you would genuinely recommend, most recommended first.',
 			'Only name real companies you actually know of. Do not invent names, and do not pad the list to reach a length.',
+			/* The category test. Without it, "which web design studio in
+			   Barranquilla" came back with Google and Accenture: a model asked
+			   for vendors and short of local ones reaches for the biggest name
+			   adjacent to the industry, and a report then prints Google as a
+			   competitor to a five-person studio. */
+			'Name only companies whose actual business is the thing being asked for. A search engine, a marketplace, a software platform or a global consultancy that merely touches the category is not a vendor for it.',
+			/* And the locality test. The country line above says who is asking;
+			   this one says it is the question, not the buyer's passport, that
+			   decides how local the answer has to be. */
+			'When the question names a city or a region, prefer firms that actually operate there. A national or international name belongs in the list only if a buyer in that place would realistically hire it for this.',
 			'If you do not know of any suitable companies, return an empty list.',
 			'Respond with JSON only, in exactly this shape: {"companies": ["Company A", "Company B"]}.',
 			'Use each company\'s common trading name, without a legal suffix, a description or a URL.',
-			'Return between 0 and 8 names.',
+			/* "Between 0 and 8" read as a target and got treated as one. An
+			   owner checking the tool by hand watched ChatGPT decline to name
+			   anybody without searching, then name exactly one company when
+			   pressed — while our own call to the same model returned a
+			   confident eight. The ceiling was doing that. */
+			'Return at most 8 names. A short list you are sure of is a better answer than a long one: three companies you actually know beats eight that include guesses.',
 		);
 
 		/* Company names are proper nouns and must come back unaltered whatever

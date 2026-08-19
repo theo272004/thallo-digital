@@ -95,10 +95,12 @@ export function Badge({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** The olive-tint pill that carries a count or a status beside a heading. */
+/** The olive pill that carries a count or a status beside a heading. Solid and
+    white-lettered, for the same reason the block above is: at 10% opacity it
+    was a grey pill with green text on it. */
 export function Chip({ children }: { children: React.ReactNode }) {
   return (
-    <span className="shrink-0 rounded-full bg-[#39471D]/10 px-3.5 py-2 text-[12px] font-bold tabular-nums text-[#39471D]">
+    <span className="shrink-0 rounded-full bg-[#39471D] px-3.5 py-2 text-[12px] font-bold tabular-nums text-white">
       {children}
     </span>
   );
@@ -139,11 +141,24 @@ export function Head({
 }
 
 /**
- * The olive tint block — guidance, findings, anything that is a remark about
- * the data rather than the data itself.
+ * The olive block — guidance, findings, anything that is a remark about the
+ * data rather than the data itself.
  *
- * `edged` draws the border the setup card's hint carries; the plain one is the
- * flat wash used for the email block and the key insight.
+ * Deep green with white type, not the near-white wash it used to be. At
+ * #F4FAF5 against a white panel the block was a tint you had to look for: the
+ * key insight — the one sentence on the report that says what the numbers mean
+ * — read as a faintly shaded paragraph rather than as the conclusion. The dark
+ * ground is the console's own colour and gives the block the weight its content
+ * already had.
+ *
+ * `edged` is kept as a distinction between the two uses — guidance beside a
+ * field, against a finding about the data — but both are now dark; the edged
+ * one simply carries a lighter rule so it reads as an aside rather than as a
+ * verdict.
+ *
+ * White on #39471D is 10.0:1, so every call site can use plain white and the
+ * softer #CBD0AC (6.3:1) for anything secondary. What no longer works inside
+ * one of these is grey body text, and the call sites were updated with it.
  */
 export function Tint({
   children,
@@ -155,7 +170,11 @@ export function Tint({
   className?: string;
 }) {
   return (
-    <div className={`rounded-xl p-4 sm:p-5 ${edged ? 'border border-[#D9E2C8] bg-[#F7FAF2]' : 'bg-[#F4FAF5]'} ${className}`}>
+    <div
+      className={`rounded-xl p-4 sm:p-5 ${
+        edged ? 'border border-[#55672E] bg-[#39471D]' : 'bg-[#39471D]'
+      } ${className}`}
+    >
       {children}
     </div>
   );
@@ -269,8 +288,16 @@ export function Meter({ pct, tone = 'olive' }: { pct: number; tone?: 'olive' | '
 export type Tone = 'on' | 'mid' | 'off';
 
 export function Verdict({ tone, children }: { tone: Tone; children: React.ReactNode }) {
+  /* `mid` was pale green on green — the middle of three states rendered
+     lighter than the negative one below it, so a partial result read as the
+     weakest of the three. It is olive with white type now, separated from `on`
+     by the rule around it rather than by being washed out. */
   const s =
-    tone === 'on' ? 'bg-[#39471D] text-white' : tone === 'mid' ? 'bg-[#E7ECD9] text-[#39471D]' : 'bg-gray-100 text-gray-600';
+    tone === 'on'
+      ? 'bg-[#39471D] text-white'
+      : tone === 'mid'
+        ? 'bg-[#55672E] text-white'
+        : 'bg-gray-100 text-gray-600';
   return <Micro className={`shrink-0 whitespace-nowrap rounded-sm px-2 py-1 ${s}`}>{children}</Micro>;
 }
 
@@ -307,11 +334,18 @@ export function Stat({
   );
 }
 
-/** Platform mark. No logo is invented — providers without a file get a glyph. */
+/** Platform mark. No logo is invented — providers without a file get a glyph.
+ *
+ * Bare, not boxed. Each mark used to sit in a bordered white tile, which put a
+ * card inside a card inside a card — a logo in a box, in a bordered row, in a
+ * panel — and made five identical frames the loudest thing in a legend whose
+ * subject is five different companies. These are already recognisable shapes;
+ * the frame was only ever telling the eye where one logo stopped, which the
+ * gap beside it does anyway. */
 export function ProviderMark({ provider }: { provider: AnyProvider }) {
   const file = PROVIDER_LOGO[provider];
   return (
-    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-gray-200 bg-white p-1">
+    <span className="flex h-6 w-6 shrink-0 items-center justify-center">
       {file ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -332,8 +366,15 @@ export function ProviderMark({ provider }: { provider: AnyProvider }) {
   );
 }
 
+/** Takes its colour from the text colour around it — `border-current` rather
+    than a hardcoded olive, so the same spinner works on a white panel and
+    inside a dark green block, where an olive ring on olive was invisible. */
 export function Spinner({ className = '' }: { className?: string }) {
-  return <span className={`block animate-spin rounded-full border-2 border-[#39471D] border-t-transparent ${className}`} />;
+  return (
+    <span
+      className={`block animate-spin rounded-full border-2 border-current border-t-transparent text-[#39471D] ${className}`}
+    />
+  );
 }
 
 /** Inline error. One place, so the wording and the colour never drift. */

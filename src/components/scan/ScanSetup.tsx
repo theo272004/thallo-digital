@@ -340,14 +340,14 @@ export default function ScanSetup({
             {/* The one thing that silently invalidates a scan, said before the
                 first keystroke rather than after the results. */}
             <Tint edged className="flex items-start gap-3">
-              <Sparkles size={19} className="mt-0.5 shrink-0 text-[#39471D]" />
+              <Sparkles size={19} className="mt-0.5 shrink-0 text-[#CBD0AC]" />
               {/* The example is the generated question for this industry and market,
                   not a hardcoded English one — a Spanish scan shown an English
                   sample teaches the wrong shape. Written as a template literal
                   because `{expr} companies` loses its space the moment a formatter
                   rewraps the line; that bug has shipped here before. */}
-              <p className="text-[12.5px] font-medium leading-relaxed text-[#55672E]">
-                <strong className="font-bold">Leave your brand name out of the question.</strong>{' '}
+              <p className="text-[12.5px] font-medium leading-relaxed text-[#E7ECD9]">
+                <strong className="font-bold text-white">Leave your brand name out of the question.</strong>{' '}
                 {`Ask what a buyer would type before they know you exist — like “${example}”. A question that names you only measures whether the model will agree with you.`}
               </p>
             </Tint>
@@ -439,10 +439,10 @@ export default function ScanSetup({
                 made, so there is nothing to give away first — and the report is
                 sent rather than only shown, which is the thing the address buys. */}
             <Tint>
-              <label htmlFor="scan-email" className="text-[13px] font-bold tracking-tight text-gray-900">
+              <label htmlFor="scan-email" className="text-[13px] font-bold tracking-tight text-white">
                 Where should we send the report?
               </label>
-              <p className="mt-1.5 mb-3.5 max-w-[54ch] text-[12px] font-medium leading-relaxed text-gray-500">
+              <p className="mt-1.5 mb-3.5 max-w-[54ch] text-[12px] font-medium leading-relaxed text-[#E7ECD9]">
                 The full report opens on screen as soon as it is ready, and we email you a copy so you do not have to keep
                 this tab open.
               </p>
@@ -460,7 +460,7 @@ export default function ScanSetup({
                 className={`${FIELD} sm:max-w-[340px] xl:max-w-none`}
               />
               <div className="mt-3.5">
-                <ConsentCheck id="scan-setup-consent" checked={consent} onChange={setConsent} />
+                <ConsentCheck id="scan-setup-consent" checked={consent} onChange={setConsent} onDark />
               </div>
             </Tint>
 

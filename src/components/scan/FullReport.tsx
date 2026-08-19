@@ -10,7 +10,7 @@ import { Compass, FileText, Gauge, ListChecks, MessagesSquare, Search, TrendingU
 import { BTN_PRIMARY, BTN_SECONDARY, Head, Meter, Micro, Panel, ProviderMark, Stat, Tint, Verdict, type Tone } from './ui';
 import {
   PROVIDER_LABEL,
-  type Competitor,
+  type MemoryProvider,
   type ScanPhase1,
   type ScanPhase2,
   type RetrievalResult,
@@ -101,8 +101,8 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
 
           <div className="flex flex-col gap-5">
             <Tint>
-              <Micro className="text-[#39471D]">Key insight</Micro>
-              <p className="mt-2.5 text-[14px] font-medium leading-relaxed text-gray-700">{phase2.keyInsight}</p>
+              <Micro className="text-[#CBD0AC]">Key insight</Micro>
+              <p className="mt-2.5 text-[14px] font-medium leading-relaxed text-white">{phase2.keyInsight}</p>
             </Tint>
 
             <div className="grid grid-cols-3 divide-x divide-gray-100 border-y border-gray-100">
@@ -144,8 +144,10 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
         </div>
       </Panel>
 
-      {/* ── Memory against search ────────────────────────────────────────── */}
-      {phase2.grounded && <GroundedComparison memory={phase1} grounded={phase2.grounded} />}
+      {/* ── Memory against search, and whether anything can find you now ─── */}
+      {phase2.grounded && (
+        <GroundedComparison memory={phase1} grounded={phase2.grounded} retrieval={phase2.retrieval} />
+      )}
 
       {/* ── Trend ────────────────────────────────────────────────────────── */}
       <Panel>
@@ -160,7 +162,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
       </Panel>
 
       {/* ── Recommended instead of you ───────────────────────────────────── */}
-      <Rivals phase1={phase1} competitors={phase2.competitors} />
+      <Rivals phase1={phase1} grounded={grounded ?? undefined} />
 
       {/* ── What the models actually said ────────────────────────────────── */}
       <Panel>
@@ -171,44 +173,6 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
         />
         <div className="mt-7">
           <AnswerLists phase1={phase1} grounded={phase2.grounded} />
-        </div>
-      </Panel>
-
-      {/* ── Grounded retrieval ───────────────────────────────────────────── */}
-      <Panel>
-        <Head
-          badge={<Search size={18} />}
-          title="Live retrieval"
-          sub={
-            <>
-              The models above answer from memory. These two search the web as they answer, so they measure something
-              different: whether your pages are findable and quotable <em>today</em>.
-            </>
-          }
-        />
-
-        {/* Side by side rather than stacked. Two providers, each with a
-            two-line verdict, is not two full-width bands of a 1379px card. */}
-        <div className="mt-7 grid gap-3 lg:grid-cols-2">
-          {phase2.retrieval.map((r) => (
-            <div key={r.provider} className="rounded-xl border border-gray-200 p-4 sm:p-5">
-              <div className="flex items-center gap-3">
-                <ProviderMark provider={r.provider} />
-                <span className="flex-1 text-[13px] font-bold text-gray-900">{PROVIDER_LABEL[r.provider]}</span>
-                <Verdict tone={RETRIEVAL_TONE[r.status]}>{RETRIEVAL_LABEL[r.status]}</Verdict>
-              </div>
-              <p className="mt-2.5 text-[12px] font-medium leading-relaxed text-gray-500">{r.detail}</p>
-              {r.citations && r.citations.length > 0 && (
-                <ul className="mt-3 flex flex-wrap gap-1.5 border-t border-gray-100 pt-3">
-                  {r.citations.slice(0, 6).map((c) => (
-                    <li key={c} className="rounded-sm bg-gray-50 px-2 py-1">
-                      <span className="font-mono text-[10px] text-gray-500">{c}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
         </div>
       </Panel>
 
@@ -314,58 +278,142 @@ const nameKey = (value: string) =>
     .normalize('NFD')
     .replace(/[^a-z0-9]/g, '');
 
+/** One company the models named, and everything we know about where it came
+    from. Built here rather than read off `phase2.competitors` because the
+    server only ever tallied the memory reading — see `Rivals`. */
+interface Rival {
+  name: string;
+  /** Answers that named it, within one reading. */
+  mentions: number;
+  providers: MemoryProvider[];
+  /** Question indices it was named against, ascending. */
+  questions: number[];
+}
+
 /**
- * Everyone the models named instead, and — this is the new part — which of the
- * visitor's own questions produced each name.
+ * Tally one reading's answers into a leaderboard.
  *
- * The leaderboard pools every answer of the run, which is right when the
- * questions are three ways of asking the same thing and badly misleading when
- * one of them is not. A studio that asked twice about web design in
- * Barranquilla and once about free tools to scan a website got Koombea and
- * Pragma interleaved with Sucuri, Qualys and VirusTotal, and read the whole
- * list as broken. Every one of those names was a real answer to a question
- * they had really asked; the report simply never said which.
+ * The backend does exactly this and returns the result as `phase2.competitors`
+ * — but only for the memory half, because that is the only half it had when
+ * the field was designed. The searching half's answers are right there in
+ * `grounded`, and a client asking "recommended instead of me — by whom, from
+ * memory or after looking?" cannot be answered with one list. So both are
+ * tallied here, by one function, and the two are shown side by side.
  *
- * So each rival carries the question numbers it came from, and a question whose
- * companies overlap none of the others is called out underneath by name. That
- * is a finding about the scan, not an apology for it: a question that shares no
- * rivals with its neighbours is asking about a different category, and knowing
- * which one costs the reader nothing to act on.
- *
- * Two columns from `xl`, and the bar is drawn as a fill behind the row rather
- * than as a track beside it. The old row spent its full width on a meter and a
- * right-aligned "3 mentions" — eight names came to eight nearly empty lines
- * down a 1379px card, which is most of a screen to say very little.
+ * The brand's own row is excluded by `position`, which is the backend's own
+ * verdict on which entry is the brand — it resolves the domain root too, so
+ * `kaivastudio.com` counts as `kaiva studio`. Matching the name again in the
+ * browser would eventually disagree with the percentage printed above.
  */
-function Rivals({ phase1, competitors }: { phase1: ScanPhase1; competitors: Competitor[] }) {
-  /* Scaled against the strongest rival, not against the answer count —
-     otherwise a category where nobody dominates renders as a column of
-     near-empty bars and reads as a rendering fault. */
-  const topRival = Math.max(1, ...competitors.map((c) => c.mentions));
+function tally(reading: ScanPhase1 | null | undefined, limit = 8): Rival[] {
+  if (!reading) return [];
 
-  /* Both maps come from the same `names` arrays the backend tallied the
-     leaderboard from, so the attribution cannot disagree with the counts
-     printed beside it. */
-  const askedIn = new Map<string, Set<number>>();
-  const namesIn = new Map<number, Set<string>>();
+  const brandKey = nameKey(reading.brand);
+  const domainKey = nameKey(reading.domain.replace(/\.[a-z.]+$/, ''));
 
-  for (const provider of phase1.providers) {
+  const acc = new Map<
+    string,
+    { labels: Map<string, number>; mentions: number; providers: Set<MemoryProvider>; questions: Set<number> }
+  >();
+
+  for (const provider of reading.providers) {
+    if (provider.error) continue;
+
     for (const answer of provider.answers) {
-      for (const name of answer.names) {
+      /* Deduplicated within a single answer: a model that says "Stripe … or
+         Stripe Connect" has named one company once. */
+      const seen = new Set<string>();
+
+      answer.names.forEach((name, i) => {
+        /* The brand itself, by the backend's reckoning first and by name as a
+           fallback — a list that names the brand twice would otherwise have
+           its second mention counted as a rival to itself. */
+        if (answer.position === i + 1) return;
         const key = nameKey(name);
-        if (!key) continue;
-        if (!askedIn.has(key)) askedIn.set(key, new Set());
-        askedIn.get(key)!.add(answer.q);
-        if (!namesIn.has(answer.q)) namesIn.set(answer.q, new Set());
-        namesIn.get(answer.q)!.add(key);
-      }
+        if (!key || key === brandKey || (domainKey && key === domainKey)) return;
+        if (seen.has(key)) return;
+        seen.add(key);
+
+        let entry = acc.get(key);
+        if (!entry) {
+          entry = { labels: new Map(), mentions: 0, providers: new Set(), questions: new Set() };
+          acc.set(key, entry);
+        }
+        entry.mentions += 1;
+        entry.providers.add(provider.provider);
+        entry.questions.add(answer.q);
+        const label = name.trim();
+        entry.labels.set(label, (entry.labels.get(label) ?? 0) + 1);
+      });
     }
   }
 
+  return [...acc.values()]
+    .map((e) => ({
+      /* Displayed in the spelling the models used most often, so the list reads
+         the way a person would write it rather than as a lowercase key. */
+      name: [...e.labels.entries()].sort((a, b) => b[1] - a[1])[0][0],
+      mentions: e.mentions,
+      providers: [...e.providers],
+      questions: [...e.questions].sort((a, b) => a - b),
+    }))
+    .sort((a, b) => b.mentions - a.mentions || a.name.localeCompare(b.name))
+    .slice(0, limit);
+}
+
+/**
+ * Everyone the models named instead — in both readings, with who said it and
+ * which question they said it about.
+ *
+ * Three questions this panel could not answer until now, all asked by the first
+ * client to read one carefully:
+ *
+ *   · **"Recommended in what?"** The leaderboard pools every answer of the run,
+ *     which is right when the questions are three ways of asking the same thing
+ *     and badly misleading when one of them is not. A studio that asked twice
+ *     about web design in Barranquilla and once about free tools to scan a
+ *     website got Koombea and Pragma interleaved with Sucuri and VirusTotal.
+ *     Every one of those was a real answer to a question they had really asked;
+ *     the report simply never said which. Each row now carries its questions.
+ *
+ *   · **"Three mentions by whom?"** `providers` was in the payload from the
+ *     first version and was never rendered. Two models agreeing is a different
+ *     finding from one model saying it three times, and the row said neither.
+ *
+ *   · **"Is this from memory or from searching?"** It was memory, always, and
+ *     nothing on the page said so — while the ring at the top of the report
+ *     leads with the *searching* figure. So the two readings had different
+ *     subjects under one heading. They are two columns now, and the searching
+ *     one is usually the more useful of the two: it is the list a buyer using
+ *     an assistant today would actually be shown.
+ *
+ * Two columns from `lg`, and the bar is drawn as a fill behind the row rather
+ * than a track beside it. The old row spent its full width on a meter and a
+ * right-aligned "3 mentions" — eight names came to eight nearly empty lines
+ * down a 1379px card.
+ */
+function Rivals({ phase1, grounded }: { phase1: ScanPhase1; grounded?: ScanPhase1 }) {
+  const memory = tally(phase1);
+  const searching = tally(grounded);
+  const twoWay = !!grounded && grounded.totalAnswers > 0;
+
   /* A question is "off on its own" when not one of its companies appears
-     against any other question. Only worth saying when some questions DO
-     agree with each other: two questions that share nothing are just two
-     questions, and flagging both of them says nothing a reader can use. */
+     against any other question, in either reading. Only worth saying when some
+     questions DO agree with each other: two questions that share nothing are
+     just two questions, and flagging both says nothing a reader can use. */
+  const namesIn = new Map<number, Set<string>>();
+  for (const reading of [phase1, grounded]) {
+    for (const provider of reading?.providers ?? []) {
+      for (const answer of provider.answers) {
+        for (const name of answer.names) {
+          const key = nameKey(name);
+          if (!key) continue;
+          if (!namesIn.has(answer.q)) namesIn.set(answer.q, new Set());
+          namesIn.get(answer.q)!.add(key);
+        }
+      }
+    }
+  }
   const entries = [...namesIn.entries()].filter(([, names]) => names.size > 0);
   const lonely = entries
     .filter(([q, names]) => entries.every(([other, set]) => other === q || ![...names].some((n) => set.has(n))))
@@ -378,97 +426,139 @@ function Rivals({ phase1, competitors }: { phase1: ScanPhase1; competitors: Comp
       <Head
         badge={<Trophy size={18} />}
         title="Recommended instead of you"
-        sub={`Every company the models named across the ${phase1.totalAnswers} answers, ranked by how often. The tag on each row is the question that produced it.`}
-        chip={competitors.length ? `${competitors.length} named` : undefined}
+        sub={
+          twoWay
+            ? `The same question puts a different set of companies in front of a buyer depending on whether the model looks anything up. Both lists are here — the right-hand one is what someone asking an assistant today would be shown.`
+            : `Every company the models named across the ${phase1.totalAnswers} answers, ranked by how often.`
+        }
       />
 
-      {competitors.length === 0 ? (
-        <p className="mt-7 rounded-xl bg-gray-50 px-4 py-3.5 text-[13px] font-medium text-gray-500">
-          The models named no consistent set of companies for this category — usually a sign the category label is too
-          broad or too new for them to have an opinion about.
-        </p>
-      ) : (
-        <>
-          <ol className="mt-7 grid grid-cols-1 gap-x-10 gap-y-1 xl:grid-cols-2">
-            {competitors.map((c, i) => {
-              const mine = nameKey(c.name) === nameKey(phase1.brand);
-              const pct = (c.mentions / topRival) * 100;
-              const from = [...(askedIn.get(nameKey(c.name)) ?? [])].sort((a, b) => a - b);
+      <div className={`mt-7 grid grid-cols-1 gap-8 ${twoWay ? 'lg:grid-cols-2 lg:gap-12' : ''}`}>
+        <RivalList
+          title={twoWay ? 'When they answer from memory' : 'Named across the run'}
+          note={`Out of ${phase1.totalAnswers} answers given with the web shut. This is who the models already associate with your category.`}
+          rivals={memory}
+          questions={phase1.questions}
+        />
 
-              return (
-                <li
-                  key={c.name}
-                  className="flex items-center gap-3 rounded-lg px-3 py-2.5"
-                  /* The fill is the bar. Stops hard rather than fading, so the
-                     edge is still readable as a value. */
-                  style={{
-                    backgroundImage: `linear-gradient(to right, ${
-                      mine ? 'rgba(57,71,29,.18)' : 'rgba(203,208,172,.42)'
-                    } ${pct}%, rgba(0,0,0,0) ${pct}%)`,
-                  }}
-                >
-                  <Micro className="w-6 shrink-0 text-gray-400">{String(i + 1).padStart(2, '0')}</Micro>
-                  <span
-                    className={`min-w-0 flex-1 truncate text-[13px] font-semibold ${
-                      mine ? 'text-[#39471D]' : 'text-gray-900'
-                    }`}
-                  >
-                    {c.name}
-                    {mine && <span className="ml-1.5 font-normal text-gray-500">(you)</span>}
-                  </span>
+        {twoWay && (
+          <RivalList
+            title="When they search the web"
+            note={`Out of ${grounded!.totalAnswers} answers given with the web open. This is who is being put in front of a buyer right now.`}
+            rivals={searching}
+            questions={phase1.questions}
+          />
+        )}
+      </div>
 
-                  {/* The whole question in the `title`, because two words of it
-                      is what a reader needs and eight is what would not fit. */}
-                  {from.length > 0 && (
-                    <span className="hidden shrink-0 items-center gap-1 sm:flex">
-                      {from.map((q) => (
-                        <span
-                          key={q}
-                          title={phase1.questions[q]}
-                          className="cursor-help rounded-sm bg-white/70 px-1.5 py-0.5 font-mono text-[10px] font-bold text-gray-500"
-                        >
-                          Q{q + 1}
-                        </span>
-                      ))}
-                    </span>
-                  )}
-
-                  <span className="w-[92px] shrink-0 text-right">
-                    <Micro className="whitespace-nowrap tabular-nums text-gray-500">{c.mentions} answers</Micro>
-                  </span>
-                </li>
-              );
-            })}
-          </ol>
-
-          {flagged.length > 0 && (
-            <Tint edged className="mt-6">
-              <p className="text-[12.5px] font-medium leading-relaxed text-[#55672E]">
-                <strong className="font-bold">
-                  {flagged.length === 1
-                    ? `Question ${flagged[0] + 1} is pulling a different category into this list.`
-                    : `Questions ${flagged.map((q) => q + 1).join(' and ')} are pulling different categories into this list.`}
-                </strong>{' '}
-                {flagged.length === 1 ? (
-                  <>
-                    Not one of the companies the models named for{' '}
-                    <em>“{phase1.questions[flagged[0]]}”</em> appears against any of your other questions. The names are
-                    real answers to that question — they are just answers about something else, and they are ranked
-                    above alongside the rest. Ask it on its own scan if you want it measured, or drop it and re-run.
-                  </>
-                ) : (
-                  <>
-                    Each of them produced a set of companies that overlaps none of the others. Those are real answers to
-                    the questions as written; they are simply about different categories, and pooling them into one
-                    leaderboard makes all of them harder to read.
-                  </>
-                )}
-              </p>
-            </Tint>
-          )}
-        </>
+      {flagged.length > 0 && (
+        <Tint edged className="mt-7">
+          <p className="text-[12.5px] font-medium leading-relaxed text-[#E7ECD9]">
+            <strong className="font-bold text-white">
+              {flagged.length === 1
+                ? `Question ${flagged[0] + 1} is pulling a different category into these lists.`
+                : `Questions ${flagged.map((q) => q + 1).join(' and ')} are pulling different categories into these lists.`}
+            </strong>{' '}
+            {flagged.length === 1 ? (
+              <>
+                Not one of the companies the models named for{' '}
+                <em>“{phase1.questions[flagged[0]]}”</em> appears against any of your other questions. Those are real
+                answers to that question — they are just answers about something else. Ask it on its own scan if you
+                want it measured, or drop it and re-run.
+              </>
+            ) : (
+              <>
+                Each of them produced a set of companies that overlaps none of the others. Those are real answers to the
+                questions as written; they are simply about different categories, and pooling them into one leaderboard
+                makes all of them harder to read.
+              </>
+            )}
+          </p>
+        </Tint>
       )}
     </Panel>
+  );
+}
+
+/** One reading's leaderboard. */
+function RivalList({
+  title,
+  note,
+  rivals,
+  questions,
+}: {
+  title: string;
+  note: string;
+  rivals: Rival[];
+  questions: string[];
+}) {
+  /* Scaled against the strongest rival in THIS list, not across both — the two
+     readings have different answer counts, and a shared scale would draw the
+     searching column short for a reason the reader cannot see. */
+  const top = Math.max(1, ...rivals.map((r) => r.mentions));
+
+  return (
+    <div>
+      <p className="text-[13px] font-bold tracking-tight text-gray-900">{title}</p>
+      <p className="mt-1.5 text-[12px] font-medium leading-relaxed text-gray-500">{note}</p>
+
+      {rivals.length === 0 ? (
+        <p className="mt-4 rounded-xl bg-gray-50 px-4 py-3.5 text-[12.5px] font-medium leading-relaxed text-gray-500">
+          The models named no companies at all in this reading — which is itself a finding: they had nothing to
+          recommend for the questions as written.
+        </p>
+      ) : (
+        <ol className="mt-4 flex flex-col gap-1">
+          {rivals.map((r, i) => (
+            <li
+              key={r.name}
+              className="flex items-center gap-2.5 rounded-lg px-2.5 py-2"
+              /* The fill is the bar. Stops hard rather than fading, so the edge
+                 is still readable as a value. */
+              style={{
+                backgroundImage: `linear-gradient(to right, rgba(203,208,172,.42) ${
+                  (r.mentions / top) * 100
+                }%, rgba(0,0,0,0) ${(r.mentions / top) * 100}%)`,
+              }}
+            >
+              <Micro className="w-5 shrink-0 text-gray-400">{String(i + 1).padStart(2, '0')}</Micro>
+              <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-gray-900">{r.name}</span>
+
+              {/* Who said it. Three bare marks, no labels — the shapes are the
+                  legend, and this is the answer to "three mentions by whom". */}
+              <span className="flex shrink-0 items-center gap-1">
+                {r.providers.map((p) => (
+                  <span key={p} title={PROVIDER_LABEL[p]}>
+                    <ProviderMark provider={p} />
+                  </span>
+                ))}
+              </span>
+
+              {/* And what it was asked about. The whole question is in the
+                  `title`, because two words of it is what a reader needs and
+                  eight is what would not fit. */}
+              {questions.length > 1 && r.questions.length > 0 && (
+                <span className="hidden shrink-0 items-center gap-1 sm:flex">
+                  {r.questions.map((q) => (
+                    <span
+                      key={q}
+                      title={questions[q]}
+                      className="cursor-help rounded-sm bg-white/70 px-1.5 py-0.5 font-mono text-[10px] font-bold text-gray-500"
+                    >
+                      Q{q + 1}
+                    </span>
+                  ))}
+                </span>
+              )}
+
+              <Micro className="w-8 shrink-0 whitespace-nowrap text-right tabular-nums text-gray-500">
+                {r.mentions}×
+              </Micro>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
   );
 }
 
@@ -482,7 +572,20 @@ function Rivals({ phase1, competitors }: { phase1: ScanPhase1; competitors: Comp
  * score, and the sentence underneath names the diagnosis rather than leaving
  * the reader to infer it from two percentages.
  */
-function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded: ScanPhase1 }) {
+function GroundedComparison({
+  memory,
+  grounded,
+  retrieval,
+}: {
+  memory: ScanPhase1;
+  grounded: ScanPhase1;
+  /* Perplexity and Google's AI Overview used to have a panel of their own,
+     three sections further down, headed "Live retrieval" — and read as an
+     appendix nobody could place. They are asking the same question this panel
+     asks: can anything find you when it looks? So they belong under it, as the
+     third reading rather than as a section on their own. */
+  retrieval: RetrievalResult[];
+}) {
   /* Nothing came back at all — every request failed or the models were all
      skipped. Printing 0% here would be a finding we did not measure. */
   if (grounded.totalAnswers === 0) {
@@ -629,6 +732,42 @@ function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded
           </ul>
         </div>
       </div>
+
+      {/* The third reading, under the two it belongs with. Perplexity and
+          Google's AI Overview do not answer from memory at all — they search as
+          they answer — so they are the strongest evidence for the right-hand
+          number above, and they used to sit three panels away from it. */}
+      {retrieval.length > 0 && (
+        <div className="mt-8 border-t border-gray-100 pt-7">
+          <p className="text-[13px] font-bold tracking-tight text-gray-900">And the two that only search</p>
+          <p className="mt-1.5 max-w-[68ch] text-[12px] font-medium leading-relaxed text-gray-500">
+            These never answer from memory, so they measure one thing only: whether your pages are findable and
+            quotable <em>today</em>. What they cite is what a buyer is shown.
+          </p>
+
+          <div className="mt-4 grid gap-3 lg:grid-cols-2">
+            {retrieval.map((r) => (
+              <div key={r.provider} className="rounded-xl border border-gray-200 p-4 sm:p-5">
+                <div className="flex items-center gap-3">
+                  <ProviderMark provider={r.provider} />
+                  <span className="flex-1 text-[13px] font-bold text-gray-900">{PROVIDER_LABEL[r.provider]}</span>
+                  <Verdict tone={RETRIEVAL_TONE[r.status]}>{RETRIEVAL_LABEL[r.status]}</Verdict>
+                </div>
+                <p className="mt-2.5 text-[12px] font-medium leading-relaxed text-gray-500">{r.detail}</p>
+                {r.citations && r.citations.length > 0 && (
+                  <ul className="mt-3 flex flex-wrap gap-1.5 border-t border-gray-100 pt-3">
+                    {r.citations.slice(0, 6).map((c) => (
+                      <li key={c} className="rounded-sm bg-gray-50 px-2 py-1">
+                        <span className="font-mono text-[10px] text-gray-500">{c}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </Panel>
   );
 }

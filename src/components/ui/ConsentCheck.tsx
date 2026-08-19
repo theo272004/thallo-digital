@@ -19,6 +19,7 @@ export default function ConsentCheck({
   id = 'consent',
   checked,
   onChange,
+  onDark = false,
 }: {
   id?: string;
   /* Controlled only where the surrounding button is not a form submit — the
@@ -27,6 +28,11 @@ export default function ConsentCheck({
      uncontrolled behaviour and the browser's own blocking. */
   checked?: boolean;
   onChange?: (next: boolean) => void;
+  /* Set where this sits inside the scan's deep green block. Grey-on-green is
+     the one combination in the whole console that fails contrast outright, and
+     the text it applies to is a consent notice — the last thing that should be
+     hard to read. */
+  onDark?: boolean;
 }) {
   const controlled = typeof checked === 'boolean';
 
@@ -38,12 +44,12 @@ export default function ConsentCheck({
         type="checkbox"
         required
         {...(controlled ? { checked, onChange: (e) => onChange?.(e.target.checked) } : {})}
-        className="mt-0.5 h-4 w-4 flex-shrink-0 accent-[#39471D]"
+        className={`mt-0.5 h-4 w-4 flex-shrink-0 ${onDark ? 'accent-[#CBD0AC]' : 'accent-[#39471D]'}`}
       />
       {/* Two lines at the width this sits in. Every clause is load-bearing —
           purpose, no onward sharing, right to deletion — so it is tightened
           rather than trimmed. */}
-      <span className="text-[12px] font-medium leading-relaxed text-gray-500">
+      <span className={`text-[12px] font-medium leading-relaxed ${onDark ? 'text-[#E7ECD9]' : 'text-gray-500'}`}>
         I agree Thallo may use these details to reply. We never sell or share
         them, and you can ask us to delete them. See our{' '}
         <a
@@ -54,7 +60,7 @@ export default function ConsentCheck({
              contains toggles the box it points at. Stopping it here means
              reading the policy does not silently untick the consent. */
           onClick={(e) => e.stopPropagation()}
-          className="underline underline-offset-2 hover:text-[#39471D]"
+          className={`underline underline-offset-2 ${onDark ? 'hover:text-white' : 'hover:text-[#39471D]'}`}
         >
           privacy policy
         </a>
