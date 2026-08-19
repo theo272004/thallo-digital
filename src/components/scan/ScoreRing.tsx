@@ -53,7 +53,12 @@ export default function ScoreRing({
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
         <span className="text-4xl font-bold leading-none tracking-tight text-gray-900 tabular-nums">{safe}%</span>
-        <Micro className="mt-2.5 block max-w-[11ch] leading-tight text-gray-400">{label}</Micro>
+        {/* 13ch, not 11. The labels used to be "Share of voice"; they are
+            "Brand knowledge" and "AI visibility" now, and at 11ch the word
+            KNOWLEDGE is 90px inside an 81px box — it overflowed the cap by 8px
+            and touched the arc. Measured with the site's own Inter at 11px and
+            0.18em tracking, 13ch clears the longest of the two. */}
+        <Micro className="mt-2.5 block max-w-[13ch] leading-tight text-gray-400">{label}</Micro>
       </div>
     </div>
     {caption && (

@@ -53,7 +53,50 @@ Text Domain:  thallo-blog
    background gets its padding from theme.json; the rule it hangs on does not
    exist there. */
 .thallo-callout {
-  border-left: 3px solid var(--wp--preset--color--olive);
+  border-left: 3px solid var(--wp--preset--color--olive-soft);
+}
+
+/* ── Type on the filled blocks ─────────────────────────────────────────────
+   The callout and the short answer used to be a pale olive wash, and every
+   word inside them inherited the page's near-black body colour. They are deep
+   green now, so that inheritance is the one combination that fails outright —
+   near-black on #39471D is about 1.6:1, which is not low contrast, it is
+   invisible.
+
+   Stated rather than inherited, and stated here rather than on each pattern:
+   a pattern is copied into the post the moment a writer inserts it, so a
+   colour written into the pattern file freezes into every post that ever used
+   it and cannot be corrected later. A rule in the stylesheet reaches them all.
+
+   White is 10.0:1 on this ground and #E7ECD9 is 8.3:1; the olive-soft used for
+   the rule and the label is 6.3:1, still past AA. */
+.thallo-callout,
+.thallo-answer {
+  color: #ffffff;
+}
+.thallo-callout p,
+.thallo-answer p,
+.thallo-callout li,
+.thallo-answer li {
+  color: var(--wp--preset--color--olive-tint);
+}
+.thallo-callout strong,
+.thallo-answer strong,
+.thallo-callout h2,
+.thallo-callout h3,
+.thallo-callout h4,
+.thallo-answer h2,
+.thallo-answer h3,
+.thallo-answer h4 {
+  color: #ffffff;
+}
+.thallo-callout a,
+.thallo-answer a {
+  color: #ffffff;
+  text-decoration-color: var(--wp--preset--color--olive-soft);
+}
+.thallo-answer__label {
+  color: var(--wp--preset--color--olive-soft);
 }
 
 /* Figure captions and the audit-trail voice: the typewriter face, small, in
@@ -171,7 +214,7 @@ Text Domain:  thallo-blog
    stop here and leave with the answer; the rule down the left is what tells
    them this block is that, and not a pull quote or an aside. */
 .thallo-answer {
-  border-left: 3px solid var(--wp--preset--color--olive);
+  border-left: 3px solid var(--wp--preset--color--olive-soft);
 }
 .thallo-answer__label {
   letter-spacing: 0.13em;
@@ -271,7 +314,11 @@ ul.thallo-filters {
 }
 .thallo-filters a:hover {
   border-color: var(--wp--preset--color--olive);
-  background: var(--wp--preset--color--olive-tint);
+  /* Deep green with white type, like every other filled surface on the site.
+     The pale olive wash is retired: at #E7ECD9 behind ink it read as a
+     disabled state rather than as the one the pointer is on. */
+  background: var(--wp--preset--color--olive);
+  color: #ffffff;
 }
 
 /* ── On this page ──────────────────────────────────────────────────────────
@@ -632,10 +679,36 @@ html {
 }
 
 /* The bar is fixed, so the page needs the height back or the first heading
-   sits under it. */
+   sits under it.
+
+   6.5rem was the height of the bar and almost nothing else: the bar ends at
+   86px and the first heading started at 104, so the masthead sat 18px under a
+   floating navbar and read as attached to it. 9rem gives it 58px of air, which
+   is a gap rather than a collision.
+
+   Note for anyone editing this: .thallo-archive also declares a padding-top,
+   and it has never once applied — .wp-site-blocks > main is the more specific
+   selector and wins. The archive rule now sets only its sides and its floor,
+   so there is one place that decides this and it is here. */
 body > main,
 .wp-site-blocks > main {
-  padding-top: 6.5rem;
+  padding-top: 9rem;
+}
+
+/* Except on a post, where the photograph IS the top of the page: it runs
+   full-bleed from under the bar, and any padding above it would show as a
+   white band between the navbar and the picture. The hero carries its own
+   clearance instead — see .thallo-hero.
+
+   The padding itself is zeroed in single.html, because the block editor writes
+   layout padding inline and no selector can outrank that. What is left here is
+   the margin: WordPress gives every block after the first in .wp-site-blocks a
+   20px block-start margin, and on this template the first of those is main —
+   so a 20px white strip sat above a hero that is supposed to start at the top
+   of the window. */
+body.single .wp-site-blocks > main {
+  padding-top: 0;
+  margin-block-start: 0;
 }
 
 /* ── Footer ────────────────────────────────────────────────────────────────*/
@@ -733,7 +806,8 @@ body > main,
 
 .thallo-archive {
   background: #f7f8f9;
-  padding: 8rem 1.5rem 5rem;
+  /* Sides and floor only. The top is set once, on main, above. */
+  padding: 0 1.5rem 5rem;
   margin: 0;
   max-width: none !important;
 }
@@ -1135,10 +1209,24 @@ body > main,
 @media (min-width: 1180px) {
   .thallo-post__with-toc {
     display: grid;
-    grid-template-columns: 13rem minmax(0, 44rem);
-    gap: 4rem;
+    grid-template-columns: 14rem minmax(0, 52rem);
+    gap: 4.5rem;
     justify-content: center;
     align-items: start;
+    /* The whole reason the article was unreadable.
+
+       This group sits inside main's constrained layout, whose contentSize is
+       44rem — so the grid was clamped to 704px and then had to fit a 13rem
+       table of contents inside it. The columns resolved to 208px and 432px:
+       the prose ran at 432px, about fifty characters, on a 1440px screen with
+       500px of empty page on either side. The article was not long because it
+       was wordy; it was long because the column was half the width it was
+       drawn for.
+
+       The override has to be !important because the constrained layout writes
+       its max-width inline, from the block editor's own stylesheet. */
+    max-width: 70.5rem !important;
+    width: 100%;
   }
   .thallo-post__with-toc > .thallo-toc {
     position: sticky;

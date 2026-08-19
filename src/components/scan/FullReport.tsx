@@ -168,18 +168,71 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
         </div>
       </Panel>
 
-      {/* ── Recommended instead of you ───────────────────────────────────── */}
-      <Rivals phase1={phase1} grounded={grounded ?? undefined} />
+      {/* ── Everything the models said, in one place ─────────────────────
+          This used to be two panels with a third somewhere else: a
+          "Recommended instead of you" leaderboard, a "What the models actually
+          answered" evidence panel, and Perplexity marooned under "Live
+          retrieval" four sections down.
 
-      {/* ── What the models actually said ────────────────────────────────── */}
+          The owner's verdict on reading it: the answer panel is the one that
+          shows the tool working, because it says ChatGPT recommended this one
+          for that question and Claude recommended a different one — and the
+          leaderboard, arriving first and separately, was an aggregate of
+          evidence the reader had not seen yet. So the evidence leads, the
+          aggregate follows it as a summary, and Perplexity sits with the rest
+          rather than in a section nobody could place.
+
+          Perplexity keeps its own shape inside the panel. It searches as it
+          answers and returns a verdict and its sources, not a ranked list of
+          eight companies — so it gets a row that says what it found, not a
+          column pretending to be a fourth model with a leaderboard. */}
       <Panel>
         <Head
           badge={<MessagesSquare size={18} />}
-          title="What the models actually answered"
-          sub={`Every list, in the order each model gave it. This is the evidence under every figure above — the two leaderboards are these lists added up, and both indicators are how often ${phase1.brand} appears in them.`}
+          title="What the models answered"
+          sub={`Every list, in the order each model gave it, question by question. This is the evidence under every figure above: both indicators are simply how often ${phase1.brand} appears in these lists.`}
         />
         <div className="mt-7">
           <AnswerLists phase1={phase1} grounded={phase2.grounded} />
+        </div>
+
+        {phase2.retrieval.length > 0 && (
+          <div className="mt-8 border-t border-gray-100 pt-7">
+            <p className="text-[13px] font-bold tracking-tight text-gray-900">And the two that only search</p>
+            <p className="mt-1.5 max-w-[74ch] text-[12px] font-medium leading-relaxed text-gray-500">
+              These never answer from memory, so they have no brand-knowledge reading at all — they measure one thing
+              only: whether your pages are findable and quotable <em>today</em>. They answer the scan as a whole rather
+              than question by question, which is why they are a verdict and a list of sources here rather than a
+              ranking above.
+            </p>
+
+            <div className="mt-4 grid gap-3 lg:grid-cols-2">
+              {phase2.retrieval.map((r) => (
+                <div key={r.provider} className="rounded-xl border border-gray-200 p-4 sm:p-5">
+                  <div className="flex items-center gap-3">
+                    <ProviderMark provider={r.provider} />
+                    <span className="flex-1 text-[13px] font-bold text-gray-900">{PROVIDER_LABEL[r.provider]}</span>
+                    <Verdict tone={RETRIEVAL_TONE[r.status]}>{RETRIEVAL_LABEL[r.status]}</Verdict>
+                  </div>
+                  <p className="mt-2.5 text-[12px] font-medium leading-relaxed text-gray-500">{r.detail}</p>
+                  {r.citations && r.citations.length > 0 && (
+                    <ul className="mt-3 flex flex-wrap gap-1.5 border-t border-gray-100 pt-3">
+                      {r.citations.slice(0, 6).map((c) => (
+                        <li key={c} className="rounded-sm bg-gray-50 px-2 py-1">
+                          <span className="font-mono text-[10px] text-gray-500">{c}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* The aggregate, after the evidence rather than before it. */}
+        <div className="mt-8 border-t border-gray-100 pt-7">
+          <Rivals phase1={phase1} grounded={grounded ?? undefined} />
         </div>
       </Panel>
 
@@ -463,16 +516,18 @@ function Rivals({ phase1, grounded }: { phase1: ScanPhase1; grounded?: ScanPhase
   const flagged = entries.length > 2 && lonely.length < entries.length ? lonely : [];
 
   return (
-    <Panel>
-      <Head
-        badge={<Trophy size={18} />}
-        title="Recommended instead of you"
-        sub={
-          twoWay
-            ? `The same question puts a different set of companies in front of a buyer depending on whether the model looks anything up. Both lists are here — the right-hand one is what someone asking an assistant today would be shown.`
-            : `Every company the models named across the ${phase1.totalAnswers} answers, ranked by how often.`
-        }
-      />
+    <div>
+      <div className="flex items-start gap-3">
+        <Trophy size={18} className="mt-0.5 shrink-0 text-[#39471D]" />
+        <div>
+          <p className="text-[13px] font-bold tracking-tight text-gray-900">Recommended instead of you</p>
+          <p className="mt-1.5 max-w-[74ch] text-[12px] font-medium leading-relaxed text-gray-500">
+            {twoWay
+              ? 'The lists above, added up. The same question puts a different set of companies in front of a buyer depending on whether the model looks anything up, so the two readings are counted separately.'
+              : `Every company the models named across the ${phase1.totalAnswers} answers, ranked by how often.`}
+          </p>
+        </div>
+      </div>
 
       <div className={`mt-7 grid grid-cols-1 gap-8 ${twoWay ? 'lg:grid-cols-2 lg:gap-12' : ''}`}>
         <RivalList
@@ -517,7 +572,7 @@ function Rivals({ phase1, grounded }: { phase1: ScanPhase1; grounded?: ScanPhase
           </p>
         </Tint>
       )}
-    </Panel>
+    </div>
   );
 }
 
@@ -774,11 +829,11 @@ function GroundedComparison({
         </div>
       </div>
 
-      {/* The third reading, under the two it belongs with. Perplexity and
-          Google's AI Overview do not answer from memory at all — they search as
-          they answer — so they are the strongest evidence for the right-hand
-          number above, and they used to sit three panels away from it. */}
-      {retrieval.length > 0 && (
+      {/* Perplexity and the AI Overview briefly lived here. They have moved in
+          with the answers, where the owner could actually place them: this
+          panel is a comparison of two readings, and a third thing that is
+          neither of them read as a footnote wherever it was put. */}
+      {false && (
         <div className="mt-8 border-t border-gray-100 pt-7">
           <p className="text-[13px] font-bold tracking-tight text-gray-900">And the two that only search</p>
           <p className="mt-1.5 max-w-[68ch] text-[12px] font-medium leading-relaxed text-gray-500">

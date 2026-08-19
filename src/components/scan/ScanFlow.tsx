@@ -122,8 +122,14 @@ export default function ScanFlow() {
   const market = session.phase1?.market ?? pending?.market;
 
   return (
-    /* pt-32 rather than pt-28: the label above the heading is gone, and at the
-       old padding the h1 came within 26px of the floating navbar. */
+    /* pt-24 on both branches. The bar's bottom edge is at 86px on a desktop
+       and 74px below `sm`, so 96px of padding leaves the step rail about 10px
+       of clearance and the whole flow sits that much closer to the navigation —
+       which is what it was asked for. It is a small move on purpose: the rail
+       still has air above it, it simply no longer has a hand's width of it.
+
+       The comment that used to be here claimed `pt-32`, and the code has said
+       `pt-28` for some time. */
     /* On the first step the section is at least a full screen and centres what
        is in it, so the photograph runs to the bottom edge instead of stopping
        38px short and leaving a strip of the page showing under it. Only there:
@@ -143,7 +149,7 @@ export default function ScanFlow() {
       ref={sectionRef}
       id="tool"
       className={`relative isolate overflow-hidden bg-[#F8FAF7] ${
-        hero ? 'pt-28 pb-10 lg:flex lg:min-h-screen lg:flex-col lg:justify-center' : 'pt-28 pb-16 2xl:pt-32 2xl:pb-24'
+        hero ? 'pt-24 pb-10 lg:flex lg:min-h-screen lg:flex-col lg:justify-center' : 'pt-24 pb-16 2xl:pt-28 2xl:pb-24'
       }`}
       style={hero ? undefined : GROUND}
     >
@@ -225,7 +231,7 @@ export default function ScanFlow() {
             that never told you the sequence existed. Full width also sidesteps
             the layout problem — four steps do not fit in the 500px column the
             first step's heading occupies. */}
-        <div className="mb-9 flex flex-wrap items-center justify-between gap-x-6 gap-y-4 border-b border-white/15 pb-5">
+        <div className="mb-7 flex flex-wrap items-center justify-between gap-x-6 gap-y-4 border-b border-white/15 pb-4">
           <Stepper current={step} />
           {run && industry && market ? (
             <div className="flex flex-wrap items-center gap-2">
