@@ -36,31 +36,11 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
   const scoredSignals = phase2.signals.filter((s) => s.weight > 0);
   const maxTech = scoredSignals.reduce((sum, s) => sum + s.weight, 0);
 
-  /*
-   * The headline is the searching reading.
-   *
-   * It has been three things: the memory figure alone, then the two pooled,
-   * and now this. Each move was aimed at the same fault — a reader meeting a
-   * 0% before anyone has told them which question it answers reads it as "we
-   * are invisible" and stops there. Pooling fixed the contradiction between
-   * the ring and the panel below it, but it left the number the client leads
-   * with as an average of two things a buyer never experiences separately.
-   *
-   * What a buyer actually does today is type into an assistant that searches.
-   * So that is the figure on the ring, and the memory reading sits beside it,
-   * named, because the gap between the two is the diagnosis and the whole
-   * argument for the work: findable but unknown has a different fix from
-   * unknown and unfindable.
-   *
-   * Nothing is hidden by the choice. Both numbers are on this screen, the
-   * comparison has its own panel further down, and the audit trail prints
-   * every answer of both readings side by side.
-   */
+  /* The searching reading, or nothing. `totalAnswers` rather than mere
+     presence: a `grounded` object that came back with no answers in it is a
+     reading that was attempted and failed, and the report has to say "not
+     measured" rather than draw a ring at 0%. See the indicator pair below. */
   const grounded = phase2.grounded && phase2.grounded.totalAnswers > 0 ? phase2.grounded : null;
-  /* Falls back to memory when the searching half did not run — an
-     installation with it switched off should show the reading it has, not an
-     empty ring. */
-  const headlinePct = grounded ? grounded.sovPct : phase1.sovPct;
 
   return (
     <div className="flex flex-col gap-5">
@@ -69,77 +49,98 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
         <Head
           badge={<FileText size={18} />}
           title={`The full report for ${phase1.brand}`}
-          sub={`Measured against ${phase1.domain}. Every figure below traces to a row further down — nothing here is an estimate. The grade averages the three scores under the ring.`}
+          sub={`Measured against ${phase1.domain}. Two indicators, read separately: whether the models already know you, and whether they find you when they look. Every figure traces to a row further down — nothing here is an estimate.`}
           chip={phase2.grade}
         />
 
-        <div className="mt-7 grid grid-cols-1 gap-8 border-t border-gray-100 pt-7 lg:grid-cols-[200px_minmax(0,1fr)] lg:gap-12">
-          <div>
-            <ScoreRing
-              pct={headlinePct}
-              label={grounded ? 'Named when they search' : 'Share of voice'}
-              caption={
-                grounded
-                  ? `across ${grounded.totalAnswers} answers with the web open`
-                  : `across ${phase1.totalAnswers} answers`
-              }
-              size={152}
+        {/* ── The two headline indicators ────────────────────────────────
+            Two measurements, side by side, never averaged into one.
+
+            The report used to lead with a single ring. It had been three
+            different things in turn — the memory figure, then the two pooled,
+            then the searching figure — and each move was an attempt to fix the
+            same fault by choosing a different winner, when the fault was that
+            there was only one seat.
+
+            They are not two views of one quantity. BRAND KNOWLEDGE is whether
+            the model recommends you with nothing to look at: recognition and
+            authority inside the model itself, earned off your own site and slow
+            to move. AI VISIBILITY is whether it finds and recommends you once
+            it searches: digital presence an assistant can discover, which your
+            own pages control and which can move in weeks. A brand can be a zero
+            on the first and strong on the second — that is the ordinary shape
+            for a good small company — and averaging them would hide the one
+            fact that decides which work to do.
+
+            So: two rings, equal weight, each with the sentence that says what
+            it measures, and a line underneath stating in as many words that
+            they are not added together. */}
+        <div className="mt-7 grid grid-cols-1 gap-8 border-t border-gray-100 pt-7 lg:grid-cols-2 lg:gap-12">
+          <Indicator
+            pct={phase1.sovPct}
+            name="Brand knowledge"
+            gloss="The models recommend you without looking anything up."
+            detail={`Recognition and authority inside the model. Measured across ${phase1.totalAnswers} ${
+              phase1.totalAnswers === 1 ? 'answer' : 'answers'
+            } given with the web shut.`}
+          />
+
+          {grounded ? (
+            <Indicator
+              pct={grounded.sovPct}
+              name="AI visibility"
+              gloss="The models find and recommend you when they search the web."
+              detail={`Digital presence an assistant can discover. Measured across ${grounded.totalAnswers} ${
+                grounded.totalAnswers === 1 ? 'answer' : 'answers'
+              } given with the web open.`}
             />
-
-            {/* The sentence a reader needs at the moment they see a low number,
-                rather than two screens later. A brand the models can find but
-                have never heard of is the common case for a good small company,
-                and reading it as "we are invisible" is the wrong conclusion off
-                the right figure. */}
-            {grounded && phase1.sovPct === 0 && grounded.sovPct > 0 && (
-              <p className="mt-4 text-center text-[12px] font-medium leading-relaxed text-gray-500">
-                From memory the models do not know {phase1.brand} yet. They name it {grounded.sovPct}% of the time once
-                they search.
+          ) : (
+            /* Not measured is not zero, and a second ring reading 0% beside the
+               first would be a finding we did not take. */
+            <div className="flex flex-col justify-center rounded-xl bg-gray-50 px-5 py-6">
+              <p className="text-[13px] font-bold tracking-tight text-gray-900">AI visibility — not measured</p>
+              <p className="mt-2 text-[12.5px] font-medium leading-relaxed text-gray-500">
+                The searching half of this scan did not run, so there is no reading for whether the models find{' '}
+                {phase1.brand} when they look. The figure beside this one answers a different question and cannot stand
+                in for it.
               </p>
-            )}
-          </div>
-
-          <div className="flex flex-col gap-5">
-            <Tint>
-              <Micro className="text-[#CBD0AC]">Key insight</Micro>
-              <p className="mt-2.5 text-[14px] font-medium leading-relaxed text-white">{phase2.keyInsight}</p>
-            </Tint>
-
-            <div className="grid grid-cols-3 divide-x divide-gray-100 border-y border-gray-100">
-              {/* The two readings side by side, in the order they are taken.
-                  The ring above pools them; this is where the pair is legible,
-                  because the gap between them is the finding — the same brand
-                  can be a zero from memory and a third of the answers once the
-                  models look, and those have opposite fixes. */}
-              {/* The other half of the pair, in the same size as the technical
-                  and retrieval scores rather than buried in a sentence. A
-                  reader who wants one number has it above; a reader who wants
-                  to know what changed when the models looked has it here. */}
-              {grounded ? (
-                <Stat
-                  value={`${phase1.sovPct}%`}
-                  label="From memory · not searching"
-                  note="What the models already knew, with the web shut"
-                />
-              ) : (
-                <Stat value={`${phase1.sovPct}%`} label="AI share of voice" />
-              )}
-              <Stat
-                value={`${phase2.techScore}`}
-                label={`Your site · ${phase2.techScore} of ${maxTech}`}
-                note="Whether the crawlers can read you at all"
-              />
-              <Stat
-                value={phase2.serpScore < 0 ? '—' : String(phase2.serpScore)}
-                label="Live retrieval / 100"
-                note={
-                  phase2.serpScore < 0
-                    ? 'Not measured on this scan'
-                    : 'Whether Perplexity and Google can find you now'
-                }
-                muted={phase2.serpScore < 0}
-              />
             </div>
+          )}
+        </div>
+
+        <p className="mt-6 max-w-[86ch] text-[12.5px] font-medium leading-relaxed text-gray-500">
+          <strong className="font-bold text-gray-900">These are two measurements, not two halves of one.</strong> They
+          are never added together or averaged, because they have different causes and different fixes: brand knowledge
+          is earned off your own site and moves slowly; AI visibility is what your own pages and citations control. The
+          gap between the two figures is the diagnosis, and the panel below reads it.
+        </p>
+
+        <div className="mt-6 flex flex-col gap-5">
+          <Tint>
+            <Micro className="text-[#CBD0AC]">Key insight</Micro>
+            <p className="mt-2.5 text-[14px] font-medium leading-relaxed text-white">{phase2.keyInsight}</p>
+          </Tint>
+
+          {/* The two supporting scores. Deliberately below and smaller than the
+              pair above: they are evidence for AI visibility, not indicators of
+              their own — whether a crawler can read the site, and whether a
+              searching engine can surface it right now. */}
+          <div className="grid grid-cols-1 divide-y divide-gray-100 border-y border-gray-100 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+            <Stat
+              value={`${phase2.techScore}`}
+              label={`Your site · ${phase2.techScore} of ${maxTech}`}
+              note="Whether the crawlers can read you at all"
+            />
+            <Stat
+              value={phase2.serpScore < 0 ? '—' : String(phase2.serpScore)}
+              label="Live retrieval / 100"
+              note={
+                phase2.serpScore < 0
+                  ? 'Not measured on this scan'
+                  : 'Whether Perplexity and Google can find you now'
+              }
+              muted={phase2.serpScore < 0}
+            />
           </div>
         </div>
       </Panel>
@@ -153,8 +154,14 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
       <Panel>
         <Head
           badge={<TrendingUp size={18} />}
-          title="Share of voice over time"
-          sub={`Every scan of ${phase1.domain} in this market, oldest first. A single scan tells you where you stand; only the series tells you whether anything you changed worked.`}
+          title="Brand knowledge over time"
+          /* Named for what the series actually holds. `record_history` writes
+             `phase1.sovPct` — the memory reading — and the chart was headed
+             "Share of voice over time", which on a report carrying two
+             indicators reads as whichever of them the reader had in mind. The
+             AI visibility half is not tracked yet, and the line under the chart
+             says so rather than leaving the omission to be discovered. */
+          sub={`Every scan of ${phase1.domain} in this market, oldest first — the no-search reading, which is the half that moves slowly enough for a series to mean anything. A single scan tells you where you stand; only the series tells you whether anything you changed worked. AI visibility is measured on every scan but not yet kept as a series.`}
         />
         <div className="mt-7">
           <TrendChart history={phase2.history ?? []} brand={phase1.brand} />
@@ -169,7 +176,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
         <Head
           badge={<MessagesSquare size={18} />}
           title="What the models actually answered"
-          sub={`Every list, in the order each model gave it. This is the evidence under every figure above — the leaderboard is these lists added up, and the share of voice is how often ${phase1.brand} appears in them.`}
+          sub={`Every list, in the order each model gave it. This is the evidence under every figure above — the two leaderboards are these lists added up, and both indicators are how often ${phase1.brand} appears in them.`}
         />
         <div className="mt-7">
           <AnswerLists phase1={phase1} grounded={phase2.grounded} />
@@ -261,6 +268,40 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
           </div>
         </div>
       </Panel>
+    </div>
+  );
+}
+
+/**
+ * One of the report's two headline indicators: the ring, its name, and the two
+ * sentences that say what it measures.
+ *
+ * The name and the gloss are the point. A percentage on a ring labelled "share
+ * of voice" told a reader nothing they could act on, and the same figure under
+ * "Brand knowledge — the models recommend you without looking anything up"
+ * tells them both what was measured and, by implication, what would change it.
+ */
+function Indicator({
+  pct,
+  name,
+  gloss,
+  detail,
+}: {
+  pct: number;
+  name: string;
+  gloss: string;
+  detail: string;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:gap-7">
+      <div className="shrink-0">
+        <ScoreRing pct={pct} label={name} size={140} />
+      </div>
+      <div className="min-w-0 text-center sm:pt-3 sm:text-left">
+        <p className="text-[15px] font-bold tracking-tight text-gray-900">{name}</p>
+        <p className="mt-2 text-[13px] font-semibold leading-relaxed text-[#39471D]">{gloss}</p>
+        <p className="mt-2 text-[12px] font-medium leading-relaxed text-gray-500">{detail}</p>
+      </div>
     </div>
   );
 }
@@ -435,7 +476,7 @@ function Rivals({ phase1, grounded }: { phase1: ScanPhase1; grounded?: ScanPhase
 
       <div className={`mt-7 grid grid-cols-1 gap-8 ${twoWay ? 'lg:grid-cols-2 lg:gap-12' : ''}`}>
         <RivalList
-          title={twoWay ? 'When they answer from memory' : 'Named across the run'}
+          title={twoWay ? 'Brand knowledge · no search' : 'Named across the run'}
           note={`Out of ${phase1.totalAnswers} answers given with the web shut. This is who the models already associate with your category.`}
           rivals={memory}
           questions={phase1.questions}
@@ -443,7 +484,7 @@ function Rivals({ phase1, grounded }: { phase1: ScanPhase1; grounded?: ScanPhase
 
         {twoWay && (
           <RivalList
-            title="When they search the web"
+            title="AI visibility · searching"
             note={`Out of ${grounded!.totalAnswers} answers given with the web open. This is who is being put in front of a buyer right now.`}
             rivals={searching}
             questions={phase1.questions}
@@ -650,7 +691,7 @@ function GroundedComparison({
     <Panel>
       <Head
         badge={<Compass size={18} />}
-        title="Do they know you, or can they find you?"
+        title="Brand knowledge against AI visibility"
         sub={`We asked ${askedTwice === memory.questions.length ? `the same ${askedTwice} questions` : `${askedTwice} of the same ${memory.questions.length} questions`} twice. Once with the models answering from memory, the way they do when nobody is looking anything up. Once with web search switched on, the way most people use them today. Those are different questions about you, and the answers come apart.`}
       />
 
@@ -664,7 +705,7 @@ function GroundedComparison({
           <div className="grid grid-cols-1 gap-px overflow-hidden rounded-xl bg-gray-100 sm:grid-cols-2">
             <div className="bg-white p-4 sm:p-5">
               <p className="text-3xl font-bold leading-none tracking-tight text-[#39471D]">{memory.sovPct}%</p>
-              <p className="mt-2.5 text-[13px] font-bold tracking-tight text-gray-900">Named from memory</p>
+              <p className="mt-2.5 text-[13px] font-bold tracking-tight text-gray-900">Brand knowledge</p>
               <p className="mt-1.5 text-[12px] font-medium leading-relaxed text-gray-500">
                 Out of {memory.totalAnswers} answers given without looking anything up. This is whether the models already
                 know {memory.brand} — reputation, not pages.
@@ -672,7 +713,7 @@ function GroundedComparison({
             </div>
         <div className="bg-white p-4 sm:p-5">
           <p className="text-3xl font-bold leading-none tracking-tight text-[#39471D]">{grounded.sovPct}%</p>
-          <p className="mt-2.5 text-[13px] font-bold tracking-tight text-gray-900">Named when they search</p>
+          <p className="mt-2.5 text-[13px] font-bold tracking-tight text-gray-900">AI visibility</p>
           <p className="mt-1.5 text-[12px] font-medium leading-relaxed text-gray-500">
             Out of {grounded.totalAnswers} answers given with the web open. This is whether the models pick{' '}
             {memory.brand} once they have looked — pages, not reputation.

@@ -89,7 +89,7 @@ export default function ScanResults({
               invites the reader to check it by asking Claude — which searches —
               and conclude the tool is lying when the two disagree. They are
               different questions, and the label is where that starts. */}
-          <ScoreRing pct={phase1.sovPct} label="Share of voice · from memory" />
+          <ScoreRing pct={phase1.sovPct} label="Brand knowledge" />
 
           <div className="flex flex-col gap-4">
             {phase1.providers.map((p) => {

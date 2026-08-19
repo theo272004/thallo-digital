@@ -83,8 +83,8 @@ export default function AnswerLists({ phase1, grounded }: { phase1: ScanPhase1; 
                       <Micro className="text-gray-700">{PROVIDER_LABEL[p.provider]}</Micro>
                     </span>
 
-                    <Reading label={twoWay ? 'From memory' : 'Answered'} answer={memory} />
-                    {twoWay && <Reading label="Searching the web" answer={web} />}
+                    <Reading label={twoWay ? 'Brand knowledge · no search' : 'Answered'} answer={memory} />
+                    {twoWay && <Reading label="AI visibility · searching" answer={web} />}
                   </div>
                 );
               })}

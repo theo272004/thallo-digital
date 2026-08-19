@@ -6,7 +6,8 @@ import { Micro } from './ui';
 import type { HistoryPoint } from '@/lib/scan/types';
 
 /**
- * Share of voice over time, for one brand in one market.
+ * Brand knowledge over time, for one brand in one market — the no-search
+ * reading, which is the only one the history table keeps.
  *
  * ## Why the empty state is half of this component
  *
@@ -39,7 +40,7 @@ function TrendTooltip({ active, payload }: { active?: boolean; payload?: { paylo
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm">
-      <p className="text-[12px] font-bold text-gray-900">{point.sovPct}% share of voice</p>
+      <p className="text-[12px] font-bold text-gray-900">{point.sovPct}% brand knowledge</p>
       <p className="mt-0.5 text-[11px] font-medium text-gray-400">
         {shortDate(point.date)}
         {point.grade ? ` · grade ${point.grade}` : ''}
