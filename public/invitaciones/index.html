@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taller de flores, cena de rebranding launch · Thallo Digital</title>
+<!-- Fuera de los buscadores: esta página no se anuncia en ningún lado
+     del sitio y sólo llega a quien reciba el enlace. Va con noindex en la
+     propia página en vez de un Disallow en robots.txt, porque un Disallow
+     impide rastrearla pero no impide que Google la liste igual si alguien
+     la enlaza; noindex sí la saca del índice. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+
+<meta name="description" content="Te invitamos a compartir una tarde de flores, buena comida y conversaciones. Viernes 28 de agosto, 5:00 pm en Botero's Café.">
+
+<!-- Vista previa al compartir por WhatsApp.
+     og:image y og:url tienen que ser URL absolutas: con ruta relativa
+     WhatsApp y Facebook no muestran la imagen. Si algún día la página se
+     muda de dirección, hay que actualizar estas dos líneas. -->
+<meta property="og:url" content="https://thallodigital.com/invitaciones/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Taller de flores, cena de rebranding launch">
+<meta property="og:description" content="Thallo Digital · Viernes 28 de agosto, 5:00 pm · Botero's Café">
+<meta property="og:image" content="https://thallodigital.com/invitaciones/img/preview.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="img/flor.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..800&family=Space+Mono:wght@400;700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+
+<style>
+/* ─────────────────────────────────────────────────────────────
+   Invitación Thallo Digital
+   Réplica en HTML del diseño de Canva "Invitación evento Thallo
+   Digital" (lienzo 800 × 1782). Los valores en px de abajo son
+   las medidas reales del lienzo, por eso a 800px de ancho la
+   página coincide con el diseño original.
+   ───────────────────────────────────────────────────────────── */
+
+:root{
+  --dark:   #12160c;  /* fondo del header y del footer   */
+  --olive:  #39471d;  /* tarjeta del formulario y botón  */
+  --ink:    #111827;  /* texto principal                 */
+  --muted:  #6b7280;  /* descripciones de los platos     */
+  --label:  #9ca3af;  /* etiquetas pequeñas              */
+  --line:   #ece9e2;  /* filetes y bordes                */
+  --radio:  #d1d5db;  /* borde del círculo del radio     */
+
+  /* Las tres fuentes del Canva, confirmadas en el PDF exportado:
+     Inter18pt (Medium/SemiBold/ExtraBold), Space Mono y Instrument Serif. */
+  --sans:  "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:  "Space Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+
+html{ -webkit-text-size-adjust:100%; }
+
+body{
+  margin:0;
+  background:#ffffff;
+  color:var(--ink);
+  font-family:var(--sans);
+  font-weight:500;
+  font-optical-sizing:none;
+  font-variation-settings:"opsz" 18;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* El lienzo: 800px de ancho, centrado. */
+.hoja{
+  width:100%;
+  max-width:800px;
+  margin:0 auto;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ── Header ────────────────────────────────────────────────── */
+
+.header{
+  position:relative;
+  height:456px;
+  background-color:var(--dark);
+  /* Mismo redondeo que el pie de página: 14px. El Canva traía 46px,
+     pero se pidió menos curva y que las dos esquinas coincidieran. */
+  border-bottom-left-radius:14px;
+  border-bottom-right-radius:14px;
+  overflow:hidden;
+  padding:104px 71px 0;
+}
+
+/* La foto va como capa propia para poder oscurecerla encima sin
+   tocar el texto. Recorte y posición copiados del Canva. */
+.header::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:url("img/hero.jpg");
+  background-repeat:no-repeat;
+  /* En proporcion, no en pixeles: 165% del ancho con la posicion 50%/100%
+     da exactamente el mismo encuadre que el Canva a 800px, y sigue
+     cubriendo el marco completo a cualquier ancho mayor. */
+  background-size:165% auto;
+  background-position:50% 100%;
+}
+
+/* El velo es plano: el degradado que se ve en el Canva lo hace la
+   foto, no una capa encima. Valor obtenido ajustando por minimos
+   cuadrados mis pixeles contra los del PNG exportado de Canva. */
+.header::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(21,31,10,.707);
+}
+
+.header > *{ position:relative; z-index:1; }
+
+.eyebrow{
+  margin:0;
+  font-family:var(--mono);
+  font-weight:400;
+  font-size:10.5px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:#fff;
+}
+
+.titulo{
+  margin:28.6px 0 0;
+  max-width:658px;
+  font-family:var(--sans);
+  font-weight:800;
+  font-size:60px;
+  line-height:1.05;
+  letter-spacing:-.02em;
+  color:#fff;
+}
+
+.bajada{
+  margin:28px 0 0;
+  max-width:584px;
+  font-size:20px;
+  line-height:1.6;
+  color:#fff;
+}
+
+/* ── Datos del evento ──────────────────────────────────────── */
+
+.datos{
+  margin:32px 40px 0;
+  padding:20.8px 0 37px 80px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  display:grid;
+  grid-template-columns:306.45px 1fr;
+  gap:0;
+}
+
+.dato-label{
+  margin:0;
+  font-family:var(--mono);
+  font-weight:400;
+  font-size:11.75px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--label);
+}
+
+.dato-fuerte{
+  margin:13.6px 0 0;
+  font-size:20px;
+  font-weight:600;
+  line-height:1.2;
+  letter-spacing:-.01em;
+  color:var(--ink);
+}
+
+.dato-suave{
+  margin:12.6px 0 0;
+  font-size:19.6px;
+  font-weight:500;
+  line-height:1.2;
+  color:var(--ink);
+}
+
+/* La dirección abre Google Maps. Va subrayada para que se note que se
+   puede tocar, sin cambiar de color y romper el diseño. */
+.mapa{
+  color:inherit;
+  text-decoration:underline;
+  text-decoration-color:var(--radio);
+  text-underline-offset:3px;
+}
+.mapa:hover{ text-decoration-color:var(--olive); }
+
+/* ── Flor + frase ──────────────────────────────────────────── */
+
+/* El isotipo gira a 18 segundos por vuelta — algo más rápido que los 30
+   que usa SpinFlower en el sitio, por pedido.
+   La imagen queda descentrada respecto al marco a propósito — así es
+   como está recortada en el Canva — pero su centro coincide con el del
+   marco, que es lo que hace que el giro no se bambolee. Sin overflow
+   hidden, o las puntas se cortarían al rotar. */
+.marca{
+  --flor:52px;
+  margin:21.5px auto 0;
+  width:var(--flor);
+  height:var(--flor);
+  position:relative;
+}
+/* La imagen se centra con márgenes negativos, no con translate, porque
+   el transform lo ocupa entero la animación de giro. Las proporciones
+   74×75 sobre un marco de 52 son las del recorte del Canva; escalar
+   --flor mueve todo junto. */
+.marca img{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:calc(var(--flor) * 74 / 52);
+  height:calc(var(--flor) * 75 / 52);
+  margin-left:calc(var(--flor) * -37 / 52);
+  margin-top:calc(var(--flor) * -37.5 / 52);
+  transform-origin:50% 50%;
+  animation:girar 18s linear infinite;
+  will-change:transform;
+}
+
+@keyframes girar{
+  from{ transform:rotate(0deg); }
+  to{ transform:rotate(360deg); }
+}
+
+/* A quien tenga activado "reducir movimiento" en el teléfono no se le
+   mueve nada. */
+@media (prefers-reduced-motion:reduce){
+  .marca img{ animation:none; }
+}
+
+.frase{
+  margin:12.6px auto 0;
+  max-width:509px;
+  font-family:var(--serif);
+  font-style:italic;
+  font-weight:400;
+  font-size:32.7px;
+  line-height:1.35;
+  text-align:center;
+  color:var(--olive);
+}
+
+/* ── Formulario ────────────────────────────────────────────── */
+
+.tarjeta{
+  margin:15.5px 40px 0;
+  padding:56.8px 40px 55.6px;
+  background:var(--olive);
+  border-radius:28px;
+}
+
+.campo-label{
+  display:block;
+  margin:0;
+  font-family:var(--mono);
+  font-weight:400;
+  font-size:13.85px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:#fff;
+}
+
+.campo-nota{
+  margin:8.3px 0 0;
+  font-size:15px;
+  line-height:1.6;
+  color:#fff;
+}
+
+#nombre{
+  display:block;
+  width:100%;
+  height:53px;
+  margin-top:25.4px;
+  padding:0 26px;
+  border:1px solid var(--line);
+  border-radius:26.5px;
+  background:#fff;
+  color:var(--ink);
+  font-family:var(--sans);
+  font-weight:500;
+  font-size:16px;
+}
+#nombre::placeholder{ color:#c3c7cc; }
+#nombre:focus{
+  outline:none;
+  border-color:#fff;
+  box-shadow:0 0 0 3px rgba(255,255,255,.35);
+}
+
+.platos{
+  margin:36px 0 0;
+  border:0;
+  padding:0;
+}
+.platos legend{ padding:0; }
+
+.lista{ margin-top:21.5px; display:grid; gap:16px; }
+
+/* Cada plato es un <label> para que se pueda tocar toda la
+   tarjeta, no sólo el círculo. */
+.plato{
+  display:block;
+  padding:0;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:24px;
+  cursor:pointer;
+  transition:border-color .15s, box-shadow .15s, opacity .18s, filter .18s;
+}
+.plato:hover{ border-color:var(--radio); }
+
+/* Foto del plato. Si el archivo todavía no está, el JS marca la
+   tarjeta como .sin-foto y queda igual que antes, sin hueco roto. */
+.plato-foto{
+  display:block;
+  width:100%;
+  height:160px;
+  object-fit:cover;
+  background:#f1f1ec;
+  border-bottom:1px solid var(--line);
+}
+.plato.sin-foto .plato-foto{ display:none; }
+
+.plato-cuerpo{
+  display:grid;
+  grid-template-columns:20px 1fr;
+  gap:0 20px;
+  padding:26px 29px 28px;
+}
+
+.plato input{
+  position:absolute;
+  opacity:0;
+  width:0;
+  height:0;
+}
+
+.marco{
+  margin-top:2px;
+  width:20px;
+  height:20px;
+  border:1px solid var(--radio);
+  border-radius:50%;
+  background:#fff;
+  position:relative;
+  transition:border-color .15s;
+}
+.marco::after{
+  content:"";
+  position:absolute;
+  inset:4px;
+  border-radius:50%;
+  background:var(--olive);
+  transform:scale(0);
+  transition:transform .15s;
+}
+
+/* Se marca de dos formas: :has() en navegadores nuevos y la clase
+   .elegido que pone el JS, para telefonos viejos que no lo soportan. */
+.plato:has(input:checked),
+.plato.elegido{
+  border-color:var(--olive);
+  box-shadow:0 0 0 1px var(--olive);
+}
+.plato:has(input:checked) .marco,
+.plato.elegido .marco{ border-color:var(--olive); }
+.plato:has(input:checked) .marco::after,
+.plato.elegido .marco::after{ transform:scale(1); }
+.plato:has(input:focus-visible){ box-shadow:0 0 0 3px rgba(255,255,255,.55); }
+
+/* Una vez elegido un plato, los otros dos se van a gris para que la
+   selección se lea de un vistazo. Mientras no haya nada elegido los tres
+   se ven iguales, o parecería que ya hay uno descartado. */
+.lista:has(input:checked) .plato:not(:has(input:checked)),
+.lista.hay-eleccion .plato:not(.elegido){
+  opacity:.5;
+  filter:grayscale(1);
+}
+/* Al pasar por encima recuperan color: siguen siendo elegibles. */
+.lista:has(input:checked) .plato:not(:has(input:checked)):hover,
+.lista.hay-eleccion .plato:not(.elegido):hover{
+  opacity:.85;
+  filter:grayscale(.3);
+}
+
+.plato-nombre{
+  display:block;
+  margin:0;
+  font-family:var(--mono);
+  font-weight:700;
+  font-size:13px;
+  line-height:1.6;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--ink);
+}
+
+.plato-desc{
+  margin:10px 0 0;
+  font-size:15px;
+  line-height:1.6;
+  color:var(--muted);
+}
+
+/* ── Botón ─────────────────────────────────────────────────── */
+
+.enviar{
+  margin:29px 40px 0;
+  display:inline-flex;
+  align-items:center;
+  gap:8.55px;
+  height:47px;
+  padding:0 20.3px;
+  border:1px solid var(--olive);
+  border-radius:24px;
+  background:var(--olive);
+  color:#fff;
+  font-family:var(--sans);
+  font-weight:600;
+  font-size:14.97px;
+  letter-spacing:-.01em;
+  cursor:pointer;
+  transition:background .15s, transform .05s;
+}
+.enviar:hover{ background:#2c3717; }
+.enviar:active{ transform:translateY(1px); }
+.enviar .flecha{ font-size:16px; line-height:1; }
+
+/* Aviso de validación */
+.aviso{
+  margin:14px 40px 0;
+  font-size:14px;
+  line-height:1.5;
+  color:#8a2b2b;
+}
+.aviso[hidden]{ display:none; }
+
+/* Estado de "ya confirmaste" */
+.gracias{
+  margin:29px 40px 0;
+  padding:24px 28px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:#f7f8f4;
+}
+.gracias[hidden]{ display:none; }
+.gracias p{ margin:0; font-size:15px; line-height:1.6; color:var(--ink); }
+.gracias .otra{
+  margin-top:12px;
+  background:none;
+  border:0;
+  padding:0;
+  color:var(--olive);
+  font-family:var(--sans);
+  font-weight:600;
+  font-size:14px;
+  text-decoration:underline;
+  cursor:pointer;
+}
+
+/* ── Footer ────────────────────────────────────────────────── */
+
+.footer{
+  position:relative;
+  height:99px;
+  margin-top:38px;
+  background-color:var(--dark);
+  border-top-left-radius:14px;
+  border-top-right-radius:14px;
+  overflow:hidden;
+}
+/* La foto original del pie sólo existe dentro del Canva, así que el
+   pie reusa la misma foto del header con otro encuadre (la zona baja
+   derecha) y un velo ajustado para dar el mismo tono que el diseño. */
+.footer::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:url("img/hero.jpg");
+  background-repeat:no-repeat;
+  background-size:234.75% auto;
+  background-position:100% 100%;
+}
+.footer::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(35,42,20,.904);
+}
+
+.footer-fila{
+  position:relative;
+  z-index:1;
+  height:100%;
+  padding:0 40px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-family:var(--mono);
+  font-weight:400;
+  font-size:10px;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--label);
+}
+
+/* ── Pantallas chicas ──────────────────────────────────────── */
+
+@media (max-width:799px){
+  /* En celular el header crece a lo alto y se sale de la proporcion,
+     asi que ahi el fondo se recorta con cover para no dejar huecos. */
+  .header::before{ background-size:cover; background-position:50% 100%; }
+  /* Lo de arriba está calibrado para que en la primera pantalla del
+     teléfono entre justo hasta la frase "Una nueva etapa merece
+     celebrarse", sin apretarlo. Ya no hay min-height —era lo que
+     estiraba el encabezado con aire de sobra— pero el padding es
+     generoso a propósito. */
+  /* Los espacios de esta primera pantalla se miden contra el alto del
+     teléfono, no en píxeles fijos: en uno alto la cosa respira y en uno
+     chico se ajusta, de modo que la frase caiga cerca del borde inferior
+     en ambos. La línea con vh es para navegadores que no entienden svh;
+     la de svh, que sí descuenta la barra del navegador, la pisa después. */
+  .header{
+    height:auto;
+    padding:clamp(36px, 9.5vh, 78px) 22px clamp(26px, 7.5vh, 62px);
+    padding:clamp(36px, 9.5svh, 78px) 22px clamp(26px, 7.5svh, 62px);
+    border-bottom-left-radius:14px;
+    border-bottom-right-radius:14px;
+  }
+  .eyebrow{ font-size:9.5px; }
+  .titulo{ font-size:35px; margin-top:20px; }
+  .bajada{ font-size:16px; margin-top:16px; line-height:1.55; }
+
+  /* En teléfono la página usa el ancho completo: los filetes y la
+     tarjeta del formulario van de borde a borde, sin franjas blancas
+     a los lados. Lo que era margen exterior pasa a padding interno. */
+  /* Como en el Canva: los filetes con margen a los lados y las columnas
+     entradas desde la izquierda. Fecha y lugar van lado a lado —
+     apilados se comían unos 100px de la primera pantalla— y la primera
+     columna va más ancha para que "Viernes 28 de Agosto" entre en una
+     sola línea. */
+  .datos{
+    margin:clamp(14px, 4.2vh, 36px) 20px 0;
+    margin:clamp(14px, 4.2svh, 36px) 20px 0;
+    padding:clamp(12px, 3vh, 26px) 0 clamp(14px, 4vh, 32px) 28px;
+    padding:clamp(12px, 3svh, 26px) 0 clamp(14px, 4svh, 32px) 28px;
+    grid-template-columns:1.15fr 1fr;
+    gap:0 14px;
+  }
+  .dato-label{ font-size:10.5px; }
+  .dato-fuerte{ font-size:16px; margin-top:10px; }
+  .dato-suave{ font-size:15.5px; margin-top:8px; }
+
+  .marca{
+    --flor:50px;
+    margin-top:clamp(14px, 5vh, 42px);
+    margin-top:clamp(14px, 5svh, 42px);
+  }
+  .frase{
+    font-size:22px;
+    margin-top:clamp(8px, 2.6vh, 24px);
+    margin-top:clamp(8px, 2.6svh, 24px);
+    padding:0 24px;
+  }
+
+  .tarjeta{ margin:30px 0 0; padding:32px 16px 36px; border-radius:0; }
+  .plato{ border-radius:18px; }
+  .plato-foto{ height:150px; }
+  .plato-cuerpo{ padding:18px 16px 20px; gap:0 12px; }
+  .plato-desc{ font-size:14px; }
+
+  /* Las dos etiquetas del formulario van centradas en teléfono. */
+  .campo-label{ text-align:center; }
+  .platos legend{ display:block; width:100%; }
+  .campo-nota{ font-size:14px; text-align:center; }
+
+  .aviso,
+  .gracias{ margin-left:16px; margin-right:16px; }
+
+  /* Botón más grande y centrado: es lo que se toca con el pulgar. */
+  .enviar{
+    margin:24px 16px 0;
+    width:calc(100% - 32px);
+    height:58px;
+    padding:0;
+    justify-content:center;
+    font-size:17px;
+    border-radius:29px;
+  }
+  .enviar .flecha{ font-size:18px; }
+
+  .footer-fila{
+    padding:0 20px;
+    font-size:8.5px;
+    letter-spacing:.16em;
+  }
+}
+
+@media (max-width:400px){
+  /* 31px es el tope para que el título siga entrando en dos líneas;
+     de 32 en adelante se parte en tres y queda desprolijo. */
+  .titulo{ font-size:31px; }
+  .frase{ font-size:21px; }
+  /* Sin la entrada de la izquierda, o la columna de la fecha se queda
+     sin ancho y "Viernes 28 de Agosto" se parte en dos. */
+  .datos{ padding-left:0; }
+  .footer-fila{ flex-direction:column; justify-content:center; gap:6px; }
+  .footer{ height:auto; padding:18px 0; }
+}
+
+/* En pantallas muy angostas las dos columnas de fecha y lugar quedan
+   demasiado apretadas, así que ahí sí se apilan. */
+@media (max-width:339px){
+  .datos{ grid-template-columns:1fr; gap:16px 0; }
+}
+
+/* Teléfonos de pantalla baja: con el aire normal la frase quedaba
+   justo en el borde, así que acá se recortan todos los espacios. */
+@media (max-width:799px) and (max-height:640px){
+  .header{
+    padding-top:clamp(28px, 6.5vh, 46px);
+    padding-top:clamp(28px, 6.5svh, 46px);
+    padding-bottom:clamp(20px, 5vh, 36px);
+    padding-bottom:clamp(20px, 5svh, 36px);
+  }
+  .datos{
+    margin-top:clamp(12px, 3vh, 22px);
+    margin-top:clamp(12px, 3svh, 22px);
+    padding-top:clamp(10px, 2.2vh, 18px);
+    padding-top:clamp(10px, 2.2svh, 18px);
+    padding-bottom:clamp(12px, 3vh, 22px);
+    padding-bottom:clamp(12px, 3svh, 22px);
+  }
+  .marca{
+    margin-top:clamp(12px, 3.5vh, 24px);
+    margin-top:clamp(12px, 3.5svh, 24px);
+  }
+  .frase{
+    margin-top:clamp(8px, 2vh, 16px);
+    margin-top:clamp(8px, 2svh, 16px);
+  }
+}
+
+/* ── Pantallas grandes ─────────────────────────────────────────
+   Entre 800 y 1099px la página queda igual al lienzo de Canva.
+   De 1100px para arriba se ensancha hacia los lados: márgenes más
+   amplios y los tres platos en una sola fila. No cambia ningún
+   tamaño de letra — el texto se queda en las medidas del Canva.
+   ───────────────────────────────────────────────────────────── */
+
+@media (min-width:1100px){
+  .hoja{ max-width:1120px; }
+
+  /* Ojo: no se toca ningun tamano de letra. La pagina se ensancha,
+     el texto se queda en las medidas del Canva. */
+  .header{ padding-left:90px; padding-right:90px; }
+
+  .datos{
+    margin-left:56px;
+    margin-right:56px;
+    padding-left:90px;
+    grid-template-columns:1fr 1fr;
+    gap:0 40px;
+  }
+
+  .tarjeta{ margin-left:56px; margin-right:56px; }
+  #nombre{ max-width:560px; }
+
+  /* Los tres platos, uno al lado del otro */
+  .lista{
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+    align-items:stretch;
+  }
+  .plato{ align-content:start; }
+  .plato-foto{ height:150px; }
+  .plato-cuerpo{ padding:22px 22px 24px; gap:0 14px; }
+
+  .enviar,
+  .aviso,
+  .gracias{ margin-left:56px; margin-right:56px; }
+
+  .footer-fila{ padding:0 56px; }
+}
+</style>
+</head>
+<body>
+
+<main class="hoja">
+
+  <header class="header">
+    <p class="eyebrow">Thallo Digital · Invitación</p>
+    <h1 class="titulo">Taller de flores, cena de rebranding launch</h1>
+    <p class="bajada">Te invitamos a compartir una tarde de flores, buena comida y conversaciones para celebrar lo que viene.</p>
+  </header>
+
+  <section class="datos">
+    <div>
+      <p class="dato-label">Fecha y hora</p>
+      <p class="dato-fuerte">Viernes 28 de&nbsp;Agosto</p>
+      <p class="dato-suave">5:00 pm</p>
+    </div>
+    <div>
+      <p class="dato-label">Lugar</p>
+      <p class="dato-fuerte">Botero's Café</p>
+      <p class="dato-suave"><a class="mapa"
+        href="https://www.google.com/maps/search/?api=1&amp;query=Botero%27s%20Caf%C3%A9%2C%20Cra.%2051B%20%2379-296%2C%20Barranquilla%2C%20Colombia"
+        target="_blank" rel="noopener">Cra. 51B #79-296 Loc&nbsp;4</a></p>
+    </div>
+  </section>
+
+  <div class="marca"><img src="img/flor.png" alt="" width="74" height="75"></div>
+
+  <p class="frase">Una nueva etapa merece celebrarse.</p>
+
+  <form id="rsvp" novalidate>
+    <div class="tarjeta">
+
+      <label class="campo-label" for="nombre">Tu nombre</label>
+      <input id="nombre" name="nombre" type="text" autocomplete="name" placeholder="">
+
+      <fieldset class="platos">
+        <legend class="campo-label">Elige tu plato fuerte</legend>
+        <p class="campo-nota">Selecciona una opción para tu lugar en la mesa.</p>
+
+        <div class="lista">
+          <label class="plato">
+            <input type="radio" name="plato" value="Suprema de pollo rostizado">
+            <img class="plato-foto" src="img/plato-pollo.jpg" alt="Suprema de pollo rostizado" loading="lazy">
+            <span class="plato-cuerpo">
+              <span class="marco"></span>
+              <span>
+                <span class="plato-nombre">Suprema de pollo rostizado</span>
+                <span class="plato-desc" style="display:block">En cama de tahine, chimichurri, papas a la francesa y ensalada fresca de la casa.</span>
+              </span>
+            </span>
+          </label>
+
+          <label class="plato">
+            <input type="radio" name="plato" value="Lomo jugoso chimichurri">
+            <img class="plato-foto" src="img/plato-lomo.jpg" alt="Lomo jugoso chimichurri" loading="lazy">
+            <span class="plato-cuerpo">
+              <span class="marco"></span>
+              <span>
+                <span class="plato-nombre">Lomo jugoso chimichurri</span>
+                <span class="plato-desc" style="display:block">Sobre cama de tahine, papas a la francesa y ensalada de la casa.</span>
+              </span>
+            </span>
+          </label>
+
+          <label class="plato">
+            <input type="radio" name="plato" value="Pizza Afrodita">
+            <img class="plato-foto" src="img/plato-pizza.jpg" alt="Pizza Afrodita" loading="lazy">
+            <span class="plato-cuerpo">
+              <span class="marco"></span>
+              <span>
+                <span class="plato-nombre">Pizza Afrodita</span>
+                <span class="plato-desc" style="display:block">Chorizo español, dátiles, tocineta crocante, salsa de pimentón, salsa napolitana y queso mozzarella</span>
+              </span>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+
+    </div>
+
+    <p class="aviso" id="aviso" hidden></p>
+
+    <button class="enviar" type="submit">
+      Confirmar asistencia <span class="flecha" aria-hidden="true">↗</span>
+    </button>
+  </form>
+
+  <div class="gracias" id="gracias" hidden>
+    <p id="gracias-texto"></p>
+    <button class="otra" type="button" id="otra">Confirmar a otra persona</button>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-fila">
+      <span>Thallo Digital</span>
+      <span>Botero's Café · 28.08.2026</span>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+/* ─────────────────────────────────────────────────────────────
+   Al confirmar se abre WhatsApp con el mensaje ya escrito.
+   El invitado todavía tiene que apretar "enviar" en WhatsApp:
+   por eso la página avisa que la confirmación no está completa
+   hasta que lo haga.
+   ───────────────────────────────────────────────────────────── */
+
+// Número de Cami en formato internacional, sólo dígitos.
+// 57 = Colombia, 319 799 3171.
+const WHATSAPP = "573197993171";
+
+// Si alguna foto de plato no carga, esa tarjeta se muestra sin imagen
+// en vez de dejar el icono de imagen rota.
+document.querySelectorAll(".plato-foto").forEach(function (img) {
+  img.addEventListener("error", function () {
+    img.closest(".plato").classList.add("sin-foto");
+  });
+  if (img.complete && !img.naturalWidth) img.closest(".plato").classList.add("sin-foto");
+});
+
+document.querySelectorAll('input[name="plato"]').forEach(function (r) {
+  r.addEventListener("change", function () {
+    document.querySelectorAll(".plato").forEach(function (p) {
+      p.classList.toggle("elegido", p.contains(r) && r.checked);
+    });
+    // Marca la lista para que los no elegidos se vayan a gris, en
+    // navegadores viejos donde :has() no existe.
+    document.querySelector(".lista").classList.add("hay-eleccion");
+  });
+});
+
+const form    = document.getElementById("rsvp");
+const aviso   = document.getElementById("aviso");
+const gracias = document.getElementById("gracias");
+const texto   = document.getElementById("gracias-texto");
+
+function mostrarAviso(msg, foco){
+  aviso.textContent = msg;
+  aviso.hidden = false;
+  if (foco) foco.focus();
+}
+
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
+  aviso.hidden = true;
+
+  const nombre = document.getElementById("nombre").value.trim();
+  const plato  = form.querySelector('input[name="plato"]:checked');
+
+  if (!nombre) {
+    mostrarAviso("Escribe tu nombre para poder confirmar.", document.getElementById("nombre"));
+    return;
+  }
+  if (!plato) {
+    mostrarAviso("Elige tu plato fuerte para reservar tu lugar en la mesa.");
+    return;
+  }
+
+  const mensaje =
+    "¡Hola Cami! Soy " + nombre + " 🌿\n\n" +
+    "Confirmo mi asistencia al taller de flores y cena de rebranding de Thallo Digital.\n" +
+    "Viernes 28 de agosto, 5:00 pm — Botero's Café.\n\n" +
+    "Mi plato fuerte: " + plato.value + ".\n\n" +
+    "¡Nos vemos allá!";
+
+  // Freno de seguridad: si el número todavía no se cambió, no mandamos
+  // a nadie a un chat equivocado.
+  if (!/^[0-9]{8,15}$/.test(WHATSAPP)) {
+    mostrarAviso("Falta configurar el número de WhatsApp de Cami en esta página.");
+    return;
+  }
+
+  window.open("https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(mensaje), "_blank");
+
+  texto.textContent =
+    "Listo, " + nombre + ". Se abrió WhatsApp con tu confirmación y tu plato (" +
+    plato.value + "). Sólo falta que aprietes enviar allá para que a Cami le llegue.";
+  form.hidden = true;
+  gracias.hidden = false;
+});
+
+document.getElementById("otra").addEventListener("click", function () {
+  form.reset();
+  document.querySelectorAll(".plato").forEach(function (p) { p.classList.remove("elegido"); });
+  document.querySelector(".lista").classList.remove("hay-eleccion");
+  form.hidden = false;
+  gracias.hidden = true;
+  document.getElementById("nombre").focus();
+});
+</script>
+
+</body>
+</html>
