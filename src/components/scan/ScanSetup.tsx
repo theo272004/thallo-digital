@@ -305,7 +305,16 @@ export default function ScanSetup({
   }
 
   return (
-    <div className="mx-auto max-w-[820px]">
+    /* The full width of the console, not 820px centred in it.
+       Centred, this card left 380px of empty ground down either side of a
+       1600px window — the proportions of a phone screen again, which is the
+       exact fault step 1 was rebuilt to fix, and a visitor who has just come
+       off a spread that used the whole screen arrives at a column half its
+       width. The width is spent on a spread rather than on stretching a text
+       field to 1300px: the questions take the left, and the guidance, the
+       address and the summary of what will happen take the right, where they
+       can be read while typing instead of only after scrolling past. */
+    <div className="w-full">
       {/* Tighter padding than step 1 on small screens. Step 1 is five short
           fields; this is fifteen rows of free text, and at the step-1 padding
           the field a visitor types a whole sentence into was 191px wide on a
@@ -319,131 +328,154 @@ export default function ScanSetup({
           chip={`${filled.length} / ${MAX_QUESTIONS}`}
         />
 
-        {/* The one thing that silently invalidates a scan, said before the
-            first keystroke rather than after the results. */}
-        <Tint edged className="mt-7 flex items-start gap-3">
-          <Sparkles size={19} className="mt-0.5 shrink-0 text-[#39471D]" />
-          {/* The example is the generated question for this industry and market,
-              not a hardcoded English one — a Spanish scan shown an English
-              sample teaches the wrong shape. Written as a template literal
-              because `{expr} companies` loses its space the moment a formatter
-              rewraps the line; that bug has shipped here before. */}
-          <p className="text-[12.5px] font-medium leading-relaxed text-[#55672E]">
-            <strong className="font-bold">Leave your brand name out of the question.</strong>{' '}
-            {`Ask what a buyer would type before they know you exist — like “${example}”. A question that names you only measures whether the model will agree with you.`}
-          </p>
-        </Tint>
+        {/* One column until `xl`, not `lg`. At 1024 the split leaves the right
+            column 278px wide — an email field and two paragraphs in a gutter —
+            and a single column is honestly better there. The spread only earns
+            its keep once there is something to spread. The rule between the
+            halves is the card's own hairline, drawn on the left edge of the
+            second column and only at that breakpoint: stacked, a vertical rule
+            points at nothing. */}
+        <div className="mt-7 grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)] xl:gap-12">
+          <div className="min-w-0">
+            {/* The one thing that silently invalidates a scan, said before the
+                first keystroke rather than after the results. */}
+            <Tint edged className="flex items-start gap-3">
+              <Sparkles size={19} className="mt-0.5 shrink-0 text-[#39471D]" />
+              {/* The example is the generated question for this industry and market,
+                  not a hardcoded English one — a Spanish scan shown an English
+                  sample teaches the wrong shape. Written as a template literal
+                  because `{expr} companies` loses its space the moment a formatter
+                  rewraps the line; that bug has shipped here before. */}
+              <p className="text-[12.5px] font-medium leading-relaxed text-[#55672E]">
+                <strong className="font-bold">Leave your brand name out of the question.</strong>{' '}
+                {`Ask what a buyer would type before they know you exist — like “${example}”. A question that names you only measures whether the model will agree with you.`}
+              </p>
+            </Tint>
 
-        <div className="mt-6 flex flex-col gap-3">
-          {questions.map((question, i) => (
-            <div key={i} className="flex items-center gap-2 sm:gap-3">
-              <span className="hidden w-5 shrink-0 text-right text-[12px] font-bold tabular-nums text-gray-300 sm:block">{i + 1}</span>
-              <input
-                type="text"
-                value={question}
-                onChange={(e) => editQuestion(i, e.target.value)}
-                onPaste={(e) => {
-                  /* A list pasted in one go becomes a list.
-                   *
-                   * An <input> flattens newlines, so pasting three questions
-                   * into one field silently produced one 200-character question
-                   * with all three inside it — and the scan then asked that,
-                   * three times, of three models. It looked like a typo in the
-                   * report and it was really the form throwing the shape of what
-                   * was pasted away. Writing questions somewhere else and
-                   * bringing them over is the normal way to arrive here, so the
-                   * form should expect it. */
-                  const lines = e.clipboardData
-                    .getData('text')
-                    .split(/\r?\n/)
-                    .map((l) => l.trim())
-                    .filter(Boolean);
+            <div className="mt-6 flex flex-col gap-3">
+              {questions.map((question, i) => (
+                <div key={i} className="flex items-center gap-2 sm:gap-3">
+                  <span className="hidden w-5 shrink-0 text-right text-[12px] font-bold tabular-nums text-gray-300 sm:block">{i + 1}</span>
+                  <input
+                    type="text"
+                    value={question}
+                    onChange={(e) => editQuestion(i, e.target.value)}
+                    onPaste={(e) => {
+                      /* A list pasted in one go becomes a list.
+                       *
+                       * An <input> flattens newlines, so pasting three questions
+                       * into one field silently produced one 200-character question
+                       * with all three inside it — and the scan then asked that,
+                       * three times, of three models. It looked like a typo in the
+                       * report and it was really the form throwing the shape of what
+                       * was pasted away. Writing questions somewhere else and
+                       * bringing them over is the normal way to arrive here, so the
+                       * form should expect it. */
+                      const lines = e.clipboardData
+                        .getData('text')
+                        .split(/\r?\n/)
+                        .map((l) => l.trim())
+                        .filter(Boolean);
 
-                  if (lines.length < 2) return;
-                  e.preventDefault();
+                      if (lines.length < 2) return;
+                      e.preventDefault();
 
-                  setQuestions((prev) => {
-                    const next = [...prev];
-                    /* Fills from the field that was pasted into, and stops at
-                       the ceiling rather than dropping the overflow silently —
-                       the counter above says how many were taken. */
-                    lines.forEach((line, offset) => {
-                      const at = i + offset;
-                      if (at < MAX_QUESTIONS) next[at] = line.slice(0, 200);
-                    });
-                    return next.slice(0, MAX_QUESTIONS);
-                  });
-                }}
-                onKeyDown={(e) => {
-                  /* Enter adds the next row instead of submitting — this list
-                     is the whole screen, and typing fifteen questions should
-                     not mean reaching for the mouse fifteen times. */
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    if (question.trim() && questions.length < MAX_QUESTIONS && i === questions.length - 1) addQuestion();
-                  }
-                }}
-                maxLength={200}
-                placeholder={i === 0 ? 'Write your first question…' : 'Add another question…'}
-                className={`${FIELD} min-w-0 flex-1`}
-              />
-              <button
-                type="button"
-                onClick={() => removeQuestion(i)}
-                aria-label={`Remove question ${i + 1}`}
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-300 transition-colors hover:bg-gray-50 hover:text-gray-600 sm:h-9 sm:w-9"
-              >
-                <X size={16} />
-              </button>
+                      setQuestions((prev) => {
+                        const next = [...prev];
+                        /* Fills from the field that was pasted into, and stops at
+                           the ceiling rather than dropping the overflow silently —
+                           the counter above says how many were taken. */
+                        lines.forEach((line, offset) => {
+                          const at = i + offset;
+                          if (at < MAX_QUESTIONS) next[at] = line.slice(0, 200);
+                        });
+                        return next.slice(0, MAX_QUESTIONS);
+                      });
+                    }}
+                    onKeyDown={(e) => {
+                      /* Enter adds the next row instead of submitting — this list
+                         is the whole screen, and typing fifteen questions should
+                         not mean reaching for the mouse fifteen times. */
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (question.trim() && questions.length < MAX_QUESTIONS && i === questions.length - 1) addQuestion();
+                      }
+                    }}
+                    maxLength={200}
+                    placeholder={i === 0 ? 'Write your first question…' : 'Add another question…'}
+                    className={`${FIELD} min-w-0 flex-1`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeQuestion(i)}
+                    aria-label={`Remove question ${i + 1}`}
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-300 transition-colors hover:bg-gray-50 hover:text-gray-600 sm:h-9 sm:w-9"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
+
+            <button
+              type="button"
+              onClick={addQuestion}
+              disabled={questions.length >= MAX_QUESTIONS}
+              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-dashed border-gray-300 px-4 py-3 text-[13px] font-semibold text-gray-600 transition-colors hover:border-[#39471D] hover:text-[#39471D] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-gray-300 disabled:hover:text-gray-600"
+            >
+              <Plus size={16} /> Add question
+            </button>
+          </div>
+
+          {/* ── The right half ────────────────────────────────────────────────
+              Where the report goes, and what is about to be spent to make it.
+              Both were below the questions before, which on a wide screen meant
+              a visitor typed three questions and then scrolled past nothing to
+              reach an address field — and the sentence naming the three models
+              and the market arrived after the button that runs them. */}
+          <div className="min-w-0 xl:border-l xl:border-gray-100 xl:pl-12">
+            {/* Asked here, not after a free half. Every question is put to three
+                models with the web open and each of those calls is billed as it is
+                made, so there is nothing to give away first — and the report is
+                sent rather than only shown, which is the thing the address buys. */}
+            <Tint>
+              <label htmlFor="scan-email" className="text-[13px] font-bold tracking-tight text-gray-900">
+                Where should we send the report?
+              </label>
+              <p className="mt-1.5 mb-3.5 max-w-[54ch] text-[12px] font-medium leading-relaxed text-gray-500">
+                The full report opens on screen as soon as it is ready, and we email you a copy so you do not have to keep
+                this tab open.
+              </p>
+              <input
+                id="scan-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@company.com"
+                autoComplete="email"
+                /* Capped while the card is one column, where a field running
+                   the full 780px to hold "you@company.com" reads as a mistake;
+                   uncapped once it is the right half of the spread, where the
+                   column is narrower than the cap anyway. */
+                className={`${FIELD} sm:max-w-[340px] xl:max-w-none`}
+              />
+              <div className="mt-3.5">
+                <ConsentCheck id="scan-setup-consent" checked={consent} onChange={setConsent} />
+              </div>
+            </Tint>
+
+            {/* `country` keeps its article here — "a buyer in the United States".
+                The picker above strips it because a label is not a sentence; this
+                is a sentence. */}
+            <p className="mt-5 text-[12px] font-medium leading-relaxed text-gray-500">
+              {`Each question is put to ChatGPT, Claude and Gemini, in ${selectedMarket.languageLabel}, as a buyer in ${country}. We count how often ${brand.trim() || 'your brand'} is named and where it ranks.`}
+            </p>
+          </div>
         </div>
 
-        <button
-          type="button"
-          onClick={addQuestion}
-          disabled={questions.length >= MAX_QUESTIONS}
-          className="mt-4 inline-flex items-center gap-2 rounded-xl border border-dashed border-gray-300 px-4 py-3 text-[13px] font-semibold text-gray-600 transition-colors hover:border-[#39471D] hover:text-[#39471D] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-gray-300 disabled:hover:text-gray-600"
-        >
-          <Plus size={16} /> Add question
-        </button>
+        {error && <div className="mt-6"><Notice>{error}</Notice></div>}
 
-        {/* Asked here, not after a free half. Every question is put to three
-            models with the web open and each of those calls is billed as it is
-            made, so there is nothing to give away first — and the report is
-            sent rather than only shown, which is the thing the address buys. */}
-        <Tint className="mt-7">
-          <label htmlFor="scan-email" className="text-[13px] font-bold tracking-tight text-gray-900">
-            Where should we send the report?
-          </label>
-          <p className="mt-1.5 mb-3.5 max-w-[54ch] text-[12px] font-medium leading-relaxed text-gray-500">
-            The full report opens on screen as soon as it is ready, and we email you a copy so you do not have to keep
-            this tab open.
-          </p>
-          <input
-            id="scan-email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@company.com"
-            autoComplete="email"
-            className={`${FIELD} sm:max-w-[340px]`}
-          />
-          <div className="mt-3.5">
-            <ConsentCheck id="scan-setup-consent" checked={consent} onChange={setConsent} />
-          </div>
-        </Tint>
-
-        {error && <div className="mt-5"><Notice>{error}</Notice></div>}
-
-        {/* `country` keeps its article here — "a buyer in the United States".
-            The picker above strips it because a label is not a sentence; this
-            is a sentence. */}
-        <p className="mt-6 border-t border-gray-100 pt-5 text-[12px] font-medium leading-relaxed text-gray-500">
-          {`Each question is put to ChatGPT, Claude and Gemini, in ${selectedMarket.languageLabel}, as a buyer in ${country}. We count how often ${brand.trim() || 'your brand'} is named and where it ranks.`}
-        </p>
-
-        <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+        <div className="mt-7 flex flex-col-reverse gap-3 border-t border-gray-100 pt-6 sm:flex-row sm:justify-between">
           <button type="button" onClick={() => setStep(1)} className={BTN_SECONDARY}>
             <ArrowLeft size={16} /> Back
           </button>

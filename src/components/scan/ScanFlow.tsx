@@ -143,7 +143,7 @@ export default function ScanFlow() {
       ref={sectionRef}
       id="tool"
       className={`relative isolate overflow-hidden bg-[#F8FAF7] ${
-        hero ? 'pt-28 pb-10 lg:flex lg:min-h-screen lg:flex-col lg:justify-center' : 'pt-32 pb-16 2xl:pt-40 2xl:pb-24'
+        hero ? 'pt-28 pb-10 lg:flex lg:min-h-screen lg:flex-col lg:justify-center' : 'pt-28 pb-16 2xl:pt-32 2xl:pb-24'
       }`}
       style={hero ? undefined : GROUND}
     >
@@ -183,12 +183,14 @@ export default function ScanFlow() {
         </>
       ) : (
         <>
-          {/* 520 rather than 460: the masthead grew a step rail and a row of
-              tags under the heading, and at the old height the band was cutting
-              through the middle of them. */}
+          {/* 300 rather than 520: the band was sized to cover a masthead that
+              these stages no longer carry. All that is left above the white
+              card is the step rail, and a band running 200px past it put a
+              photograph behind the top third of a panel that is opaque anyway
+              — visible only as a dark rim down either side of it. */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] select-none overflow-hidden"
+            className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[300px] select-none overflow-hidden"
             style={{
               WebkitMaskImage: 'linear-gradient(to bottom, #000 0%, #000 52%, transparent 100%)',
               maskImage: 'linear-gradient(to bottom, #000 0%, #000 52%, transparent 100%)',
@@ -238,17 +240,17 @@ export default function ScanFlow() {
           )}
         </div>
 
-        {/* Outside the flow on purpose — the prerendered HTML still says what
-            this page is, whatever the console resolves to.
+        {/* The heading lives on the first step and nowhere else.
+            "Check your AI visibility." and the line under it are the page
+            introducing itself, and a visitor on step 2 has read that
+            introduction, acted on it and is now three fields deep into the
+            thing it was introducing. Repeating it over every stage was 200px of
+            masthead spent telling somebody what they are already doing — and it
+            pushed the actual work down the screen on all four screens.
 
-            An h2, not an h1: the presentation above owns the page's heading
-            now. Two h1s would have left the document with no single answer to
-            "what is this page", on a page whose whole subject is being legible
-            to machines. */}
-        {/* On the first step the heading is the left half of a spread and the
-            form is the right, so it belongs inside that grid. Everywhere else
-            it is a masthead over whatever the stage is showing. */}
-        {!hero && <Masthead stage={stage} brand={brand} asked={asked} />}
+            What replaces it is the rail directly above: on step 2 the answer to
+            "where am I" is "2 of 4, Your questions", which the rail already
+            says, and each stage's own panel carries its own `Head`. */}
 
         {/* On the first step this rides in the left column instead — see below.
             Full width there, it was 83px of banner plus 32px of margin stacked
@@ -256,7 +258,10 @@ export default function ScanFlow() {
             has room going spare beside a 589px card. */}
         {!hero && (!IS_LIVE || session.demo) && <DemoNotice configured={IS_LIVE} />}
 
-        <div className={hero ? '' : 'mt-9'}>
+        {/* No top margin any more: the rail's own `mb-9` used to be separating
+            it from a masthead, and with that gone the two margins stacked into
+            72px of nothing between the rail and the card under it. */}
+        <div>
           {stage === 'setup' && (
             <>
               {error && (
@@ -285,7 +290,7 @@ export default function ScanFlow() {
               >
                 {hero && (
                   <div key="intro">
-                    <Masthead stage="setup" brand={brand} asked={asked} />
+                    <Masthead />
                     {(!IS_LIVE || session.demo) && <DemoNotice configured={IS_LIVE} />}
                   </div>
                 )}
@@ -319,26 +324,20 @@ export default function ScanFlow() {
 }
 
 /**
- * The heading block, one definition for all four stages.
+ * The heading block. The first step only.
  *
- * It used to exist twice — once as the left column of the first step's spread
- * and once as the masthead over everything else — and the two had already
- * drifted: the same h1, the same standfirst, different widths, and only one of
- * them keeping the line under the heading. Two copies of a masthead is exactly
- * how the later stages came to read as a different, plainer product.
+ * It once existed twice — as the left column of the first step's spread and as
+ * a masthead over every other stage — and then as one definition rendered on
+ * all four. Both are gone: a heading that says what the page is belongs on the
+ * screen where the page is still introducing itself, and repeating it over the
+ * questions, the progress list and the report was asking a reader who is
+ * already inside the tool to walk past its front door again on every screen.
  *
- * The standfirst is the one thing that changes, because by the time a scan is
- * running "Free, no account, under a minute" is describing something the reader
- * has already done.
+ * The h1 therefore renders once, on the stage a visitor lands on, which is also
+ * the stage the prerendered HTML shows — so the document still has exactly one
+ * heading and a crawler still finds it.
  */
-function Masthead({ stage, brand, asked }: { stage: Stage; brand: string; asked: number }) {
-  const sub =
-    stage === 'setup'
-      ? 'Ask the models what they say about you, in your own words. Free, no account, under a minute.'
-      : stage === 'scanning'
-        ? `${asked === 1 ? 'Your question is' : `Your ${asked} questions are`} going to ChatGPT, Claude and Gemini right now. Nothing on the next screen is a guess.`
-        : `Everything below was measured for ${brand} just now, and every figure traces to the questions we sent.`;
-
+function Masthead() {
   return (
     <div>
       <Micro className="text-[#CBD0AC]">Scan</Micro>
@@ -349,7 +348,9 @@ function Masthead({ stage, brand, asked }: { stage: Stage; brand: string; asked:
         className="mt-4 max-w-[14ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl"
         html="Check your AI visibility."
       />
-      <p className="mt-5 max-w-[52ch] text-[15px] font-medium leading-relaxed text-white/75">{sub}</p>
+      <p className="mt-5 max-w-[52ch] text-[15px] font-medium leading-relaxed text-white/75">
+        Ask the models what they say about you, in your own words. Free, no account, under a minute.
+      </p>
     </div>
   );
 }
