@@ -84,7 +84,7 @@ export const BTN_SECONDARY =
    12px/15px — which is how two call sites ended up with both text sizes on one
    element, the winner decided by stylesheet order rather than by intent. */
 export const FIELD =
-  'w-full rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-[15px] font-medium text-gray-900 placeholder-gray-400 transition-colors hover:border-gray-300 focus:border-[#39471D] focus:outline-none';
+  'w-full rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-[15px] font-medium text-gray-900 placeholder-gray-400 transition-[border-color,box-shadow] duration-200 hover:border-gray-300 focus:border-[#55672E] focus:outline-none';
 
 /** The olive disc that marks a step, or heads a section of the report. */
 export function Badge({ children }: { children: React.ReactNode }) {

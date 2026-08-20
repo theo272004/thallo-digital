@@ -42,7 +42,7 @@ import { Combo, Select } from './Dropdown';
 import ConsentCheck from '@/components/ui/ConsentCheck';
 import { buildQuestions } from '@/lib/scan/questions';
 import { DEFAULT_MARKET, MARKETS, marketById } from '@/lib/scan/markets';
-import { INDUSTRIES, MAX_QUESTIONS, cleanDomain, isDomain, type ScanInput } from '@/lib/scan/types';
+import { INDUSTRIES, MAX_QUESTIONS, cleanDomain, firstUpper, firstUpperName, isDomain, type ScanInput } from '@/lib/scan/types';
 
 type Step = 1 | 2;
 
@@ -130,7 +130,7 @@ export default function ScanSetup({
 
   const continueToPrompts = (e: React.FormEvent) => {
     e.preventDefault();
-    const name = brand.trim().slice(0, 80);
+    const name = firstUpperName(brand.trim()).slice(0, 80);
     if (!name) {
       setError('Enter the brand name buyers would search for.');
       return;
@@ -143,6 +143,9 @@ export default function ScanSetup({
       setError('Say what category you want to be found in — anything from “pizzerias” to “legal tech”.');
       return;
     }
+    /* Written back, not only used for the check — the tag on step 2's
+       masthead reads this state, and it should carry the fixed name. */
+    setBrand(name);
     setError('');
     setStep(2);
   };
@@ -157,7 +160,7 @@ export default function ScanSetup({
       const key = q.toLowerCase();
       if (seen.has(key)) continue;
       seen.add(key);
-      list.push(q.slice(0, 200));
+      list.push(firstUpper(q).slice(0, 200));
       if (list.length === MAX_QUESTIONS) break;
     }
 
@@ -182,7 +185,7 @@ export default function ScanSetup({
 
     setError('');
     onStart({
-      brand: brand.trim().slice(0, 80),
+      brand: firstUpperName(brand.trim()).slice(0, 80),
       domain: cleanDomain(domain),
       industry: industry.trim().slice(0, 120),
       market,
@@ -213,7 +216,10 @@ export default function ScanSetup({
                 <FieldLabel>Brand name</FieldLabel>
                 <span className="relative">
                   <Building2 size={17} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="e.g. Ledgerly" maxLength={80} autoComplete="organization" className={`${FIELD} pl-11`} />
+                  {/* Capitalised on blur, not on keystroke: rewriting the
+                      first letter while somebody is still typing the second is
+                      the kind of help that feels like a fight. */}
+                  <input type="text" value={brand} onChange={(e) => setBrand(e.target.value)} onBlur={() => setBrand(firstUpperName)} placeholder="e.g. Ledgerly" maxLength={80} autoComplete="organization" className={`${FIELD} pl-11`} />
                 </span>
                 <span className="text-[11px] font-medium text-gray-400">The name we look for in every answer</span>
               </label>
@@ -360,6 +366,10 @@ export default function ScanSetup({
                     type="text"
                     value={question}
                     onChange={(e) => editQuestion(i, e.target.value)}
+                    /* As with the brand field, the capital lands on the way
+                       out of the row — and every route out of it blurs it:
+                       clicking the next one, tabbing, Enter, the Run button. */
+                    onBlur={() => editQuestion(i, firstUpper(question))}
                     onPaste={(e) => {
                       /* A list pasted in one go becomes a list.
                        *
@@ -387,7 +397,7 @@ export default function ScanSetup({
                            the counter above says how many were taken. */
                         lines.forEach((line, offset) => {
                           const at = i + offset;
-                          if (at < MAX_QUESTIONS) next[at] = line.slice(0, 200);
+                          if (at < MAX_QUESTIONS) next[at] = firstUpper(line).slice(0, 200);
                         });
                         return next.slice(0, MAX_QUESTIONS);
                       });

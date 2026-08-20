@@ -243,11 +243,36 @@ body {
 
 /* Keyboard focus — the rounded pills and hairline inputs give the UA ring
    nothing to sit against, so state it explicitly in the brand olive. Only on
-   :focus-visible, so a mouse click never draws it. */
+   :focus-visible, so a mouse click never draws it.
+
+   The `border-radius: 4px` that used to sit in here is gone. It was setting
+   the *element's* radius, not the ring's — and because this file is unlayered
+   it outranked every Tailwind `rounded-*` utility, so anything focused snapped
+   from a pill (or a 12px field) down to a 4px box for as long as it held focus.
+   Our shapes are round-ended on purpose; nothing gets to square them off. An
+   outline already follows the shape it is drawn around, so it is left alone. */
 :focus-visible {
   outline: 2px solid #55672E;
   outline-offset: 3px;
-  border-radius: 4px;
+}
+
+/* A field is the exception, because it already draws its own edge. Focus
+   belongs on that edge — not on a second rectangle floating 3px outside it,
+   which is a box around a box and reads heavy-handed on a form this quiet. So:
+   the border turns green and an inset hairline doubles it to 2px. One contour,
+   same radius, same size, just thicker and greener.
+
+   On `:focus` rather than `:focus-visible`, because clicking into a field to
+   type is precisely when you want to see which field you are in. Checkboxes and
+   radios are excluded — they have no edge to thicken and keep the ring above. */
+input:not([type='checkbox']):not([type='radio']):focus,
+textarea:focus,
+select:focus,
+[contenteditable]:focus,
+[role='combobox']:focus {
+  outline: none;
+  border-color: #55672E;
+  box-shadow: inset 0 0 0 1px #55672E;
 }
 
 /* GSAP already honours this via prefersReducedMotion(), but the CSS-driven

@@ -346,3 +346,41 @@ export function cleanDomain(raw: string): string {
 export function isDomain(value: string): boolean {
   return /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(value);
 }
+
+/**
+ * First letter up.
+ *
+ * What is typed into the form does not stay in the form: the brand name heads
+ * the report, rides in the email subject and sits on a tag beside every screen
+ * of the console, and the questions are printed back as the sentences the
+ * models were asked. Typed in a hurry they arrive as “ledgerly” and “what is
+ * the best invoicing app?”, which read as unfinished in all of those places —
+ * so the form finishes them rather than asking anyone to hold shift.
+ *
+ * The first letter only. CSS `text-transform: capitalize` was the one-line
+ * version of this and it gives “What Is The Best Invoicing App?”, which is a
+ * different mistake — and it only paints the letter, leaving the real value
+ * lowercase on its way to the models, the email and the report.
+ *
+ * Anything a question may open with is stepped over first — a Spanish scan
+ * types “¿cuál es el mejor CRM?”, and the letter to fix is the one after the
+ * opening mark, not the mark itself.
+ */
+export function firstUpper(raw: string): string {
+  return raw.replace(/^([\s¿¡"‘“«(]*)(\p{Ll})/u, (_, space: string, letter: string) => space + letter.toUpperCase());
+}
+
+/**
+ * The same, for something that may have meant its small first letter — eBay,
+ * iPhone, dLocal. A capital further along the *first word* is the tell, and a
+ * name carrying one is left exactly as it was typed.
+ *
+ * Only names get the exemption. A question is a sentence and starts with a
+ * capital whatever else it contains: “which CRM ranks first?” has a capital of
+ * its own and still has to be fixed.
+ */
+export function firstUpperName(raw: string): string {
+  const first = raw.trim().split(/\s+/)[0] ?? '';
+  if (/\p{Lu}/u.test(first.slice(1))) return raw;
+  return firstUpper(raw);
+}
