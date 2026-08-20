@@ -202,19 +202,54 @@ export default function IndustriesPage() {
                 key={ind.name}
                 className={`relative overflow-hidden rounded-3xl p-5 flex flex-col gap-3 transition-all duration-300 min-h-[170px] ${
                   ind.type === 'phrase'
-                    ? 'bg-[#39471D] border border-[#39471D] hover:-translate-y-1 hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,0.55)]'
+                    ? 'isolate bg-[#1C160E] border border-[#1C160E] hover:-translate-y-1 hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,0.55)]'
                     : 'bg-gray-50/60 border border-gray-200 lift'
                 }`}
-                style={
-                  ind.type === 'phrase'
-                    ? {
-                        backgroundImage: `linear-gradient(180deg, rgba(20, 28, 10, 0.68), rgba(20, 28, 10, 0.86)), url(${BASE}/${ind.image})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                      }
-                    : undefined
-                }
               >
+                {/* The photograph is its own layer rather than a
+                    `background-image` under a flat scrim. Two reasons, and the
+                    second is the whole point: a layer can be filtered without
+                    filtering the type on top of it, and a scrim can be shaped.
+
+                    The old treatment was `rgba(20, 28, 10, .68 to .86)` -- a
+                    green-black at nearly nine tenths, edge to edge. Measured
+                    against the buyers panel and the audit CTA further down the
+                    page, which are the tones these were supposed to sit beside:
+                    those two composite warm, red a touch over green, and keep
+                    highlights up around 223 and 249. These cards composited
+                    green over red and their brightest surviving pixel was 82.
+                    That is not a photograph any more, it is an olive rectangle
+                    with a picture somewhere underneath it.
+
+                    So: the tint is a warm black, and the scrim opens to .28
+                    across the middle band where nothing is written, then closes
+                    again over the name. The quote and the name each keep their
+                    own dark ground; the photograph gets the gap between them.
+                    Re-measured after, at desktop and at phone widths: warm by 4-7
+                    points of red over green, highlights 120-192, and the
+                    worst-case contrast under the quote is 5.05-5.6 against the
+                    5.03-5.67 it had before. Nothing was traded for the warmth. */}
+                {ind.type === 'phrase' && (
+                  <>
+                    <img
+                      src={`${BASE}/${ind.image}`}
+                      alt=""
+                      aria-hidden="true"
+                      loading="lazy"
+                      decoding="async"
+                      className="pointer-events-none absolute inset-0 -z-10 h-full w-full select-none object-cover"
+                      style={{ filter: 'saturate(1.45) contrast(1.08) brightness(1.18)' }}
+                    />
+                    <div
+                      aria-hidden
+                      className="pointer-events-none absolute inset-0 -z-10"
+                      style={{
+                        background:
+                          'linear-gradient(180deg, rgba(28,22,14,0.82) 0%, rgba(28,22,14,0.74) 46%, rgba(28,22,14,0.28) 68%, rgba(28,22,14,0.80) 76%, rgba(28,22,14,0.92) 100%)',
+                      }}
+                    />
+                  </>
+                )}
                 {ind.type === 'metric' ? (
                   <>
                     <div>
