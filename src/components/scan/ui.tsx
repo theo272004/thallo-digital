@@ -190,8 +190,21 @@ export function Tint({
 }
 
 /** Micro-label. Units, counts and the masthead eyebrow — never a heading. */
-export const Micro = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <span className={`text-[11px] font-bold uppercase tracking-[0.18em] ${className}`}>{children}</span>
+export const Micro = ({
+  children,
+  className = '',
+  /* For the one caller that cannot use a class: the score ring sizes this
+     label from the diameter it was drawn at, and 11px is only right at one of
+     them. The tracking is in `em`, so it follows whatever size is set here. */
+  style,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+}) => (
+  <span className={`text-[11px] font-bold uppercase tracking-[0.18em] ${className}`} style={style}>
+    {children}
+  </span>
 );
 
 /**

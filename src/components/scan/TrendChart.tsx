@@ -34,12 +34,69 @@ function shortDate(iso: string): string {
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
 }
 
-function TrendTooltip({ active, payload }: { active?: boolean; payload?: { payload: HistoryPoint }[] }) {
+/**
+ * Where the bubble goes, decided by the reading it belongs to and by nothing
+ * else.
+ *
+ * Recharts hangs its tooltip off the pointer and eases it to each new place, so
+ * the box drifted up and down with the mouse over a dot that had not moved, and
+ * slid sideways between readings. It also flips to the other side of the cursor
+ * by itself near an edge — which is how the last reading ended up with its
+ * bubble laid back across the middle of the chart, pointing at nothing.
+ *
+ * None of that is about the data. So the chart turns all three off (see the
+ * `Tooltip` below) and the box places itself from the anchor instead:
+ *
+ * · Vertically, from the value. The axis is pinned to 0–100, so the dot's
+ *   pixel height is arithmetic rather than something to look up — the box sits
+ *   a fixed 12px above its own dot, whatever the pointer is doing. A reading
+ *   high enough that above would leave the plot gets it below instead.
+ * · Horizontally, from the reading's place in the series. The first opens to
+ *   the right of its dot, the last closes to the left of it, and every reading
+ *   in between is centred over its own. That is the coherent part: where the
+ *   box sits already tells you which reading you are on, and the last one
+ *   stays at the end where it belongs.
+ */
+function TrendTooltip({
+  active,
+  payload,
+  coordinate,
+  activeIndex,
+  count,
+  dotY,
+}: {
+  active?: boolean;
+  payload?: { payload: HistoryPoint }[];
+  coordinate?: { x?: number; y?: number };
+  activeIndex?: number | string;
+  count: number;
+  dotY: React.RefObject<Record<number, number>>;
+}) {
   if (!active || !payload?.length) return null;
   const point = payload[0].payload;
 
+  const i = Number(activeIndex);
+  const x = i === 0 ? '0%' : i === count - 1 ? '-100%' : '-50%';
+
+  /* The dot's height, as the dot itself reported it. Recharts hands the
+     content `coordinate` — the reading's x, but the *pointer's* y — and no
+     plot box to work a value back into a height with, so the y is taken from
+     the render below instead. Without it the box falls back to sitting above
+     the pointer: the old behaviour, minus the drifting between readings. */
+  const anchor = dotY.current[i];
+  let y = 'calc(-100% - 12px)';
+  if (anchor !== undefined && coordinate?.y !== undefined) {
+    const shift = Math.round(anchor - coordinate.y);
+    /* Above its dot, unless the reading is high enough that above would leave
+       the plot — then below it, which is the same 12px the other way. */
+    y = anchor > 74 ? `calc(-100% + ${shift - 12}px)` : `${shift + 12}px`;
+  }
+
   return (
-    <div className="rounded-lg border border-gray-200 bg-white px-3 py-2 shadow-sm">
+    <div
+      className="w-max rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm"
+      style={{ transform: `translate(${x}, ${y})` }}
+    >
       <p className="text-[12px] font-bold text-gray-900">{point.sovPct}% brand knowledge</p>
       <p className="mt-0.5 text-[11px] font-medium text-gray-400">
         {shortDate(point.date)}
@@ -50,6 +107,11 @@ function TrendTooltip({ active, payload }: { active?: boolean; payload?: { paylo
 }
 
 export default function TrendChart({ history, brand }: { history: HistoryPoint[]; brand: string }) {
+  /* Filled by the dot renderer below, read by the tooltip above: where each
+     reading actually landed, in the chart's own pixels. Declared before the
+     early return, because a hook after one is a hook that sometimes runs. */
+  const dotY = React.useRef<Record<number, number>>({});
+
   if (history.length < 2) {
     return (
       <div className="flex h-full items-center rounded-xl bg-gray-50 px-4 py-4">
@@ -62,6 +124,7 @@ export default function TrendChart({ history, brand }: { history: HistoryPoint[]
       </div>
     );
   }
+
 
   const first = history[0];
   const last = history[history.length - 1];
@@ -108,14 +171,41 @@ export default function TrendChart({ history, brand }: { history: HistoryPoint[]
               tick={{ fontSize: 9, fontWeight: 700, fill: '#9ca3af', fontFamily: 'ui-monospace, monospace' }}
               width={44}
             />
-            <Tooltip content={<TrendTooltip />} cursor={{ stroke: '#e8e8e5' }} />
+            {/* `offset` and `allowEscapeViewBox` together mean the wrapper is
+                left exactly on the anchor — no nudge, no edge flip — and the
+                box above does the placing. `isAnimationActive` off kills the
+                slide between readings. */}
+            <Tooltip
+              content={<TrendTooltip count={history.length} dotY={dotY} />}
+              cursor={{ stroke: '#e8e8e5' }}
+              isAnimationActive={false}
+              allowEscapeViewBox={{ x: true, y: true }}
+              offset={0}
+            />
             <Line
               type="monotone"
               dataKey="sovPct"
               stroke={OLIVE}
               strokeWidth={2.5}
               strokeLinecap="round"
-              dot={{ fill: 'white', stroke: OLIVE, strokeWidth: 2, r: 3.5 }}
+              /* A function rather than an object, only so that each dot can
+                 leave its height behind for the tooltip. It draws exactly what
+                 the object drew. */
+              dot={({ cx, cy, index }: { cx?: number; cy?: number; index?: number }) => {
+                if (typeof index === 'number' && typeof cy === 'number') dotY.current[index] = cy;
+                return (
+                  <circle
+                    key={index}
+                    className="recharts-dot recharts-line-dot"
+                    cx={cx}
+                    cy={cy}
+                    r={3.5}
+                    fill="white"
+                    stroke={OLIVE}
+                    strokeWidth={2}
+                  />
+                );
+              }}
               activeDot={{ r: 5, fill: OLIVE, stroke: 'white', strokeWidth: 2 }}
               isAnimationActive={false}
             />

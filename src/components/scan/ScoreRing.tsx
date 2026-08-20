@@ -26,6 +26,21 @@ export default function ScoreRing({
   const circ = 2 * Math.PI * r;
   const safe = Math.max(0, Math.min(100, pct));
 
+  /* Everything inside the disc is a fraction of the ring, never a constant.
+
+     The same markup is drawn at 168 on the results screen and at 128 in the
+     report, and a 36px number with an 11px label under it — the right pair for
+     the big one — did not fit the small one at all: the label crossed the arc
+     and printed on top of the stroke.
+
+     The cap on the label is well under the width of the hole, because the hole
+     is a circle and the label does not sit in the middle of it. Two lines below
+     a number this size put the lower one where the circle has already narrowed
+     by a fifth, and a box measured at the widest point overflows there. */
+  const hole = (size * 2 * (r - 5)) / 120;
+  const numberSize = Math.round(size * 0.215);
+  const labelSize = Math.max(9, Math.round(size * 0.066));
+
   return (
     /* The caption sits under the ring, not inside it.
      *
@@ -52,13 +67,23 @@ export default function ScoreRing({
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <span className="text-4xl font-bold leading-none tracking-tight text-gray-900 tabular-nums">{safe}%</span>
-        {/* 13ch, not 11. The labels used to be "Share of voice"; they are
-            "Brand knowledge" and "AI visibility" now, and at 11ch the word
-            KNOWLEDGE is 90px inside an 81px box — it overflowed the cap by 8px
-            and touched the arc. Measured with the site's own Inter at 11px and
-            0.18em tracking, 13ch clears the longest of the two. */}
-        <Micro className="mt-2.5 block max-w-[13ch] leading-tight text-gray-400">{label}</Micro>
+        <span
+          className="font-bold leading-none tracking-tight text-gray-900 tabular-nums"
+          style={{ fontSize: numberSize }}
+        >
+          {safe}%
+        </span>
+        <Micro
+          className="block text-gray-400"
+          style={{
+            fontSize: labelSize,
+            marginTop: Math.round(size * 0.05),
+            maxWidth: Math.round(hole * 0.78),
+            lineHeight: 1.25,
+          }}
+        >
+          {label}
+        </Micro>
       </div>
     </div>
     {caption && (
