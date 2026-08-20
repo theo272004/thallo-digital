@@ -95,10 +95,18 @@ export const BTN_SECONDARY =
 export const FIELD =
   'w-full rounded-control border border-gray-200 bg-white px-4 py-3.5 text-[15px] font-medium text-gray-900 placeholder-gray-400 transition-[border-color,box-shadow] duration-200 hover:border-gray-300 focus:border-[#55672E] focus:outline-none';
 
-/** The olive disc that marks a step, or heads a section of the report. */
-export function Badge({ children }: { children: React.ReactNode }) {
+/**
+ * The olive disc that marks a step, or heads a section of the report.
+ *
+ * The disc is sized with the heading it belongs to. Eight identical 36px discs
+ * down the report said every panel was the same order of thing as the one
+ * naming the whole document — and the disc is the loudest mark on a heading,
+ * so it was undoing the ranking the type sizes were trying to state.
+ */
+export function Badge({ children, size = 'md' }: { children: React.ReactNode; size?: 'sm' | 'md' | 'lg' }) {
+  const box = size === 'lg' ? 'h-11 w-11 text-[17px]' : size === 'sm' ? 'h-8 w-8 text-[13px]' : 'h-9 w-9 text-[15px]';
   return (
-    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#39471D] text-[15px] font-bold text-white">
+    <span className={`flex ${box} shrink-0 items-center justify-center rounded-full bg-[#39471D] font-bold text-white`}>
       {children}
     </span>
   );
@@ -127,21 +135,39 @@ export function Head({
   title,
   sub,
   chip,
+  /**
+   * Which rung of the page this heading is on.
+   *
+   * `lead` is the one thing at the top of a screen that names it — the report
+   * uses it once. `section` is a panel inside a screen that already has a
+   * lead. Everything else keeps `panel`, which is what the setup and progress
+   * screens are: a single card that is its own page.
+   *
+   * The report had eight headings all at 22px, every one with a disc beside it
+   * and a grey line under it, so the card naming the whole document and the
+   * card listing five technical checks arrived at exactly the same volume.
+   * Ranking them is most of what "it has no hierarchy" meant.
+   */
+  level = 'panel',
   className = '',
 }: {
   badge?: React.ReactNode;
   title: React.ReactNode;
   sub?: React.ReactNode;
   chip?: React.ReactNode;
+  level?: 'lead' | 'panel' | 'section';
   className?: string;
 }) {
+  const size = level === 'lead' ? 'text-[26px]' : level === 'section' ? 'text-[19px]' : 'text-[22px]';
   return (
     <div className={`flex flex-wrap items-start justify-between gap-4 ${className}`}>
       <div className="flex min-w-0 items-start gap-3">
-        {badge !== undefined && <Badge>{badge}</Badge>}
+        {badge !== undefined && (
+          <Badge size={level === 'lead' ? 'lg' : level === 'section' ? 'sm' : 'md'}>{badge}</Badge>
+        )}
         <div className="min-w-0">
-          <h2 className="text-[22px] font-bold leading-tight tracking-tight text-gray-900">{title}</h2>
-          {sub && <p className="mt-1.5 max-w-[64ch] text-[14px] font-medium leading-relaxed text-gray-500">{sub}</p>}
+          <h2 className={`${size} font-bold leading-tight tracking-tight text-gray-900`}>{title}</h2>
+          {sub && <p className="mt-1.5 max-w-[64ch] text-[13px] font-medium leading-relaxed text-gray-500">{sub}</p>}
         </div>
       </div>
       {chip !== undefined && <Chip>{chip}</Chip>}
@@ -351,11 +377,14 @@ export function Stat({
       >
         {value}
       </p>
-      {/* Sentence case at 12px. In uppercase micro-caps these read as a
-          machine's column headers, which is the dialect the setup card — the
-          screen right before this one — does not speak. */}
-      <span className="mt-2 block text-[12px] font-semibold leading-snug text-gray-500">{label}</span>
-      {note && <span className="mt-1 block text-[11px] font-medium leading-snug text-gray-400">{note}</span>}
+      {/* Sentence case, not uppercase micro-caps: those read as a machine's
+          column headers, which is the dialect the setup card — the screen right
+          before this one — does not speak. The name of the figure is a row
+          label (13/600, ink) and the line under it is a caption (11.5/500,
+          grey); those are the two rungs the whole console labels things with,
+          and the pair used to be one step apart in size and none in weight. */}
+      <span className="mt-2 block text-[13px] font-semibold leading-snug text-gray-900">{label}</span>
+      {note && <span className="mt-1 block text-[11.5px] font-medium leading-snug text-gray-500">{note}</span>}
     </div>
   );
 }

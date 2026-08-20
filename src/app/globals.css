@@ -284,6 +284,54 @@ select:focus,
   box-shadow: inset 0 0 0 1px #55672E;
 }
 
+/* ─── An answer opening ──────────────────────────────────────────────────────
+
+   A `<details>` has always snapped: shut one frame, 600px tall the next, with
+   the rest of the report jumping down to meet it. On the report that is the
+   one thing a reader does on the page — every question is a row they open —
+   and the jump is the reason it feels like a table rather than something that
+   answers back.
+
+   `::details-content` is the box the browser puts the folded content in, and
+   `interpolate-size: allow-keywords` is what lets a height of `auto` be
+   animated at all — without it there is no number to count towards. Together
+   they give a real open: the panel grows to its own height on the easing
+   curve the rest of the site uses, and fades in slightly behind the growth so
+   the text arrives once there is room for it rather than sliding down inside
+   a moving box.
+
+   `content-visibility` is in the transition list with `allow-discrete`
+   because the browser flips it from hidden to visible the moment the element
+   opens; without that it flips at the start of the close too, and the panel
+   vanishes before it has finished shrinking.
+
+   Where `::details-content` is not supported the rules are ignored and the
+   panel opens the way it always did — no fallback needed, nothing broken. */
+@supports (interpolate-size: allow-keywords) {
+  :root { interpolate-size: allow-keywords; }
+}
+
+.reveal::details-content {
+  block-size: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    block-size 340ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 220ms ease 60ms,
+    content-visibility 340ms allow-discrete;
+}
+
+.reveal[open]::details-content {
+  block-size: auto;
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The blanket rule below reaches `*`, `::before` and `::after` — not this
+     one, which is neither. */
+  .reveal::details-content { transition: none; }
+}
+
 /* GSAP already honours this via prefersReducedMotion(), but the CSS-driven
    motion (marquees, floating cards, accordion, pulses) did not — so a visitor
    who asks the OS for less motion still got the whole page moving. */

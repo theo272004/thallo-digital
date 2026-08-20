@@ -84,6 +84,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
     <Panel className="flex flex-col">
       <Head
         badge={<TrendingUp size={18} />}
+        level="section"
         title="Brand knowledge over time"
         /* Named for what the series actually holds. `record_history` writes
            `phase1.sovPct` — the memory reading — and the chart was headed
@@ -108,6 +109,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
       <Panel>
         <Head
           badge={<FileText size={18} />}
+          level="lead"
           title={`The full report for ${phase1.brand}`}
           sub={`Measured against ${phase1.domain}. Two indicators, read separately: whether the models already know you, and whether they find you when they look.`}
           chip={phase2.grade}
@@ -157,8 +159,8 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
               /* Not measured is not zero, and a second ring reading 0% beside
                  the first would be a finding we did not take. */
               <div className="pt-6">
-                <p className="text-[13px] font-bold tracking-tight text-gray-900">AI visibility — not measured</p>
-                <p className="mt-2 text-[12.5px] font-medium leading-relaxed text-gray-500">
+                <p className="text-[14px] font-bold tracking-tight text-gray-900">AI visibility — not measured</p>
+                <p className="mt-2 text-[13px] font-medium leading-relaxed text-gray-600">
                   The searching half of this scan did not run. The figure above answers a different question and cannot
                   stand in for it.
                 </p>
@@ -168,7 +170,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
 
           <div className="flex flex-col gap-5">
             <Tint>
-              <Micro className="text-white/55">Key insight</Micro>
+              <Micro className="text-white/70">Key insight</Micro>
               <p className="mt-2.5 text-[14px] font-medium leading-relaxed text-white">{phase2.keyInsight}</p>
             </Tint>
 
@@ -192,7 +194,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
               />
             </div>
 
-            <p className="text-[12px] font-medium leading-relaxed text-gray-500">
+            <p className="text-[13px] font-medium leading-relaxed text-gray-600">
               <strong className="font-bold text-gray-900">Never averaged.</strong> The two figures have different causes
               and different fixes — brand knowledge is earned off your own site; AI visibility is what your own pages and
               citations control. The gap between them is the diagnosis, and the panel below reads it.
@@ -242,6 +244,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
       <Panel>
         <Head
           badge={<MessagesSquare size={18} />}
+          level="section"
           title="What the models answered"
           sub={`Every list, in the order each model gave it. Both indicators above are simply how often ${phase1.brand} appears in these lists — open a question to see it.`}
         />
@@ -259,12 +262,13 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
         <Panel>
           <Head
             badge={<Gauge size={18} />}
+            level="section"
             title="Website & technical signals"
             sub={`Checked against ${phase1.domain}. Every point in the score above traces to a row here.`}
             chip={`${phase2.techScore} / ${maxTech}`}
           />
 
-          <div className="mt-5">
+          <div className="mt-6">
             {phase2.signals.map((s) => (
               <SignalRow key={s.id} signal={s} />
             ))}
@@ -274,11 +278,12 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
         <Panel>
           <Head
             badge={<ListChecks size={18} />}
+            level="section"
             title="What to do first"
             sub="Ordered by what the scan found, heaviest unmet signal first — not by a fixed script."
           />
 
-          <div className="mt-5 flex flex-col gap-2.5">
+          <div className="mt-6 flex flex-col gap-2.5">
             {phase2.actions.map((a, i) => (
               <div key={a.title} className="rounded-xl border border-gray-200 p-4">
                 <div className="flex items-start gap-3">
@@ -290,7 +295,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
                         {a.priority}
                       </Verdict>
                     </div>
-                    <p className="mt-1.5 text-[12.5px] font-medium leading-relaxed text-gray-500">{a.detail}</p>
+                    <p className="mt-1.5 text-[13px] font-medium leading-relaxed text-gray-600">{a.detail}</p>
 
                     {/* Impact reads on one line with the copy rather than in a
                         column of its own on the right — at half width there is
@@ -326,6 +331,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
         <div className="mt-7 flex flex-col gap-6 border-t border-gray-100 pt-7 lg:flex-row lg:items-center lg:justify-between">
           <Head
             badge={<Compass size={18} />}
+            level="section"
             title="This is the measurement. The work is the other half."
             sub="A commissioned engagement takes the plan above and executes it — the content, the citations and the structure that move these numbers."
           />
@@ -375,9 +381,11 @@ function Indicator({
         <ScoreRing pct={pct} label={name} size={128} />
       </div>
       <div className="min-w-0 text-center sm:text-left">
-        <p className="text-[15px] font-bold tracking-tight text-gray-900">{name}</p>
+        <p className="text-[14px] font-bold tracking-tight text-gray-900">{name}</p>
         <p className="mt-2 text-[13px] font-semibold leading-relaxed text-[#39471D]">{gloss}</p>
-        <p className="mt-2 text-[12px] font-medium leading-relaxed text-gray-500">{detail}</p>
+        {/* The count and the method caption the ring; they say nothing
+            about the brand, so they take the caption rung. */}
+        <p className="mt-2 text-[11.5px] font-medium leading-relaxed text-gray-500">{detail}</p>
       </div>
     </div>
   );
@@ -551,6 +559,7 @@ function Rivals({
     <div>
       <Head
         badge={<Trophy size={18} />}
+        level="section"
         title="Recommended instead of you"
         sub={
           twoWay
@@ -582,8 +591,8 @@ function Rivals({
 
         {hasRetrieval && (
           <div>
-            <p className="text-[13px] font-bold tracking-tight text-gray-900">And the two that only search</p>
-            <p className="mt-1.5 text-[12px] font-medium leading-relaxed text-gray-500">
+            <p className="text-[14px] font-bold tracking-tight text-gray-900">And the two that only search</p>
+            <p className="mt-1.5 text-[11.5px] font-medium leading-relaxed text-gray-500">
               These never answer from memory, so they have no brand-knowledge reading at all. They measure one thing:
               whether your pages are findable and quotable <em>today</em>.
             </p>
@@ -593,10 +602,10 @@ function Rivals({
                 <div key={r.provider} className="rounded-xl border border-gray-200 p-4">
                   <div className="flex items-center gap-3">
                     <ProviderMark provider={r.provider} />
-                    <span className="flex-1 text-[13px] font-bold text-gray-900">{PROVIDER_LABEL[r.provider]}</span>
+                    <span className="flex-1 text-[13px] font-semibold text-gray-900">{PROVIDER_LABEL[r.provider]}</span>
                     <Verdict tone={RETRIEVAL_TONE[r.status]}>{RETRIEVAL_LABEL[r.status]}</Verdict>
                   </div>
-                  <p className="mt-2.5 text-[12px] font-medium leading-relaxed text-gray-500">{r.detail}</p>
+                  <p className="mt-2.5 text-[13px] font-medium leading-relaxed text-gray-600">{r.detail}</p>
                   {r.citations && r.citations.length > 0 && (
                     <ul className="mt-3 flex flex-wrap gap-1.5 border-t border-gray-100 pt-3">
                       {r.citations.slice(0, 6).map((c) => (
@@ -615,7 +624,7 @@ function Rivals({
 
       {flagged.length > 0 && (
         <Tint edged className="mt-7">
-          <p className="text-[12.5px] font-medium leading-relaxed text-white/80">
+          <p className="text-[13px] font-medium leading-relaxed text-white/80">
             <strong className="font-bold text-white">
               {flagged.length === 1
                 ? `Question ${flagged[0] + 1} is pulling a different category into these lists.`
@@ -671,11 +680,11 @@ function RivalList({
 
   return (
     <div>
-      <p className="text-[13px] font-bold tracking-tight text-gray-900">{title}</p>
-      <p className="mt-1.5 text-[12px] font-medium leading-relaxed text-gray-500">{note}</p>
+      <p className="text-[14px] font-bold tracking-tight text-gray-900">{title}</p>
+      <p className="mt-1.5 text-[11.5px] font-medium leading-relaxed text-gray-500">{note}</p>
 
       {rivals.length === 0 ? (
-        <p className="mt-4 rounded-xl bg-gray-50 px-4 py-3.5 text-[12.5px] font-medium leading-relaxed text-gray-500">
+        <p className="mt-4 rounded-xl bg-gray-50 px-4 py-3.5 text-[13px] font-medium leading-relaxed text-gray-600">
           The models named no companies at all in this reading — which is itself a finding: they had nothing to
           recommend for the questions as written.
         </p>
@@ -763,8 +772,8 @@ function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded
   if (grounded.totalAnswers === 0) {
     return (
       <Panel>
-        <Head badge={<Search size={18} />} title="When they search the web" />
-        <p className="mt-6 rounded-xl bg-gray-50 px-4 py-3.5 text-[13px] font-medium leading-relaxed text-gray-500">
+        <Head badge={<Search size={18} />} level="section" title="When they search the web" />
+        <p className="mt-6 rounded-xl bg-gray-50 px-4 py-3.5 text-[13px] font-medium leading-relaxed text-gray-600">
           Not measured — the second reading was attempted but no model answered. This is a fault at our end, not a
           finding about {memory.brand}.
         </p>
@@ -822,6 +831,7 @@ function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded
     <Panel>
       <Head
         badge={<Compass size={18} />}
+        level="section"
         title="Brand knowledge against AI visibility"
         sub={`${
           askedTwice === memory.questions.length ? `The same ${askedTwice} questions` : `${askedTwice} of the ${memory.questions.length} questions`
@@ -831,15 +841,15 @@ function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded
       <div className="mt-6 grid grid-cols-1 gap-px overflow-hidden rounded-xl bg-gray-100 sm:grid-cols-2">
         <div className="bg-white p-4 sm:p-5">
           <p className="text-3xl font-bold leading-none tracking-tight text-[#39471D]">{memory.sovPct}%</p>
-          <p className="mt-2.5 text-[13px] font-bold tracking-tight text-gray-900">Brand knowledge</p>
-          <p className="mt-1.5 text-[12px] font-medium leading-relaxed text-gray-500">
+          <p className="mt-2.5 text-[14px] font-bold tracking-tight text-gray-900">Brand knowledge</p>
+          <p className="mt-1.5 text-[11.5px] font-medium leading-relaxed text-gray-500">
             {memory.totalAnswers} answers, nothing looked up. Reputation, not pages.
           </p>
         </div>
         <div className="bg-white p-4 sm:p-5">
           <p className="text-3xl font-bold leading-none tracking-tight text-[#39471D]">{grounded.sovPct}%</p>
-          <p className="mt-2.5 text-[13px] font-bold tracking-tight text-gray-900">AI visibility</p>
-          <p className="mt-1.5 text-[12px] font-medium leading-relaxed text-gray-500">
+          <p className="mt-2.5 text-[14px] font-bold tracking-tight text-gray-900">AI visibility</p>
+          <p className="mt-1.5 text-[11.5px] font-medium leading-relaxed text-gray-500">
             {grounded.totalAnswers} answers with the web open. Pages, not reputation.
           </p>
         </div>
@@ -847,11 +857,11 @@ function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded
 
       <div className="mt-5">
         <Verdict tone={tone}>{verdict}</Verdict>
-        <p className="mt-3 text-[13px] font-medium leading-relaxed text-gray-500">{reading}</p>
+        <p className="mt-3 text-[13px] font-medium leading-relaxed text-gray-600">{reading}</p>
       </div>
 
       <div className="mt-6 border-t border-gray-100 pt-5">
-        <p className="text-[12px] font-medium leading-relaxed text-gray-500">
+        <p className="text-[11.5px] font-medium leading-relaxed text-gray-500">
           Model by model, from memory <span className="text-gray-300">→</span> when searching:
         </p>
 
@@ -930,7 +940,7 @@ function SignalRow({ signal }: { signal: TechSignal }) {
       {icon}
       <span className="min-w-0 flex-1">
         <span className="block text-[13px] font-semibold text-gray-900">{signal.label}</span>
-        {signal.note && <span className="mt-1 block text-[11px] font-medium leading-relaxed text-gray-400">{signal.note}</span>}
+        {signal.note && <span className="mt-1 block text-[11.5px] font-medium leading-relaxed text-gray-500">{signal.note}</span>}
       </span>
       <Micro className={`shrink-0 tabular-nums ${signal.weight === 0 ? 'text-gray-300' : 'text-gray-500'}`}>
         {signal.weight === 0 ? 'not scored' : `${signal.earned} / ${signal.weight}`}

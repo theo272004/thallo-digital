@@ -48,7 +48,7 @@ export default function AuditTrail({ phase1, grounded }: { phase1: ScanPhase1; g
       >
         <span>
           <Micro className="block text-gray-900">See the exact questions we asked</Micro>
-          <span className="mt-1.5 block text-[11px] font-medium text-gray-500">
+          <span className="mt-1.5 block text-[11.5px] font-medium text-gray-500">
             {phase1.questions.length} questions · {answered.length} models ·{' '}
             {twoWay
               ? `${phase1.totalAnswers + grounded!.totalAnswers} answers, from memory and searching`

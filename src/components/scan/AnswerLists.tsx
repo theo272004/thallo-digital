@@ -65,7 +65,7 @@ export default function AnswerLists({ phase1, grounded }: { phase1: ScanPhase1; 
                 percentages. The header row is the finding ("named you in 2 of
                 6"); the lists under it are the proof, and proof is something a
                 reader asks for. */}
-            <details open={q === 0} className="group overflow-hidden rounded-xl border border-gray-200">
+            <details open={q === 0} className="reveal group overflow-hidden rounded-xl border border-gray-200">
               <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-x-4 gap-y-2 bg-gray-50/70 px-4 py-3 transition-colors hover:bg-gray-50 [&::-webkit-details-marker]:hidden">
                 <span className="flex min-w-0 flex-1 items-baseline gap-2.5">
                   <span className="font-mono text-[10px] font-bold tabular-nums text-gray-300">
@@ -86,7 +86,7 @@ export default function AnswerLists({ phase1, grounded }: { phase1: ScanPhase1; 
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     aria-hidden
-                    className="shrink-0 transition-transform group-open:rotate-180"
+                    className="shrink-0 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-open:rotate-180"
                   >
                     <path d="m6 9 6 6 6-6" />
                   </svg>
@@ -131,15 +131,15 @@ export default function AnswerLists({ phase1, grounded }: { phase1: ScanPhase1; 
 function Reading({ label, answer }: { label: string; answer?: Answer }) {
   return (
     <div>
-      <Micro className="text-gray-400">{label}</Micro>
+      <Micro className="text-gray-500">{label}</Micro>
 
       {/* Three states, and they must not look alike on a report whose whole
           claim is that it does not guess: not asked, asked and answered with
           nobody, asked and answered with a list. */}
       {!answer ? (
-        <p className="mt-2 text-[12px] font-medium text-gray-300">Not asked</p>
+        <p className="mt-2 text-[12.5px] font-medium text-gray-400">Not asked</p>
       ) : answer.names.length === 0 ? (
-        <p className="mt-2 text-[12px] font-medium leading-relaxed text-gray-400">
+        <p className="mt-2 text-[12.5px] font-medium leading-relaxed text-gray-500">
           Named no companies — the model said it did not know any for this question.
         </p>
       ) : (
