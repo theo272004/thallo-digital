@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { Micro } from './ui';
+import { Micro, useInView } from './ui';
 import type { HistoryPoint } from '@/lib/scan/types';
 
 /**
@@ -112,6 +112,14 @@ export default function TrendChart({ history, brand }: { history: HistoryPoint[]
      early return, because a hook after one is a hook that sometimes runs. */
   const dotY = React.useRef<Record<number, number>>({});
 
+  /* The plot is not built until it is reached. Recharts draws a line in on
+     mount and nowhere else, so a chart that mounts three screens below the
+     fold has already finished its one animation by the time anybody scrolls
+     to it — which is exactly what was happening: the panel arrived with a
+     line already sitting there. Mounting it on arrival is what makes the
+     animation the reader's, and the reserved height means nothing shifts. */
+  const [plotRef, plotInView] = useInView<HTMLDivElement>();
+
   if (history.length < 2) {
     return (
       <div className="flex h-full items-center rounded-xl bg-gray-50 px-4 py-4">
@@ -150,7 +158,8 @@ export default function TrendChart({ history, brand }: { history: HistoryPoint[]
           sized by its content would collapse to nothing on first paint — but a
           parent that can grow lets the plot take the spare height of the card
           rather than leaving it blank underneath. */}
-      <div className="min-h-[180px] w-full flex-1">
+      <div ref={plotRef} className="min-h-[180px] w-full flex-1">
+        {plotInView && (
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={history} margin={{ top: 6, right: 10, left: -22, bottom: 0 }}>
             <CartesianGrid stroke="#e8e8e5" vertical={false} />
@@ -207,10 +216,18 @@ export default function TrendChart({ history, brand }: { history: HistoryPoint[]
                 );
               }}
               activeDot={{ r: 5, fill: OLIVE, stroke: 'white', strokeWidth: 2 }}
-              isAnimationActive={false}
+              /* Drawn left to right over 900ms. It was off — reasonably, when
+                 it was going to run unseen — and with the mount held until the
+                 panel is on screen it is the one animation on this page that
+                 is about the data: the series arriving in the order it was
+                 recorded. */
+              isAnimationActive
+              animationDuration={900}
+              animationEasing="ease-out"
             />
           </LineChart>
         </ResponsiveContainer>
+        )}
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ import AuditTrail from './AuditTrail';
 import ScoreRing from './ScoreRing';
 import TrendChart from './TrendChart';
 import { Compass, FileText, Gauge, ListChecks, MessagesSquare, Search, TrendingUp, Trophy } from 'lucide-react';
-import { BTN_PRIMARY, BTN_SECONDARY, Head, Meter, Micro, Panel, ProviderMark, Stat, Tint, Verdict, type Tone } from './ui';
+import { BTN_PRIMARY, BTN_SECONDARY, Head, Meter, Micro, Panel, ProviderMark, Reveal, Stat, Tint, Verdict, type Tone } from './ui';
 import {
   PROVIDER_LABEL,
   type MemoryProvider,
@@ -106,6 +106,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
           paragraph in the middle of it was the thing a reader had to get past
           to reach the finding. The finding is now beside the figures it is
           about. */}
+      <Reveal>
       <Panel>
         <Head
           badge={<FileText size={18} />}
@@ -202,6 +203,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
           </div>
         </div>
       </Panel>
+      </Reveal>
 
       {/* ── The diagnosis, and the series ─────────────────────────────────
           Asked for as a pair, and they belong as one: the comparison says what
@@ -210,12 +212,16 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
           right half empty below the tiles, the chart 443px with a 180px plot in
           it. */}
       {phase2.grounded ? (
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,1fr)]">
-          <GroundedComparison memory={phase1} grounded={phase2.grounded} />
-          {trend}
-        </div>
+        /* One reveal for the row, not one each: they were asked for as a pair
+           and they arrive as a pair. */
+        <Reveal>
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,1fr)]">
+            <GroundedComparison memory={phase1} grounded={phase2.grounded} />
+            {trend}
+          </div>
+        </Reveal>
       ) : (
-        trend
+        <Reveal>{trend}</Reveal>
       )}
 
       {/* ── Who the models named instead ──────────────────────────────────
@@ -228,9 +234,11 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
           asking the same question this panel asks — who is being put in front
           of a buyer right now — and they were homeless everywhere else they
           were tried. */}
-      <Panel>
-        <Rivals phase1={phase1} grounded={grounded ?? undefined} retrieval={phase2.retrieval} />
-      </Panel>
+      <Reveal>
+        <Panel>
+          <Rivals phase1={phase1} grounded={grounded ?? undefined} retrieval={phase2.retrieval} />
+        </Panel>
+      </Reveal>
 
       {/* ── Everything the models said, in one place ─────────────────────
           The evidence under every figure above, folded one question to a row.
@@ -241,6 +249,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
           by the first question being open; making it three times over, times
           three models, times two readings, is what turned the panel into a
           third of the page. */}
+      <Reveal>
       <Panel>
         <Head
           badge={<MessagesSquare size={18} />}
@@ -252,12 +261,14 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
           <AnswerLists phase1={phase1} grounded={phase2.grounded} />
         </div>
       </Panel>
+      </Reveal>
 
       {/* ── What was checked, and what to do about it ─────────────────────
           The site's signals and the plan that comes out of them, in one row:
           every action below is the remedy for a row on the left, and reading
           them apart was reading a diagnosis on one screen and its prescription
           on the next. */}
+      <Reveal>
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         <Panel>
           <Head
@@ -318,11 +329,13 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
           </div>
         </Panel>
       </div>
+      </Reveal>
 
       {/* ── Method and close, in one card ─────────────────────────────────
           The audit trail is a collapsed bar and the close is two buttons;
           neither was ever a card's worth of content, and as two cards they were
           280px of padding around 180px of matter. */}
+      <Reveal>
       <Panel>
         {/* In the full report both readings are in; on the free screen only the
             memory half exists, so AuditTrail renders the single column there. */}
@@ -345,6 +358,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
           </div>
         </div>
       </Panel>
+      </Reveal>
     </div>
   );
 }

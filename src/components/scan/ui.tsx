@@ -309,6 +309,86 @@ export function Stepper({ current }: { current: 1 | 2 | 3 | 4 }) {
   );
 }
 
+/**
+ * Has this scrolled into view yet — once, and then not watched again.
+ *
+ * The report is six panels and about four thousand pixels; arriving at it,
+ * everything below the fold is already rendered and already still. Reading it
+ * is a scroll, and nothing on the page acknowledges that it is being read.
+ *
+ * `threshold: 0` with a bottom margin rather than a fraction of the element:
+ * several of these panels are taller than the window, and asking for 15% of a
+ * 1,500px panel to be visible would fire it a screen and a half late. This
+ * fires when the top edge crosses the last tenth of the window — just inside,
+ * which is where a reveal should start.
+ *
+ * Disconnects on the first hit. A panel that faded in once and fades again on
+ * the way back up is a page that will not settle.
+ */
+export function useInView<T extends HTMLElement>() {
+  const ref = React.useRef<T>(null);
+  const [inView, setInView] = React.useState(false);
+
+  React.useEffect(() => {
+    const el = ref.current;
+    if (!el || inView) return;
+    /* No observer — an old browser, or a test environment. Show it rather than
+       leaving the report invisible, which is the one failure mode here that
+       matters. On the next frame rather than in the effect body: same result,
+       and it does not set state during the render pass it was called from. */
+    if (typeof IntersectionObserver === 'undefined') {
+      const id = requestAnimationFrame(() => setInView(true));
+      return () => cancelAnimationFrame(id);
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        setInView(true);
+        io.disconnect();
+      },
+      { threshold: 0, rootMargin: '0px 0px -10% 0px' },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [inView]);
+
+  return [ref, inView] as const;
+}
+
+/**
+ * One panel arriving.
+ *
+ * Eight pixels and a fade, over 600ms on the site's easing curve — the amount
+ * that reads as the page keeping up with the scroll rather than as an effect.
+ * It runs once per panel, the first time it is reached.
+ *
+ * `motion-reduce:transition-none` rather than a check in JS: with the
+ * transition off the same class flip lands the panel on screen instantly,
+ * which is exactly what somebody who asked the OS for less motion wants.
+ */
+export function Reveal({
+  children,
+  delay = 0,
+  className = '',
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  const [ref, inView] = useInView<HTMLDivElement>();
+  return (
+    <div
+      ref={ref}
+      style={{ transitionDelay: inView ? `${delay}ms` : '0ms' }}
+      className={`transition-[opacity,transform] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+        inView ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
+      } ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
 /** A white console panel. */
 export function Panel({
   children,

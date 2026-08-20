@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Micro } from './ui';
+import { Micro, useInView } from './ui';
 
 /**
  * The headline gauge.
@@ -25,6 +25,25 @@ export default function ScoreRing({
   const r = 54;
   const circ = 2 * Math.PI * r;
   const safe = Math.max(0, Math.min(100, pct));
+
+  /* The arc was already given a 0.9s transition on its dash — and it never ran
+     once, because the ring mounts holding its final number and a transition
+     needs two values. It has them now: empty until the ring is reached, then
+     the real figure, so the arc draws itself the first time you scroll to it.
+     A frame's delay, because a style set in the same frame as the mount is not
+     a change the browser will animate.
+
+     After that first draw `drawn` stays true, so the progress screen — which
+     re-renders this ring with a new percentage every few seconds — keeps
+     animating from wherever it was to wherever it is going. */
+  const [ref, inView] = useInView<HTMLDivElement>();
+  const [drawn, setDrawn] = React.useState(false);
+  React.useEffect(() => {
+    if (!inView || drawn) return;
+    const id = requestAnimationFrame(() => setDrawn(true));
+    return () => cancelAnimationFrame(id);
+  }, [inView, drawn]);
+  const shown = drawn ? safe : 0;
 
   /* Everything inside the disc is a fraction of the ring, never a constant.
 
@@ -50,7 +69,7 @@ export default function ScoreRing({
      * naming a count always does — cannot be laid out in a hole whose width is
      * fixed by a stroke. The label stays in, because it is short by
      * construction; the sentence goes below, where it has the column. */
-    <div className="mx-auto flex flex-col items-center" style={{ width: size }}>
+    <div ref={ref} className="mx-auto flex flex-col items-center" style={{ width: size }}>
     <div className="relative" style={{ width: size, height: size }}>
       <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
         <circle cx="60" cy="60" r={r} fill="none" stroke="#F2F1ED" strokeWidth="10" />
@@ -62,7 +81,7 @@ export default function ScoreRing({
           stroke="#39471D"
           strokeWidth="10"
           strokeLinecap="round"
-          strokeDasharray={`${(circ * safe) / 100} ${circ}`}
+          strokeDasharray={`${(circ * shown) / 100} ${circ}`}
           style={{ transition: 'stroke-dasharray .9s cubic-bezier(.22,1,.36,1)' }}
         />
       </svg>
