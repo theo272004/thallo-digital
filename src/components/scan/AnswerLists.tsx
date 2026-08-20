@@ -46,7 +46,7 @@ export default function AnswerLists({ phase1, grounded }: { phase1: ScanPhase1; 
   });
 
   return (
-    <ol className="flex flex-col gap-4">
+    <ol className="flex flex-col gap-2.5">
       {phase1.questions.map((question, q) => {
         /* Both readings count towards "how many named you", because both were
            put to the models and both are printed below. */
@@ -57,38 +57,62 @@ export default function AnswerLists({ phase1, grounded }: { phase1: ScanPhase1; 
         const named = all.filter((a) => a.mentioned).length;
 
         return (
-          <li key={`${q}-${question}`} className="overflow-hidden rounded-xl border border-gray-200">
-            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-gray-100 bg-gray-50/70 px-4 py-3">
-              <span className="flex min-w-0 items-baseline gap-2.5">
-                <span className="font-mono text-[10px] font-bold tabular-nums text-gray-300">
-                  {String(q + 1).padStart(2, '0')}
+          <li key={`${q}-${question}`}>
+            {/* A `<details>`, and the first question open.
+                Three questions × three models × two readings is eighteen
+                ordered lists, and printed all at once they were 1,918px — a
+                third of the whole report spent on the evidence for two
+                percentages. The header row is the finding ("named you in 2 of
+                6"); the lists under it are the proof, and proof is something a
+                reader asks for. */}
+            <details open={q === 0} className="group overflow-hidden rounded-xl border border-gray-200">
+              <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-x-4 gap-y-2 bg-gray-50/70 px-4 py-3 transition-colors hover:bg-gray-50 [&::-webkit-details-marker]:hidden">
+                <span className="flex min-w-0 flex-1 items-baseline gap-2.5">
+                  <span className="font-mono text-[10px] font-bold tabular-nums text-gray-300">
+                    {String(q + 1).padStart(2, '0')}
+                  </span>
+                  <span className="min-w-0 text-[13px] font-semibold leading-snug text-gray-900">{question}</span>
                 </span>
-                <span className="min-w-0 text-[13px] font-semibold leading-snug text-gray-900">{question}</span>
-              </span>
-              <Verdict tone={named > 0 ? 'on' : 'off'}>
-                {named > 0 ? `named you in ${named} of ${all.length}` : `not named in ${all.length}`}
-              </Verdict>
-            </div>
+                <span className="flex shrink-0 items-center gap-3">
+                  <Verdict tone={named > 0 ? 'on' : 'off'}>
+                    {named > 0 ? `named you in ${named} of ${all.length}` : `not named in ${all.length}`}
+                  </Verdict>
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="14"
+                    height="14"
+                    fill="none"
+                    stroke="#39471D"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    aria-hidden
+                    className="shrink-0 transition-transform group-open:rotate-180"
+                  >
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </span>
+              </summary>
 
-            {/* One cell per model. `gap-px` over a grey ground draws the
-                dividers, so three columns cost three hairlines rather than
-                three bordered boxes inside a bordered box. */}
-            <div className="grid gap-px bg-gray-100 sm:grid-cols-2 xl:grid-cols-3">
-              {providers.map((p) => {
-                const { memory, web } = readingFor(p.provider, q);
-                return (
-                  <div key={p.provider} className="flex flex-col gap-4 bg-white p-4">
-                    <span className="flex items-center gap-2.5">
-                      <ProviderMark provider={p.provider} />
-                      <Micro className="text-gray-700">{PROVIDER_LABEL[p.provider]}</Micro>
-                    </span>
+              {/* One cell per model. `gap-px` over a grey ground draws the
+                  dividers, so three columns cost three hairlines rather than
+                  three bordered boxes inside a bordered box. */}
+              <div className="grid gap-px border-t border-gray-100 bg-gray-100 sm:grid-cols-2 xl:grid-cols-3">
+                {providers.map((p) => {
+                  const { memory, web } = readingFor(p.provider, q);
+                  return (
+                    <div key={p.provider} className="flex flex-col gap-4 bg-white p-4">
+                      <span className="flex items-center gap-2.5">
+                        <ProviderMark provider={p.provider} />
+                        <Micro className="text-gray-700">{PROVIDER_LABEL[p.provider]}</Micro>
+                      </span>
 
-                    <Reading label={twoWay ? 'Brand knowledge · no search' : 'Answered'} answer={memory} />
-                    {twoWay && <Reading label="AI visibility · searching" answer={web} />}
-                  </div>
-                );
-              })}
-            </div>
+                      <Reading label={twoWay ? 'Brand knowledge · no search' : 'Answered'} answer={memory} />
+                      {twoWay && <Reading label="AI visibility · searching" answer={web} />}
+                    </div>
+                  );
+                })}
+              </div>
+            </details>
           </li>
         );
       })}

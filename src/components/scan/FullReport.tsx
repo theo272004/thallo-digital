@@ -32,6 +32,38 @@ const RETRIEVAL_LABEL: Record<RetrievalResult['status'], string> = {
   unavailable: 'Not measured',
 };
 
+/**
+ * The report screen — step 4 of the scan.
+ *
+ * ## Read as a board, not as a document
+ *
+ * It used to run about 5,300px down a laptop screen: eight full-width cards,
+ * every one of them a column of prose with the right half of the card empty.
+ * Everything in it was true and nearly none of it was *findable* — the owner's
+ * verdict on reading one was that there was so much text she could not tell
+ * what the numbers were saying.
+ *
+ * Three moves, in order of how much height they bought:
+ *
+ *   · **Paired cards.** A comparison of two readings and a five-point trend
+ *     line are both roughly 500px of content in a 1,300px-wide card. They sit
+ *     side by side, and so do the technical signals and the actions.
+ *   · **The evidence folds.** "What the models answered" was 1,918px on its
+ *     own — three questions × three models × two readings, all open at once.
+ *     Each question is a row that opens; the first is open, so the panel still
+ *     shows what is inside it without being the length of the report.
+ *   · **Prose cut to captions.** Every panel kept one sentence saying what it
+ *     measures. The paragraphs arguing *why* it is measured that way are in
+ *     this file's comments, which is where the reasoning belongs.
+ *
+ * ## Colour
+ *
+ * On white, olive is #39471D with white type on it. The pale greens (#E7ECD9,
+ * #CBD0AC) were doing two jobs they are bad at — bar fills and tint blocks on a
+ * white card, where they read as a highlighter mark rather than as a value.
+ * They stay on the dark ground, where they are type colours and pass contrast;
+ * on the panels a value is drawn dark green on a grey track.
+ */
 export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; phase2: ScanPhase2 }) {
   const scoredSignals = phase2.signals.filter((s) => s.weight > 0);
   const maxTech = scoredSignals.reduce((sum, s) => sum + s.weight, 0);
@@ -42,14 +74,42 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
      measured" rather than draw a ring at 0%. See the indicator pair below. */
   const grounded = phase2.grounded && phase2.grounded.totalAnswers > 0 ? phase2.grounded : null;
 
+  /* Held in a variable because it is placed twice: beside the comparison when
+     there is one, full width when there is not. */
+  const trend = (
+    /* A flex column so the plot can take whatever height the card beside it
+       sets. Paired with a 637px comparison, a chart pinned to 180px left a
+       fifth of the row empty under it — and a line with more room is a line
+       that is easier to read, which is the only thing the panel is for. */
+    <Panel className="flex flex-col">
+      <Head
+        badge={<TrendingUp size={18} />}
+        title="Brand knowledge over time"
+        /* Named for what the series actually holds. `record_history` writes
+           `phase1.sovPct` — the memory reading — and the chart was headed
+           "Share of voice over time", which on a report carrying two
+           indicators reads as whichever of them the reader had in mind. */
+        sub={`Every scan of ${phase1.domain} in this market, oldest first — the no-search reading. AI visibility is measured on every scan but not yet kept as a series.`}
+      />
+      <div className="mt-6 flex-1">
+        <TrendChart history={phase2.history ?? []} brand={phase1.brand} />
+      </div>
+    </Panel>
+  );
+
   return (
     <div className="flex flex-col gap-5">
-      {/* ── Headline ─────────────────────────────────────────────────────── */}
+      {/* ── Headline ─────────────────────────────────────────────────────
+          Rings left, conclusion right. Stacked — rings, then a paragraph, then
+          the tint block, then the two stats — this one card was 741px, and the
+          paragraph in the middle of it was the thing a reader had to get past
+          to reach the finding. The finding is now beside the figures it is
+          about. */}
       <Panel>
         <Head
           badge={<FileText size={18} />}
           title={`The full report for ${phase1.brand}`}
-          sub={`Measured against ${phase1.domain}. Two indicators, read separately: whether the models already know you, and whether they find you when they look. Every figure traces to a row further down — nothing here is an estimate.`}
+          sub={`Measured against ${phase1.domain}. Two indicators, read separately: whether the models already know you, and whether they find you when they look.`}
           chip={phase2.grade}
         />
 
@@ -70,242 +130,200 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
             own pages control and which can move in weeks. A brand can be a zero
             on the first and strong on the second — that is the ordinary shape
             for a good small company — and averaging them would hide the one
-            fact that decides which work to do.
-
-            So: two rings, equal weight, each with the sentence that says what
-            it measures, and a line underneath stating in as many words that
-            they are not added together. */}
-        <div className="mt-7 grid grid-cols-1 gap-8 border-t border-gray-100 pt-7 lg:grid-cols-2 lg:gap-12">
-          <Indicator
-            pct={phase1.sovPct}
-            name="Brand knowledge"
-            gloss="The models recommend you without looking anything up."
-            detail={`Recognition and authority inside the model. Measured across ${phase1.totalAnswers} ${
-              phase1.totalAnswers === 1 ? 'answer' : 'answers'
-            } given with the web shut.`}
-          />
-
-          {grounded ? (
+            fact that decides which work to do. */}
+        <div className="mt-6 grid grid-cols-1 gap-8 border-t border-gray-100 pt-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-12">
+          <div className="flex flex-col divide-y divide-gray-100">
             <Indicator
-              pct={grounded.sovPct}
-              name="AI visibility"
-              gloss="The models find and recommend you when they search the web."
-              detail={`Digital presence an assistant can discover. Measured across ${grounded.totalAnswers} ${
-                grounded.totalAnswers === 1 ? 'answer' : 'answers'
-              } given with the web open.`}
+              pct={phase1.sovPct}
+              name="Brand knowledge"
+              gloss="The models recommend you without looking anything up."
+              detail={`Recognition inside the model. ${phase1.totalAnswers} ${
+                phase1.totalAnswers === 1 ? 'answer' : 'answers'
+              } with the web shut.`}
+              className="pb-6"
             />
-          ) : (
-            /* Not measured is not zero, and a second ring reading 0% beside the
-               first would be a finding we did not take. */
-            <div className="flex flex-col justify-center rounded-xl bg-gray-50 px-5 py-6">
-              <p className="text-[13px] font-bold tracking-tight text-gray-900">AI visibility — not measured</p>
-              <p className="mt-2 text-[12.5px] font-medium leading-relaxed text-gray-500">
-                The searching half of this scan did not run, so there is no reading for whether the models find{' '}
-                {phase1.brand} when they look. The figure beside this one answers a different question and cannot stand
-                in for it.
-              </p>
+
+            {grounded ? (
+              <Indicator
+                pct={grounded.sovPct}
+                name="AI visibility"
+                gloss="The models find and recommend you when they search the web."
+                detail={`Presence an assistant can discover. ${grounded.totalAnswers} ${
+                  grounded.totalAnswers === 1 ? 'answer' : 'answers'
+                } with the web open.`}
+                className="pt-6"
+              />
+            ) : (
+              /* Not measured is not zero, and a second ring reading 0% beside
+                 the first would be a finding we did not take. */
+              <div className="pt-6">
+                <p className="text-[13px] font-bold tracking-tight text-gray-900">AI visibility — not measured</p>
+                <p className="mt-2 text-[12.5px] font-medium leading-relaxed text-gray-500">
+                  The searching half of this scan did not run. The figure above answers a different question and cannot
+                  stand in for it.
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-5">
+            <Tint>
+              <Micro className="text-white/55">Key insight</Micro>
+              <p className="mt-2.5 text-[14px] font-medium leading-relaxed text-white">{phase2.keyInsight}</p>
+            </Tint>
+
+            {/* The two supporting scores. Deliberately smaller than the pair
+                on the left: they are evidence for AI visibility, not
+                indicators of their own — whether a crawler can read the site,
+                and whether a searching engine can surface it right now. */}
+            <div className="grid grid-cols-1 divide-y divide-gray-100 border-y border-gray-100 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+              <Stat
+                value={`${phase2.techScore}`}
+                label={`Your site · ${phase2.techScore} of ${maxTech}`}
+                note="Whether the crawlers can read you at all"
+              />
+              <Stat
+                value={phase2.serpScore < 0 ? '—' : String(phase2.serpScore)}
+                label="Live retrieval / 100"
+                note={
+                  phase2.serpScore < 0 ? 'Not measured on this scan' : 'Whether Perplexity and Google can find you now'
+                }
+                muted={phase2.serpScore < 0}
+              />
             </div>
-          )}
-        </div>
 
-        <p className="mt-6 max-w-[86ch] text-[12.5px] font-medium leading-relaxed text-gray-500">
-          <strong className="font-bold text-gray-900">These are two measurements, not two halves of one.</strong> They
-          are never added together or averaged, because they have different causes and different fixes: brand knowledge
-          is earned off your own site and moves slowly; AI visibility is what your own pages and citations control. The
-          gap between the two figures is the diagnosis, and the panel below reads it.
-        </p>
-
-        <div className="mt-6 flex flex-col gap-5">
-          <Tint>
-            <Micro className="text-[#CBD0AC]">Key insight</Micro>
-            <p className="mt-2.5 text-[14px] font-medium leading-relaxed text-white">{phase2.keyInsight}</p>
-          </Tint>
-
-          {/* The two supporting scores. Deliberately below and smaller than the
-              pair above: they are evidence for AI visibility, not indicators of
-              their own — whether a crawler can read the site, and whether a
-              searching engine can surface it right now. */}
-          <div className="grid grid-cols-1 divide-y divide-gray-100 border-y border-gray-100 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
-            <Stat
-              value={`${phase2.techScore}`}
-              label={`Your site · ${phase2.techScore} of ${maxTech}`}
-              note="Whether the crawlers can read you at all"
-            />
-            <Stat
-              value={phase2.serpScore < 0 ? '—' : String(phase2.serpScore)}
-              label="Live retrieval / 100"
-              note={
-                phase2.serpScore < 0
-                  ? 'Not measured on this scan'
-                  : 'Whether Perplexity and Google can find you now'
-              }
-              muted={phase2.serpScore < 0}
-            />
+            <p className="text-[12px] font-medium leading-relaxed text-gray-500">
+              <strong className="font-bold text-gray-900">Never averaged.</strong> The two figures have different causes
+              and different fixes — brand knowledge is earned off your own site; AI visibility is what your own pages and
+              citations control. The gap between them is the diagnosis, and the panel below reads it.
+            </p>
           </div>
         </div>
       </Panel>
 
-      {/* ── Memory against search, and whether anything can find you now ─── */}
-      {phase2.grounded && (
-        <GroundedComparison memory={phase1} grounded={phase2.grounded} retrieval={phase2.retrieval} />
+      {/* ── The diagnosis, and the series ─────────────────────────────────
+          Asked for as a pair, and they belong as one: the comparison says what
+          the gap means today, the chart says whether it is moving. Neither
+          fills a 1,300px card on its own — the comparison ran 546px with its
+          right half empty below the tiles, the chart 443px with a 180px plot in
+          it. */}
+      {phase2.grounded ? (
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,1fr)]">
+          <GroundedComparison memory={phase1} grounded={phase2.grounded} />
+          {trend}
+        </div>
+      ) : (
+        trend
       )}
 
-      {/* ── Trend ────────────────────────────────────────────────────────── */}
+      {/* ── Who the models named instead ──────────────────────────────────
+          Its own card now. It used to be the tail of a 1,918px answers panel,
+          arriving after seventy-two rows of evidence — which is the right
+          *order* and the wrong *place*: by the time a reader scrolled to it
+          they had left the figures it summarises three screens above.
+
+          Perplexity and the AI Overview ride in the third column. They are
+          asking the same question this panel asks — who is being put in front
+          of a buyer right now — and they were homeless everywhere else they
+          were tried. */}
       <Panel>
-        <Head
-          badge={<TrendingUp size={18} />}
-          title="Brand knowledge over time"
-          /* Named for what the series actually holds. `record_history` writes
-             `phase1.sovPct` — the memory reading — and the chart was headed
-             "Share of voice over time", which on a report carrying two
-             indicators reads as whichever of them the reader had in mind. The
-             AI visibility half is not tracked yet, and the line under the chart
-             says so rather than leaving the omission to be discovered. */
-          sub={`Every scan of ${phase1.domain} in this market, oldest first — the no-search reading, which is the half that moves slowly enough for a series to mean anything. A single scan tells you where you stand; only the series tells you whether anything you changed worked. AI visibility is measured on every scan but not yet kept as a series.`}
-        />
-        <div className="mt-7">
-          <TrendChart history={phase2.history ?? []} brand={phase1.brand} />
-        </div>
+        <Rivals phase1={phase1} grounded={grounded ?? undefined} retrieval={phase2.retrieval} />
       </Panel>
 
       {/* ── Everything the models said, in one place ─────────────────────
-          This used to be two panels with a third somewhere else: a
-          "Recommended instead of you" leaderboard, a "What the models actually
-          answered" evidence panel, and Perplexity marooned under "Live
-          retrieval" four sections down.
+          The evidence under every figure above, folded one question to a row.
 
-          The owner's verdict on reading it: the answer panel is the one that
-          shows the tool working, because it says ChatGPT recommended this one
-          for that question and Claude recommended a different one — and the
-          leaderboard, arriving first and separately, was an aggregate of
-          evidence the reader had not seen yet. So the evidence leads, the
-          aggregate follows it as a summary, and Perplexity sits with the rest
-          rather than in a section nobody could place.
-
-          Perplexity keeps its own shape inside the panel. It searches as it
-          answers and returns a verdict and its sources, not a ranked list of
-          eight companies — so it gets a row that says what it found, not a
-          column pretending to be a fourth model with a leaderboard. */}
+          The owner's verdict on reading it: this is the panel that shows the
+          tool working, because it says ChatGPT recommended this one for that
+          question and Claude recommended a different one. That argument is made
+          by the first question being open; making it three times over, times
+          three models, times two readings, is what turned the panel into a
+          third of the page. */}
       <Panel>
         <Head
           badge={<MessagesSquare size={18} />}
           title="What the models answered"
-          sub={`Every list, in the order each model gave it, question by question. This is the evidence under every figure above: both indicators are simply how often ${phase1.brand} appears in these lists.`}
+          sub={`Every list, in the order each model gave it. Both indicators above are simply how often ${phase1.brand} appears in these lists — open a question to see it.`}
         />
-        <div className="mt-7">
+        <div className="mt-6">
           <AnswerLists phase1={phase1} grounded={phase2.grounded} />
         </div>
+      </Panel>
 
-        {phase2.retrieval.length > 0 && (
-          <div className="mt-8 border-t border-gray-100 pt-7">
-            <p className="text-[13px] font-bold tracking-tight text-gray-900">And the two that only search</p>
-            <p className="mt-1.5 max-w-[74ch] text-[12px] font-medium leading-relaxed text-gray-500">
-              These never answer from memory, so they have no brand-knowledge reading at all — they measure one thing
-              only: whether your pages are findable and quotable <em>today</em>. They answer the scan as a whole rather
-              than question by question, which is why they are a verdict and a list of sources here rather than a
-              ranking above.
-            </p>
+      {/* ── What was checked, and what to do about it ─────────────────────
+          The site's signals and the plan that comes out of them, in one row:
+          every action below is the remedy for a row on the left, and reading
+          them apart was reading a diagnosis on one screen and its prescription
+          on the next. */}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <Panel>
+          <Head
+            badge={<Gauge size={18} />}
+            title="Website & technical signals"
+            sub={`Checked against ${phase1.domain}. Every point in the score above traces to a row here.`}
+            chip={`${phase2.techScore} / ${maxTech}`}
+          />
 
-            <div className="mt-4 grid gap-3 lg:grid-cols-2">
-              {phase2.retrieval.map((r) => (
-                <div key={r.provider} className="rounded-xl border border-gray-200 p-4 sm:p-5">
-                  <div className="flex items-center gap-3">
-                    <ProviderMark provider={r.provider} />
-                    <span className="flex-1 text-[13px] font-bold text-gray-900">{PROVIDER_LABEL[r.provider]}</span>
-                    <Verdict tone={RETRIEVAL_TONE[r.status]}>{RETRIEVAL_LABEL[r.status]}</Verdict>
-                  </div>
-                  <p className="mt-2.5 text-[12px] font-medium leading-relaxed text-gray-500">{r.detail}</p>
-                  {r.citations && r.citations.length > 0 && (
-                    <ul className="mt-3 flex flex-wrap gap-1.5 border-t border-gray-100 pt-3">
-                      {r.citations.slice(0, 6).map((c) => (
-                        <li key={c} className="rounded-sm bg-gray-50 px-2 py-1">
-                          <span className="font-mono text-[10px] text-gray-500">{c}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))}
-            </div>
+          <div className="mt-5">
+            {phase2.signals.map((s) => (
+              <SignalRow key={s.id} signal={s} />
+            ))}
           </div>
-        )}
+        </Panel>
 
-        {/* The aggregate, after the evidence rather than before it. */}
-        <div className="mt-8 border-t border-gray-100 pt-7">
-          <Rivals phase1={phase1} grounded={grounded ?? undefined} />
-        </div>
-      </Panel>
+        <Panel>
+          <Head
+            badge={<ListChecks size={18} />}
+            title="What to do first"
+            sub="Ordered by what the scan found, heaviest unmet signal first — not by a fixed script."
+          />
 
-      {/* ── Technical readiness ──────────────────────────────────────────── */}
-      <Panel>
-        <Head
-          badge={<Gauge size={18} />}
-          title="Website & technical signals"
-          sub={`Checked against ${phase1.domain}. Every point in the score above traces to a row here.`}
-          chip={`${phase2.techScore} / ${maxTech}`}
-        />
+          <div className="mt-5 flex flex-col gap-2.5">
+            {phase2.actions.map((a, i) => (
+              <div key={a.title} className="rounded-xl border border-gray-200 p-4">
+                <div className="flex items-start gap-3">
+                  <Micro className="mt-0.5 shrink-0 text-gray-300">{String(i + 1).padStart(2, '0')}</Micro>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+                      <p className="text-[14px] font-bold text-gray-900">{a.title}</p>
+                      <Verdict tone={a.priority === 'high' ? 'on' : a.priority === 'medium' ? 'mid' : 'off'}>
+                        {a.priority}
+                      </Verdict>
+                    </div>
+                    <p className="mt-1.5 text-[12.5px] font-medium leading-relaxed text-gray-500">{a.detail}</p>
 
-        {/* Two columns of rows, not one column of very wide rows. A signal is a
-            label, a note and a fraction — around 400px of content that was
-            being given the full width of the card, twelve times over. The
-            column gap is wide enough that the two fractions do not read as one
-            four-column table. */}
-        <div className="mt-7 grid grid-cols-1 gap-x-12 lg:grid-cols-2">
-          {phase2.signals.map((s) => (
-            <SignalRow key={s.id} signal={s} />
-          ))}
-        </div>
-      </Panel>
-
-      {/* ── Actions ──────────────────────────────────────────────────────── */}
-      <Panel>
-        <Head
-          badge={<ListChecks size={18} />}
-          title="What to do first"
-          sub="Ordered by what the scan actually found, heaviest unmet signal first — not by a fixed script."
-        />
-
-        <div className="mt-7 flex flex-col gap-3">
-          {phase2.actions.map((a, i) => (
-            <div key={a.title} className="rounded-xl border border-gray-200 p-4 sm:p-5">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-                <Micro className="shrink-0 text-gray-300">{String(i + 1).padStart(2, '0')}</Micro>
-                <div className="min-w-0 flex-1">
-                  <p className="text-[14px] font-bold text-gray-900">{a.title}</p>
-                  <p className="mt-1.5 text-[13px] font-medium leading-relaxed text-gray-500">{a.detail}</p>
-                </div>
-                <div className="flex shrink-0 items-center gap-6 sm:flex-col sm:items-end sm:gap-3">
-                  <span>
-                    <Micro className="block text-gray-400">Impact</Micro>
-                    <span className="mt-2 flex gap-1">
-                      {Array.from({ length: 4 }).map((_, d) => (
-                        <span
-                          key={d}
-                          className={`h-[6px] w-[6px] rounded-full ${d < a.impact ? 'bg-[#39471D]' : 'bg-gray-200'}`}
-                        />
-                      ))}
+                    {/* Impact reads on one line with the copy rather than in a
+                        column of its own on the right — at half width there is
+                        no right-hand column to spare. */}
+                    <span className="mt-3 flex items-center gap-2">
+                      <Micro className="text-gray-400">Impact</Micro>
+                      <span className="flex gap-1">
+                        {Array.from({ length: 4 }).map((_, d) => (
+                          <span
+                            key={d}
+                            className={`h-[6px] w-[6px] rounded-full ${d < a.impact ? 'bg-[#39471D]' : 'bg-gray-200'}`}
+                          />
+                        ))}
+                      </span>
                     </span>
-                  </span>
-                  <Verdict tone={a.priority === 'high' ? 'on' : a.priority === 'medium' ? 'mid' : 'off'}>
-                    {a.priority}
-                  </Verdict>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </Panel>
+            ))}
+          </div>
+        </Panel>
+      </div>
 
-      {/* ── Method, kept with the report rather than hidden behind it ────── */}
+      {/* ── Method and close, in one card ─────────────────────────────────
+          The audit trail is a collapsed bar and the close is two buttons;
+          neither was ever a card's worth of content, and as two cards they were
+          280px of padding around 180px of matter. */}
       <Panel>
         {/* In the full report both readings are in; on the free screen only the
             memory half exists, so AuditTrail renders the single column there. */}
         <AuditTrail phase1={phase1} grounded={phase2.grounded} />
-      </Panel>
 
-      {/* ── Close ────────────────────────────────────────────────────────── */}
-      <Panel>
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mt-7 flex flex-col gap-6 border-t border-gray-100 pt-7 lg:flex-row lg:items-center lg:justify-between">
           <Head
             badge={<Compass size={18} />}
             title="This is the measurement. The work is the other half."
@@ -333,24 +351,30 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
  * of voice" told a reader nothing they could act on, and the same figure under
  * "Brand knowledge — the models recommend you without looking anything up"
  * tells them both what was measured and, by implication, what would change it.
+ *
+ * 128px rather than 140: two of these are stacked in half a card now, and the
+ * ring is a shape carrying one number — the twelve pixels bought nothing that
+ * the figure inside it does not already say.
  */
 function Indicator({
   pct,
   name,
   gloss,
   detail,
+  className = '',
 }: {
   pct: number;
   name: string;
   gloss: string;
   detail: string;
+  className?: string;
 }) {
   return (
-    <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start sm:gap-7">
+    <div className={`flex flex-col items-center gap-5 sm:flex-row sm:items-center sm:gap-7 ${className}`}>
       <div className="shrink-0">
-        <ScoreRing pct={pct} label={name} size={140} />
+        <ScoreRing pct={pct} label={name} size={128} />
       </div>
-      <div className="min-w-0 text-center sm:pt-3 sm:text-left">
+      <div className="min-w-0 text-center sm:text-left">
         <p className="text-[15px] font-bold tracking-tight text-gray-900">{name}</p>
         <p className="mt-2 text-[13px] font-semibold leading-relaxed text-[#39471D]">{gloss}</p>
         <p className="mt-2 text-[12px] font-medium leading-relaxed text-gray-500">{detail}</p>
@@ -475,21 +499,27 @@ function tally(reading: ScanPhase1 | null | undefined, limit = 8): Rival[] {
  *     finding from one model saying it three times, and the row said neither.
  *
  *   · **"Is this from memory or from searching?"** It was memory, always, and
- *     nothing on the page said so — while the ring at the top of the report
- *     leads with the *searching* figure. So the two readings had different
- *     subjects under one heading. They are two columns now, and the searching
+ *     nothing on the page said so. They are two columns now, and the searching
  *     one is usually the more useful of the two: it is the list a buyer using
  *     an assistant today would actually be shown.
  *
- * Two columns from `lg`, and the bar is drawn as a fill behind the row rather
- * than a track beside it. The old row spent its full width on a meter and a
- * right-aligned "3 mentions" — eight names came to eight nearly empty lines
- * down a 1379px card.
+ * Three columns at `xl` — memory, searching, and the two engines that only
+ * search — because all three answer one question in three ways and the panel is
+ * full width.
  */
-function Rivals({ phase1, grounded }: { phase1: ScanPhase1; grounded?: ScanPhase1 }) {
+function Rivals({
+  phase1,
+  grounded,
+  retrieval,
+}: {
+  phase1: ScanPhase1;
+  grounded?: ScanPhase1;
+  retrieval: RetrievalResult[];
+}) {
   const memory = tally(phase1);
   const searching = tally(grounded);
   const twoWay = !!grounded && grounded.totalAnswers > 0;
+  const hasRetrieval = retrieval.length > 0;
 
   /* A question is "off on its own" when not one of its companies appears
      against any other question, in either reading. Only worth saying when some
@@ -515,24 +545,28 @@ function Rivals({ phase1, grounded }: { phase1: ScanPhase1; grounded?: ScanPhase
     .sort((a, b) => a - b);
   const flagged = entries.length > 2 && lonely.length < entries.length ? lonely : [];
 
+  const columns = (twoWay ? 2 : 1) + (hasRetrieval ? 1 : 0);
+
   return (
     <div>
-      <div className="flex items-start gap-3">
-        <Trophy size={18} className="mt-0.5 shrink-0 text-[#39471D]" />
-        <div>
-          <p className="text-[13px] font-bold tracking-tight text-gray-900">Recommended instead of you</p>
-          <p className="mt-1.5 max-w-[74ch] text-[12px] font-medium leading-relaxed text-gray-500">
-            {twoWay
-              ? 'The lists above, added up. The same question puts a different set of companies in front of a buyer depending on whether the model looks anything up, so the two readings are counted separately.'
-              : `Every company the models named across the ${phase1.totalAnswers} answers, ranked by how often.`}
-          </p>
-        </div>
-      </div>
+      <Head
+        badge={<Trophy size={18} />}
+        title="Recommended instead of you"
+        sub={
+          twoWay
+            ? 'The same question puts a different set of companies in front of a buyer depending on whether the model looks anything up, so the two readings are counted separately.'
+            : `Every company the models named across the ${phase1.totalAnswers} answers, ranked by how often.`
+        }
+      />
 
-      <div className={`mt-7 grid grid-cols-1 gap-8 ${twoWay ? 'lg:grid-cols-2 lg:gap-12' : ''}`}>
+      <div
+        className={`mt-6 grid grid-cols-1 gap-x-10 gap-y-8 border-t border-gray-100 pt-6 ${
+          columns === 3 ? 'lg:grid-cols-2 xl:grid-cols-3' : columns === 2 ? 'lg:grid-cols-2' : ''
+        }`}
+      >
         <RivalList
           title={twoWay ? 'Brand knowledge · no search' : 'Named across the run'}
-          note={`Out of ${phase1.totalAnswers} answers given with the web shut. This is who the models already associate with your category.`}
+          note={`Out of ${phase1.totalAnswers} answers with the web shut — who the models already associate with your category.`}
           rivals={memory}
           questions={phase1.questions}
         />
@@ -540,16 +574,48 @@ function Rivals({ phase1, grounded }: { phase1: ScanPhase1; grounded?: ScanPhase
         {twoWay && (
           <RivalList
             title="AI visibility · searching"
-            note={`Out of ${grounded!.totalAnswers} answers given with the web open. This is who is being put in front of a buyer right now.`}
+            note={`Out of ${grounded!.totalAnswers} answers with the web open — who is being put in front of a buyer right now.`}
             rivals={searching}
             questions={phase1.questions}
           />
+        )}
+
+        {hasRetrieval && (
+          <div>
+            <p className="text-[13px] font-bold tracking-tight text-gray-900">And the two that only search</p>
+            <p className="mt-1.5 text-[12px] font-medium leading-relaxed text-gray-500">
+              These never answer from memory, so they have no brand-knowledge reading at all. They measure one thing:
+              whether your pages are findable and quotable <em>today</em>.
+            </p>
+
+            <div className="mt-4 flex flex-col gap-2.5">
+              {retrieval.map((r) => (
+                <div key={r.provider} className="rounded-xl border border-gray-200 p-4">
+                  <div className="flex items-center gap-3">
+                    <ProviderMark provider={r.provider} />
+                    <span className="flex-1 text-[13px] font-bold text-gray-900">{PROVIDER_LABEL[r.provider]}</span>
+                    <Verdict tone={RETRIEVAL_TONE[r.status]}>{RETRIEVAL_LABEL[r.status]}</Verdict>
+                  </div>
+                  <p className="mt-2.5 text-[12px] font-medium leading-relaxed text-gray-500">{r.detail}</p>
+                  {r.citations && r.citations.length > 0 && (
+                    <ul className="mt-3 flex flex-wrap gap-1.5 border-t border-gray-100 pt-3">
+                      {r.citations.slice(0, 6).map((c) => (
+                        <li key={c} className="rounded-sm bg-gray-50 px-2 py-1">
+                          <span className="font-mono text-[10px] text-gray-500">{c}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
         )}
       </div>
 
       {flagged.length > 0 && (
         <Tint edged className="mt-7">
-          <p className="text-[12.5px] font-medium leading-relaxed text-[#E7ECD9]">
+          <p className="text-[12.5px] font-medium leading-relaxed text-white/80">
             <strong className="font-bold text-white">
               {flagged.length === 1
                 ? `Question ${flagged[0] + 1} is pulling a different category into these lists.`
@@ -557,10 +623,9 @@ function Rivals({ phase1, grounded }: { phase1: ScanPhase1; grounded?: ScanPhase
             </strong>{' '}
             {flagged.length === 1 ? (
               <>
-                Not one of the companies the models named for{' '}
-                <em>“{phase1.questions[flagged[0]]}”</em> appears against any of your other questions. Those are real
-                answers to that question — they are just answers about something else. Ask it on its own scan if you
-                want it measured, or drop it and re-run.
+                Not one of the companies the models named for <em>“{phase1.questions[flagged[0]]}”</em> appears against
+                any of your other questions. Those are real answers to that question — they are just answers about
+                something else. Ask it on its own scan if you want it measured, or drop it and re-run.
               </>
             ) : (
               <>
@@ -576,7 +641,18 @@ function Rivals({ phase1, grounded }: { phase1: ScanPhase1; grounded?: ScanPhase
   );
 }
 
-/** One reading's leaderboard. */
+/**
+ * One reading's leaderboard.
+ *
+ * The row is a name, who said it, and a count — with the value drawn as a rule
+ * under the name rather than as a wash behind the whole row. The wash was a
+ * pale green rectangle (#CBD0AC at 42%) growing left to right, and at half
+ * opacity behind black type it read as a highlighter mark on a list rather than
+ * as a measured value; the owner's note on it was simply that she does not use
+ * that green. Dark green on a grey track says the same thing with the colour
+ * the rest of the console is built from, and the count sits in an olive pill
+ * with white type — the same pill the panel headings carry.
+ */
 function RivalList({
   title,
   note,
@@ -604,52 +680,60 @@ function RivalList({
           recommend for the questions as written.
         </p>
       ) : (
-        <ol className="mt-4 flex flex-col gap-1">
+        <ol className="mt-4 flex flex-col">
           {rivals.map((r, i) => (
-            <li
-              key={r.name}
-              className="flex items-center gap-2.5 rounded-lg px-2.5 py-2"
-              /* The fill is the bar. Stops hard rather than fading, so the edge
-                 is still readable as a value. */
-              style={{
-                backgroundImage: `linear-gradient(to right, rgba(203,208,172,.42) ${
-                  (r.mentions / top) * 100
-                }%, rgba(0,0,0,0) ${(r.mentions / top) * 100}%)`,
-              }}
-            >
-              <Micro className="w-5 shrink-0 text-gray-400">{String(i + 1).padStart(2, '0')}</Micro>
-              <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-gray-900">{r.name}</span>
+            /* Two lines, not one. Everything below used to sit on a single row
+               — rank, name, three logos, three question chips and a count —
+               and in a column a third of the card wide that left the name
+               about 65px to live in: "Vertex Partners" truncated to "Vertex
+               P…". The name is the row; the bar and the question chips are
+               what it was measured from, and they read fine underneath it. */
+            <li key={r.name} className="border-b border-gray-100 py-2.5 last:border-0">
+              <span className="flex items-center gap-2.5">
+                <Micro className="w-5 shrink-0 text-gray-300">{String(i + 1).padStart(2, '0')}</Micro>
+                <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-gray-900">{r.name}</span>
 
-              {/* Who said it. Three bare marks, no labels — the shapes are the
-                  legend, and this is the answer to "three mentions by whom". */}
-              <span className="flex shrink-0 items-center gap-1">
-                {r.providers.map((p) => (
-                  <span key={p} title={PROVIDER_LABEL[p]}>
-                    <ProviderMark provider={p} />
-                  </span>
-                ))}
-              </span>
-
-              {/* And what it was asked about. The whole question is in the
-                  `title`, because two words of it is what a reader needs and
-                  eight is what would not fit. */}
-              {questions.length > 1 && r.questions.length > 0 && (
-                <span className="hidden shrink-0 items-center gap-1 sm:flex">
-                  {r.questions.map((q) => (
-                    <span
-                      key={q}
-                      title={questions[q]}
-                      className="cursor-help rounded-sm bg-white/70 px-1.5 py-0.5 font-mono text-[10px] font-bold text-gray-500"
-                    >
-                      Q{q + 1}
+                {/* Who said it. Bare marks, no labels — the shapes are the
+                    legend, and this is the answer to "three mentions by
+                    whom". */}
+                <span className="flex shrink-0 items-center gap-1">
+                  {r.providers.map((p) => (
+                    <span key={p} title={PROVIDER_LABEL[p]}>
+                      <ProviderMark provider={p} />
                     </span>
                   ))}
                 </span>
-              )}
 
-              <Micro className="w-8 shrink-0 whitespace-nowrap text-right tabular-nums text-gray-500">
-                {r.mentions}×
-              </Micro>
+                <span className="shrink-0 rounded-md bg-[#39471D] px-2 py-1 text-[11px] font-bold tabular-nums text-white">
+                  {r.mentions}×
+                </span>
+              </span>
+
+              <span className="mt-2 flex items-center gap-2 pl-[30px]">
+                <span className="block h-[5px] min-w-0 flex-1 overflow-hidden rounded-full bg-gray-100">
+                  <span
+                    className="block h-full rounded-full bg-[#39471D]"
+                    style={{ width: `${(r.mentions / top) * 100}%` }}
+                  />
+                </span>
+
+                {/* And what it was asked about. The whole question is in the
+                    `title`, because two words of it is what a reader needs and
+                    eight is what would not fit. */}
+                {questions.length > 1 && r.questions.length > 0 && (
+                  <span className="flex shrink-0 items-center gap-1">
+                    {r.questions.map((q) => (
+                      <span
+                        key={q}
+                        title={questions[q]}
+                        className="cursor-help rounded-sm bg-gray-100 px-1.5 py-0.5 font-mono text-[10px] font-bold text-gray-500"
+                      >
+                        Q{q + 1}
+                      </span>
+                    ))}
+                  </span>
+                )}
+              </span>
             </li>
           ))}
         </ol>
@@ -667,28 +751,20 @@ function RivalList({
  * what tells them apart. So this reads as a comparison rather than as a second
  * score, and the sentence underneath names the diagnosis rather than leaving
  * the reader to infer it from two percentages.
+ *
+ * One column, because the card is now one of two in a row. It was two columns
+ * inside a full-width card — the readings on the left, the per-model rows on
+ * the right — which is the same content in the same order, simply turned
+ * ninety degrees.
  */
-function GroundedComparison({
-  memory,
-  grounded,
-  retrieval,
-}: {
-  memory: ScanPhase1;
-  grounded: ScanPhase1;
-  /* Perplexity and Google's AI Overview used to have a panel of their own,
-     three sections further down, headed "Live retrieval" — and read as an
-     appendix nobody could place. They are asking the same question this panel
-     asks: can anything find you when it looks? So they belong under it, as the
-     third reading rather than as a section on their own. */
-  retrieval: RetrievalResult[];
-}) {
+function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded: ScanPhase1 }) {
   /* Nothing came back at all — every request failed or the models were all
      skipped. Printing 0% here would be a finding we did not measure. */
   if (grounded.totalAnswers === 0) {
     return (
       <Panel>
         <Head badge={<Search size={18} />} title="When they search the web" />
-        <p className="mt-7 rounded-xl bg-gray-50 px-4 py-3.5 text-[13px] font-medium leading-relaxed text-gray-500">
+        <p className="mt-6 rounded-xl bg-gray-50 px-4 py-3.5 text-[13px] font-medium leading-relaxed text-gray-500">
           Not measured — the second reading was attempted but no model answered. This is a fault at our end, not a
           finding about {memory.brand}.
         </p>
@@ -747,123 +823,78 @@ function GroundedComparison({
       <Head
         badge={<Compass size={18} />}
         title="Brand knowledge against AI visibility"
-        sub={`We asked ${askedTwice === memory.questions.length ? `the same ${askedTwice} questions` : `${askedTwice} of the same ${memory.questions.length} questions`} twice. Once with the models answering from memory, the way they do when nobody is looking anything up. Once with web search switched on, the way most people use them today. Those are different questions about you, and the answers come apart.`}
+        sub={`${
+          askedTwice === memory.questions.length ? `The same ${askedTwice} questions` : `${askedTwice} of the ${memory.questions.length} questions`
+        }, asked twice: once from memory, once with web search on. Those are different questions about you, and the answers come apart.`}
       />
 
-      {/* The two readings and the verdict on the left, the model-by-model
-          breakdown on the right. Stacked, this panel ran 680px down a card
-          whose right half was empty from the tiles to the bottom — and the
-          per-model rows are the detail behind the two figures beside them, so
-          reading them together is also the better order. */}
-      <div className="mt-7 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
-        <div>
-          <div className="grid grid-cols-1 gap-px overflow-hidden rounded-xl bg-gray-100 sm:grid-cols-2">
-            <div className="bg-white p-4 sm:p-5">
-              <p className="text-3xl font-bold leading-none tracking-tight text-[#39471D]">{memory.sovPct}%</p>
-              <p className="mt-2.5 text-[13px] font-bold tracking-tight text-gray-900">Brand knowledge</p>
-              <p className="mt-1.5 text-[12px] font-medium leading-relaxed text-gray-500">
-                Out of {memory.totalAnswers} answers given without looking anything up. This is whether the models already
-                know {memory.brand} — reputation, not pages.
-              </p>
-            </div>
+      <div className="mt-6 grid grid-cols-1 gap-px overflow-hidden rounded-xl bg-gray-100 sm:grid-cols-2">
+        <div className="bg-white p-4 sm:p-5">
+          <p className="text-3xl font-bold leading-none tracking-tight text-[#39471D]">{memory.sovPct}%</p>
+          <p className="mt-2.5 text-[13px] font-bold tracking-tight text-gray-900">Brand knowledge</p>
+          <p className="mt-1.5 text-[12px] font-medium leading-relaxed text-gray-500">
+            {memory.totalAnswers} answers, nothing looked up. Reputation, not pages.
+          </p>
+        </div>
         <div className="bg-white p-4 sm:p-5">
           <p className="text-3xl font-bold leading-none tracking-tight text-[#39471D]">{grounded.sovPct}%</p>
           <p className="mt-2.5 text-[13px] font-bold tracking-tight text-gray-900">AI visibility</p>
           <p className="mt-1.5 text-[12px] font-medium leading-relaxed text-gray-500">
-            Out of {grounded.totalAnswers} answers given with the web open. This is whether the models pick{' '}
-            {memory.brand} once they have looked — pages, not reputation.
+            {grounded.totalAnswers} answers with the web open. Pages, not reputation.
           </p>
         </div>
       </div>
 
-          <div className="mt-6">
-            <Verdict tone={tone}>{verdict}</Verdict>
-            <p className="mt-3 max-w-[62ch] text-[13px] font-medium leading-relaxed text-gray-500">{reading}</p>
-          </div>
-        </div>
+      <div className="mt-5">
+        <Verdict tone={tone}>{verdict}</Verdict>
+        <p className="mt-3 text-[13px] font-medium leading-relaxed text-gray-500">{reading}</p>
+      </div>
 
-        <div>
-          <p className="mb-1 text-[12px] font-medium leading-relaxed text-gray-500">
-            Model by model, from memory <span className="text-gray-300">→</span> when searching:
-          </p>
+      <div className="mt-6 border-t border-gray-100 pt-5">
+        <p className="text-[12px] font-medium leading-relaxed text-gray-500">
+          Model by model, from memory <span className="text-gray-300">→</span> when searching:
+        </p>
 
-          <ul className="mt-4 flex flex-col gap-3.5">
-            {grounded.providers.map((g) => {
-              const m = memory.providers.find((p) => p.provider === g.provider);
-              const mPct = m && m.answers.length ? Math.round((m.mentions / m.answers.length) * 100) : null;
-              const gPct = g.answers.length ? Math.round((g.mentions / g.answers.length) * 100) : null;
+        <ul className="mt-4 flex flex-col gap-3.5">
+          {grounded.providers.map((g) => {
+            const m = memory.providers.find((p) => p.provider === g.provider);
+            const mPct = m && m.answers.length ? Math.round((m.mentions / m.answers.length) * 100) : null;
+            const gPct = g.answers.length ? Math.round((g.mentions / g.answers.length) * 100) : null;
 
-              return (
-                <li key={g.provider} className="flex items-center gap-3">
-                  <ProviderMark provider={g.provider} />
-                  <span className="w-[92px] shrink-0 truncate text-[13px] font-semibold text-gray-900">
-                    {PROVIDER_LABEL[g.provider]}
+            return (
+              <li key={g.provider} className="flex items-center gap-3">
+                <ProviderMark provider={g.provider} />
+                <span className="w-[74px] shrink-0 truncate text-[13px] font-semibold text-gray-900">
+                  {PROVIDER_LABEL[g.provider]}
+                </span>
+                {gPct === null ? (
+                  /* A model that could not be reached is a fault at our end, and
+                     the report has to say so in those words. It printed the raw
+                     provider error — "every request failed — Provider returned an
+                     empty response" — beside two models that answered, which
+                     reads as this model having nothing to say about the brand.
+                     The detail stays, small and grey, because it is what makes
+                     the failure fixable. */
+                  <span className="flex flex-col items-start gap-0.5">
+                    <span className="text-[12px] font-medium text-gray-500">Could not be reached — not a finding</span>
+                    {g.error && <span className="font-mono text-[10px] text-gray-300">{g.error}</span>}
                   </span>
-                  {gPct === null ? (
-                    /* A model that could not be reached is a fault at our end, and
-                       the report has to say so in those words. It printed the raw
-                       provider error — "every request failed — Provider returned an
-                       empty response" — beside two models that answered, which
-                       reads as this model having nothing to say about the brand.
-                       The detail stays, small and grey, because it is what makes
-                       the failure fixable. */
-                    <span className="flex flex-col items-start gap-0.5">
-                      <span className="text-[12px] font-medium text-gray-500">Could not be reached — not a finding</span>
-                      {g.error && <span className="font-mono text-[10px] text-gray-300">{g.error}</span>}
+                ) : (
+                  <>
+                    <div className="min-w-0 flex-1">
+                      <Meter pct={gPct} />
+                    </div>
+                    <span className="w-[92px] shrink-0 text-right text-[12px] font-medium tabular-nums text-gray-500">
+                      {mPct === null ? '—' : `${mPct}%`} <span className="text-gray-300">→</span>{' '}
+                      <span className="font-semibold text-gray-900">{gPct}%</span>
                     </span>
-                  ) : (
-                    <>
-                      <div className="min-w-0 flex-1">
-                        <Meter pct={gPct} />
-                      </div>
-                      <span className="w-[104px] shrink-0 text-right text-[12px] font-medium tabular-nums text-gray-500">
-                        {mPct === null ? '—' : `${mPct}%`} <span className="text-gray-300">→</span>{' '}
-                        <span className="font-semibold text-gray-900">{gPct}%</span>
-                      </span>
-                    </>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
-
-      {/* Perplexity and the AI Overview briefly lived here. They have moved in
-          with the answers, where the owner could actually place them: this
-          panel is a comparison of two readings, and a third thing that is
-          neither of them read as a footnote wherever it was put. */}
-      {false && (
-        <div className="mt-8 border-t border-gray-100 pt-7">
-          <p className="text-[13px] font-bold tracking-tight text-gray-900">And the two that only search</p>
-          <p className="mt-1.5 max-w-[68ch] text-[12px] font-medium leading-relaxed text-gray-500">
-            These never answer from memory, so they measure one thing only: whether your pages are findable and
-            quotable <em>today</em>. What they cite is what a buyer is shown.
-          </p>
-
-          <div className="mt-4 grid gap-3 lg:grid-cols-2">
-            {retrieval.map((r) => (
-              <div key={r.provider} className="rounded-xl border border-gray-200 p-4 sm:p-5">
-                <div className="flex items-center gap-3">
-                  <ProviderMark provider={r.provider} />
-                  <span className="flex-1 text-[13px] font-bold text-gray-900">{PROVIDER_LABEL[r.provider]}</span>
-                  <Verdict tone={RETRIEVAL_TONE[r.status]}>{RETRIEVAL_LABEL[r.status]}</Verdict>
-                </div>
-                <p className="mt-2.5 text-[12px] font-medium leading-relaxed text-gray-500">{r.detail}</p>
-                {r.citations && r.citations.length > 0 && (
-                  <ul className="mt-3 flex flex-wrap gap-1.5 border-t border-gray-100 pt-3">
-                    {r.citations.slice(0, 6).map((c) => (
-                      <li key={c} className="rounded-sm bg-gray-50 px-2 py-1">
-                        <span className="font-mono text-[10px] text-gray-500">{c}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  </>
                 )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </Panel>
   );
 }
@@ -877,8 +908,12 @@ function SignalRow({ signal }: { signal: TechSignal }) {
         </svg>
       </span>
     ) : signal.status === 'warn' ? (
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#E7ECD9]">
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#39471D" strokeWidth="3" strokeLinecap="round">
+      /* Mid-olive with a white mark, not pale green with a dark one. The three
+         states have to read as a ladder, and a #E7ECD9 disc sat lighter than
+         the grey "fail" ring below it — so a partial pass looked like the
+         weakest of the three. */
+      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#55672E]">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round">
           <path d="M12 8v5m0 3.5v.5" />
         </svg>
       </span>
@@ -891,11 +926,7 @@ function SignalRow({ signal }: { signal: TechSignal }) {
     );
 
   return (
-    /* Every row keeps its rule, including the last. `last:border-0` was right
-       in one column and wrong in two — it cleared the rule under the final row
-       of the right-hand column only, leaving the left column's bottom row
-       underlined and the pair looking misaligned. */
-    <div className="flex items-start gap-3 border-b border-gray-100 py-3.5">
+    <div className="flex items-start gap-3 border-b border-gray-100 py-3 last:border-0">
       {icon}
       <span className="min-w-0 flex-1">
         <span className="block text-[13px] font-semibold text-gray-900">{signal.label}</span>

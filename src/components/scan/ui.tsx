@@ -274,9 +274,13 @@ export function Panel({
   );
 }
 
+/* The track is grey, not pale green. On a white panel #E7ECD9 behind a dark
+   green fill read as two values rather than as a value on a scale — and pale
+   green on white is the one use of it the brand does not want. It stays a type
+   colour on the dark ground, where it belongs. */
 export function Meter({ pct, tone = 'olive' }: { pct: number; tone?: 'olive' | 'grey' }) {
   return (
-    <span className="block h-1.5 w-full overflow-hidden rounded-sm bg-[#E7ECD9]">
+    <span className="block h-1.5 w-full overflow-hidden rounded-sm bg-gray-100">
       <span
         className={`block h-full rounded-sm ${tone === 'olive' ? 'bg-[#39471D]' : 'bg-gray-300'}`}
         style={{ width: `${Math.max(0, Math.min(100, pct))}%` }}

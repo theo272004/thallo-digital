@@ -52,7 +52,7 @@ function TrendTooltip({ active, payload }: { active?: boolean; payload?: { paylo
 export default function TrendChart({ history, brand }: { history: HistoryPoint[]; brand: string }) {
   if (history.length < 2) {
     return (
-      <div className="rounded-xl bg-gray-50 px-4 py-4">
+      <div className="flex h-full items-center rounded-xl bg-gray-50 px-4 py-4">
         <p className="text-[13px] font-medium leading-relaxed text-gray-500">
           This is the first recorded scan for {brand} in this market, so there is nothing to compare it against yet.
           Run it again and this becomes a trend — which is the number that actually answers whether the work is
@@ -69,7 +69,9 @@ export default function TrendChart({ history, brand }: { history: HistoryPoint[]
   const direction = change > 0 ? 'up' : change < 0 ? 'down' : 'flat';
 
   return (
-    <div>
+    /* Full height, because the card this sits in is half of a row and takes its
+       height from the panel beside it. */
+    <div className="flex h-full flex-col">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 pb-5">
         <span className="text-2xl font-bold leading-none tracking-tight text-gray-900">
           {change > 0 ? '+' : ''}
@@ -81,9 +83,11 @@ export default function TrendChart({ history, brand }: { history: HistoryPoint[]
         </Micro>
       </div>
 
-      {/* Fixed height: ResponsiveContainer measures its parent, and a parent
-          sized by its content would collapse to nothing on first paint. */}
-      <div className="h-[180px] w-full">
+      {/* `min-h`, not `h`: ResponsiveContainer measures its parent, and a parent
+          sized by its content would collapse to nothing on first paint — but a
+          parent that can grow lets the plot take the spare height of the card
+          rather than leaving it blank underneath. */}
+      <div className="min-h-[180px] w-full flex-1">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={history} margin={{ top: 6, right: 10, left: -22, bottom: 0 }}>
             <CartesianGrid stroke="#e8e8e5" vertical={false} />
