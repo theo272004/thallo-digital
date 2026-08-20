@@ -47,6 +47,15 @@
   --color-olive-soft: #CBD0AC;
   --color-olive-tint: #E7ECD9;
   --color-paper: #F7F8F3;
+
+  /* The radius a control gets — field, button, the panel a dropdown opens.
+     Surfaces (cards, notices, tint blocks, inner tables) keep 12px; the things
+     you click and type into are rounder than the things they sit on, which is
+     the closest the console gets to the fully round-ended shapes the marketing
+     pages are built from without turning into them. Not a pill: at 18px on a
+     ~48px control there is still a straight run down the middle of the edge,
+     and a pill would make the console read as the brochure. */
+  --radius-control: 18px;
 }
 
 /* The ticker renders its logo list 3× and slides one third of its width, so

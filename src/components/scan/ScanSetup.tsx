@@ -419,7 +419,7 @@ export default function ScanSetup({
                     type="button"
                     onClick={() => removeQuestion(i)}
                     aria-label={`Remove question ${i + 1}`}
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-300 transition-colors hover:bg-gray-50 hover:text-gray-600 sm:h-9 sm:w-9"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-gray-300 transition-colors hover:bg-gray-50 hover:text-gray-600 sm:h-9 sm:w-9"
                   >
                     <X size={16} />
                   </button>
@@ -431,7 +431,7 @@ export default function ScanSetup({
               type="button"
               onClick={addQuestion}
               disabled={questions.length >= MAX_QUESTIONS}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl border border-dashed border-gray-300 px-4 py-3 text-[13px] font-semibold text-gray-600 transition-colors hover:border-[#39471D] hover:text-[#39471D] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-gray-300 disabled:hover:text-gray-600"
+              className="mt-4 inline-flex items-center gap-2 rounded-control border border-dashed border-gray-300 px-4 py-3 text-[13px] font-semibold text-gray-600 transition-colors hover:border-[#39471D] hover:text-[#39471D] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-gray-300 disabled:hover:text-gray-600"
             >
               <Plus size={16} /> Add question
             </button>

@@ -64,27 +64,36 @@ export const GRID: React.CSSProperties = {
    reads as a seam rather than a card. */
 export const CARD: React.CSSProperties = { boxShadow: '0 18px 44px -26px rgba(23,26,16,.66)' };
 
-/* One radius, 12px: every panel, field, button, tint block and inner card.
-   The console had 4, 6, 8 and 12 all in use at once, and the screens that
-   leaned on the small end were exactly the ones that stopped looking like the
-   setup card in front of them. */
+/* Two radii, and the split is surface versus control.
+
+   Surfaces — panels, tint blocks, notices, inner cards, tables — are 12px.
+   Controls — fields, buttons, the panel a dropdown opens — are
+   `rounded-control`, 18px, defined once in globals.css. Rounder than what
+   they sit on, which is what carries a little of the brand's round-ended
+   shapes into a tool that otherwise deliberately does not look like the
+   marketing pages.
+
+   Before this the console had 4, 6, 8 and 12 all in use at once, and the
+   screens leaning on the small end were exactly the ones that stopped looking
+   like the setup card in front of them. That is the part not to undo: two
+   radii, each with a reason, not six. */
 
 /* The setup card's two buttons, which are now the console's two buttons. The
    pair they replace were small-caps pills at 11px — right for a dense tool
    panel, wrong beside the 14px bold "Continue" on the screen immediately
    before them, which is where a visitor learns what our buttons look like. */
 export const BTN_PRIMARY =
-  'inline-flex items-center justify-center gap-2 rounded-xl bg-[#39471D] px-6 py-3.5 text-[14px] font-bold text-white transition-colors hover:bg-[#55672E] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#39471D]';
+  'inline-flex items-center justify-center gap-2 rounded-control bg-[#39471D] px-6 py-3.5 text-[14px] font-bold text-white transition-colors hover:bg-[#55672E] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-[#39471D]';
 
 export const BTN_SECONDARY =
-  'inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-5 py-3.5 text-[13px] font-semibold text-gray-600 transition-colors hover:border-[#39471D] hover:text-[#39471D] disabled:cursor-not-allowed disabled:opacity-40';
+  'inline-flex items-center justify-center gap-2 rounded-control border border-gray-200 px-5 py-3.5 text-[13px] font-semibold text-gray-600 transition-colors hover:border-[#39471D] hover:text-[#39471D] disabled:cursor-not-allowed disabled:opacity-40';
 
 /* Carries its own size and radius so no call site has to restate them. It was
    an 8px/14px field that every screen overrode back up to the setup card's
    12px/15px — which is how two call sites ended up with both text sizes on one
    element, the winner decided by stylesheet order rather than by intent. */
 export const FIELD =
-  'w-full rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-[15px] font-medium text-gray-900 placeholder-gray-400 transition-[border-color,box-shadow] duration-200 hover:border-gray-300 focus:border-[#55672E] focus:outline-none';
+  'w-full rounded-control border border-gray-200 bg-white px-4 py-3.5 text-[15px] font-medium text-gray-900 placeholder-gray-400 transition-[border-color,box-shadow] duration-200 hover:border-gray-300 focus:border-[#55672E] focus:outline-none';
 
 /** The olive disc that marks a step, or heads a section of the report. */
 export function Badge({ children }: { children: React.ReactNode }) {
