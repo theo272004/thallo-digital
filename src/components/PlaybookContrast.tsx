@@ -31,6 +31,11 @@ import { BASE } from '@/lib/site';
  * isotipo. A section that matched the mockup's colours exactly would be the
  * only one on the page that did.
  *
+ * Both panels lift a step on hover, the same 300ms translate the industry and
+ * services cards use. It is the only motion in the section: nothing here is
+ * clickable, so the lift is there to say the two are objects you hold up
+ * against each other, not to promise a destination.
+ *
  * The ground itself is white. It was the `#F7F8F9` tint, which put it directly
  * under the equally tinted shift section — the card inside keeps its own white
  * and its border, so the panel still reads as an object on the page.
@@ -82,7 +87,7 @@ export default function PlaybookContrast() {
               absolute at a guessed `top`, and the rows are `items-start`: on a
               row that wraps, the mark belongs beside the first line rather than
               beside the middle of the block. */}
-          <div className="rounded-[24px] border border-gray-200/80 bg-[#F7F8F9] p-7 sm:p-9">
+          <div className="rounded-[24px] border border-gray-200/80 bg-[#F7F8F9] p-7 sm:p-9 transition-transform duration-300 hover:-translate-y-1">
             <p className="mb-7 text-[12.5px] font-bold text-gray-500">Other agencies</p>
             <ul className="flex flex-col">
               {ROWS.map(([before]) => (
@@ -103,7 +108,7 @@ export default function PlaybookContrast() {
           </div>
 
           {/* ── What we do instead ──────────────────────────────────────── */}
-          <div className="relative isolate overflow-hidden rounded-[24px] bg-[#171A10] p-7 sm:p-9">
+          <div className="relative isolate overflow-hidden rounded-[24px] bg-[#171A10] p-7 sm:p-9 transition-transform duration-300 hover:-translate-y-1">
             {/* The photograph is the whole ground of this card, not a fragment
                 masked into a corner. It was the corner version first and it read
                 as a picture that had been cut — the frame ended mid-desk with
