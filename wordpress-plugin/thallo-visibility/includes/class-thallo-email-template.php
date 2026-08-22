@@ -14,12 +14,23 @@
  * is stated with what it was measured out of, and there is exactly one call to
  * action at the bottom rather than three scattered through.
  *
- * The only image is the logo, and it is treated as optional by construction:
- * most clients block remote images until the reader asks, so its alt text is the
- * company name rather than the word "logo". Blocked, the header still says who
- * this is from. Nothing else in here is an image — every bar and rule is drawn
- * with table cells, because a chart that arrives as a broken-image icon is worse
- * than a number.
+ * The only image is the logo, and it travels with the message rather than
+ * being fetched from the website. That is the fix for the one thing the owner
+ * reported about these emails: the mark did not appear. It was not a broken
+ * URL — https://thallodigital.com/logo.png answers 200 — it is that a remote
+ * image in an email is not loaded until the reader asks for it, and most
+ * clients never ask on a first message from an unfamiliar sender. Gmail,
+ * Outlook, Apple Mail and Roundcube all display an image that arrived as part
+ * of the message; none of them reliably display one that has to be gone and
+ * got. So the file is packaged with the plugin and embedded by PHPMailer under
+ * a content id, and the remote URL is kept only as the fallback for an install
+ * where the packaged copy is missing — see `logo_src()`.
+ *
+ * It is still optional by construction. The alt text is the company name rather
+ * than the word "logo", so a client that shows nothing still says who this is
+ * from, and nothing else in here is an image — every bar and rule is drawn with
+ * table cells, because a chart that arrives as a broken-image icon is worse than
+ * a number.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -29,7 +40,51 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Thallo_Vis_Email_Template {
 
 	/**
-	 * Where the logo lives.
+	 * The content id the embedded logo is attached under.
+	 *
+	 * Named rather than generated: `Thallo_Vis_Leads::send()` has to reference
+	 * the same string when it hands the file to PHPMailer, and two places
+	 * inventing their own would produce a message whose `<img>` points at an
+	 * attachment that is not there — which looks exactly like the bug this
+	 * replaced.
+	 */
+	const LOGO_CID = 'thallo-logo';
+
+	/**
+	 * The packaged logo on disk, or '' if this install has not got one.
+	 *
+	 * Inside the plugin rather than anywhere on the host. The obvious place to
+	 * look is the static site at the document root — `dirname( ABSPATH )` — and
+	 * that is an assumption about somebody else's directory layout, made by code
+	 * that finds out it was wrong only when a client mentions the email looked
+	 * odd. The plugin knows where its own files are.
+	 */
+	public static function logo_file() {
+		if ( ! defined( 'THALLO_VIS_DIR' ) ) {
+			return '';
+		}
+
+		$path = THALLO_VIS_DIR . 'assets/logo.png';
+
+		return file_exists( $path ) ? $path : '';
+	}
+
+	/**
+	 * What goes in the `src` of the header image.
+	 *
+	 * `cid:` when there is a file to embed, and the website's own copy when
+	 * there is not. The fallback matters more than it looks: an install that has
+	 * been updated by copying PHP files over FTP has the new template and no
+	 * `assets/` directory, and `cid:` pointing at an attachment nobody added
+	 * renders as a broken image in every client at once — strictly worse than
+	 * the remote URL it replaced.
+	 */
+	public static function logo_src() {
+		return '' !== self::logo_file() ? 'cid:' . self::LOGO_CID : self::logo_url();
+	}
+
+	/**
+	 * Where the logo lives on the website.
 	 *
 	 * The scheme and host of this WordPress, with the path thrown away — not
 	 * `home_url( '/logo.png' )`. WordPress runs at /blog/ on this account, so
@@ -235,12 +290,19 @@ class Thallo_Vis_Email_Template {
 			   and ignores float outright, which would drop the right-hand label
 			   onto its own line under the mark.
 
-			   Most clients block remote images until the reader asks for them, so
-			   the alt text is the company name rather than "logo" — blocked, the
-			   header still says who this is from. */
+			   The src is `cid:` — the file rides along with the message — because
+			   a remote image is not loaded until the reader asks and most never
+			   do. The alt text is still the company name rather than "logo", for
+			   the client that shows neither. */
 			. '<tr><td style="padding:22px 28px 18px;background:#FFFFFF;">'
 			. '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>'
-			. '<td><img src="' . esc_url( self::logo_url() ) . '" width="150" alt="' . esc_attr( $site ) . '"'
+			/* Not `esc_url()`: WordPress's URL escaper has no `cid` in its
+			   protocol whitelist and returns an empty string for one, which is
+			   an <img> with no src at all. The value is built two lines above
+			   from a constant and a function of `home_url()`, so there is no
+			   input here to escape — `esc_attr()` is the right guard for what it
+			   actually is, an attribute. */
+			. '<td><img src="' . esc_attr( self::logo_src() ) . '" width="150" alt="' . esc_attr( $site ) . '"'
 			. ' style="display:block;border:0;outline:none;text-decoration:none;width:150px;max-width:150px;height:auto;font:700 15px/1.2 Helvetica,Arial,sans-serif;color:' . self::INK . ';"></td>'
 			. '<td align="right" style="font:600 10px/1.2 Helvetica,Arial,sans-serif;color:' . self::OLIVE . ';letter-spacing:.14em;text-transform:uppercase;">AI visibility scan</td>'
 			. '</tr></table>'

@@ -3,7 +3,7 @@ Contributors: thallodigital
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.7.5
+Stable tag: 1.7.6
 License: GPLv2 or later
 
 Backend for the Check My Visibility tool: asks the AI models the buying
@@ -63,6 +63,17 @@ Leads are kept until you delete them. IP addresses are stored only as a salted
 hash, used to count scans per visitor.
 
 == Changelog ==
+
+= 1.7.6 =
+* The logo appears in the report email. It was being linked from the website —
+  https://thallodigital.com/logo.png, which answers 200 — and a linked image in
+  an email is not fetched until the reader asks for it. Most clients never ask
+  on a first message from an unfamiliar sender, so the header arrived with the
+  alt text and nothing else. The file now travels with the message as an
+  embedded image (`cid:thallo-logo`, packaged at `assets/logo.png`), which is
+  what Gmail, Outlook, Apple Mail and Roundcube all display without being
+  asked. The website URL is kept as the fallback for an install without the
+  packaged copy.
 
 = 1.7.5 =
 * Gemini answers. Reasoning is no longer switched off — Google refuses that

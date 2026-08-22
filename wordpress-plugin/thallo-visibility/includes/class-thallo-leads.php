@@ -117,10 +117,23 @@ class Thallo_Vis_Leads {
 		if ( '' !== $html ) {
 			$headers[] = 'Content-Type: text/html; charset=UTF-8';
 
-			/* The text half has to go on through PHPMailer: `wp_mail()` has no
-			   way to say "these two are the same message". */
-			$alt = static function ( $phpmailer ) use ( $body ) {
+			/* The logo, carried by the message rather than fetched from the site.
+			   Both of these have to go on through PHPMailer: `wp_mail()` has no
+			   way to say "these two are the same message", and none at all to say
+			   "this image is part of it". */
+			$logo = Thallo_Vis_Email_Template::logo_file();
+
+			$alt = static function ( $phpmailer ) use ( $body, $logo ) {
 				$phpmailer->AltBody = $body; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.NotSnakeCase
+
+				/* `cidExists` because the monitor cron sends several of these in
+				   one request and PHPMailer is reused between them: attaching
+				   the file twice puts two copies of the logo in one message,
+				   the second showing as a paperclip. */
+				if ( '' !== $logo && method_exists( $phpmailer, 'addEmbeddedImage' )
+					&& ! $phpmailer->cidExists( Thallo_Vis_Email_Template::LOGO_CID ) ) {
+					$phpmailer->addEmbeddedImage( $logo, Thallo_Vis_Email_Template::LOGO_CID, 'logo.png', 'base64', 'image/png' );
+				}
 			};
 
 			add_action( 'phpmailer_init', $alt );
