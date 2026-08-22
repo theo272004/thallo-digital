@@ -9,14 +9,24 @@ import type { HistoryPoint } from '@/lib/scan/types';
  * Brand knowledge over time, for one brand in one market — the no-search
  * reading, which is the only one the history table keeps.
  *
- * ## Why the empty state is half of this component
+ * ## The first scan draws its one reading
  *
  * Almost everyone who reaches this panel is on their first scan and has exactly
- * one point. Drawing a line through one dot would suggest a measurement that
- * does not exist yet, which is the failure mode this whole tool is built to
- * avoid — so a single-point series renders as a statement about what happens
- * next, not as a chart. The chart appears on the second run, because that is
- * when there is a trend to show.
+ * one point. That used to render as four lines of grey prose in place of the
+ * plot, and the owner's verdict on it was that the panel arrived blank — which
+ * it did: a half-width card with a paragraph in it, beside a card full of
+ * figures.
+ *
+ * What is drawn instead is the axis with the one reading on it and no line
+ * through it. The original worry was right and this does not reopen it — a line
+ * is a claim about direction, and one point cannot support one — but a dot is
+ * not a line. It says "this is where you are, and this is the scale", which is
+ * true, is the same scale the second reading will land on, and is a great deal
+ * more use than a paragraph explaining why there is nothing to look at. The
+ * caption under it says what the second scan will add.
+ *
+ * With no readings at all there is nothing to draw and nothing to say, and the
+ * report leaves the panel out entirely rather than rendering this component.
  *
  * ## Why the y-axis is not zoomed to the data
  *
@@ -127,19 +137,11 @@ export default function TrendChart({ history, brand }: { history: HistoryPoint[]
      animation the reader's, and the reserved height means nothing shifts. */
   const [plotRef, plotInView] = useInView<HTMLDivElement>();
 
-  if (history.length < 2) {
-    return (
-      <div className="flex h-full items-center rounded-xl bg-gray-50 px-4 py-4">
-        <p className="text-[13px] font-medium leading-relaxed text-gray-500">
-          This is the first recorded scan for {brand} in this market, so there is nothing to compare it against yet.
-          Run it again and this becomes a trend — which is the number that actually answers whether the work is
-          landing. Model answers drift on their own, so a single reading a month apart is worth more than five in a
-          week.
-        </p>
-      </div>
-    );
-  }
+  /* Nothing to plot at all. The report does not render this component in that
+     case; the guard is here so the component is safe on its own terms. */
+  if (history.length === 0) return null;
 
+  const single = history.length === 1;
 
   const first = history[0];
   const last = history[history.length - 1];
@@ -150,22 +152,38 @@ export default function TrendChart({ history, brand }: { history: HistoryPoint[]
     /* Full height, because the card this sits in is half of a row and takes its
        height from the panel beside it. */
     <div className="flex h-full flex-col">
+      {/* The figure a trend panel exists to state — and on a first scan there
+          is no such figure, so the reading itself takes the slot rather than a
+          "+0 pts" that would be arithmetic on a series of one. */}
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 pb-5">
         <span className="text-2xl font-bold leading-none tracking-tight text-gray-900">
-          {change > 0 ? '+' : ''}
-          {change}
-          <span className="text-base"> pts</span>
+          {single ? (
+            <>
+              {last.sovPct}
+              <span className="text-base">%</span>
+            </>
+          ) : (
+            <>
+              {change > 0 ? '+' : ''}
+              {change}
+              <span className="text-base"> pts</span>
+            </>
+          )}
         </span>
         <Micro className="text-gray-400">
-          {direction === 'flat' ? 'no change' : direction} since {shortDate(first.date)} · {history.length} scans
+          {single
+            ? `first reading · ${shortDate(first.date)}`
+            : `${direction === 'flat' ? 'no change' : direction} since ${shortDate(first.date)} · ${history.length} scans`}
         </Micro>
       </div>
 
-      {/* `min-h`, not `h`: ResponsiveContainer measures its parent, and a parent
-          sized by its content would collapse to nothing on first paint — but a
-          parent that can grow lets the plot take the spare height of the card
-          rather than leaving it blank underneath. */}
-      <div ref={plotRef} className="min-h-[180px] w-full flex-1">
+      {/* A stated height, not a minimum. ResponsiveContainer asks its parent
+          how tall it is and draws nothing at all if the answer is "as tall as
+          my contents" — which is what a min-height on an auto-height box
+          resolves to. This panel used to be half of a row and took its height
+          from the card beside it; alone and full width it has to name its own,
+          and 240px is about what a five-point line wants at 1,300px across. */}
+      <div ref={plotRef} className="h-[200px] w-full sm:h-[240px]">
         {plotInView && (
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={history} margin={{ top: 6, right: 10, left: -22, bottom: 0 }}>
@@ -173,6 +191,10 @@ export default function TrendChart({ history, brand }: { history: HistoryPoint[]
             <XAxis
               dataKey="date"
               tickFormatter={shortDate}
+              /* A category axis maps index 0 to the left edge, so a series of
+                 one draws its dot sitting on the y-axis. The padding puts it in
+                 the plot. */
+              padding={single ? { left: 28, right: 28 } : undefined}
               axisLine={false}
               tickLine={false}
               tick={{ fontSize: 9, fontWeight: 700, fill: '#9ca3af', fontFamily: 'ui-monospace, monospace' }}
@@ -206,7 +228,11 @@ export default function TrendChart({ history, brand }: { history: HistoryPoint[]
             <Line
               type="monotone"
               dataKey="sovPct"
-              stroke={OLIVE}
+              /* No stroke on a series of one: there is nothing between two
+                 readings to draw, and a 2.5px stub beside a lone dot reads as
+                 a line that has been cut off rather than as one that does not
+                 exist yet. */
+              stroke={single ? 'transparent' : OLIVE}
               strokeWidth={2.5}
               strokeLinecap="round"
               /* A function rather than an object, only so that each dot can
@@ -220,9 +246,12 @@ export default function TrendChart({ history, brand }: { history: HistoryPoint[]
                     className="recharts-dot recharts-line-dot"
                     cx={cx}
                     cy={cy}
-                    r={3.5}
-                    fill="white"
-                    stroke={OLIVE}
+                    /* Bigger and filled when it is the only thing on the plot.
+                       At 3.5px hollow it is a joint in a line, and with no line
+                       to join it looks like a speck of dust on the grid. */
+                    r={single ? 5 : 3.5}
+                    fill={single ? OLIVE : 'white'}
+                    stroke={single ? 'white' : OLIVE}
                     strokeWidth={2}
                   />
                 );
@@ -241,6 +270,16 @@ export default function TrendChart({ history, brand }: { history: HistoryPoint[]
         </ResponsiveContainer>
         )}
       </div>
+
+      {/* What the second reading buys, said under the thing it will change
+          rather than in place of it. */}
+      {single && (
+        <p className="mt-4 border-t border-gray-100 pt-4 text-[11.5px] font-medium leading-relaxed text-gray-500">
+          One reading for {brand}, so there is no direction yet. Run the scan again and the second point joins this one into
+          a line — which is the number that answers whether the work is landing. Model answers drift on their own, so a
+          reading a month apart is worth more than five in a week.
+        </p>
+      )}
     </div>
   );
 }

@@ -388,3 +388,101 @@ select:focus,
   border-color: #39471D;
   box-shadow: 0 10px 24px -12px rgba(57, 71, 29, 0.35);
 }
+
+/* ── The report, on paper ──────────────────────────────────────────────────
+   The scan report has a "Download report" button, and what it does is open the
+   browser's print dialog — where every desktop browser offers "Save as PDF" as
+   a destination, and every phone offers the same through its share sheet. That
+   is the only route to a PDF a static site has that does not mean bundling a
+   PDF library to redraw a layout the browser has already laid out; see the note
+   on `DownloadReport` in `components/scan/FullReport.tsx`.
+
+   So these rules are not a nicety. They are the file the client keeps.
+
+   `data-print="hide"` is the opt-out any element can wear — the navigation, the
+   photograph band, the step rail, the button itself. Everything else here is
+   about the three ways this page is built that paper does not share: panels
+   that fade in when you reach them, cards that assume a dark ground behind
+   them, and links whose destination is invisible once the page is not
+   clickable. */
+@media print {
+  [data-print='hide'] {
+    display: none !important;
+  }
+
+  /* Panels arrive on scroll. A printed page has no scroll, so every panel the
+     reader had not yet reached would print as a blank rectangle. `useInView`
+     resolves on `beforeprint` for the same reason — that mounts the trend plot;
+     this reveals what is already mounted. */
+  .scan-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  /* The console sits on an olive gradient with a photograph over the top of it.
+     Neither belongs in a print, and most browsers drop background images and
+     colours by default anyway — which would leave white type on white paper.
+     Killing the ground here means the type is on a ground we chose. */
+  #tool {
+    background: #ffffff !important;
+    background-image: none !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    min-height: 0 !important;
+  }
+
+  #tool > .relative {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    max-width: none !important;
+  }
+
+  /* The white cards are drawn by shadow rather than by a border, and a shadow
+     is the first thing a printer throws away. A hairline says the same thing on
+     paper, and `break-inside` keeps a panel from being cut in half between two
+     sheets wherever it will fit on one. */
+  #tool [class*='rounded-xl'] {
+    box-shadow: none !important;
+  }
+
+  /* Every panel of the report is wrapped in one of these, so this is the one
+     selector that means "a panel" without naming a utility class. */
+  .scan-reveal {
+    break-inside: avoid;
+  }
+
+  /* The report is a stack of panels with 20px between them; on paper the gap
+     can be smaller and the page count one lower for it. */
+  #tool .gap-5 {
+    gap: 14px !important;
+  }
+
+  /* A folded question printed folded is a report with its evidence missing.
+     The button opens them all before printing and closes them again after;
+     this is the belt to that pair of braces, for a reader who prints with
+     Ctrl+P instead. */
+  details > summary ~ * {
+    display: revert !important;
+  }
+
+  /* Where a link went, since it cannot be followed off the page. Only the ones
+     that leave the site — an internal href would print as a path nobody can
+     type. */
+  #tool a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 10px;
+    font-weight: 500;
+    color: #6b7280;
+    word-break: break-all;
+  }
+
+  /* Backgrounds and fills are the report: the olive key-insight block, the
+     meters, the score rings. Chrome and Safari honour this; Firefox needs the
+     reader to tick "Print backgrounds", which is why nothing above depends on
+     one being drawn. */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

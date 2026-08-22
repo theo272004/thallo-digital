@@ -60,6 +60,9 @@ export default function Navbar() {
   return (
     <>
     <nav
+      /* The floating bar is fixed, so on paper it would print once at the top
+         of every sheet. The scan report has a download button that prints. */
+      data-print="hide"
       className={`fixed top-3 sm:top-5 inset-x-3 sm:inset-x-6 z-50 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
         hidden && !mobileMenuOpen ? '-translate-y-[150%]' : 'translate-y-0'
       }`}

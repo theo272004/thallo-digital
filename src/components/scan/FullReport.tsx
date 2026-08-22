@@ -6,7 +6,7 @@ import AnswerLists from './AnswerLists';
 import AuditTrail from './AuditTrail';
 import ScoreRing from './ScoreRing';
 import TrendChart from './TrendChart';
-import { Compass, FileText, Gauge, ListChecks, MessagesSquare, Search, TrendingUp, Trophy } from 'lucide-react';
+import { Compass, Download, FileText, Gauge, ListChecks, MessagesSquare, TrendingUp, Trophy } from 'lucide-react';
 import { BTN_PRIMARY, BTN_SECONDARY, Head, Meter, Micro, Panel, ProviderMark, Reveal, Stat, Tint, Verdict, type Tone } from './ui';
 import {
   PROVIDER_LABEL,
@@ -74,33 +74,54 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
      measured" rather than draw a ring at 0%. See the indicator pair below. */
   const grounded = phase2.grounded && phase2.grounded.totalAnswers > 0 ? phase2.grounded : null;
 
-  /* Held in a variable because it is placed twice: beside the comparison when
-     there is one, full width when there is not. */
-  const trend = (
-    /* A flex column so the plot can take whatever height the card beside it
-       sets. Paired with a 637px comparison, a chart pinned to 180px left a
-       fifth of the row empty under it — and a line with more room is a line
-       that is easier to read, which is the only thing the panel is for. */
-    <Panel className="flex flex-col">
-      <Head
-        badge={<TrendingUp size={18} />}
-        level="section"
-        title="Brand knowledge over time"
-        /* Named for what the series actually holds. `record_history` writes
-           `phase1.sovPct` — the memory reading — and the chart was headed
-           "Share of voice over time", which on a report carrying two
-           indicators reads as whichever of them the reader had in mind. */
-        sub={`Every scan of ${phase1.domain} in this market, oldest first — the no-search reading. AI visibility is measured on every scan but not yet kept as a series.`}
-      />
-      <div className="mt-6 flex-1">
-        <TrendChart history={phase2.history ?? []} brand={phase1.brand} />
-      </div>
-    </Panel>
-  );
+  /* The series, or nothing at all.
+
+     A first scan has exactly one reading — `record_history` writes the run
+     before `history_for` reads it back — and the panel used to spend a
+     half-width card saying so in four lines of grey prose. The owner's verdict
+     on that card was that it arrived blank. One reading is still worth
+     drawing: it is where the line starts, and the chart draws it as a single
+     dot on the same 0–100 axis rather than as a paragraph. Nothing at all is
+     the only case with nothing to show, and then the panel is not rendered. */
+  const history = phase2.history ?? [];
+  const trend =
+    history.length === 0 ? null : (
+      <Panel>
+        <Head
+          badge={<TrendingUp size={18} />}
+          level="section"
+          title="Brand knowledge over time"
+          /* Named for what the series actually holds. `record_history` writes
+             `phase1.sovPct` — the memory reading — and the chart was headed
+             "Share of voice over time", which on a report carrying two
+             indicators reads as whichever of them the reader had in mind. */
+          sub={`Every scan of ${phase1.domain} in this market, oldest first — the no-search reading. AI visibility is measured on every scan but not yet kept as a series.`}
+        />
+        <div className="mt-6">
+          <TrendChart history={history} brand={phase1.brand} />
+        </div>
+      </Panel>
+    );
 
   return (
     <div className="flex flex-col gap-5">
-      {/* ── Headline ─────────────────────────────────────────────────────
+      {/* ── The headline, and the diagnosis it leads to ───────────────────
+          One card, because it was always one argument.
+
+          It was two: a headline panel with the two rings, and a "Brand
+          knowledge against AI visibility" panel directly under it that opened
+          by printing the very same two percentages a second time, as tiles.
+          The owner's note was simply to make them one — and the duplication is
+          why. Reading down the card now goes figure → what it means → which
+          model moved, without the two figures being stated twice on the way.
+
+          The grade chip is gone from the heading with it. A bare olive pill
+          with a letter in it, at the top right of the report, above every
+          number it was derived from and beside nothing that named it: the
+          owner's question about it was "there is a C at the top, I do not know
+          what it is". Neither did anyone else. The figures underneath say what
+          the letter was compressing, and they say it in words.
+
           Rings left, conclusion right. Stacked — rings, then a paragraph, then
           the tint block, then the two stats — this one card was 741px, and the
           paragraph in the middle of it was the thing a reader had to get past
@@ -113,7 +134,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
           level="lead"
           title={`The full report for ${phase1.brand}`}
           sub={`Measured against ${phase1.domain}. Two indicators, read separately: whether the models already know you, and whether they find you when they look.`}
-          chip={phase2.grade}
+          aside={<DownloadReport />}
         />
 
         {/* ── The two headline indicators ────────────────────────────────
@@ -133,7 +154,15 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
             own pages control and which can move in weeks. A brand can be a zero
             on the first and strong on the second — that is the ordinary shape
             for a good small company — and averaging them would hide the one
-            fact that decides which work to do. */}
+            fact that decides which work to do.
+
+            That last point used to be spelled out here as a paragraph headed
+            "Never averaged.", and the owner asked for it gone: a report that
+            announces what it refuses to do is arguing with a reader who never
+            raised the objection. The sub-line above says the two are read
+            separately, the rings are drawn apart, and the diagnosis below
+            reads the gap between them — which is the same claim, made by the
+            layout instead of by a disclaimer. */}
         <div className="mt-6 grid grid-cols-1 gap-8 border-t border-gray-100 pt-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-12">
           <div className="flex flex-col divide-y divide-gray-100">
             <Indicator
@@ -194,35 +223,23 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
                 muted={phase2.serpScore < 0}
               />
             </div>
-
-            <p className="text-[13px] font-medium leading-relaxed text-gray-600">
-              <strong className="font-bold text-gray-900">Never averaged.</strong> The two figures have different causes
-              and different fixes — brand knowledge is earned off your own site; AI visibility is what your own pages and
-              citations control. The gap between them is the diagnosis, and the panel below reads it.
-            </p>
           </div>
         </div>
+
+        {/* The gap between the two rings, read. Inside this card rather than in
+            one of its own — it is the sentence the rings are for, and a reader
+            who has to scroll to a second panel to find out what they mean has
+            been handed two percentages and left with them. */}
+        {phase2.grounded && <Diagnosis memory={phase1} grounded={phase2.grounded} />}
       </Panel>
       </Reveal>
 
-      {/* ── The diagnosis, and the series ─────────────────────────────────
-          Asked for as a pair, and they belong as one: the comparison says what
-          the gap means today, the chart says whether it is moving. Neither
-          fills a 1,300px card on its own — the comparison ran 546px with its
-          right half empty below the tiles, the chart 443px with a 180px plot in
-          it. */}
-      {phase2.grounded ? (
-        /* One reveal for the row, not one each: they were asked for as a pair
-           and they arrive as a pair. */
-        <Reveal>
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,1fr)]">
-            <GroundedComparison memory={phase1} grounded={phase2.grounded} />
-            {trend}
-          </div>
-        </Reveal>
-      ) : (
-        <Reveal>{trend}</Reveal>
-      )}
+      {/* ── The series ───────────────────────────────────────────────────
+          Full width, and only when there is one. It used to ride beside the
+          comparison panel that has now been folded into the card above; on its
+          own a time series is happier wide than tall anyway — more room along
+          the axis the readings are spread on. */}
+      {trend && <Reveal>{trend}</Reveal>}
 
       {/* ── Who the models named instead ──────────────────────────────────
           Its own card now. It used to be the tail of a 1,918px answers panel,
@@ -360,6 +377,106 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
       </Panel>
       </Reveal>
     </div>
+  );
+}
+
+/**
+ * Take the report away with you.
+ *
+ * ## Why it prints rather than builds a file
+ *
+ * The site is a static export with no server of its own — the only backend is
+ * the WordPress plugin that runs the scan — so there is nothing here that can
+ * render a PDF. The three ways a browser can produce one unaided are a PDF
+ * library bundled into the page (about 300KB, to redraw a layout that already
+ * exists), a screenshot of the DOM (a picture of text, unsearchable and
+ * unselectable), or the browser's own print pipeline, which is the one that
+ * already knows how to paginate this exact layout with real type in it.
+ *
+ * So the button opens the print dialog, where every desktop browser offers
+ * "Save as PDF" as the destination and every phone offers the same in its share
+ * sheet. `@media print` in `globals.css` does the rest — the navigation, the
+ * photograph band, the step rail and this button itself come off, and the
+ * panels are told not to break across pages.
+ *
+ * ## What has to happen before the dialog opens
+ *
+ * Three things on this page are, by design, not in the DOM the way a printer
+ * would need them:
+ *
+ *   · **The folded questions.** `AnswerLists` keeps every question but the
+ *     first inside a closed `<details>`, which prints as a closed `<details>`.
+ *     A report that arrives with its evidence folded away is not the report.
+ *     They are opened here and put back exactly as they were afterwards —
+ *     including any the reader had opened themselves, which is why the closed
+ *     ones are collected rather than all of them re-closed.
+ *   · **The panels below the fold.** `Reveal` holds a panel at `opacity: 0`
+ *     until it is scrolled to. Printing without scrolling the whole report
+ *     would have produced blank pages; the print stylesheet overrides them.
+ *   · **The trend plot.** Recharts is not mounted until the panel is reached,
+ *     for the sake of its draw-in animation. `thallo:print` tells every
+ *     `useInView` on the page to resolve, and the two frames below are what
+ *     lets React commit that before the snapshot is taken.
+ *
+ * `beforeprint` would be the tidier hook for all of this and is listened for
+ * too — a reader who hits Ctrl+P still gets the reveals and the plot — but it
+ * fires immediately before the snapshot, with no frame in between for React to
+ * render into. Only the button can prepare the page and then print it.
+ */
+function DownloadReport() {
+  const [busy, setBusy] = React.useState(false);
+
+  const download = React.useCallback(() => {
+    if (typeof window === 'undefined') return;
+    setBusy(true);
+
+    const folded = Array.from(document.querySelectorAll<HTMLDetailsElement>('details:not([open])'));
+    folded.forEach((d) => {
+      d.open = true;
+    });
+
+    /* Whatever happens next — printed, cancelled, or a browser that never
+       fires `afterprint` — the page has to come back the way it was. */
+    let restored = false;
+    const restore = () => {
+      if (restored) return;
+      restored = true;
+      folded.forEach((d) => {
+        d.open = false;
+      });
+      setBusy(false);
+      window.removeEventListener('afterprint', restore);
+    };
+    window.addEventListener('afterprint', restore);
+
+    window.dispatchEvent(new Event('thallo:print'));
+
+    /* Two frames: one for React to commit the mounts `thallo:print` just
+       triggered, one for the layout they produce. */
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        try {
+          window.print();
+        } finally {
+          /* Chrome resolves `print()` when the dialog closes and fires
+             `afterprint` right after; Safari does not always. */
+          setTimeout(restore, 800);
+        }
+      }),
+    );
+  }, []);
+
+  return (
+    <button
+      type="button"
+      onClick={download}
+      data-print="hide"
+      className={`${BTN_SECONDARY} shrink-0`}
+      aria-label="Download this report as a PDF"
+    >
+      <Download size={15} aria-hidden />
+      {busy ? 'Preparing…' : 'Download report'}
+    </button>
   );
 }
 
@@ -766,34 +883,27 @@ function RivalList({
 }
 
 /**
- * The same questions asked twice — once from memory, once with the web open.
+ * The gap between the two headline figures, read.
  *
  * The single number people arrive for is the memory one, and on its own it is
  * ambiguous: a zero could mean the models cannot find you or that they can and
  * choose someone else. Those have opposite fixes, and the pair of numbers is
- * what tells them apart. So this reads as a comparison rather than as a second
- * score, and the sentence underneath names the diagnosis rather than leaving
- * the reader to infer it from two percentages.
+ * what tells them apart. So this names the diagnosis rather than leaving the
+ * reader to infer it from two percentages.
  *
- * One column, because the card is now one of two in a row. It was two columns
- * inside a full-width card — the readings on the left, the per-model rows on
- * the right — which is the same content in the same order, simply turned
- * ninety degrees.
+ * It was a card of its own, headed "Brand knowledge against AI visibility", and
+ * it opened by restating the two percentages as tiles — the same two figures
+ * the rings directly above it had just drawn. The owner asked for the two cards
+ * to be one; the tiles are what came out in the merge, because the rings are
+ * the better drawing of the same number and nothing is said twice now. What is
+ * left is the part the rings could not say: which of the five shapes this scan
+ * is, and which model moved between the two readings.
  */
-function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded: ScanPhase1 }) {
+function Diagnosis({ memory, grounded }: { memory: ScanPhase1; grounded: ScanPhase1 }) {
   /* Nothing came back at all — every request failed or the models were all
-     skipped. Printing 0% here would be a finding we did not measure. */
-  if (grounded.totalAnswers === 0) {
-    return (
-      <Panel>
-        <Head badge={<Search size={18} />} level="section" title="When they search the web" />
-        <p className="mt-6 rounded-xl bg-gray-50 px-4 py-3.5 text-[13px] font-medium leading-relaxed text-gray-600">
-          Not measured — the second reading was attempted but no model answered. This is a fault at our end, not a
-          finding about {memory.brand}.
-        </p>
-      </Panel>
-    );
-  }
+     skipped. There is no gap to read, and the indicator column above already
+     says the searching half did not run. */
+  if (grounded.totalAnswers === 0) return null;
 
   const delta = grounded.sovPct - memory.sovPct;
 
@@ -801,9 +911,9 @@ function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded
      rather than assumed to be all of them. The searching half carries a
      per-call fee, so the settings screen lets it run over the first few
      questions only — and this panel said "we asked the same 15 questions
-     twice" over a run of five. The worth of the panel is that the two halves
-     are comparable; a miscounted method note is the first thing that would
-     make a reader doubt it. */
+     twice" over a run of five. The worth of the comparison is that the two
+     halves are comparable; a miscounted method note is the first thing that
+     would make a reader doubt it. */
   const askedTwice = Math.max(0, ...grounded.providers.map((p) => p.answers.length));
 
   /* Ordered by which is most actionable, not by size of the gap. "Findable but
@@ -842,84 +952,74 @@ function GroundedComparison({ memory, grounded }: { memory: ScanPhase1; grounded
               ];
 
   return (
-    <Panel>
+    <div className="mt-8 border-t border-gray-100 pt-7">
       <Head
         badge={<Compass size={18} />}
         level="section"
-        title="Brand knowledge against AI visibility"
+        title="What the gap between them means"
         sub={`${
-          askedTwice === memory.questions.length ? `The same ${askedTwice} questions` : `${askedTwice} of the ${memory.questions.length} questions`
+          askedTwice === memory.questions.length
+            ? `The same ${askedTwice} ${askedTwice === 1 ? 'question' : 'questions'}`
+            : `${askedTwice} of the ${memory.questions.length} questions`
         }, asked twice: once from memory, once with web search on. Those are different questions about you, and the answers come apart.`}
       />
 
-      <div className="mt-6 grid grid-cols-1 gap-px overflow-hidden rounded-xl bg-gray-100 sm:grid-cols-2">
-        <div className="bg-white p-4 sm:p-5">
-          <p className="text-3xl font-bold leading-none tracking-tight text-[#39471D]">{memory.sovPct}%</p>
-          <p className="mt-2.5 text-[14px] font-bold tracking-tight text-gray-900">Brand knowledge</p>
-          <p className="mt-1.5 text-[11.5px] font-medium leading-relaxed text-gray-500">
-            {memory.totalAnswers} answers, nothing looked up. Reputation, not pages.
-          </p>
+      {/* The verdict beside the models it was read off, rather than above them
+          — the card is full width here, and a paragraph and a list of three
+          rows are each about half of it. */}
+      <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-12">
+        <div>
+          <Verdict tone={tone}>{verdict}</Verdict>
+          <p className="mt-3 text-[13px] font-medium leading-relaxed text-gray-600">{reading}</p>
         </div>
-        <div className="bg-white p-4 sm:p-5">
-          <p className="text-3xl font-bold leading-none tracking-tight text-[#39471D]">{grounded.sovPct}%</p>
-          <p className="mt-2.5 text-[14px] font-bold tracking-tight text-gray-900">AI visibility</p>
-          <p className="mt-1.5 text-[11.5px] font-medium leading-relaxed text-gray-500">
-            {grounded.totalAnswers} answers with the web open. Pages, not reputation.
+
+        <div>
+          <p className="text-[11.5px] font-medium leading-relaxed text-gray-500">
+            Model by model, from memory <span className="text-gray-300">→</span> when searching:
           </p>
-        </div>
-      </div>
 
-      <div className="mt-5">
-        <Verdict tone={tone}>{verdict}</Verdict>
-        <p className="mt-3 text-[13px] font-medium leading-relaxed text-gray-600">{reading}</p>
-      </div>
+          <ul className="mt-4 flex flex-col gap-3.5">
+            {grounded.providers.map((g) => {
+              const m = memory.providers.find((p) => p.provider === g.provider);
+              const mPct = m && m.answers.length ? Math.round((m.mentions / m.answers.length) * 100) : null;
+              const gPct = g.answers.length ? Math.round((g.mentions / g.answers.length) * 100) : null;
 
-      <div className="mt-6 border-t border-gray-100 pt-5">
-        <p className="text-[11.5px] font-medium leading-relaxed text-gray-500">
-          Model by model, from memory <span className="text-gray-300">→</span> when searching:
-        </p>
-
-        <ul className="mt-4 flex flex-col gap-3.5">
-          {grounded.providers.map((g) => {
-            const m = memory.providers.find((p) => p.provider === g.provider);
-            const mPct = m && m.answers.length ? Math.round((m.mentions / m.answers.length) * 100) : null;
-            const gPct = g.answers.length ? Math.round((g.mentions / g.answers.length) * 100) : null;
-
-            return (
-              <li key={g.provider} className="flex items-center gap-3">
-                <ProviderMark provider={g.provider} />
-                <span className="w-[74px] shrink-0 truncate text-[13px] font-semibold text-gray-900">
-                  {PROVIDER_LABEL[g.provider]}
-                </span>
-                {gPct === null ? (
-                  /* A model that could not be reached is a fault at our end, and
-                     the report has to say so in those words. It printed the raw
-                     provider error — "every request failed — Provider returned an
-                     empty response" — beside two models that answered, which
-                     reads as this model having nothing to say about the brand.
-                     The detail stays, small and grey, because it is what makes
-                     the failure fixable. */
-                  <span className="flex flex-col items-start gap-0.5">
-                    <span className="text-[12px] font-medium text-gray-500">Could not be reached — not a finding</span>
-                    {g.error && <span className="font-mono text-[10px] text-gray-300">{g.error}</span>}
+              return (
+                <li key={g.provider} className="flex items-center gap-3">
+                  <ProviderMark provider={g.provider} />
+                  <span className="w-[74px] shrink-0 truncate text-[13px] font-semibold text-gray-900">
+                    {PROVIDER_LABEL[g.provider]}
                   </span>
-                ) : (
-                  <>
-                    <div className="min-w-0 flex-1">
-                      <Meter pct={gPct} />
-                    </div>
-                    <span className="w-[92px] shrink-0 text-right text-[12px] font-medium tabular-nums text-gray-500">
-                      {mPct === null ? '—' : `${mPct}%`} <span className="text-gray-300">→</span>{' '}
-                      <span className="font-semibold text-gray-900">{gPct}%</span>
+                  {gPct === null ? (
+                    /* A model that could not be reached is a fault at our end, and
+                       the report has to say so in those words. It printed the raw
+                       provider error — "every request failed — Provider returned an
+                       empty response" — beside two models that answered, which
+                       reads as this model having nothing to say about the brand.
+                       The detail stays, small and grey, because it is what makes
+                       the failure fixable. */
+                    <span className="flex flex-col items-start gap-0.5">
+                      <span className="text-[12px] font-medium text-gray-500">Could not be reached — not a finding</span>
+                      {g.error && <span className="font-mono text-[10px] text-gray-300">{g.error}</span>}
                     </span>
-                  </>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+                  ) : (
+                    <>
+                      <div className="min-w-0 flex-1">
+                        <Meter pct={gPct} />
+                      </div>
+                      <span className="w-[92px] shrink-0 text-right text-[12px] font-medium tabular-nums text-gray-500">
+                        {mPct === null ? '—' : `${mPct}%`} <span className="text-gray-300">→</span>{' '}
+                        <span className="font-semibold text-gray-900">{gPct}%</span>
+                      </span>
+                    </>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
-    </Panel>
+    </div>
   );
 }
 

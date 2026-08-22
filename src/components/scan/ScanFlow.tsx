@@ -171,6 +171,7 @@ export default function ScanFlow() {
             src={`${BASE}/contact-bg.webp`}
             alt=""
             aria-hidden="true"
+            data-print="hide"
             fetchPriority="high"
             decoding="async"
             className="absolute inset-0 -z-10 h-full w-full select-none object-cover object-[68%_center]"
@@ -183,6 +184,7 @@ export default function ScanFlow() {
               behind the words. */}
           <div
             aria-hidden
+            data-print="hide"
             className="absolute inset-0 -z-10"
             style={{ background: 'linear-gradient(to right, rgba(23,26,16,.88) 0%, rgba(23,26,16,.66) 42%, rgba(23,26,16,.5) 100%)' }}
           />
@@ -196,6 +198,7 @@ export default function ScanFlow() {
               — visible only as a dark rim down either side of it. */}
           <div
             aria-hidden
+            data-print="hide"
             className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[300px] select-none overflow-hidden"
             style={{
               WebkitMaskImage: 'linear-gradient(to bottom, #000 0%, #000 52%, transparent 100%)',
@@ -231,7 +234,13 @@ export default function ScanFlow() {
             that never told you the sequence existed. Full width also sidesteps
             the layout problem — four steps do not fit in the 500px column the
             first step's heading occupies. */}
-        <div className="mb-7 flex flex-wrap items-center justify-between gap-x-6 gap-y-4 border-b border-white/15 pb-4">
+        {/* Where you are in a four-screen sequence — which a printed report
+            is not in. The tags beside it say the brand, the category and the
+            market, and all three are printed inside the report anyway. */}
+        <div
+          data-print="hide"
+          className="mb-7 flex flex-wrap items-center justify-between gap-x-6 gap-y-4 border-b border-white/15 pb-4"
+        >
           <Stepper current={step} />
           {run && industry && market ? (
             <div className="flex flex-wrap items-center gap-2">

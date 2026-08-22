@@ -135,6 +135,7 @@ export function Head({
   title,
   sub,
   chip,
+  aside,
   /**
    * Which rung of the page this heading is on.
    *
@@ -155,6 +156,15 @@ export function Head({
   title: React.ReactNode;
   sub?: React.ReactNode;
   chip?: React.ReactNode;
+  /**
+   * Anything in the heading's right-hand slot that is not a chip — today, the
+   * report's download button.
+   *
+   * A prop of its own rather than a looser `chip`, because `chip` wraps what
+   * it is handed in the olive pill and a control is not a pill. Both may be
+   * passed; they sit side by side, chip first.
+   */
+  aside?: React.ReactNode;
   level?: 'lead' | 'panel' | 'section';
   className?: string;
 }) {
@@ -170,7 +180,12 @@ export function Head({
           {sub && <p className="mt-1.5 max-w-[64ch] text-[13px] font-medium leading-relaxed text-gray-500">{sub}</p>}
         </div>
       </div>
-      {chip !== undefined && <Chip>{chip}</Chip>}
+      {(chip !== undefined || aside !== undefined) && (
+        <div className="flex shrink-0 items-center gap-3">
+          {chip !== undefined && <Chip>{chip}</Chip>}
+          {aside}
+        </div>
+      )}
     </div>
   );
 }
@@ -332,13 +347,31 @@ export function useInView<T extends HTMLElement>() {
   React.useEffect(() => {
     const el = ref.current;
     if (!el || inView) return;
+
+    /* A printed report has no scroll position, so nothing below the fold would
+       ever have been reached — and this hook gates two things that must be in
+       a PDF: the panel reveals, and the mount of the trend plot itself. Both
+       events resolve it. `beforeprint` covers a reader who hits Ctrl+P, as
+       far as it can — it fires with no frame left for React to render into, so
+       the download button dispatches `thallo:print` a couple of frames ahead
+       of calling `print()` and that is the path that reliably works. */
+    const show = () => setInView(true);
+    window.addEventListener('beforeprint', show);
+    window.addEventListener('thallo:print', show);
+    const stopPrint = () => {
+      window.removeEventListener('beforeprint', show);
+      window.removeEventListener('thallo:print', show);
+    };
     /* No observer — an old browser, or a test environment. Show it rather than
        leaving the report invisible, which is the one failure mode here that
        matters. On the next frame rather than in the effect body: same result,
        and it does not set state during the render pass it was called from. */
     if (typeof IntersectionObserver === 'undefined') {
       const id = requestAnimationFrame(() => setInView(true));
-      return () => cancelAnimationFrame(id);
+      return () => {
+        stopPrint();
+        cancelAnimationFrame(id);
+      };
     }
     const io = new IntersectionObserver(
       (entries) => {
@@ -349,7 +382,10 @@ export function useInView<T extends HTMLElement>() {
       { threshold: 0, rootMargin: '0px 0px -10% 0px' },
     );
     io.observe(el);
-    return () => io.disconnect();
+    return () => {
+      stopPrint();
+      io.disconnect();
+    };
   }, [inView]);
 
   return [ref, inView] as const;
@@ -380,7 +416,7 @@ export function Reveal({
     <div
       ref={ref}
       style={{ transitionDelay: inView ? `${delay}ms` : '0ms' }}
-      className={`transition-[opacity,transform] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
+      className={`scan-reveal transition-[opacity,transform] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${
         inView ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
       } ${className}`}
     >
