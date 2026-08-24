@@ -19,7 +19,7 @@ import { ENQUIRY_ENDPOINT, sendEnquiry } from '@/lib/scan/enquiry';
  */
 const FORM_ENDPOINT = ENQUIRY_ENDPOINT;
 
-const INBOX = 'hello@thallo.co';
+const INBOX = 'hello@thallodigital.com';
 
 type Status = 'idle' | 'sending' | 'sent' | 'mail' | 'error';
 

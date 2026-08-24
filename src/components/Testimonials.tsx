@@ -11,20 +11,26 @@ import { BASE } from '@/lib/site';
    cover above the words, and three notes indexed beside it, each with a
    thumbnail of its own.
 
-   ## The lead is the only real post
+   ## The lead is the only published post
 
-   Three of these four are still copy written to fill the slot, with `href`
-   '#' and the click swallowed. The first is not: it is the post published on
-   the WordPress blog on 8 August, and its link, date and excerpt are the ones
-   the REST API returns. Its read time is counted from the Markdown in
+   Only the first of these four exists. It is the post published on the
+   WordPress blog on 8 August, and its link, date and excerpt are the ones the
+   REST API returns. Its read time is counted from the Markdown in
    `content/blog/` at 225 words a minute rather than guessed at.
 
    It leads because it is the newest — a list of notes ordered by date with the
    newest not first is a broken list — and because a lead card that goes
    nowhere is the weakest thing a section like this can have.
 
-   When the other three become real, give each a `href` and the markup does not
-   change.
+   The other three are planned, not published, and the markup says so: a card
+   without an `href` is not an anchor at all, carries a "Coming soon" badge in
+   place of its date, and drops the "Read the note" line. They used to be
+   `<a href="#">` with the click swallowed, which is a broken link dressed as a
+   working one — the reader clicks, nothing happens, and the section that is
+   meant to prove we publish proves the opposite.
+
+   When one of them is published, give it a `href` and a real `date` and it
+   becomes a live card with no other change.
 
    ## Two things deliberately not taken from the reference
 
@@ -34,7 +40,20 @@ import { BASE } from '@/lib/site';
 
    Its headings are set in a serif. Ours are not — `layout.tsx` reserves the
    serif for figures and says so. */
-const ARTICLES = [
+type Article = {
+  badge: string;
+  title: string;
+  desc: string;
+  image: string;
+  /** The live URL. Absent means the post is not published yet. */
+  href?: string;
+  /** Publication date. Only a published post has one. */
+  date?: string;
+  /** Counted from the Markdown, so only a written post has one. */
+  read?: string;
+};
+
+const ARTICLES: Article[] = [
   {
     badge: 'GEO',
     date:  'August 2026',
@@ -49,41 +68,48 @@ const ARTICLES = [
   },
   {
     badge: 'GEO',
-    date:  'June 2026',
-    read:  '7 min',
     title: 'What "share of answer" really measures',
     desc:  'Rankings told you where you sat on a page nobody reads anymore. Share of answer tells you how often you are the recommendation.',
     image: 'buyers-bg.webp',
   },
   {
     badge: 'Content',
-    date:  'May 2026',
-    read:  '5 min',
     title: "Original research beats AI's infinite content",
     desc:  "The one asset machines can't fabricate: a number only you can produce.",
     image: 'case-film-bg.webp',
   },
   {
     badge: 'Strategy',
-    date:  'May 2026',
-    read:  '6 min',
     title: "Why authority compounds and ads don't",
     desc:  'Renting attention resets every month. Credibility you own does not.',
     image: 'measured-bg.webp',
   },
 ];
 
-type Article = typeof ARTICLES[number];
-
-/** Category · date · read time — the line that makes a card read as a post. */
+/**
+ * Category · date · read time — the line that makes a card read as a post.
+ *
+ * An unpublished note has no date and no read time to state, so it says so
+ * instead of borrowing a plausible-looking one. A date on a post that does not
+ * exist is the same lie as a link that goes nowhere, told more quietly.
+ */
 function Meta({ a }: { a: Article }) {
   return (
     <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-bold uppercase tracking-[0.12em] text-gray-400">
       <span className="rounded-full bg-[#39471D]/10 px-2 py-0.5 text-[#39471D]">{a.badge}</span>
-      <span aria-hidden="true" className="text-gray-300">·</span>
-      <span>{a.date}</span>
-      <span aria-hidden="true" className="text-gray-300">·</span>
-      <span>{a.read} read</span>
+      {a.href ? (
+        <>
+          <span aria-hidden="true" className="text-gray-300">·</span>
+          <span>{a.date}</span>
+          <span aria-hidden="true" className="text-gray-300">·</span>
+          <span>{a.read} read</span>
+        </>
+      ) : (
+        <>
+          <span aria-hidden="true" className="text-gray-300">·</span>
+          <span className="text-gray-400">Coming soon</span>
+        </>
+      )}
     </span>
   );
 }
@@ -91,15 +117,42 @@ function Meta({ a }: { a: Article }) {
 /* The whole card lifts and settles on hover. It used to be the photograph that
    moved, zooming inside a fixed frame while the card stayed put — which read
    as the picture reacting rather than the link. The images hold still now and
-   the card is what answers to the cursor. */
+   the card is what answers to the cursor.
+
+   Only a card that goes somewhere gets `group` and `lift`. A card that lifts
+   under the cursor is promising a click, and an unpublished note has none to
+   give — the hover state is how a reader finds out whether a thing is a link
+   before they spend a click on it. */
 const CARD =
-  'group flex rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] lift';
+  'flex rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]';
+const CARD_LINK = 'group lift';
+
+/**
+ * A card is an anchor when the post exists and a plain box when it does not.
+ *
+ * The three unpublished notes used to be `<a href="#">` with the click
+ * swallowed in JS: a link by every signal a browser gives — cursor, focus
+ * ring, status bar, "open in new tab" — that did nothing when clicked. This
+ * renders them as what they are, so nothing offers a click there in the first
+ * place.
+ */
+function CardShell({ a, className, children }: { a: Article; className: string; children: React.ReactNode }) {
+  if (!a.href) {
+    return (
+      <div data-reveal className={`${CARD} ${className}`}>
+        {children}
+      </div>
+    );
+  }
+  return (
+    <a href={a.href} data-reveal className={`${CARD} ${CARD_LINK} ${className}`}>
+      {children}
+    </a>
+  );
+}
 
 export default function Testimonials() {
   const [lead, ...rest] = ARTICLES;
-  const swallow = (a: Article) => (e: React.MouseEvent) => {
-    if (!a.href) e.preventDefault();
-  };
 
   return (
     /* id="blog" is the target the navbar and footer have always pointed at. */
@@ -128,12 +181,7 @@ export default function Testimonials() {
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.05fr_1fr]">
 
           {/* ── Lead note ─────────────────────────────────────────────────── */}
-          <a
-            href={lead.href ?? '#'}
-            onClick={swallow(lead)}
-            data-reveal
-            className={`${CARD} flex-col p-3`}
-          >
+          <CardShell a={lead} className="flex-col p-3">
             {/* The cover: its own block above the words, not a ground beneath
                 them. 16:9 rather than 16:10 — with three notes beside it now
                 instead of two, the taller crop pushed the lead's own text past
@@ -161,24 +209,22 @@ export default function Testimonials() {
               </span>
 
               {/* mt-auto pins the footer down whatever the excerpt runs to, so
-                  this card and the stack beside it end level. */}
-              <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-[11px] font-bold text-[#39471D]">
-                Read the note
-                <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </span>
+                  this card and the stack beside it end level. There is nothing
+                  to pin on an unpublished note: "Read the note" is an
+                  instruction that would not work if followed. */}
+              {lead.href && (
+                <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-[11px] font-bold text-[#39471D]">
+                  Read the note
+                  <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </span>
+              )}
             </span>
-          </a>
+          </CardShell>
 
           {/* ── The rest, as an index ─────────────────────────────────────── */}
           <div className="flex flex-col gap-4">
             {rest.map((a) => (
-              <a
-                key={a.title}
-                href={a.href ?? '#'}
-                onClick={swallow(a)}
-                data-reveal
-                className={`${CARD} flex-1 items-start gap-4 p-4`}
-              >
+              <CardShell key={a.title} a={a} className="flex-1 items-start gap-4 p-4">
                 <span className="flex min-w-0 flex-1 flex-col">
                   <Meta a={a} />
 
@@ -190,10 +236,12 @@ export default function Testimonials() {
                     {a.desc}
                   </span>
 
-                  <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-[11px] font-bold text-[#39471D]">
-                    Read the note
-                    <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </span>
+                  {a.href && (
+                    <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-[11px] font-bold text-[#39471D]">
+                      Read the note
+                      <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </span>
+                  )}
                 </span>
 
                 {/* Hidden on the narrowest screens: at full width the card is
@@ -209,7 +257,7 @@ export default function Testimonials() {
                     className="h-[88px] w-[104px] select-none object-cover"
                   />
                 </span>
-              </a>
+              </CardShell>
             ))}
           </div>
 

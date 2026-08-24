@@ -151,7 +151,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
                   AI-visibility agency, building the authority that makes a business the recommended answer.
                 </p>
                 <div className="flex items-center gap-2 mt-3">
-                  <SourceChip label="thallo.co" active />
+                  <SourceChip label="thallodigital.com" active />
                   <SourceChip label="forbes.com" />
                   <SourceChip label="gartner.com" />
                 </div>
@@ -189,7 +189,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
               </p>
 
               <div className="flex flex-wrap gap-2">
-                <SourceChip label="thallo.co" active />
+                <SourceChip label="thallodigital.com" active />
                 <SourceChip label="searchengineland" />
                 <SourceChip label="reddit.com" />
               </div>

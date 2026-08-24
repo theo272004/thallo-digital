@@ -175,11 +175,14 @@ export default function Hero() {
           className="relative w-full max-w-[720px] h-[420px] lg:h-[min(460px,58vh)] 2xl:h-[min(540px,64vh)] mx-auto lg:self-end lg:mb-4"
           style={{ perspective: '1400px' }}
         >
-          <div className="hidden lg:block absolute inset-0">
+          {/* The stage stops short of the bottom of the column: the last 28px
+              belong to the disclaimer below it, so nothing in the animation can
+              ever land on top of the line that says the animation is a mock-up. */}
+          <div className="hidden lg:block absolute inset-x-0 top-0 bottom-7">
             <HeroSourceCards phase={cardsPhase} />
           </div>
 
-          <div ref={stageRef} className="absolute inset-0 z-10" style={{ transformStyle: 'preserve-3d' }}>
+          <div ref={stageRef} className="absolute inset-x-0 top-0 bottom-7 z-10" style={{ transformStyle: 'preserve-3d' }}>
             {/* Phone — recedes gently (small scale + slight upward drift) as it
                 hands off to the browser, instead of snapping away */}
             <div
@@ -202,6 +205,25 @@ export default function Hero() {
               <HeroBrowser activeIndex={tabIndex} revealedTabs={browserVisible ? revealedTabs : 0} />
             </div>
           </div>
+
+          {/*
+            Says out loud what the animation is.
+
+            Every answer in this sequence is written by us: the ChatGPT reply,
+            the Google AI Overview, the Perplexity summary and the Forbes
+            article are designed to look exactly like the real products, down
+            to the chrome and the logos, and none of them happened. On a site
+            whose entire argument is that accuracy and citation are what earn
+            trust, a reader who works that out for themselves has found us
+            doing the thing we sell against — so the page tells them first.
+
+            Not `aria-hidden`: a screen reader gets the mock-up's text read out
+            as ordinary prose, with none of the visual cues that mark it as a
+            picture of a browser, so it is the reader who most needs the label.
+          */}
+          <p className="absolute inset-x-0 bottom-0 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-gray-400">
+            Illustrative example · not real AI output
+          </p>
         </div>
       </div>
 

@@ -11,7 +11,7 @@ import { ENQUIRY_ENDPOINT, sendEnquiry } from '@/lib/scan/enquiry';
    configured at build time we fall back to a mailto, so an enquiry is never
    silently swallowed. See `lib/scan/enquiry.ts`. */
 const FORM_ENDPOINT = ENQUIRY_ENDPOINT;
-const INBOX = 'hello@thallo.co';
+const INBOX = 'hello@thallodigital.com';
 
 /* Compact versions of the contact form's field styles: this sits inside the
    closing CTA panel, not on a page of its own, so the vertical rhythm is

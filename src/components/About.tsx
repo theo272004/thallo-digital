@@ -55,17 +55,26 @@ export default function About() {
             for companies in high-consideration industries.
           </p>
 
-          {/* Mobile: in normal flow */}
-          <div className="mt-8 xl:hidden">
-            <IndustryTicker />
-          </div>
+          {/*
+            One ticker, positioned two ways.
 
-          {/* Desktop: absolutely positioned below the text block — does NOT add to block height,
-              so the flex-centering and image position stay exactly as before */}
-          <div
-            className="hidden xl:block absolute left-1/2 -translate-x-1/2"
-            style={{ top: '100%', marginTop: '28px' }}
-          >
+            It used to be two — a `xl:hidden` copy in normal flow for small
+            screens and a `hidden xl:block` copy absolutely placed for large
+            ones — and `hidden` is a CSS state, not an absence: both copies were
+            in the markup, always, and each carries the five categories twice
+            for the marquee loop. So every render of this page shipped the
+            industry list four times over, and anything reading the page as text
+            rather than as pixels — a crawler, a model, a reader mode — saw a
+            list of twenty. On the home page of an agency selling AI visibility,
+            that is the wrong thing to be caught doing.
+
+            Below xl it sits in normal flow under the paragraph. At xl and above
+            it goes out of flow beneath the text block, which is what keeps it
+            from adding height here: this block is absolutely centred at that
+            width and the laptop and phone photographs are positioned against
+            it, so anything that grows it drags them along.
+          */}
+          <div className="mt-8 xl:absolute xl:left-1/2 xl:top-full xl:mt-7 xl:-translate-x-1/2">
             <IndustryTicker />
           </div>
         </div>

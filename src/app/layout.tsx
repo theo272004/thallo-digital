@@ -110,7 +110,7 @@ export default function RootLayout({
               logo: `${SITE_URL}/logo.png`,
               image: `${SITE_URL}/og.png`,
               description: DESCRIPTION,
-              email: 'hello@thallo.co',
+              email: 'hello@thallodigital.com',
               areaServed: 'Worldwide',
               serviceType: [
                 'AI visibility',
@@ -120,7 +120,7 @@ export default function RootLayout({
               contactPoint: {
                 '@type': 'ContactPoint',
                 contactType: 'sales',
-                email: 'hello@thallo.co',
+                email: 'hello@thallodigital.com',
                 url: `${SITE_URL}/contact/`,
                 availableLanguage: ['English'],
               },

@@ -28,12 +28,21 @@ export default function Footer() {
           </p>
         </div>
 
+        {/* "Plans", and the three names /services/ actually uses.
+
+            This column was headed "Solutions" and listed a "Flagship Projects"
+            that exists nowhere else on the site — /services/ calls it
+            "Standalone Projects", the navbar calls the page "Our Plans", and
+            the home FAQ called the same three things "engagements". Four words
+            for one idea, and a reader who follows a footer link looking for
+            "Flagship Projects" arrives on a page that has never heard of it.
+            One vocabulary now: plans, and the names the plans are sold under. */}
         <div>
-          <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Solutions</h4>
+          <h4 className="text-[11px] font-bold text-gray-900 tracking-wider uppercase mb-4">Plans</h4>
           <div className="flex flex-col gap-2.5 text-[11px] text-gray-500 font-semibold">
             <a href={`${BASE}/services/`} className="hover:text-[#39471D]">AI Visibility Audit</a>
-            <a href={`${BASE}/services/`} className="hover:text-[#39471D]">Authority Engine</a>
-            <a href={`${BASE}/services/`} className="hover:text-[#39471D]">Flagship Projects</a>
+            <a href={`${BASE}/services/`} className="hover:text-[#39471D]">The Authority Engine</a>
+            <a href={`${BASE}/services/`} className="hover:text-[#39471D]">Standalone Projects</a>
             <a href={`${BASE}/thallo-ai/`} className="hover:text-[#39471D]">Visibility Check</a>
           </div>
         </div>
@@ -84,7 +93,7 @@ export default function Footer() {
 
       <div className="max-w-[1440px] mx-auto px-6 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-medium tracking-wider text-gray-400">
         <span>© 2026 Thallo Digital. All rights reserved.</span>
-        <span>LinkedIn · X · hello@thallo.co</span>
+        <span>LinkedIn · X · hello@thallodigital.com</span>
       </div>
     </footer>
   );

@@ -18,11 +18,18 @@ import { BASE } from '@/lib/site';
  * look cramped: the fix is a taller panel, not a smaller headline.
  */
 
-/** The plans a visitor can ask about from anywhere on the site. */
+/**
+ * The plans a visitor can ask about from anywhere on the site.
+ *
+ * These three strings have to be the three titles on /services/, verbatim: the
+ * enquiry arrives naming a plan, and a plan named here that is priced nowhere
+ * is a lead nobody can quote. The third was "Flagship Projects", which
+ * /services/ has always called "Standalone Projects".
+ */
 export const ENQUIRY_PLANS = [
   'AI Visibility Audit',
   'The Authority Engine',
-  'Flagship Projects',
+  'Standalone Projects',
 ];
 
 type Props = {

@@ -53,7 +53,22 @@ const ITEMS = [
   },
 ];
 
-const track = [...ITEMS, ...ITEMS];
+/**
+ * A marquee needs two copies of its contents to loop seamlessly: the track
+ * slides left by exactly half its width, at which point copy B sits where copy
+ * A started and the jump back to zero is invisible.
+ *
+ * Copy B is scenery, not content. It carries `aria-hidden` so a screen reader
+ * hears the five categories once rather than ten, and `inert` so its items are
+ * never reached by tab or find-in-page. That matters more here than on most
+ * sites: this page is read by the same crawlers and models it is selling
+ * visibility into, and a duplicated list is exactly what a machine parsing the
+ * page flags as sloppy or padded content.
+ */
+const HALVES = [
+  { key: 'a', hidden: false },
+  { key: 'b', hidden: true },
+];
 
 export default function IndustryTicker() {
   return (
@@ -71,8 +86,32 @@ export default function IndustryTicker() {
         .industry-ticker-shell:hover .industry-ticker-track {
           animation-play-state: paused;
         }
+        .industry-ticker-half {
+          display: flex;
+          align-items: center;
+          height: 100%;
+        }
+        /* Declared here rather than inline, and above the media query rather
+           than below it: an inline style beats a stylesheet rule outright, and
+           between two rules of equal specificity the later one wins. The
+           reduced-motion override needs to come after this to have any effect. */
+        .industry-ticker-shell {
+          overflow: hidden;
+        }
+        /* The pill is 420px and the five categories are wider than that, which
+           is fine while they are moving — everything comes past eventually.
+           With the animation off, nothing does: the row is simply cut at the
+           edge and the last two categories are unreachable. So the shell
+           becomes scrollable at the same time, and the reader drags to the rest.
+
+           And the second copy goes away with the movement that was its only
+           reason to exist. A marquee needs it to loop seamlessly; a static row
+           printed twice reads as a duplication bug. */
         @media (prefers-reduced-motion: reduce) {
           .industry-ticker-track { animation: none; }
+          .industry-ticker-half[data-half='b'] { display: none; }
+          .industry-ticker-shell { overflow-x: auto; scrollbar-width: none; }
+          .industry-ticker-shell::-webkit-scrollbar { display: none; }
         }
         .industry-ticker-item {
           color: #374151;
@@ -96,7 +135,6 @@ export default function IndustryTicker() {
           border: '1px solid #ECECE8',
           borderRadius: '999px',
           boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
-          overflow: 'hidden',
           position: 'relative',
         }}
       >
@@ -110,20 +148,30 @@ export default function IndustryTicker() {
           className="industry-ticker-track"
           style={{ display: 'flex', alignItems: 'center', height: '100%', width: 'max-content' }}
         >
-          {track.map((item, i) => (
-            <React.Fragment key={i}>
-              <div
-                className="industry-ticker-item"
-                style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0 24px', whiteSpace: 'nowrap', height: '100%' }}
-              >
-                {item.icon}
-                <span style={{ fontSize: '13px', fontWeight: 500 }}>{item.title}</span>
-              </div>
-              {/* A neutral hairline, the same grey every rule on the site
-                  uses. It was a sage one, which on this white ground was a
-                  faint green line doing a divider's job. */}
-              <div style={{ width: '1px', height: '20px', background: '#E5E7EB', flexShrink: 0 }} />
-            </React.Fragment>
+          {HALVES.map((half) => (
+            <div
+              key={half.key}
+              className="industry-ticker-half"
+              data-half={half.key}
+              aria-hidden={half.hidden || undefined}
+              inert={half.hidden}
+            >
+              {ITEMS.map((item) => (
+                <React.Fragment key={item.title}>
+                  <div
+                    className="industry-ticker-item"
+                    style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '0 24px', whiteSpace: 'nowrap', height: '100%' }}
+                  >
+                    {item.icon}
+                    <span style={{ fontSize: '13px', fontWeight: 500 }}>{item.title}</span>
+                  </div>
+                  {/* A neutral hairline, the same grey every rule on the site
+                      uses. It was a sage one, which on this white ground was a
+                      faint green line doing a divider's job. */}
+                  <div style={{ width: '1px', height: '20px', background: '#E5E7EB', flexShrink: 0 }} />
+                </React.Fragment>
+              ))}
+            </div>
           ))}
         </div>
       </div>

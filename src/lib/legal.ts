@@ -30,7 +30,7 @@ export const LEGAL = {
   address: '',
 
   /** Where legal and privacy requests are received. Real and monitored. */
-  email: 'hello@thallo.co',
+  email: 'hello@thallodigital.com',
 
   /** Optional. Printed only if present. e.g. '+57 300 000 0000' */
   phone: '',
