@@ -103,7 +103,7 @@ export default function ScannerStripe() {
               </div>
 
               <a
-                href={`${BASE}/thallo-ai/`}
+                href={`${BASE}/thallo-ai/scan/`}
                 className="group inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-full bg-white px-8 py-4 text-[13px] font-bold text-gray-900 transition-transform hover:-translate-y-px lg:self-auto"
               >
                 Run my scan

@@ -40,12 +40,13 @@ export const CASES: CaseStudy[] = [
     industry: 'Health & recovery',
     headline: 'From page two to page one',
     /* Search Console, January–July 2026. The same figure the case study leads
-       on, and it has to stay that way — the design this card was restyled from
-       wrote it as "+230%", which is the same arithmetic said differently and
-       would have left the index and the case page quoting two numbers for one
-       result. If it ever changes, change it in `ResultsLanding` and in the
-       [slug] route's metadata at the same time. */
-    metric: '3.3x',
+       on, and it has to stay that way: the index and the case page quoting two
+       numbers for one result is the fastest way to make a real figure look
+       invented. It was "3.3x" and is now "+230%" — the same arithmetic said
+       the other way round, changed at Cami's request on 24 August 2026. The
+       three places that carry it are here, the stat row in `ResultsLanding`,
+       and the [slug] route's metadata; they move together or not at all. */
+    metric: '+230%',
     metricLabel: 'organic clicks in six months',
     timeframe: 'Six months',
     blurb:

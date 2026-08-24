@@ -12,7 +12,9 @@ import { BASE } from '@/lib/site';
  * the provenance is printed rather than implied.
  */
 const HEADLINE = [
-  { fig: '3.3x',  lbl: 'Monthly organic clicks', copy: 'Against the same month before the engagement began.' },
+  /* Reads "+230%" rather than "3.3x" — see the note on the same figure in
+     `src/lib/cases.ts`. The two have to agree. */
+  { fig: '+230%', lbl: 'Monthly organic clicks', copy: 'Against the same month before the engagement began.' },
   { fig: '+489%', lbl: 'Impressions',            copy: 'February to June, as the clusters matured into rankings.' },
   // The arrival figure leads; the starting point rides in the copy. "10.8 → 7.6"
   // set at 2.6rem simply does not fit a quarter-width card.

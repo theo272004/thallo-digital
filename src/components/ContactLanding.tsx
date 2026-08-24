@@ -33,7 +33,7 @@ const labelCls = 'block text-[11px] font-bold text-gray-900 tracking-wider upper
 
 const ROUTES = [
   {
-    href: `${BASE}/thallo-ai/`,
+    href: `${BASE}/thallo-ai/scan/`,
     label: 'Visibility Check',
     copy: 'Walk through the report we run for clients.',
   },

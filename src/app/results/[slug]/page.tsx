@@ -33,9 +33,9 @@ const PUBLISHED: Record<
     Body: ResultsLanding,
     title: 'Case Study — Page Two to Page One',
     description:
-      'Six months of Search Console data from a real engagement: 3.3x monthly organic clicks, +489% impressions, and average position climbing from page two to page one.',
+      'Six months of Search Console data from a real engagement: +230% monthly organic clicks, +489% impressions, and average position climbing from page two to page one.',
     ogDescription:
-      'Six months of Search Console data from a real engagement: 3.3x monthly organic clicks and average position climbing from page two to page one.',
+      'Six months of Search Console data from a real engagement: +230% monthly organic clicks and average position climbing from page two to page one.',
   },
 };
 

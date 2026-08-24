@@ -72,5 +72,5 @@
 <!-- /wp:separator -->
 
 <!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size"><em>Want to know whether the models name you? <a href="https://thallodigital.com/thallo-ai/">Run the free visibility scan</a> — fifteen buying questions, three models, every question and answer shown.</em></p>
+<p class="has-small-font-size"><em>Want to know whether the models name you? <a href="https://thallodigital.com/thallo-ai/scan/">Run the free visibility scan</a> — fifteen buying questions, three models, every question and answer shown.</em></p>
 <!-- /wp:paragraph -->

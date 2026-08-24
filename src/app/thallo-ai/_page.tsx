@@ -1,3 +1,34 @@
+/*
+ * ── HIDDEN, NOT DELETED ─────────────────────────────────────────────────────
+ *
+ * This was /thallo-ai/: the scrubbed camera move across the report, ending on
+ * a button to the scan. It came off the site on 24 August 2026 — the demo was
+ * a page explaining the tool standing between the reader and the tool, and
+ * every CTA that used to land here now goes straight to /thallo-ai/scan/.
+ *
+ * The underscore is what takes it out of the build. Next.js opts a file or
+ * folder prefixed with `_` out of routing entirely, so `_page.tsx` is
+ * colocated in the route folder without being a route; /thallo-ai/scan/ and
+ * /thallo-ai/method/ are unaffected, and there is no /thallo-ai/ any more.
+ * Putting it back is renaming this file to `page.tsx` and restoring the
+ * sitemap entry.
+ *
+ * Two things went with it, worth a decision rather than a drift:
+ *
+ *   · The FAQPage JSON-LD below. It is the only structured data on the site
+ *     answering "how do you measure AI visibility", "is the scan free", "why
+ *     does my brand not appear in AI answers" — which is exactly the material
+ *     an assistant quotes. If the demo is not coming back, that block deserves
+ *     a home on /thallo-ai/scan/ rather than sitting here unbuilt.
+ *
+ *   · /thallo-ai/ was a live, indexed URL. A static export has no redirects
+ *     and the Bluehost deploy excludes .htaccess, so the 301 to
+ *     /thallo-ai/scan/ has to be added on the server by hand.
+ *
+ * `ToolPresentation` itself is untouched in src/components/scan/ and nothing
+ * else imports it.
+ * ────────────────────────────────────────────────────────────────────────────
+ */
 import React from 'react';
 import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar';

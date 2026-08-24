@@ -23,7 +23,7 @@ const ResultsChart = dynamic(() => import('@/components/ResultsChart'), {
  *
  * The section used to be a citations dashboard that no visitor could ever run:
  * a chart, five platform bars, a floating growth card, all invented. Thallo has
- * a real scanner now (/thallo-ai/), so the card wears the console's chrome and
+ * a real scanner now (/thallo-ai/scan/), so the card wears the console's chrome and
  * carries a way in. The chart stayed, because the trajectory is the part of
  * this section that says what the work does to a brand over time.
  *
@@ -109,7 +109,7 @@ export default function ResultsDashboard() {
             </p>
 
             <a
-              href={`${BASE}/thallo-ai/`}
+              href={`${BASE}/thallo-ai/scan/`}
               className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#39471D] px-6 py-3.5 text-xs font-bold text-white transition-colors hover:bg-[#55672E] group"
             >
               Try the scanner free
@@ -121,7 +121,7 @@ export default function ResultsDashboard() {
           <div className="relative isolate overflow-hidden rounded-[28px] p-5 sm:p-7" style={GROUND}>
             <div aria-hidden className="pointer-events-none absolute inset-0" style={GRID} />
 
-            {/* Console strip — the same chrome the tool wears at /thallo-ai/ */}
+            {/* Console strip — the same chrome the tool wears at /thallo-ai/scan/ */}
             <div className="relative flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[#E7ECD9]/15 px-4 py-2.5">
               <span className="flex items-center gap-2.5">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#CBD0AC]" />
@@ -224,7 +224,7 @@ export default function ResultsDashboard() {
                   Run the same scan on your own brand — free, no account, under a minute.
                 </p>
                 <a
-                  href={`${BASE}/thallo-ai/`}
+                  href={`${BASE}/thallo-ai/scan/`}
                   className="group inline-flex items-center gap-2 rounded-full bg-[#171A10] px-6 py-3 text-xs font-bold text-white transition-colors hover:bg-[#39471D]"
                 >
                   Scan my brand

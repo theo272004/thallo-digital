@@ -41,7 +41,7 @@ export default function HeroText() {
             is further down the page, once they have a reason to. */}
         <Magnetic>
           <a
-            href={`${BASE}/thallo-ai/`}
+            href={`${BASE}/thallo-ai/scan/`}
             className="px-6 py-3.5 rounded-full text-xs font-bold text-white bg-[#39471D] border border-[#39471D] hover:bg-[#55672E] hover:border-[#55672E] transition-all flex items-center gap-2 group shadow-sm shadow-[#55672E]/10"
           >
             See how AI describes you

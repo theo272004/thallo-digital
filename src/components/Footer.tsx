@@ -43,7 +43,12 @@ export default function Footer() {
             <a href={`${BASE}/services/`} className="hover:text-[#39471D]">AI Visibility Audit</a>
             <a href={`${BASE}/services/`} className="hover:text-[#39471D]">The Authority Engine</a>
             <a href={`${BASE}/services/`} className="hover:text-[#39471D]">Standalone Projects</a>
-            <a href={`${BASE}/thallo-ai/`} className="hover:text-[#39471D]">Visibility Check</a>
+            {/* "Visibility Tool", and it goes to the tool. It read "Visibility
+                Check" and pointed at /thallo-ai/, the demo page that explained
+                the scan — so the one footer link to the free thing led to a
+                page about the free thing. The demo is hidden now and this is
+                the scan itself. */}
+            <a href={`${BASE}/thallo-ai/scan/`} className="hover:text-[#39471D]">Visibility Tool</a>
           </div>
         </div>
 

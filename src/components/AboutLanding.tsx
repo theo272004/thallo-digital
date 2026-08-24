@@ -40,7 +40,7 @@ const BELIEFS = [
     /* Split around a link: this is the one belief the site can prove rather
        than assert, because the measurement is published and runnable. */
     copy: ['Traffic and rankings are proxies. We track how often the models name you against ', 'the questions your buyers actually ask', ', and report on that.'],
-    href: `${BASE}/thallo-ai/`,
+    href: `${BASE}/thallo-ai/scan/`,
   },
   {
     n: '03',

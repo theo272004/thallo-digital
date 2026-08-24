@@ -1,6 +1,6 @@
 # Check My Visibility — how it is built and how to switch it on
 
-The tool at `/thallo-ai/` asks ChatGPT, Claude and Gemini the questions a buyer
+The tool at `/thallo-ai/scan/` asks ChatGPT, Claude and Gemini the questions a buyer
 in your category would type, counts how often a brand is named, then checks live
 retrieval and crawls the brand's own site. This document is how to get it
 running for real.
@@ -14,7 +14,7 @@ Everything described here is written and working. What is missing is API keys.
 ```
   Static site (Next.js, output: export)          WordPress (Bluehost)
   ───────────────────────────────────────        ─────────────────────────────
-  thallodigital.com/thallo-ai/                   thallodigital.com/blog/
+  thallodigital.com/thallo-ai/scan/              thallodigital.com/blog/
     src/components/scan/*   the screens            wp-content/plugins/
     src/lib/scan/engine.ts  the client               thallo-visibility/
               │                                          │

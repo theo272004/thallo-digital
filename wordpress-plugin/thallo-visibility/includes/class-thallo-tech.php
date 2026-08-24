@@ -23,7 +23,7 @@ class Thallo_Vis_Tech {
 	    training access; Google's indexing crawler is a separate question. */
 	const AI_BOTS = array( 'GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'anthropic-ai', 'PerplexityBot', 'Google-Extended', 'CCBot' );
 
-	const UA = 'ThalloVisibilityBot/1.0 (+https://thallodigital.com/thallo-ai/)';
+	const UA = 'ThalloVisibilityBot/1.0 (+https://thallodigital.com/thallo-ai/scan/)';
 
 	/**
 	 * @param string $domain          Bare hostname.

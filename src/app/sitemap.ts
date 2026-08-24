@@ -25,7 +25,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     })),
-    { url: `${SITE_URL}/thallo-ai/`, changeFrequency: 'monthly', priority: 0.7 },
+    // The tool itself. /thallo-ai/ — the demo that used to stand in front of it
+    // — is out of the build, so the scan is the URL to index.
+    { url: `${SITE_URL}/thallo-ai/scan/`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE_URL}/thallo-ai/method/`, changeFrequency: 'monthly', priority: 0.6 },
     { url: `${SITE_URL}/contact/`, changeFrequency: 'yearly', priority: 0.7 },
     // Low priority but deliberately indexed: a payment processor checking the
