@@ -27,6 +27,13 @@ jobs:
           # This is a static export, so it is baked in at build time. Left unset,
           # the tool runs on sample data behind a "preview mode" banner.
           NEXT_PUBLIC_SCAN_API: ${{ secrets.SCAN_API_URL }}
+          # Search Console's HTML-tag token. Unset, the meta tag is simply not
+          # emitted — a missing value must not fail the build, because DNS TXT
+          # verification is the alternative and needs nothing here.
+          NEXT_PUBLIC_GSC_VERIFICATION: ${{ secrets.GSC_VERIFICATION }}
+          # Cloudflare Web Analytics. Only the Bluehost build gets this: the
+          # Pages mirror must never report itself as traffic for this domain.
+          NEXT_PUBLIC_CF_BEACON_TOKEN: ${{ secrets.CF_BEACON_TOKEN }}
 
       # Fails the run before a single byte is uploaded if the destination has
       # not been set. The default that used to sit in `server-dir` was

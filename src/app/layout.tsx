@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Instrument_Serif, Space_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/motion/SmoothScrollProvider";
+import Analytics from "@/components/Analytics";
 
 /**
  * Italic is loaded on purpose.
@@ -82,6 +83,13 @@ export const metadata: Metadata = {
     follow: true,
     googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
   },
+  /* Search Console, HTML-tag method. Baked in at build time like everything
+     else in a static export, so the token has to be set in the deploy workflow
+     rather than pasted here — see .env.example. Left unset, Next omits the tag
+     entirely and nothing breaks; the DNS TXT method is the better one anyway,
+     because it verifies the whole domain including the WordPress blog, which
+     this build never serves. */
+  verification: { google: process.env.NEXT_PUBLIC_GSC_VERIFICATION },
 };
 
 export default function RootLayout({
@@ -128,6 +136,7 @@ export default function RootLayout({
           }}
         />
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        <Analytics />
       </body>
     </html>
   );

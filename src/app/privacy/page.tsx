@@ -3,8 +3,12 @@
  *
  * The claims below were checked against the implementation and must be kept
  * true if it changes:
- *   · no analytics, tag manager, pixel, tracking cookie or localStorage in the
- *     site — verified by grep across src/;
+ *   · no tag manager, advertising pixel, tracking cookie or localStorage in
+ *     the site, and the only analytics is a cookieless Cloudflare beacon that
+ *     records nothing per-person — src/components/Analytics.tsx, which renders
+ *     nothing at all unless NEXT_PUBLIC_CF_BEACON_TOKEN is set at build time.
+ *     If that component is ever swapped for one that sets a cookie or an
+ *     identifier, clause 4 stops being true and a consent banner is owed;
  *   · the scanner stores a salted SHA-256 of the IP and never the address
  *     itself — Thallo_Vis_DB::ip_hash();
  *   · scan working data is deleted after `retention_days`, default 14 —
@@ -96,9 +100,15 @@ export default function PrivacyPage() {
 
           <Clause n={4} heading="Cookies and tracking">
             <P>
-              This website runs no analytics, no tag manager, no advertising pixel and no tracking cookie. We do not
+              This website sets no tracking cookie, runs no tag manager and carries no advertising pixel. We do not
               build a profile of you, we do not follow you across other sites, and we do not sell or rent data to
               anyone — ever.
+            </P>
+            <P>
+              We do count visits, using Cloudflare Web Analytics. It stores nothing on your device — no cookie, no
+              identifier, nothing that persists after you close the tab — and it gives us totals rather than people:
+              how many visits a page received, which site linked here, roughly which country. There is no figure in it
+              that describes you, which is why this site asks you to accept no cookie banner.
             </P>
             <P>
               Our blog runs on WordPress at the /blog/ path and may set functional cookies of its own — for example if

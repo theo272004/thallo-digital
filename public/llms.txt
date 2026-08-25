@@ -1,0 +1,38 @@
+# Thallo Digital
+
+> An AI visibility agency. Thallo makes brands the default citation and recommendation in conversational LLM search answers — ChatGPT, Perplexity, Google AI and Claude.
+
+The work is generative engine optimization: earning a brand a place inside the answer a language model assembles, rather than a rank in a list of links. Thallo publishes a free scan that measures this, and writes up engagements only from platform exports over a named period — an unpublished case study means an unpublished result, not a missing page.
+
+Contact: hello@thallo.co
+
+## Core pages
+
+- [Home](https://thallodigital.com/): What AI visibility is, and why ranking first and being named are not the same thing.
+- [About](https://thallodigital.com/about/): Why Thallo was built for a market that changed — what we believe, how an engagement runs, and who runs it.
+- [Our Plans](https://thallodigital.com/services/): AI Visibility Audits, the Authority Engine and flagship projects.
+- [Industries](https://thallodigital.com/industries/): How the work plays out in fintech, health tech, professional services and health & recovery.
+- [Case Studies](https://thallodigital.com/results/): Engagements written up from platform exports over a named period.
+- [Contact](https://thallodigital.com/contact/): How to reach Thallo.
+
+## The visibility scan
+
+A free scan that asks ChatGPT, Claude and Gemini the questions a brand's buyers ask, and counts how often the brand is named — with every question and every answer shown.
+
+- [Run a scan](https://thallodigital.com/thallo-ai/scan/): The tool itself.
+- [How the scan works](https://thallodigital.com/thallo-ai/method/): The questions, the models, the scoring weights, and what the scan cannot tell you.
+
+## Case studies
+
+- [From page two to page one](https://thallodigital.com/results/va-disability-claims/): A veteran-founded service in the VA disability claims space — +230% organic clicks over six months, from Search Console, January to July 2026.
+
+## Writing
+
+- [Blog](https://thallodigital.com/blog/): Articles on AI visibility and generative engine optimization.
+- [Ranking first and being named](https://thallodigital.com/blog/ranking-first-and-being-named/): Why a top organic position does not carry into a model's answer.
+
+## Optional
+
+- [Terms](https://thallodigital.com/terms/)
+- [Privacy](https://thallodigital.com/privacy/)
+- [Refund policy](https://thallodigital.com/refund-policy/)
