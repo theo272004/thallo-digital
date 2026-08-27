@@ -180,6 +180,7 @@ class Thallo_Vis_Analysis {
 			$provider_ranks = array();
 			$errors         = 0;
 			$answered_by    = array();
+			$cited          = array();
 
 			foreach ( $questions as $i => $unused ) {
 				$result = isset( $results[ $i ] ) ? $results[ $i ] : null;
@@ -213,6 +214,18 @@ class Thallo_Vis_Analysis {
 					++$hits;
 					$provider_ranks[] = $position;
 					$positions[]      = $position;
+				}
+
+				/* Pooled across the model's answers rather than kept per answer.
+				   What the report asks of this list is "where did this model go
+				   to find out about my category", and three questions putting up
+				   the same directory three times is one finding, not three. The
+				   memory reading contributes nothing here and cannot: a model
+				   answering with the web shut has read nothing. */
+				if ( ! empty( $result['citations'] ) && is_array( $result['citations'] ) ) {
+					foreach ( $result['citations'] as $url ) {
+						$cited[] = (string) $url;
+					}
 				}
 
 				$answers[] = array(
@@ -271,6 +284,17 @@ class Thallo_Vis_Analysis {
 				'positions' => $provider_ranks,
 				'answers'   => $answers,
 			);
+
+			/* Hosts, not URLs. The report names sources — reddit.com,
+			   wikipedia.org, a trade title — and a column of full URLs would be
+			   a column nobody reads. Twelve is the cap: past that the list has
+			   stopped being "where it went" and become a crawl log. */
+			if ( $cited ) {
+				$hosts = Thallo_Vis_Retrieval::hosts( $cited );
+				if ( $hosts ) {
+					$row['sources'] = array_slice( $hosts, 0, 12 );
+				}
+			}
 
 			/* Only when it disagrees with what we asked for. An alias resolving
 			   to its own dated snapshot is the id doing its job and does not need

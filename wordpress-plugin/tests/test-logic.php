@@ -191,6 +191,50 @@ check( 'skipped provider is not a zero', $p1['providers'][2]['answers'], array()
    question early on any run where a call failed. */
 check( 'answers carry their question index', array_column( $p1['providers'][1]['answers'], 'q' ), array( 1, 2 ) );
 
+/* -- The sources a searching answer leaned on -----------------------------
+   The reading pools them per model and reports hosts, because the question the
+   report asks of this list is "where did this model go to find out about my
+   category" -- three questions returning the same directory three times is one
+   finding. The memory reading has none and must have none: a model answering
+   with the web shut has read nothing. */
+echo "=== sources kept from the searching reading ===\n";
+$grounded_state = array(
+	'scan_id'          => 'test',
+	'brand'            => 'Ledgerly',
+	'domain'           => 'ledgerly.com',
+	'industry'         => 'fintech',
+	'created_at'       => '2026-08-01T00:00:00+00:00',
+	'questions'        => array( 'q1', 'q2' ),
+	'models_grounded'  => array( 'chatgpt' => 'gpt-4o-mini:online' ),
+	'skipped_grounded' => array( 'claude' => 'off', 'gemini' => 'off' ),
+	'results_grounded' => array(
+		'chatgpt' => array(
+			0 => array(
+				'companies' => array( 'Ledgerly' ),
+				'error'     => '',
+				'citations' => array( 'https://www.reddit.com/r/fintech/x', 'https://en.wikipedia.org/wiki/Y' ),
+			),
+			1 => array(
+				'companies' => array( 'Northwind' ),
+				'error'     => '',
+				/* The same host again, and a bare domain rather than a URL --
+				   providers hand back both shapes. */
+				'citations' => array( 'https://www.reddit.com/r/fintech/z', 'forbes.com' ),
+			),
+		),
+	),
+);
+
+$g = Thallo_Vis_Analysis::phase1( $grounded_state, '_grounded' );
+
+check(
+	'hosts, deduplicated, in the order first seen',
+	$g['providers'][0]['sources'],
+	array( 'reddit.com', 'en.wikipedia.org', 'forbes.com' )
+);
+check( 'a model with no citations carries no sources key', isset( $g['providers'][1]['sources'] ), false );
+check( 'the memory reading has no sources at all', isset( $p1['providers'][0]['sources'] ), false );
+
 echo "=== which model answered ===\n";
 check( 'exact', Thallo_Vis_LLM::same_model( 'openai/gpt-4.1-nano', 'openai/gpt-4.1-nano' ), true );
 check( 'alias resolves to a dated snapshot', Thallo_Vis_LLM::same_model( 'claude-3-5-haiku-latest', 'claude-3-5-haiku-20241022' ), true );

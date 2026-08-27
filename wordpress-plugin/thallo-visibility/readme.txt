@@ -3,7 +3,7 @@ Contributors: thallodigital
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.7.6
+Stable tag: 1.8.0
 License: GPLv2 or later
 
 Backend for the Check My Visibility tool: asks the AI models the buying
@@ -63,6 +63,18 @@ Leads are kept until you delete them. IP addresses are stored only as a salted
 hash, used to count scans per visitor.
 
 == Changelog ==
+
+= 1.8.0 =
+* The searching half of a scan now keeps the pages it read. Every answer given
+  with the web open comes back with the sources the model consulted, and the
+  plugin has been able to read that list for some time -- it normalises
+  OpenRouter's `citations` and OpenAI's `annotations` onto one shape -- but the
+  runner discarded it. So a report could say a model recommended somebody else
+  and never say what it had read to get there, which is the one question a
+  reader has at that moment. The hosts are pooled per model, deduplicated and
+  capped at twelve, and travel on the reading as `sources`. It costs nothing:
+  the list arrives inside a response already paid for. A model answering from
+  memory has none and gets none -- it read nothing.
 
 = 1.7.6 =
 * The logo appears in the report email. It was being linked from the website —

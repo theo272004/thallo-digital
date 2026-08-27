@@ -596,10 +596,21 @@ class Thallo_Vis_Runner {
 				$item   = $state['grounded_queue'][ $position ];
 				$parsed = Thallo_Vis_LLM::parse( $shape, $responses[ $offset ] );
 
+				/* `citations` is kept, and this is the only place it can be.
+				   The searching call returns the pages the model read on its way
+				   to the answer — `Thallo_Vis_LLM::parse` has normalised
+				   OpenRouter's `citations` and OpenAI's `annotations` onto one
+				   list for some time — and until now the runner read that list
+				   and threw it away, so the report could say a model
+				   recommended somebody else and never say what it had read to
+				   get there. It is the evidence under every other number in the
+				   report, and it costs nothing: it arrives in the response we
+				   have already paid for. */
 				$state['results_grounded'][ $item['p'] ][ $item['q'] ] = array(
 					'companies' => $parsed['companies'],
 					'error'     => $parsed['error'],
 					'model'     => $parsed['model'],
+					'citations' => isset( $parsed['citations'] ) ? $parsed['citations'] : array(),
 				);
 
 				unset( $state['grounded_queue'][ $position ] );
