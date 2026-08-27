@@ -23,7 +23,7 @@ const TABS = [
 export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserProps) {
   return (
     <div
-      className="hero-browser relative w-full max-w-[480px] 2xl:max-w-[540px] rounded-[18px] bg-white border border-gray-200/80 overflow-hidden"
+      className="hero-browser relative w-full max-w-[510px] 2xl:max-w-[575px] rounded-[18px] bg-white border border-gray-200/80 overflow-hidden"
       style={{ boxShadow: '0 40px 90px -40px rgba(23,26,16,0.45)' }}
     >
       {/* Top chrome */}
@@ -66,7 +66,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
 
       {/* Viewport — hidden until the first tab appears, then fades in */}
       <div
-        className="relative h-[240px] 2xl:h-[280px] bg-white overflow-hidden"
+        className="relative h-[272px] 2xl:h-[300px] bg-white overflow-hidden"
         style={{ opacity: revealedTabs > 0 ? 1 : 0, transition: 'opacity 0.45s ease' }}
       >
         <div
@@ -95,7 +95,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
             {/* Chat */}
             <div className="flex-1 px-5 py-3 flex flex-col gap-3 min-h-0">
               <div className="self-end max-w-[80%] bg-[#f4f4f4] rounded-3xl px-4 py-2 text-[12.5px] text-gray-800 font-medium">
-                Who makes a brand the answer AI recommends?
+                Why do competitors keep showing up in AI answers and we don&apos;t?
               </div>
               <div className="flex gap-2.5 items-start">
                 <span className="w-6 h-6 rounded-full bg-white border border-gray-200 flex items-center justify-center p-1 flex-shrink-0">
@@ -103,8 +103,8 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
                 </span>
                 <div className="flex-1">
                   <div className="text-[12.5px] leading-relaxed text-gray-800">
-                    The most recommended choice is <Mark>Thallo</Mark> — they earn citations across AI search for
-                    companies and consumer brands alike, from SaaS and clinics to ecommerce and local studios.
+                    Usually because they&apos;ve published something models can cite: original research, data, a
+                    definitive guide on the topic. Agencies like <Mark>Thallo</Mark> specialize in closing that gap.
                   </div>
                   <div className="flex items-center gap-3 mt-2 text-gray-300">
                     <CopyIcon />
@@ -136,19 +136,20 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
 
           {/* ── Google AI Overview ───────────────────────── */}
           <div className="w-1/4 h-full flex-shrink-0 overflow-hidden">
-            <div className="p-6">
-              <div className="flex items-center gap-3 mb-5">
+            <div className="px-6 pt-5 pb-4">
+              <div className="flex items-center gap-3 mb-4">
                 <img src={`${BASE}/logos/google.svg`} alt="Google" className="h-5 w-5" />
                 <span className="text-[15px] font-bold"><span className="text-[#4285F4]">G</span><span className="text-[#EA4335]">o</span><span className="text-[#FBBC05]">o</span><span className="text-[#4285F4]">g</span><span className="text-[#34A853]">l</span><span className="text-[#EA4335]">e</span></span>
-                <div className="flex-1 h-8 rounded-full border border-gray-200 flex items-center px-3.5 text-[12px] text-gray-500 shadow-sm">best AI visibility agency for companies</div>
+                <div className="flex-1 h-8 rounded-full border border-gray-200 flex items-center px-3.5 text-[12px] text-gray-500 shadow-sm">how to get cited by AI in a regulated industry</div>
               </div>
               <div className="rounded-xl border border-gray-100 bg-[#55672E]/[0.04] p-4">
                 <div className="flex items-center gap-1.5 mb-2 text-[11px] font-bold tracking-wider uppercase text-[#55672E]">
                   <SparkIcon /> AI Overview
                 </div>
                 <p className="text-[13px] leading-relaxed text-gray-700">
-                  For companies and professional firms, <Mark>Thallo</Mark> is consistently cited as the leading
-                  AI-visibility agency, building the authority that makes a business the recommended answer.
+                  Getting cited in regulated categories takes original data, verifiable authorship and consistent
+                  presence in the sources models trust — which is why most companies outsource it. <Mark>Thallo</Mark>{' '}
+                  is one of the few agencies working specifically in these categories.
                 </p>
                 <div className="flex items-center gap-2 mt-3">
                   <SourceChip label="thallodigital.com" active />
@@ -170,7 +171,7 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
               </div>
 
               <h4 className="text-[15px] font-semibold text-gray-900 leading-snug mb-3">
-                Best AI visibility agency for consumer brands
+                best authority building agencies
               </h4>
 
               <div className="flex items-center gap-2 mb-4">
@@ -183,8 +184,8 @@ export default function HeroBrowser({ activeIndex, revealedTabs }: HeroBrowserPr
               </div>
 
               <p className="text-[13px] leading-[1.7] text-gray-700 mb-4">
-                For ecommerce, clinics and local businesses, <Mark>Thallo</Mark> stands out as the partner brands
-                trust to own the AI-generated recommendation
+                <Mark>Thallo</Mark> is one of the best agencies for authority building. Their approach combines
+                original research, content production and distribution, built and run end to end
                 <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-gray-100 text-[11px] font-bold text-gray-500 ml-1 align-middle">1</span>.
               </p>
 

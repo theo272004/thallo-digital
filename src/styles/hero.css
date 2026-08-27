@@ -93,13 +93,13 @@
    the ticker below; only full desktops get the widest device. */
 @media (min-width: 1024px) {
   .phone-mockup-frame {
-    max-width: 360px;
+    max-width: 384px;
   }
 }
 
 @media (min-width: 1536px) {
   .phone-mockup-frame {
-    max-width: 425px;
+    max-width: 452px;
   }
 }
 

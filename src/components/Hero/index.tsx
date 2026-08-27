@@ -172,7 +172,7 @@ export default function Hero() {
         {/* Right — the phone types a query, its source cards fly out, then fly into a sliding tabbed browser */}
         <div
           ref={columnRef}
-          className="relative w-full max-w-[720px] h-[420px] lg:h-[min(460px,58vh)] 2xl:h-[min(540px,64vh)] mx-auto lg:self-end lg:mb-4"
+          className="relative w-full max-w-[720px] h-[420px] lg:h-[min(460px,58vh)] 2xl:h-[min(540px,64vh)] mx-auto lg:self-end lg:mb-[clamp(3.5rem,13vh,8.75rem)]"
           style={{ perspective: '1400px' }}
         >
           {/* The stage stops short of the bottom of the column: the last 28px

@@ -3,7 +3,6 @@
 import React from 'react';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import { BASE } from '@/lib/site';
-import { QUESTION_COUNT } from '@/lib/scan/questions';
 
 /**
  * The scanner, offered once, in the middle of the page.
@@ -90,13 +89,8 @@ export default function ScannerStripe() {
                 <h2 className="font-sans text-2xl font-bold leading-[1.1] tracking-tight text-white sm:text-[34px]">
                   See how the models <span className="italic text-[#CBD0AC]">describe you.</span>
                 </h2>
-                {/* The count and the word after it are one template string on
-                    purpose. Written as `{COUNT} real`, JSX drops the space
-                    whenever a formatter rewraps the line so the expression ends
-                    it — which is exactly what shipped: "against 15real buying
-                    questions". A template literal cannot lose it. */}
                 <p className="mt-4 max-w-[54ch] text-[15.5px] font-medium leading-relaxed text-[#CBD0AC]">
-                  {`Run your brand against up to ${QUESTION_COUNT} real buying questions across ChatGPT, Claude and Gemini. `}
+                  Run your brand against real buying questions you write yourself, across ChatGPT, Claude and Gemini.
                   You&rsquo;ll see how often you&rsquo;re named, and who gets named instead. Free, no account, under a
                   minute.
                 </p>

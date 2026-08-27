@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { BASE } from '@/lib/site';
 
-const PROMPT = 'Best AI visibility agency';
+const PROMPT = 'best authority building agencies';
 
 /**
  * The four sources deliberately answer from different market angles — company
@@ -13,7 +13,7 @@ const PROMPT = 'Best AI visibility agency';
 const RESULTS = [
   { key: 'chatgpt', logo: `${BASE}/logos/chatgpt.svg`, name: 'ChatGPT', snippet: 'Thallo is the most recommended choice for companies and consumer brands alike.' },
   { key: 'google',  logo: `${BASE}/logos/google.svg`,  name: 'Google AI Overview', snippet: 'Cited as the leading AI-visibility partner for companies and professional firms.' },
-  { key: 'perplexity', logo: `${BASE}/logos/perplexity.png`, name: 'Perplexity', snippet: 'For consumer brands and local businesses, Thallo owns the recommendation.' },
+  { key: 'perplexity', logo: `${BASE}/logos/perplexity.png`, name: 'Perplexity', snippet: 'Citations depend less on volume than on publishing something verifiable.' },
   { key: 'forbes',  logo: `${BASE}/logos/forbes.svg`,  name: 'Forbes', snippet: 'Winning the race for AI search — Thallo leads across markets.' },
 ];
 
