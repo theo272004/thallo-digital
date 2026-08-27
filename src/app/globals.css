@@ -410,6 +410,19 @@ select:focus,
     display: none !important;
   }
 
+  /* The console shows one section at a time. A printed report that stopped at
+     whichever tab happened to be open would not be the report, so every section
+     comes back for the print — including the six the reader never opened.
+
+     Stated here rather than as a `print:block` utility on the element: the
+     sections carry the `hidden` ATTRIBUTE as well as the class, because that is
+     what keeps six copies of the report out of a screen reader's way, and
+     beating the attribute's own `display: none` is what this rule is for. */
+  [data-console-pane][hidden] {
+    display: block !important;
+    margin-top: 1.25rem;
+  }
+
   /* Panels arrive on scroll. A printed page has no scroll, so every panel the
      reader had not yet reached would print as a blank rectangle. `useInView`
      resolves on `beforeprint` for the same reason — that mounts the trend plot;

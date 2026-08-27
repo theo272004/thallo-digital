@@ -41,6 +41,22 @@ function seeded(seed: string): () => number {
 
 const RIVALS = ['Northwind', 'Sable & Co', 'Lumen Group', 'Vertex Partners', 'Arbor Systems', 'Kestrel Labs'];
 
+/* Where a searching model plausibly went to find out. Sample, like everything
+   else in this file, and here for one reason: "Sources found" is the section a
+   reviewer most needs to see filled, and in preview mode there are no keys, so
+   nothing real ever arrives to fill it. The banner above the report says the
+   whole screen is sample data; a section that stays empty in the only mode
+   anybody can review it in is a section nobody reviews. */
+const SOURCES = [
+  'reddit.com',
+  'wikipedia.org',
+  'linkedin.com',
+  'forbes.com',
+  'g2.com',
+  'clutch.co',
+  'trustpilot.com',
+];
+
 const MODEL_IDS: Record<string, string> = {
   chatgpt: 'openai/gpt-4o-mini (sample)',
   claude: 'anthropic/claude-haiku-4.5 (sample)',
@@ -176,12 +192,18 @@ function demoGrounded(phase1: ScanPhase1): ScanPhase1 {
       };
     });
     const hits = answers.filter((a) => a.mentioned);
+    /* Between three and five of the list, plus the brand's own domain whenever
+       the model named it — a model that recommends you having read your site is
+       a different finding from one that recommends you having read a listicle,
+       and the section is built to tell them apart. */
+    const cited = SOURCES.filter(() => rand() < 0.5).slice(0, 5);
     return {
       provider: p.provider,
       model: `${p.model}:online`,
       mentions: hits.length,
       positions: hits.map((a) => a.position as number),
       answers,
+      sources: hits.length > 0 ? [...cited, phase1.domain] : cited,
     };
   });
 

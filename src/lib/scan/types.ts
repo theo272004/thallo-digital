@@ -92,6 +92,21 @@ export interface ProviderResult {
   /** Set when the provider errored out — the row renders as unavailable rather
       than as a zero, because "we could not ask" is not "you were not named". */
   error?: string;
+  /**
+   * Hosts the searching answers cited, deduplicated across the run.
+   *
+   * Only the searching reading can carry these, and it is the evidence behind
+   * every other number in the report: a model that recommends a competitor
+   * read something to get there, and that something is a page on a domain we
+   * can name. "Earn citations on authority sites" is advice; this is the list.
+   *
+   * Optional because the reading is older than the field. The extractor exists
+   * in the plugin — `Thallo_Vis_LLM` already normalises OpenRouter's
+   * `citations` and OpenAI's `annotations` onto one shape — and until the
+   * runner keeps them per answer, the console fills this section from the
+   * retrieval engines' own citations and says which is which.
+   */
+  sources?: string[];
 }
 
 /** Free tier. Enough to prove the problem, not enough to solve it. */

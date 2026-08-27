@@ -5,7 +5,7 @@ import { SplitReveal, scrollToEl } from '@/components/motion';
 import ScanSetup from './ScanSetup';
 import ScanProgress from './ScanProgress';
 import ScanResults from './ScanResults';
-import FullReport from './FullReport';
+import ReportConsole from './ReportConsole';
 import { GROUND, Micro, Stepper, Tag } from './ui';
 import { IS_LIVE, initialSession, startScan, unlockScan } from '@/lib/scan/engine';
 import { marketLabel } from '@/lib/scan/markets';
@@ -329,7 +329,7 @@ export default function ScanFlow() {
           )}
 
           {stage === 'report' && session.phase1 && session.phase2 && (
-            <FullReport phase1={session.phase1} phase2={session.phase2} />
+            <ReportConsole phase1={session.phase1} phase2={session.phase2} />
           )}
         </div>
 

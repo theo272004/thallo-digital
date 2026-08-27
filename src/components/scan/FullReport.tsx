@@ -423,7 +423,7 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
  * fires immediately before the snapshot, with no frame in between for React to
  * render into. Only the button can prepare the page and then print it.
  */
-function DownloadReport() {
+export function DownloadReport() {
   const [busy, setBusy] = React.useState(false);
 
   const download = React.useCallback(() => {
@@ -493,7 +493,7 @@ function DownloadReport() {
  * ring is a shape carrying one number — the twelve pixels bought nothing that
  * the figure inside it does not already say.
  */
-function Indicator({
+export function Indicator({
   pct,
   name,
   gloss,
@@ -538,7 +538,7 @@ const nameKey = (value: string) =>
 /** One company the models named, and everything we know about where it came
     from. Built here rather than read off `phase2.competitors` because the
     server only ever tallied the memory reading — see `Rivals`. */
-interface Rival {
+export interface Rival {
   name: string;
   /** Answers that named it, within one reading. */
   mentions: number;
@@ -562,7 +562,7 @@ interface Rival {
  * `kaivastudio.com` counts as `kaiva studio`. Matching the name again in the
  * browser would eventually disagree with the percentage printed above.
  */
-function tally(reading: ScanPhase1 | null | undefined, limit = 8): Rival[] {
+export function tally(reading: ScanPhase1 | null | undefined, limit = 8): Rival[] {
   if (!reading) return [];
 
   const brandKey = nameKey(reading.brand);
@@ -646,7 +646,7 @@ function tally(reading: ScanPhase1 | null | undefined, limit = 8): Rival[] {
  * search — because all three answer one question in three ways and the panel is
  * full width.
  */
-function Rivals({
+export function Rivals({
   phase1,
   grounded,
   retrieval,
@@ -899,7 +899,7 @@ function RivalList({
  * left is the part the rings could not say: which of the five shapes this scan
  * is, and which model moved between the two readings.
  */
-function Diagnosis({ memory, grounded }: { memory: ScanPhase1; grounded: ScanPhase1 }) {
+export function Diagnosis({ memory, grounded }: { memory: ScanPhase1; grounded: ScanPhase1 }) {
   /* Nothing came back at all — every request failed or the models were all
      skipped. There is no gap to read, and the indicator column above already
      says the searching half did not run. */
@@ -1023,7 +1023,7 @@ function Diagnosis({ memory, grounded }: { memory: ScanPhase1; grounded: ScanPha
   );
 }
 
-function SignalRow({ signal }: { signal: TechSignal }) {
+export function SignalRow({ signal }: { signal: TechSignal }) {
   const icon =
     signal.status === 'pass' ? (
       <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#39471D]">
