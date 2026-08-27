@@ -65,11 +65,48 @@
    `overflow-hidden`, so the surplus is cut off at the fold rather than pushed
    into the ticker. That is also why the number can be generous — 90px reaches
    the bottom edge on a 900px screen, where 70 would have been exact, and any
-   screen shorter than that simply crops a little sooner. */
+   screen shorter than that simply crops a little sooner.
+
+   `--hero-lift` is added on top of that 90px, and the two numbers have to move
+   together. The lift is how far the whole visual column is raised so the
+   browser window lines up with the headline beside it; raise the column
+   without giving the crop the same amount back, and the device stops being cut
+   off by the fold and turns into a floating box with its bottom sliced off —
+   which is exactly what shipped the first time. One value, declared once on
+   the column, spent twice: as its bottom margin, and as this extra height. */
+.hero-visual-column {
+  --hero-lift: 0px;
+}
+
+/* Why `50vh - Xpx` rather than a plain percentage of the viewport: above about
+   790px tall the column stops growing (its height caps at 460px, 540 at 2xl)
+   while the headline beside it never changes height at all, so the distance
+   the column has to travel to line up with that headline grows at exactly half
+   the rate the viewport does — a straight `13vh` centred perfectly at 900px
+   tall and overshot by 30 on a 768px laptop. The slope is 50vh in both
+   breakpoints and only the constant differs, because 2xl scales the column and
+   the window up but leaves the type alone. Both were measured, not derived:
+   the required lift was read off the DOM at five viewport heights per
+   breakpoint and came back linear to the pixel. Within 8px of the middle of
+   the headline block at 1024x768, 1280x800, 1440x900, 1536x864, 1512x982 and
+   1728x1080. */
+@media (min-width: 1024px) {
+  .hero-visual-column {
+    --hero-lift: clamp(1rem, calc(50vh - 325px), 11rem);
+    margin-bottom: var(--hero-lift);
+  }
+}
+
+@media (min-width: 1536px) {
+  .hero-visual-column {
+    --hero-lift: clamp(1rem, calc(50vh - 425px), 11rem);
+  }
+}
+
 .phone-crop-container {
   position: relative;
   width: 100%;
-  height: calc(100% + 90px);
+  height: calc(100% + 90px + var(--hero-lift, 0px));
   align-self: flex-start;
   overflow: hidden;
   display: flex;
