@@ -17,7 +17,15 @@
 <link rel="stylesheet" href="_ds/thallo-digital-design-system-b62b6d48-0a25-4a8c-a9ea-90b34db97292/styles.css">
 <script src="_ds/thallo-digital-design-system-b62b6d48-0a25-4a8c-a9ea-90b34db97292/_ds_bundle.js"></script>
 <style>
+/* El rebote del scroll (arriba y abajo) toma el fondo de <html>, no el de <body>.
+   Como el hero y el footer son verde oscuro, el rebote ya no muestra blanco. */
+html { background: #1C2114; }
 body { margin: 0; background: #FFFFFF; }
+
+/* Elementos propios del canvas: sin ellos las lineas en blanco del codigo
+   pueden dejar una franja vacia arriba y abajo. */
+x-dc { display: block; }
+helmet { display: none; }
 a { color: #39471D; text-decoration: none; }
 a:hover { color: #55672E; }
 
