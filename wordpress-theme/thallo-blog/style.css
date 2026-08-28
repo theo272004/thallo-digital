@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.10.0
+Version:      1.10.1
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -1545,15 +1545,18 @@ a.thallo-topic:hover {
 /* A subject with nothing filed under it yet: same tile, no link, and the ring
    drops to the flat ivory so the row reads as five subjects of which some are
    open and some are not. */
+/* A subject with nothing filed under it yet keeps the brand's green. The icon
+   and its ring were grey here, on the reasoning that a category with no
+   articles should look quieter than one with five — and it did, but it also
+   made five of the six tiles read as disabled controls on a page whose whole
+   argument is that this publication is starting, not stopping. The subjects
+   are real either way; only the count is not.
+
+   So the mark stays olive on olive tint, the name stays ink, and the one thing
+   that differs is the line underneath: "Coming soon" in the muted grey the rest
+   of the site uses for a caption, and no link. */
 .thallo-topic--soon {
   background: var(--hub-ivory);
-}
-.thallo-topic--soon .thallo-topic__mark {
-  background: #eef0e9;
-  color: #9ca3af;
-}
-.thallo-topic--soon .thallo-topic__name {
-  color: var(--wp--preset--color--grey-500);
 }
 .thallo-topic--all .thallo-topic__name {
   color: var(--wp--preset--color--olive);
