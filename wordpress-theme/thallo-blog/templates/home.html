@@ -1,32 +1,62 @@
 <!-- wp:template-part {"slug":"header","tagName":"header"} /-->
 
+<!-- ══ The index ══════════════════════════════════════════════════════════════
+
+     One column, read top to bottom: what this is, the piece to read now, the
+     rest of the archive, one invitation, the list.
+
+     It used to be two columns with a rail of topics and tags down the left. A
+     rail is furniture that only earns its place once there is enough to
+     browse; with one post published it was three empty boxes beside a heading
+     that said "the next one is being written", which is how the page came to
+     read as broken rather than as new. The blocks that survive all hide
+     themselves while they have nothing to hold, so this page is short today
+     and grows a section at a time — never the other way round. -->
 <!-- wp:group {"tagName":"main","className":"thallo-archive","layout":{"type":"constrained","contentSize":"1440px"}} -->
 <main class="wp-block-group thallo-archive">
 
-<!-- The masthead. Centred, and the second word set in the serif italic — the
-     one place on this page the serif appears, which is what makes it read as a
-     masthead rather than as another heading. -->
-<!-- wp:group {"className":"thallo-archive__head","layout":{"type":"constrained"}} -->
-<div class="wp-block-group thallo-archive__head">
+<!-- ══ The masthead ═══════════════════════════════════════════════════════════
 
-<!-- wp:heading {"level":1,"className":"thallo-archive__title"} -->
-<h1 class="wp-block-heading thallo-archive__title">Articles and <em>guides.</em></h1>
-<!-- /wp:heading -->
+     Flush left, alone on its line. The search used to sit beside it, which put
+     a field for finding things at the top of a page that had not yet shown the
+     reader a single thing to find. It now opens the archive further down,
+     where there is something to search. -->
+<!-- wp:group {"className":"thallo-mast thallo-mast--solo","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-mast thallo-mast--solo">
 
-<!-- wp:paragraph {"className":"thallo-archive__lead"} -->
-<p class="thallo-archive__lead">On search, AI visibility and building authority in categories where trust decides the sale.</p>
+<!-- wp:group {"className":"thallo-mast__say","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-mast__say">
+
+<!-- wp:paragraph {"className":"thallo-mast__eyebrow"} -->
+<p class="thallo-mast__eyebrow">Insights that build authority</p>
 <!-- /wp:paragraph -->
 
-<!-- wp:categories {"showPostCounts":false,"showOnlyTopLevel":true,"className":"thallo-filters"} /-->
+<!-- wp:heading {"level":1,"className":"thallo-mast__title"} -->
+<h1 class="wp-block-heading thallo-mast__title">Articles and <em>guides.</em></h1>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph {"className":"thallo-mast__lead"} -->
+<p class="thallo-mast__lead">On search, AI visibility and building authority in categories where trust decides the sale.</p>
+<!-- /wp:paragraph -->
 
 </div>
 <!-- /wp:group -->
 
-<!-- The newest note, as the dark card.
+</div>
+<!-- /wp:group -->
 
-     Two queries rather than one: a single query cannot give its first item a
-     different layout, and an archive where every card is identical makes no
-     argument about what to read first. -->
+<!-- ══ The piece to read now ══════════════════════════════════════════════════
+
+     Its own query rather than the first item of the grid below: a single query
+     cannot give its first result a different layout, and an index where every
+     card is identical makes no argument about what to read first.
+
+     The photograph runs across the top rather than down one side. The images
+     that arrive here are wide banners, and a wide banner cropped into a tall
+     panel is a thin strip of it blown up — which is what made the picture look
+     grainy on a page where nothing else does. Across the top it is shown at
+     something near its own proportions, and the browser scales it down rather
+     than up. -->
 <!-- wp:query {"queryId":2,"query":{"perPage":1,"pages":1,"offset":0,"postType":"post","order":"desc","orderBy":"date","inherit":false},"layout":{"type":"default"}} -->
 <div class="wp-block-query">
 
@@ -40,9 +70,16 @@
 <!-- wp:group {"className":"thallo-feat__body","layout":{"type":"default"}} -->
 <div class="wp-block-group thallo-feat__body">
 
+<!-- wp:paragraph {"className":"thallo-feat__label"} -->
+<p class="thallo-feat__label">Start here</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:post-title {"level":2,"isLink":true,"className":"thallo-feat__title"} /-->
+
+<!-- wp:post-excerpt {"excerptLength":42,"className":"thallo-feat__excerpt","moreText":" "} /-->
+
 <!-- wp:group {"className":"thallo-meta","layout":{"type":"flex","flexWrap":"wrap"}} -->
 <div class="wp-block-group thallo-meta">
-<!-- wp:post-terms {"term":"category"} /-->
 <!-- wp:post-date {"format":"j M Y"} /-->
 <!-- wp:shortcode -->
 [thallo_reading_time]
@@ -50,12 +87,8 @@
 </div>
 <!-- /wp:group -->
 
-<!-- wp:post-title {"level":2,"isLink":true,"className":"thallo-feat__title"} /-->
-
-<!-- wp:post-excerpt {"excerptLength":38,"className":"thallo-feat__excerpt","moreText":" "} /-->
-
 <!-- wp:paragraph {"className":"thallo-feat__go"} -->
-<p class="thallo-feat__go">Read the article ↗</p>
+<p class="thallo-feat__go">Read the article ↗&#xFE0E;</p>
 <!-- /wp:paragraph -->
 
 </div>
@@ -67,17 +100,65 @@
 <!-- /wp:post-template -->
 
 <!-- wp:query-no-results -->
-<!-- wp:paragraph -->
-<p>Nothing published yet. The first note is on its way.</p>
+<!-- wp:paragraph {"className":"thallo-empty"} -->
+<p class="thallo-empty">Nothing published yet. The first note is on its way.</p>
 <!-- /wp:paragraph -->
 <!-- /wp:query-no-results -->
 
 </div>
 <!-- /wp:query -->
 
-<!-- Everything after the lead. `offset: 1` skips the note above so it does not
-     appear twice; `inherit: false` is what makes the offset apply at all. -->
-<!-- wp:query {"queryId":3,"query":{"perPage":12,"pages":0,"offset":1,"postType":"post","order":"desc","orderBy":"date","inherit":false},"className":"thallo-grid","layout":{"type":"default"}} -->
+<!-- ══ The rest of the archive ════════════════════════════════════════════════
+
+     Everything except the piece above, in one grid. `offset: 1` is what skips
+     it, and `inherit: false` is what makes the offset apply at all.
+
+     The whole section — heading, filters, search, pager — hides itself while
+     that query comes back empty. There is exactly one article today; a
+     "browse" bar over an empty grid is the page telling the reader it has more
+     and then not having it. -->
+<!-- wp:group {"className":"thallo-latest","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-latest">
+
+<!-- wp:html -->
+<div class="thallo-rule">
+  <h2 class="thallo-rule__h">More articles</h2>
+</div>
+<!-- /wp:html -->
+
+<!-- The browse bar: topics on the left, search on the right, on one line.
+     "All topics" is written by hand because it is not a category — it is the
+     absence of one, which is this page with no filter on it. The pills come
+     from WordPress and disappear on their own while "Uncategorized" is the
+     only term that exists, leaving the search on the line by itself. -->
+<!-- wp:group {"className":"thallo-browse","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-browse">
+
+<!-- wp:group {"className":"thallo-topics","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-topics">
+
+<!-- wp:html -->
+<a class="thallo-pill is-on" href="https://thallodigital.com/blog/">All topics</a>
+<!-- /wp:html -->
+
+<!-- wp:categories {"showPostCounts":false,"showOnlyTopLevel":true,"className":"thallo-topics__pills"} /-->
+
+<!-- wp:shortcode -->
+[thallo_sort]
+<!-- /wp:shortcode -->
+
+</div>
+<!-- /wp:group -->
+
+<!-- The search block rather than a hand-written form: WordPress owns the
+     query, the results land on search.html, and a form typed here would have
+     to reimplement both. -->
+<!-- wp:search {"showLabel":false,"placeholder":"Search articles…","buttonText":"Search","buttonUseIcon":true,"className":"thallo-search"} /-->
+
+</div>
+<!-- /wp:group -->
+
+<!-- wp:query {"queryId":3,"query":{"perPage":9,"pages":0,"offset":1,"postType":"post","order":"desc","orderBy":"date","inherit":false},"className":"thallo-grid","layout":{"type":"default"}} -->
 <div class="wp-block-query thallo-grid">
 
 <!-- wp:post-template {"className":"thallo-grid__loop","layout":{"type":"grid","columnCount":3}} -->
@@ -90,23 +171,18 @@
 <!-- wp:group {"className":"thallo-card__body","layout":{"type":"default"}} -->
 <div class="wp-block-group thallo-card__body">
 
+<!-- wp:post-terms {"term":"category","className":"thallo-card__kind"} /-->
+
+<!-- wp:post-title {"level":3,"isLink":true,"className":"thallo-card__title"} /-->
+
 <!-- wp:group {"className":"thallo-meta","layout":{"type":"flex","flexWrap":"wrap"}} -->
 <div class="wp-block-group thallo-meta">
-<!-- wp:post-terms {"term":"category"} /-->
 <!-- wp:post-date {"format":"j M Y"} /-->
 <!-- wp:shortcode -->
 [thallo_reading_time]
 <!-- /wp:shortcode -->
 </div>
 <!-- /wp:group -->
-
-<!-- wp:post-title {"level":2,"isLink":true,"className":"thallo-card__title"} /-->
-
-<!-- wp:post-excerpt {"excerptLength":22,"className":"thallo-card__excerpt","moreText":" "} /-->
-
-<!-- wp:paragraph {"className":"thallo-card__go"} -->
-<p class="thallo-card__go">Read the article ↗</p>
-<!-- /wp:paragraph -->
 
 </div>
 <!-- /wp:group -->
@@ -115,6 +191,14 @@
 <!-- /wp:group -->
 
 <!-- /wp:post-template -->
+
+<!-- The marker the section hides on. It is never seen: `.thallo-latest` is
+     display:none whenever this element exists in it. -->
+<!-- wp:query-no-results -->
+<!-- wp:paragraph {"className":"thallo-empty"} -->
+<p class="thallo-empty">The next one is being written.</p>
+<!-- /wp:paragraph -->
+<!-- /wp:query-no-results -->
 
 <!-- wp:query-pagination {"className":"thallo-pagination","layout":{"type":"flex","justifyContent":"space-between"}} -->
 <!-- wp:query-pagination-previous /-->
@@ -125,30 +209,51 @@
 </div>
 <!-- /wp:query -->
 
-<!-- The closing panel, which is the site's own — the photograph, the 6xl
-     heading with its italic second line, the lead in sage, one white pill.
-     Written as plain HTML for the same reason the navbar is: it has to match a
-     component on the marketing site to the pixel, and block layout kept
-     centring what the site sets flush left.
+</div>
+<!-- /wp:group -->
 
-     Without the form. The form belongs where somebody is being asked to buy
-     something; at the end of an article the ask is "go and measure yourself",
-     which is one button. -->
+<!-- ══ The invitation ═════════════════════════════════════════════════════════
+
+     One, at the end, where a reader who has finished is deciding what to do
+     next. There used to be a second one in the rail saying the same thing in
+     fewer words, three inches away from this one. -->
 <!-- wp:html -->
-<section class="thallo-scan">
-  <div class="thallo-scan__panel">
-    <img class="thallo-scan__bg" src="https://thallodigital.com/cta-bg.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
-    <div class="thallo-scan__body">
-      <div class="thallo-scan__say">
-        <h2 class="thallo-scan__title">Do the models recommend you <em>or someone else?</em></h2>
-        <p class="thallo-scan__lead">Your buying questions, put to ChatGPT, Claude and Gemini — once from memory and once with the web open. Your brand is never named in the question.</p>
-      </div>
-      <div class="thallo-scan__actions">
-        <a class="thallo-btn thallo-btn--light" href="https://thallodigital.com/thallo-ai/scan/">Check my visibility <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a>
-        <span class="thallo-scan__note">Free · no account · about a minute</span>
-      </div>
-    </div>
+<section class="thallo-band">
+  <img class="thallo-band__leaf" src="https://thallodigital.com/blog-lead.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+  <div class="thallo-band__say">
+    <p class="thallo-band__eyebrow">Do you show up?</p>
+    <h2 class="thallo-band__h">Do the models recommend you <em>or someone else?</em></h2>
+    <p class="thallo-band__p">Your buying questions, put to ChatGPT, Claude and Gemini — once from memory and once with the web open. Your brand is never named in the question.</p>
   </div>
+  <div class="thallo-band__do">
+    <a class="thallo-btn thallo-btn--solid" href="https://thallodigital.com/thallo-ai/scan/">Check my visibility <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a>
+    <span class="thallo-band__note">Free · No account · About a minute</span>
+  </div>
+</section>
+<!-- /wp:html -->
+
+<!-- ══ The list ═══════════════════════════════════════════════════════════════
+
+     The address goes to the same place the contact form goes — the plugin's
+     `enquiry` endpoint, which already has the honeypot, the daily cap and a
+     screen in wp-admin to read what arrived. Nothing here sends mail; this
+     collects the addresses, and the sending is a decision for whoever writes
+     the first letter. -->
+<!-- wp:html -->
+<section class="thallo-sub">
+  <div class="thallo-sub__say">
+    <span class="thallo-sub__mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5" /><path d="m3.5 7 8.5 6 8.5-6" /></svg>
+    </span>
+    <p class="thallo-sub__p">Get insights on search, AI visibility and authority building.<br />Straight to your inbox. No fluff.</p>
+  </div>
+  <form class="thallo-sub__form" data-thallo-subscribe novalidate>
+    <label class="thallo-sub__label" for="thallo-sub-email">Your email address</label>
+    <input class="thallo-sub__input" id="thallo-sub-email" type="email" name="email" placeholder="Your email address" autocomplete="email" required />
+    <input class="thallo-sub__pot" type="text" name="website_url" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    <button class="thallo-btn thallo-btn--solid thallo-sub__go" type="submit">Subscribe</button>
+    <p class="thallo-sub__note" data-thallo-subscribe-note>No spam. Unsubscribe anytime.</p>
+  </form>
 </section>
 <!-- /wp:html -->
 

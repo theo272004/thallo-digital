@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.6.0
+Version:      1.9.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -49,11 +49,31 @@ Text Domain:  thallo-blog
   transition: color 0.18s ease;
 }
 
-/* The tinted callout used by the "Thallo · callout" pattern. A group with a
+/* The callout used by the "Thallo · callout" pattern. A group with a
    background gets its padding from theme.json; the rule it hangs on does not
    exist there. */
 .thallo-callout {
   border-left: 3px solid var(--wp--preset--color--olive-soft);
+}
+
+/* ── The ground under the filled blocks ────────────────────────────────────
+   Deep green, always — #39471D, the green the buttons and the links already
+   wear, and never again the pale wash.
+
+   Stated here rather than left to the pattern, because a pattern is copied
+   into the post the moment a writer inserts it: every post written before
+   today still carries `has-olive-tint-background-color` in its own markup, and
+   that markup cannot be reached by editing a pattern file. It can be reached
+   from here.
+
+   Two classes deep and `!important` because that is what it takes to win.
+   WordPress prints its palette as
+   `.has-olive-tint-background-color { background-color: … !important }` —
+   important, at one class of specificity, so an ordinary rule loses to it no
+   matter how far down this file it sits. */
+.wp-block-group.thallo-callout,
+.wp-block-group.thallo-answer {
+  background-color: var(--wp--preset--color--olive) !important;
 }
 
 /* ── Type on the filled blocks ─────────────────────────────────────────────
@@ -68,35 +88,30 @@ Text Domain:  thallo-blog
    colour written into the pattern file freezes into every post that ever used
    it and cannot be corrected later. A rule in the stylesheet reaches them all.
 
-   White is 10.0:1 on this ground and #E7ECD9 is 8.3:1; the olive-soft used for
-   the rule and the label is 6.3:1, still past AA. */
+   White throughout, and not the pale olive it was: on a photograph or on this
+   green, a tinted white reads as faded rather than as quiet. White is 10.0:1
+   here; the olive-soft on the rule and the label is 6.3:1, still past AA.
+
+   `!important` throughout, for the same reason the background above carries
+   it: the pattern used to write `color:#111827` as an inline style on the
+   sentence, and an inline style beats any selector a stylesheet can write.
+   Near-black on #39471D is 1.6:1 — not low contrast, invisible. This is not a
+   preference being enforced; it is the one thing standing between a reader and
+   a box they cannot read, in posts nobody is going to reopen and edit by
+   hand. */
 .thallo-callout,
-.thallo-answer {
-  color: #ffffff;
-}
-.thallo-callout p,
-.thallo-answer p,
-.thallo-callout li,
-.thallo-answer li {
-  color: var(--wp--preset--color--olive-tint);
-}
-.thallo-callout strong,
-.thallo-answer strong,
-.thallo-callout h2,
-.thallo-callout h3,
-.thallo-callout h4,
-.thallo-answer h2,
-.thallo-answer h3,
-.thallo-answer h4 {
-  color: #ffffff;
+.thallo-answer,
+.thallo-callout :is(p, li, strong, h2, h3, h4),
+.thallo-answer :is(p, li, strong, h2, h3, h4) {
+  color: #ffffff !important;
 }
 .thallo-callout a,
 .thallo-answer a {
-  color: #ffffff;
+  color: #ffffff !important;
   text-decoration-color: var(--wp--preset--color--olive-soft);
 }
 .thallo-answer__label {
-  color: var(--wp--preset--color--olive-soft);
+  color: var(--wp--preset--color--olive-soft) !important;
 }
 
 /* Figure captions and the audit-trail voice: the typewriter face, small, in
@@ -240,85 +255,6 @@ Text Domain:  thallo-blog
 .thallo-faq > h2 + h3 {
   border-top: 0;
   padding-top: 0;
-}
-
-/* ── The lead note ─────────────────────────────────────────────────────────
-   The newest post, given the width of the page. The grid under it is two
-   columns, so the only thing separating the two is scale — which is enough
-   when the scale gap is this large, and stops working if it narrows. */
-.thallo-lead .wp-block-post-title {
-  line-height: 1.08;
-  letter-spacing: -0.03em;
-  max-width: 22ch;
-}
-.thallo-lead .wp-block-post-excerpt__excerpt {
-  max-width: 58ch;
-}
-@media (max-width: 40rem) {
-  .thallo-lead .wp-block-post-title {
-    max-width: none;
-  }
-}
-
-/* ── Archive cards ─────────────────────────────────────────────────────────
-   The lift on hover is the only motion on the page. It is there because a
-   card that does not respond reads as a panel rather than as a link, and the
-   whole card is the target. */
-.thallo-card {
-  height: 100%;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s;
-}
-.thallo-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 14px 34px -22px rgba(23, 26, 16, 0.5);
-}
-.thallo-card .wp-block-post-title a {
-  text-decoration: none;
-}
-.thallo-card .wp-block-post-title a:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-@media (prefers-reduced-motion: reduce) {
-  .thallo-card,
-  .thallo-card:hover {
-    transform: none;
-    transition: none;
-  }
-}
-
-/* ── Category links ────────────────────────────────────────────────────────
-   The Terms List block ships as a bulleted <ul>. These are navigation, not
-   prose, so the markers come off and the rows become pills in a row. */
-.thallo-filters ul,
-ul.thallo-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.thallo-filters li {
-  margin: 0;
-}
-.thallo-filters a {
-  display: inline-block;
-  border: 1px solid var(--wp--preset--color--hairline);
-  border-radius: 60px;
-  padding: 0.5rem 1rem;
-  font-size: 0.82rem;
-  text-decoration: none;
-  color: var(--wp--preset--color--ink);
-  transition: border-color 0.2s, background-color 0.2s;
-}
-.thallo-filters a:hover {
-  border-color: var(--wp--preset--color--olive);
-  /* Deep green with white type, like every other filled surface on the site.
-     The pale olive wash is retired: at #E7ECD9 behind ink it read as a
-     disabled state rather than as the one the pointer is on. */
-  background: var(--wp--preset--color--olive);
-  color: #ffffff;
 }
 
 /* ── On this page ──────────────────────────────────────────────────────────
@@ -798,14 +734,23 @@ body.single .wp-site-blocks > main {
 /* ══════════════════════════════════════════════════════════════════════════
    The archive.
 
-   Ported from the version that briefly lived at /articles/ in the Next.js
-   build — same masthead, same dark lead card, same three-column grid, same
-   values. That page had the design; it did not have the URL, and /blog/ is
-   the URL. So the design came here instead.
+   One column: the masthead, the piece to read now, the rest of the archive
+   behind a browse bar, one invitation, the list. Each section hides itself
+   while it has nothing to hold.
+
+   ## The ground
+
+   White, and every surface on it drawn from the same five values the rest of
+   the site uses — white, paper #F7F8F3, hairline #E5E7EB, olive #39471D, ink
+   #171A10. It used to be a warm cream, #F7F6F1, with cards in #EFEDE3 and
+   #EDEBE1 and a card body in #1E2A12: five colours that appear nowhere else on
+   thallodigital.com. Read on its own the page looked considered; read after
+   any other page on the site it looked like a different site, which is what it
+   was. Nothing here invents a colour any more.
    ══════════════════════════════════════════════════════════════════════════ */
 
 .thallo-archive {
-  background: #f7f8f9;
+  background: #ffffff;
   /* Sides and floor only. The top is set once, on main, above. */
   padding: 0 1.5rem 5rem;
   margin: 0;
@@ -815,40 +760,12 @@ body.single .wp-site-blocks > main {
   max-width: 1440px;
   margin-left: auto;
   margin-right: auto;
-}
-
-/* ── Masthead ──────────────────────────────────────────────────────────────*/
-.thallo-archive__head {
-  text-align: center;
-  max-width: 46rem !important;
-  margin-bottom: 3.5rem;
-}
-.thallo-archive__title {
-  font-size: clamp(2.25rem, 5vw, 3rem);
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.035em;
-  color: var(--wp--preset--color--grey-900);
-  margin: 0;
-}
-.thallo-archive__title em {
-  font-family: var(--wp--preset--font-family--serif);
-  font-style: italic;
-  font-weight: 400;
-  color: var(--wp--preset--color--olive);
-}
-.thallo-archive__lead {
-  margin: 1.25rem auto 0;
-  max-width: 52ch;
-  font-size: 1.06rem;
-  font-weight: 500;
-  line-height: 1.65;
-  color: var(--wp--preset--color--grey-500);
-}
-.thallo-archive__head .thallo-filters ul,
-.thallo-archive__head ul.thallo-filters {
-  justify-content: center;
-  margin-top: 1.75rem;
+  /* Border-box or the padded sections do not line up with the unpadded ones.
+     `max-width` on a content-box element caps the text inside it and then adds
+     the padding on top, so the invitation and the mailing list rendered 82px
+     wider than the featured card directly above them — three blocks that are
+     meant to share an edge, each one starting somewhere else. */
+  box-sizing: border-box;
 }
 
 /* WordPress centra por su cuenta.
@@ -858,62 +775,189 @@ body.single .wp-site-blocks > main {
    izquierda. Las plantillas ya no usan ese layout aquí; esto es el cinturón,
    para que un bloque insertado desde el editor no vuelva a traérselo. */
 .thallo-feat__body > *,
-.thallo-card__body > *,
-.thallo-scan__body > * {
+.thallo-card__body > * {
   margin-left: 0;
   margin-right: 0;
   max-width: none;
 }
 
-/* ── Meta line ─────────────────────────────────────────────────────────────
-   Category · date · read time, in one row. WordPress renders each of these as
-   its own block, so the row is the flex container and the separators are
-   drawn between children rather than typed in. */
-.thallo-meta {
+/* ── Masthead ──────────────────────────────────────────────────────────────
+   Two shapes from one class. On the index it is a block, alone on its line;
+   on the results page the search sits beside it, because there the search is
+   the subject of the page rather than a tool offered before there is anything
+   to use it on. */
+.thallo-mast {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.625rem;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+.thallo-mast__say {
+  flex: 1 1 26rem;
+}
+.thallo-mast--solo {
+  display: block;
+  margin-bottom: 3.25rem;
+}
+/* The rule before the eyebrow is drawn rather than typed: a pipe character
+   sits on the baseline and reads as punctuation. */
+.thallo-mast__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 1.1rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #9ca3af;
+  color: var(--wp--preset--color--grey-500);
 }
-.thallo-meta > * {
-  margin: 0;
+.thallo-mast__eyebrow::before {
+  content: '';
+  width: 2px;
+  height: 0.85rem;
+  background: var(--wp--preset--color--olive);
+  border-radius: 2px;
 }
-.thallo-meta .wp-block-post-terms a {
-  background: rgba(57, 71, 29, 0.1);
-  color: var(--wp--preset--color--olive);
-  border-radius: 9999px;
-  padding: 0.15rem 0.5rem;
+.thallo-mast__eyebrow a {
+  color: inherit;
   text-decoration: none;
 }
-.thallo-meta > * + *::before {
-  content: '·';
-  color: #d1d5db;
-  margin-right: 0.5rem;
+.thallo-mast__eyebrow a:hover {
+  color: var(--wp--preset--color--olive);
+}
+.thallo-mast__title {
+  margin: 0;
+  font-size: clamp(2.35rem, 4.6vw, 3.4rem);
+  font-weight: 700;
+  line-height: 1.03;
+  letter-spacing: -0.04em;
+  color: var(--wp--preset--color--olive-ink, #171a10);
+}
+.thallo-mast__title em {
+  font-family: var(--wp--preset--font-family--serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--wp--preset--color--olive);
+}
+.thallo-mast__lead {
+  margin: 1.1rem 0 0;
+  max-width: 44ch;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--wp--preset--color--grey-500);
 }
 
-/* ── The lead card ─────────────────────────────────────────────────────────*/
-.thallo-feat {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: stretch;
-  background: #171a10;
-  border-radius: 28px;
+/* ── Search ────────────────────────────────────────────────────────────────
+   The block's own markup, restyled: a pill with the field and the button
+   inside one border, so it reads as one control rather than as a box with a
+   square attached to it. */
+.thallo-search {
+  margin: 0;
+  max-width: 20rem;
+  width: 100%;
+}
+/* The block ships a label for screen readers and leaves hiding it to the
+   parent theme's `screen-reader-text`. When that stylesheet does not load —
+   which is exactly what happens in the local sandbox — the word "Search"
+   renders above the field and pushes the control 27px down its own line, so
+   the one thing on the row is the one thing out of line with it. Hidden here
+   too, in the way that keeps it readable to a screen reader. */
+.thallo-search .wp-block-search__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
   overflow: hidden;
-  margin: 0 0 1.25rem;
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.thallo-search .wp-block-search__inside-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 9999px;
+  background: #fff;
+  padding: 0.2rem 0.2rem 0.2rem 0.35rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.thallo-search .wp-block-search__inside-wrapper:focus-within {
+  border-color: var(--wp--preset--color--olive);
+  box-shadow: 0 0 0 3px rgba(57, 71, 29, 0.1);
+}
+.thallo-search .wp-block-search__input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  padding: 0.5rem 0.6rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--wp--preset--color--olive-ink, #171a10);
+}
+.thallo-search .wp-block-search__input:focus {
+  outline: none;
+}
+.thallo-search .wp-block-search__input::placeholder {
+  color: #9ca3af;
+}
+.thallo-search .wp-block-search__button {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  padding: 0;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--wp--preset--color--olive);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.thallo-search .wp-block-search__button:hover {
+  background: var(--wp--preset--color--olive-mid);
+}
+.thallo-search .wp-block-search__button svg {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+}
+
+/* ── The piece to read now ─────────────────────────────────────────────────
+   The photograph across the top, the words on ink underneath.
+
+   Across the top rather than down one side because of what arrives here: the
+   featured images are wide banners, and the old card cropped one into a panel
+   taller than it was wide. That is a narrow strip of the picture scaled up to
+   fill 590 by 485, which is why the photograph looked grainy on a page where
+   nothing else did. In a band the browser is scaling a 2048px image *down*,
+   and detail survives being made smaller.
+
+   `aspect-ratio` rather than a fixed height so the band keeps its proportions
+   at every width, and 3.2/1 rather than the banner's own 4.4/1 because a strip
+   that thin under a masthead reads as a rule rather than as a picture. */
+.thallo-feat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #171a10;
+  border-radius: 24px;
+  overflow: hidden;
+  margin: 0 0 4rem;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s;
 }
 .thallo-feat:hover {
   transform: translateY(-3px);
+  box-shadow: 0 24px 50px -28px rgba(23, 26, 16, 0.5);
 }
 .thallo-feat__media {
-  width: 44%;
-  flex-shrink: 0;
   margin: 0;
+  aspect-ratio: 3.2 / 1;
 }
 .thallo-feat__media img {
   width: 100%;
@@ -922,94 +966,248 @@ body.single .wp-site-blocks > main {
   display: block;
 }
 .thallo-feat__body {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 1rem;
-  /* Quitar el layout "constrained" alineó el texto a la izquierda y, de paso,
-     lo dejó corriendo hasta el mismo borde del relleno: lo que antes lo
-     separaba era el ancho máximo que WordPress imponía, no el padding. Así que
-     el aire lo pone ahora el padding, que es donde debía estar. */
-  padding: 3.25rem 3.5rem;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 2.5rem 3rem 2.75rem;
 }
-.thallo-feat .thallo-meta {
-  color: rgba(255, 255, 255, 0.45);
-}
-.thallo-feat .thallo-meta .wp-block-post-terms a {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
-}
-.thallo-feat .thallo-meta > * + *::before {
-  color: rgba(255, 255, 255, 0.25);
+.thallo-feat__label {
+  margin: 0;
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--olive-soft);
 }
 .thallo-feat__title {
   margin: 0;
-  max-width: 20ch;
-  font-size: clamp(1.6rem, 3vw, 2.35rem);
+  max-width: 24ch;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
   font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.03em;
-}
-.thallo-feat__title a {
-  color: #fff;
-  text-decoration: none;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
 }
 .thallo-feat__excerpt {
   margin: 0;
-  max-width: 46ch;
+  max-width: 62ch;
   font-size: 0.95rem;
-  font-weight: 500;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.6);
 }
 .thallo-feat__excerpt .wp-block-post-excerpt__more-text {
   display: none;
 }
+.thallo-feat .thallo-meta {
+  margin-top: 0.2rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+.thallo-feat .thallo-meta > * + *::before {
+  color: rgba(255, 255, 255, 0.3);
+}
 .thallo-feat__go {
   margin: 0.5rem 0 0;
-  font-size: 0.875rem;
+  font-size: 0.92rem;
   font-weight: 600;
-  color: var(--wp--preset--color--olive-soft);
 }
 .thallo-feat:hover .thallo-feat__go {
   text-decoration: underline;
+  text-underline-offset: 4px;
+}
+/* The whole card is the target, not just the two words at the bottom of it.
+   The title's own link is stretched over the card, so what a reader clicks is
+   what a screen reader announces — one link, with the headline as its name. */
+.thallo-feat__title a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 @media (max-width: 1000px) {
-  .thallo-feat {
-    flex-direction: column;
-  }
   .thallo-feat__media {
-    width: 100%;
-    height: 14rem;
+    aspect-ratio: 16 / 9;
   }
   .thallo-feat__body {
-    padding: 2rem 1.75rem;
+    padding: 2rem 1.75rem 2.25rem;
   }
 }
 
-/* ── The grid ──────────────────────────────────────────────────────────────*/
+/* ── Meta line ─────────────────────────────────────────────────────────────
+   Date · read time, in one row. WordPress renders each of these as its own
+   block, so the row is the flex container and the separators are drawn between
+   children rather than typed in. */
+.thallo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-meta > * {
+  margin: 0;
+  font-size: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+}
+.thallo-meta > * + *::before {
+  content: '·';
+  margin: 0 0.5rem;
+  color: #d1d5db;
+}
+
+/* ── The rest of the archive ───────────────────────────────────────────────
+   Heading, browse bar, grid, pager — and the whole thing gone while the query
+   under it comes back empty. A browse bar over nothing is the page offering a
+   reader tools for an archive it does not have yet. */
+.thallo-latest:has(.wp-block-query-no-results) {
+  display: none;
+}
+.thallo-rule {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin: 0 0 1.25rem;
+}
+.thallo-rule__h {
+  margin: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-rule__more {
+  margin-left: auto;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--wp--preset--color--olive-ink, #171a10);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.thallo-rule__more:hover {
+  color: var(--wp--preset--color--olive);
+}
+
+/* ── The browse bar ────────────────────────────────────────────────────────
+   Topics left, search right, one hairline under both. The topics half empties
+   itself while "Uncategorized" is the only term there is, and the search then
+   sits on the line alone rather than leaving a hole where the pills were. */
+.thallo-browse {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin: 0 0 2rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--wp--preset--color--hairline);
+}
+.thallo-topics {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.thallo-topics:not(:has(.thallo-topics__pills li)) {
+  display: none;
+}
+.thallo-pill,
+.thallo-topics__pills a {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 9999px;
+  background: #fff;
+  padding: 0.42rem 0.95rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--wp--preset--color--grey-500);
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+}
+.thallo-pill:hover,
+.thallo-topics__pills a:hover {
+  border-color: var(--wp--preset--color--olive);
+  color: var(--wp--preset--color--olive);
+}
+.thallo-pill.is-on {
+  background: var(--wp--preset--color--olive);
+  border-color: var(--wp--preset--color--olive);
+  color: #fff;
+}
+.thallo-pill.is-on:hover {
+  background: var(--wp--preset--color--olive-mid);
+  border-color: var(--wp--preset--color--olive-mid);
+  color: #fff;
+}
+.thallo-topics__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.thallo-topics__pills li {
+  margin: 0;
+}
+.thallo-sort {
+  margin: 0 0 0 0.35rem;
+  font-size: 0.78rem;
+  color: #9ca3af;
+}
+.thallo-sort a {
+  color: var(--wp--preset--color--grey-500);
+  text-decoration: none;
+}
+.thallo-sort a:hover {
+  color: var(--wp--preset--color--olive);
+}
+
+/* ── The grid ──────────────────────────────────────────────────────────────
+   Three columns of card: the photograph on top, white body under it, and the
+   arrow in the corner of the body where the eye finishes reading the title. */
 .thallo-grid__loop {
-  gap: 1.25rem !important;
+  gap: 1.5rem !important;
 }
 .thallo-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
   background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: 24px;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 6px 20px -8px rgba(23, 26, 16, 0.14);
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s,
+    border-color 0.3s;
 }
 .thallo-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 16px 36px -18px rgba(23, 26, 16, 0.3);
+  border-color: #d7dbc8;
+  box-shadow: 0 16px 36px -20px rgba(23, 26, 16, 0.28);
+}
+/* The lift is the only motion on the page, and for a reader who has asked the
+   operating system for no motion it is one too many. The shadow stays: it says
+   the same thing without moving. */
+@media (prefers-reduced-motion: reduce) {
+  .thallo-card,
+  .thallo-card:hover,
+  .thallo-feat,
+  .thallo-feat:hover,
+  .thallo-card:hover .thallo-card__body::after {
+    transform: none;
+    transition: none;
+  }
 }
 .thallo-card__media {
   margin: 0;
-  height: 11rem;
+  aspect-ratio: 16 / 9;
 }
 .thallo-card__media img {
   width: 100%;
@@ -1021,48 +1219,57 @@ body.single .wp-site-blocks > main {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  gap: 0.75rem;
-  padding: 1.75rem;
+  gap: 0.7rem;
+  padding: 1.35rem 1.4rem 1.5rem;
+}
+/* The category, as a label rather than as a link that looks like one. */
+.thallo-card__kind {
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--olive-mid);
+}
+.thallo-card__kind a {
+  color: inherit;
+  text-decoration: none;
 }
 .thallo-card__title {
   margin: 0;
-  font-size: 1.19rem;
+  flex-grow: 1;
+  font-size: 1.06rem;
   font-weight: 700;
   line-height: 1.3;
   letter-spacing: -0.02em;
 }
-.thallo-card__title a {
-  color: var(--wp--preset--color--grey-900);
-  text-decoration: none;
+.thallo-card__title a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
-.thallo-card__excerpt {
-  margin: 0;
-  flex-grow: 1;
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.6;
-  color: var(--wp--preset--color--grey-500);
+.thallo-card__body .thallo-meta {
+  padding-right: 2rem;
 }
-.thallo-card__excerpt .wp-block-post-excerpt__more-text {
-  display: none;
+.thallo-card__body::after {
+  content: '→';
+  position: absolute;
+  right: 1.3rem;
+  bottom: 1.25rem;
+  font-size: 0.95rem;
+  color: #6b7280;
+  transition: transform 0.2s, color 0.2s;
 }
-.thallo-card__go {
-  margin: 0.75rem 0 0;
-  padding-top: 1rem;
-  border-top: 1px solid #f3f4f6;
-  font-size: 0.81rem;
-  font-weight: 600;
+.thallo-card:hover .thallo-card__body::after {
   color: var(--wp--preset--color--olive);
-}
-.thallo-card:hover .thallo-card__go {
-  text-decoration: underline;
+  transform: translateX(3px);
 }
 @media (max-width: 1000px) {
   .thallo-grid__loop {
     grid-template-columns: repeat(2, 1fr) !important;
   }
 }
-@media (max-width: 700px) {
+@media (max-width: 640px) {
   .thallo-grid__loop {
     grid-template-columns: 1fr !important;
   }
@@ -1070,135 +1277,286 @@ body.single .wp-site-blocks > main {
 
 .thallo-pagination {
   margin-top: 2.5rem;
-  font-size: 0.85rem;
+  border-top: 1px solid var(--wp--preset--color--hairline);
+  padding-top: 1.5rem;
+  font-size: 0.82rem;
+}
+.thallo-empty {
+  margin: 0;
+  padding: 2.5rem 0;
+  font-size: 0.9rem;
+  color: var(--wp--preset--color--grey-500);
+}
+/* A pager under nothing is a pager that says the archive is broken. */
+.thallo-grid:has(.wp-block-query-no-results) .thallo-pagination {
+  display: none;
 }
 
-/* ── The sign-off ──────────────────────────────────────────────────────────
-   The site's closing panel, in the proportions this page needs.
-
-   Stacked — heading, lead, button, each under the last — it ran to most of a
-   screen for a sentence and a link, and after an index of articles that reads
-   as a second page rather than as a sign-off. The invitation goes left and the
-   button goes right, on one line: the same panel, about half the height, and
-   the eye finishes the sentence where the thing to click already is.
-
-   The heading comes down from the site's 6xl too. That size is for a hero with
-   the whole width to itself; here it shares the line, and 6xl in a 60% column
-   wraps to three lines and puts the panel's height back. */
-.thallo-scan {
-  margin-top: 4.5rem;
-}
-.thallo-scan__panel {
+/* ── The invitation ────────────────────────────────────────────────────────
+   Paper rather than white, so it separates from the page without becoming a
+   second dark slab three inches under the first one, with the leaf washed out
+   behind the button. */
+.thallo-band {
   position: relative;
   overflow: hidden;
-  border-radius: 28px;
-  padding: 2.5rem 2rem;
-}
-@media (min-width: 640px) {
-  .thallo-scan__panel {
-    padding: 2.75rem 3rem;
-  }
-}
-@media (min-width: 1024px) {
-  .thallo-scan__panel {
-    padding: 3rem 3.5rem;
-  }
-}
-.thallo-scan__bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  pointer-events: none;
-  user-select: none;
-  z-index: 0;
-}
-.thallo-scan__body {
-  position: relative;
-  z-index: 2;
+  background: var(--wp--preset--color--paper);
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 24px;
+  margin-top: 4rem;
+  padding: 2.25rem 2.5rem;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
   gap: 1.75rem;
 }
-/* One line from 900px, which is where the two halves each still have room to
-   say what they are. Below it they stack, and the button goes full width —
-   a pill floating alone on a phone reads as an afterthought. */
-@media (min-width: 900px) {
-  .thallo-scan__body {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 3rem;
-  }
+/* The photograph, washed almost out and pinned to the right edge behind the
+   button. Half-way across the panel it read as a smudge somebody had failed to
+   remove; against the edge, with the left side faded into the paper, it reads
+   as what it is — the panel having a texture rather than a picture in it. */
+.thallo-band__leaf {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 38%;
+  object-fit: cover;
+  object-position: 72% center;
+  /* Faint enough that the note under the button is read as type rather than as
+     type on a photograph. At 0.3 the mug behind "free · no account" was the
+     first thing the eye found. */
+  opacity: 0.15;
+  pointer-events: none;
+  user-select: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 55%);
+  mask-image: linear-gradient(90deg, transparent, #000 55%);
 }
-.thallo-scan__say {
-  max-width: 40rem;
+.thallo-band__say,
+.thallo-band__do {
+  position: relative;
+  z-index: 1;
 }
-.thallo-scan__title {
-  margin: 0;
-  color: #fff;
-  font-size: clamp(1.9rem, 3.4vw, 2.75rem);
+.thallo-band__say {
+  flex: 1 1 26rem;
+}
+.thallo-band__eyebrow {
+  margin: 0 0 0.7rem;
+  font-size: 0.63rem;
   font-weight: 700;
-  line-height: 1.08;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--olive-mid);
+}
+.thallo-band__h {
+  margin: 0;
+  max-width: 20ch;
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+  font-weight: 700;
+  line-height: 1.2;
   letter-spacing: -0.025em;
+  color: var(--wp--preset--color--olive-ink, #171a10);
 }
-.thallo-scan__title em {
+.thallo-band__h em {
+  font-family: var(--wp--preset--font-family--serif);
   font-style: italic;
+  font-weight: 400;
+  color: var(--wp--preset--color--olive);
 }
-.thallo-scan__lead {
-  margin: 1rem 0 0;
+.thallo-band__p {
+  margin: 0.85rem 0 0;
   max-width: 46ch;
-  font-size: 1rem;
-  font-weight: 500;
+  font-size: 0.85rem;
   line-height: 1.6;
-  color: #cbd0ac;
+  color: var(--wp--preset--color--grey-500);
 }
-.thallo-scan__actions {
+.thallo-band__do {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.75rem;
   flex-shrink: 0;
 }
-@media (min-width: 900px) {
-  .thallo-scan__actions {
-    align-items: flex-end;
-    text-align: right;
-  }
+.thallo-band__do .thallo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.75rem 1.35rem;
 }
-/* What the reader wants to know before clicking, in the space the button
-   leaves anyway: it costs nothing and it answers "is this going to ask me to
-   sign up" without spending a line of the heading on it. */
-.thallo-scan__note {
-  font-size: 0.75rem;
+.thallo-band__note {
+  font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
+  color: #9ca3af;
 }
-.thallo-btn--light {
+
+/* ── The list ──────────────────────────────────────────────────────────────
+   The address goes where the contact form's addresses go. The field marked
+   `website_url` is the honeypot the endpoint already expects: off screen, not
+   focusable, and never seen by a person. */
+.thallo-sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
   background: #fff;
-  color: var(--wp--preset--color--olive);
-  border: 1px solid #fff;
-  padding: 0.875rem 1.75rem;
-  font-size: 0.875rem;
-  font-weight: 600;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 24px;
+  margin-top: 1.5rem;
+  padding: 1.75rem 2.5rem;
+}
+.thallo-sub__say {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+.thallo-sub__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  background: var(--wp--preset--color--olive);
+  color: #fff;
+}
+.thallo-sub__p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--wp--preset--color--olive-ink, #171a10);
+}
+.thallo-sub__form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+.thallo-sub__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
   white-space: nowrap;
 }
-/* The site darkens the type rather than tinting the button: this sits on a
-   photograph, and any fill behind it would have to clear the same contrast the
-   white already clears. */
-.thallo-btn--light:hover {
+.thallo-sub__input {
+  width: 15rem;
+  max-width: 100%;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 9999px;
   background: #fff;
-  border-color: #fff;
-  color: var(--wp--preset--color--ink);
+  padding: 0.7rem 1.1rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  color: var(--wp--preset--color--olive-ink, #171a10);
 }
-@media (max-width: 899px) {
-  .thallo-scan__actions .thallo-btn--light {
-    width: 100%;
-    justify-content: center;
+.thallo-sub__input::placeholder {
+  color: #9ca3af;
+}
+.thallo-sub__input:focus {
+  outline: 2px solid var(--wp--preset--color--olive);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+.thallo-sub__pot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.thallo-sub__go {
+  border: 0;
+  padding: 0.72rem 1.35rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.thallo-sub__note {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 0.68rem;
+  color: #9ca3af;
+}
+.thallo-sub__note.is-bad {
+  color: #9b2c2c;
+}
+.thallo-sub__note.is-good {
+  color: var(--wp--preset--color--olive);
+  font-weight: 600;
+}
+@media (max-width: 760px) {
+  .thallo-sub,
+  .thallo-band {
+    padding: 1.5rem 1.35rem;
   }
+  .thallo-sub__form {
+    width: 100%;
+  }
+  .thallo-sub__input {
+    flex: 1;
+  }
+}
+
+
+/* ── Contrast on the featured card ─────────────────────────────────────────
+   The title arrived as a link, and a link inherits the global link colour from
+   theme.json unless something says otherwise. On the green card that rendered
+   near-black on near-black — the heading was there, at the right size, and
+   unreadable. Every colour on this card is therefore stated against the card
+   rather than inherited. */
+.thallo-feat .thallo-feat__title,
+.thallo-feat .thallo-feat__title a,
+.thallo-feat .thallo-feat__title a:hover,
+.thallo-feat .thallo-feat__title a:visited,
+.thallo-feat .thallo-feat__title a:focus {
+  color: #ffffff !important;
+  text-decoration: none;
+}
+.thallo-feat .thallo-feat__title a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.thallo-feat .thallo-feat__excerpt,
+.thallo-feat .thallo-feat__excerpt p {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+.thallo-feat .thallo-feat__go {
+  color: var(--wp--preset--color--olive-soft) !important;
+}
+/* The same statement for the light cards, so a global link colour cannot turn
+   a card title blue there either. */
+.thallo-card .thallo-card__title,
+.thallo-card .thallo-card__title a,
+.thallo-card .thallo-card__title a:visited {
+  color: #171a10 !important;
+  text-decoration: none;
+}
+.thallo-card .thallo-card__title a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+/* The whole card is the link, so the photograph must not sit above it. */
+.thallo-feat__media a,
+.thallo-card__media a {
+  display: block;
+  height: 100%;
+}
+
+/* ── Uncategorized ─────────────────────────────────────────────────────────
+   WordPress's default term, not a decision anybody made. A card wearing it as
+   a badge says the writer forgot something. Hidden until there are real
+   categories, at which point every one of these fills in on its own. */
+.thallo-meta .wp-block-post-terms:empty,
+.thallo-card__kind:empty {
+  display: none;
+}
+.thallo-meta .wp-block-post-terms:empty + *::before {
+  content: none;
 }
 
 /* ── The contents, beside the article ──────────────────────────────────────
@@ -1242,69 +1600,6 @@ body.single .wp-site-blocks > main {
   }
 }
 
-/* ── Contrast on the dark card ─────────────────────────────────────────────
-   The title arrived as a link, and a link inherits the global link colour
-   from theme.json unless something says otherwise. On the dark card that
-   rendered near-black on near-black — the heading was there, at the right
-   size, and unreadable.
-
-   Every colour on this card is therefore stated against the card rather than
-   inherited, and the link rules carry enough weight to beat the global ones
-   wherever WordPress decides to print them. A heading a reader cannot see is
-   not a styling preference to be overridden politely. */
-.thallo-feat .thallo-feat__title,
-.thallo-feat .thallo-feat__title a,
-.thallo-feat .thallo-feat__title a:hover,
-.thallo-feat .thallo-feat__title a:visited,
-.thallo-feat .thallo-feat__title a:focus {
-  color: #ffffff !important;
-  text-decoration: none;
-}
-.thallo-feat .thallo-feat__title a:hover {
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-.thallo-feat .thallo-feat__excerpt,
-.thallo-feat .thallo-feat__excerpt p {
-  color: rgba(255, 255, 255, 0.62) !important;
-}
-.thallo-feat .thallo-feat__go {
-  color: var(--wp--preset--color--olive-soft) !important;
-}
-
-/* The same statement for the light cards, so a global link colour cannot
-   turn a card title blue there either. */
-.thallo-card .thallo-card__title,
-.thallo-card .thallo-card__title a,
-.thallo-card .thallo-card__title a:visited {
-  color: var(--wp--preset--color--grey-900) !important;
-  text-decoration: none;
-}
-.thallo-card .thallo-card__title a:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-/* The whole card is the link, so the photograph must not sit above it. */
-.thallo-feat__media a,
-.thallo-card__media a {
-  display: block;
-  height: 100%;
-}
-
-/* ── Uncategorized ─────────────────────────────────────────────────────────
-   WordPress's default term, not a decision anybody made. A card wearing it as
-   a badge says the writer forgot something, and a filter row offering it as
-   the only choice is furniture. Hidden until there are real categories, at
-   which point both fill in on their own. */
-.thallo-meta .wp-block-post-terms:empty,
-.thallo-filters:empty {
-  display: none;
-}
-.thallo-meta .wp-block-post-terms:empty + *::before {
-  content: none;
-}
-
 
 /* ── The black frame when you click ────────────────────────────────────────
    The browser draws a focus ring on anything you click — the logo on its way
@@ -1335,7 +1630,6 @@ select:focus-visible,
 }
 /* On the dark panels the olive disappears into the background. */
 .thallo-feat a:focus-visible,
-.thallo-scan a:focus-visible,
 .thallo-nav__cta .thallo-btn--solid:focus-visible {
   outline-color: #fff;
 }
@@ -1367,37 +1661,31 @@ select:focus-visible,
 .thallo-hero .wp-block-cover__inner-container > * {
   color: #fff;
 }
-/* The corner line: where you are, when it was written, how long it takes.
-   Absolute rather than in the flow, because in the flow it inherits the text
-   column's left edge and lines up with the headline — which is what gave a
-   date the same standing as the title. Pinned to the panel's own padding it
-   reads as the frame around the piece instead of as the first thing in it. */
+/* The dateline: where you are, when it was written, how long it takes.
+
+   In the flow, above the title, at the text column's own left edge — and it
+   was absolute in the panel's top corner until today. The corner is where the
+   fixed navbar is: the pill covered the middle of the line and left the two
+   ends of it sticking out on either side, which is not a frame around the
+   piece, it is a collision. Nothing about the line changed except that it now
+   sits where there is room for it. */
 .thallo-hero .wp-block-cover__inner-container > .thallo-hero__top,
 .thallo-hero__top {
-  position: absolute;
-  top: 1.6rem;
-  left: 2rem;
-  right: 2rem;
+  position: static;
   z-index: 2;
   align-items: center;
   gap: 0.6rem;
+  margin: 0 0 1.1rem;
   font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
+  color: rgba(255, 255, 255, 0.55);
 }
 .thallo-hero .wp-block-cover__inner-container > .thallo-hero__top {
   /* Gana a la regla que pinta de blanco todo lo que hay dentro del cover: esta
      línea es marco, no texto, y en blanco puro compite con el titular. */
-  color: rgba(255, 255, 255, 0.45);
-  /* Y al layout "constrained" del cover, que le pone `margin-inline:auto` y el
-     ancho de la columna de texto a cada hijo. En una caja absoluta ese margen
-     no se ve como un centrado: se suma al `left` y la deja justo donde empieza
-     el titular, que es de donde la queríamos sacar. */
-  margin: 0;
-  width: auto;
-  max-width: none;
+  color: rgba(255, 255, 255, 0.55);
 }
 .thallo-hero__top > *,
 .thallo-hero__top > * a {
@@ -1424,13 +1712,6 @@ select:focus-visible,
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-@media (max-width: 700px) {
-  .thallo-hero__top {
-    top: 1.25rem;
-    left: 1.25rem;
-    right: 1.25rem;
-  }
-}
 .thallo-hero__title {
   color: #fff;
   letter-spacing: -0.035em;
@@ -1439,7 +1720,12 @@ select:focus-visible,
 /* The excerpt is the promise the title makes, so it reads as prose rather than
    as a caption — the same size it had on white, with enough contrast against
    the photograph to be read rather than glanced at. */
-.thallo-hero__lead {
+/* Flush left, under the title. `margin: 0` alone loses: the cover's
+   constrained layout writes `margin-inline: auto` at a specificity a bare
+   class cannot reach, and a 46ch paragraph centred inside a 52rem column is
+   indented from the headline above it by exactly half the difference. */
+.thallo-hero__lead,
+.thallo-hero .wp-block-cover__inner-container > .thallo-hero__lead {
   margin: 0;
   max-width: 46ch;
   line-height: 1.6;
@@ -1450,7 +1736,7 @@ select:focus-visible,
    what has to be told. */
 .thallo-hero__lead .wp-block-post-excerpt__excerpt {
   margin: 0;
-  color: rgba(255, 255, 255, 0.88);
+  color: #ffffff;
 }
 .thallo-hero__lead .wp-block-post-excerpt__more-text {
   display: none;
@@ -1470,8 +1756,7 @@ select:focus-visible,
    nada. */
 @media (min-width: 1024px) and (max-width: 1699.98px) {
   .thallo-nav__bar,
-  .thallo-archive > *,
-  .thallo-archive .thallo-scan__panel {
+  .thallo-archive > * {
     max-width: 90vw;
   }
 }

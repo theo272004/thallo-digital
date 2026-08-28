@@ -23,8 +23,8 @@
  */
 
 ?>
-<!-- wp:group {"className":"thallo-answer","backgroundColor":"ink","style":{"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40","right":"var:preset|spacing|40"},"margin":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|50"}},"border":{"radius":"14px"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group thallo-answer has-ink-background-color has-background" style="border-radius:14px;margin-top:var(--wp--preset--spacing--50);margin-bottom:var(--wp--preset--spacing--50);padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40)">
+<!-- wp:group {"className":"thallo-answer","backgroundColor":"olive","style":{"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40","right":"var:preset|spacing|40"},"margin":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|50"}},"border":{"radius":"14px"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group thallo-answer has-olive-background-color has-background" style="border-radius:14px;margin-top:var(--wp--preset--spacing--50);margin-bottom:var(--wp--preset--spacing--50);padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40)">
 
 <!-- wp:paragraph {"className":"thallo-answer__label","fontSize":"small","textColor":"olive"} -->
 <p class="thallo-answer__label has-olive-color has-text-color has-small-font-size"><strong>Short answer</strong></p>

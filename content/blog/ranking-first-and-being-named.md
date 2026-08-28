@@ -2,7 +2,7 @@
 wpId: 15
 title: Ranking first and being named are not the same thing
 slug: ranking-first-and-being-named
-status: draft
+status: publish
 excerpt: Search used to hand your buyer ten links and let them choose. Now it hands them an answer with three companies in it. Being one of those three is a different problem from ranking, and it has different fixes.
 ---
 
@@ -19,14 +19,14 @@ This is not a hypothetical. The two things are read by different systems for dif
 
 Your own website is evidence of the first and barely evidence of the second. Everyone's website says they are the leading provider. A model that believed website copy would recommend every company equally, so it doesn't; it leans on what the rest of the internet says about you, which is a much harder thing to manufacture and a much better signal because of it.
 
-<!-- wp:group {"className":"thallo-callout","backgroundColor":"olive-tint","style":{"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40","right":"var:preset|spacing|40"}},"border":{"radius":"14px"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group thallo-callout has-olive-tint-background-color has-background" style="border-radius:14px;padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40)">
+<!-- wp:group {"className":"thallo-callout","backgroundColor":"olive","style":{"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40","right":"var:preset|spacing|40"}},"border":{"radius":"14px"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group thallo-callout has-olive-background-color has-background" style="border-radius:14px;padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40)">
 <!-- wp:heading {"level":4} -->
 <h4 class="wp-block-heading">The short version</h4>
 <!-- /wp:heading -->
 
-<!-- wp:paragraph {"style":{"color":{"text":"#111827"}}} -->
-<p style="color:#111827">Ranking is about pages. Being named is about your company. The second is earned mostly off your own website, which is why it is harder to fake and worth more when you have it.</p>
+<!-- wp:paragraph -->
+<p>Ranking is about pages. Being named is about your company. The second is earned mostly off your own website, which is why it is harder to fake and worth more when you have it.</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
@@ -69,22 +69,3 @@ Neither of these makes the exercise pointless. They make the *trend* the thing w
 
 Find out whether you are named at all. Not whether you rank — whether a model, asked the question your buyer would actually type, puts you in the answer. It takes about a minute and it is the only part of this you cannot reason your way to from the outside.
 
-<!-- wp:group {"backgroundColor":"ink","style":{"spacing":{"padding":{"top":"var:preset|spacing|50","bottom":"var:preset|spacing|50","left":"var:preset|spacing|40","right":"var:preset|spacing|40"}},"border":{"radius":"18px"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group has-ink-background-color has-background" style="border-radius:18px;padding-top:var(--wp--preset--spacing--50);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--50);padding-left:var(--wp--preset--spacing--40)">
-<!-- wp:heading {"level":2,"style":{"color":{"text":"#FFFFFF"}}} -->
-<h2 class="wp-block-heading" style="color:#FFFFFF">Do the models recommend you?</h2>
-<!-- /wp:heading -->
-
-<!-- wp:paragraph {"style":{"color":{"text":"#CBD0AC"}}} -->
-<p style="color:#CBD0AC">Fifteen buying questions, put to ChatGPT, Claude and Gemini. Your brand is never named in the question, and you see every question and every answer. Free, no account, about a minute.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:buttons -->
-<div class="wp-block-buttons">
-<!-- wp:button {"backgroundColor":"white","textColor":"ink"} -->
-<div class="wp-block-button"><a class="wp-block-button__link has-ink-color has-white-background-color has-text-color has-background wp-element-button" href="https://thallodigital.com/thallo-ai/">Check my visibility</a></div>
-<!-- /wp:button -->
-</div>
-<!-- /wp:buttons -->
-</div>
-<!-- /wp:group -->
