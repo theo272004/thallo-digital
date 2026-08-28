@@ -20,6 +20,7 @@ import {
   type ProviderResult,
   type ScanInput,
   type ScanPhase1,
+  type SourceHost,
   type ScanPhase2,
   type TechSignal,
 } from './types';
@@ -49,7 +50,7 @@ const RIVALS = ['Northwind', 'Sable & Co', 'Lumen Group', 'Vertex Partners', 'Ar
    anybody can review it in is a section nobody reviews. */
 const SOURCES = [
   'reddit.com',
-  'wikipedia.org',
+  'en.wikipedia.org',
   'linkedin.com',
   'forbes.com',
   'g2.com',
@@ -169,6 +170,48 @@ const REMEDY: Record<string, { title: string; detail: string }> = {
  * finds a brand more often than memory recalls it, which is the ordinary case
  * and the one the copy is written for.
  */
+/**
+ * The websites a searching answer was built from.
+ *
+ * Sample, like everything else in this file, and here for one reason: "Sources
+ * found" is the section a reviewer most needs to see filled, and preview mode
+ * has no keys, so nothing real ever arrives to fill it. The banner above the
+ * report says the whole screen is sample data; a section that stays empty in
+ * the only mode anybody can review it in is a section nobody reviews.
+ *
+ * Shaped exactly as `Thallo_Vis_Analysis::sources` returns it, down to the
+ * ordering rule — most-read first, the brand's own domain last however often it
+ * was opened — so what a reviewer approves here is what a real scan draws.
+ */
+function demoSources(phase1: ScanPhase1): SourceHost[] {
+  const rand = seeded(phase1.brand + phase1.domain + 'sources');
+
+  const rows: SourceHost[] = SOURCES.map((host, i) => {
+    const times = 2 + Math.floor(rand() * 4);
+    /* A source that names the brand is the exception rather than the rule, which
+       is the finding this panel usually has to deliver. */
+    const brand = rand() < 0.3;
+    return {
+      host,
+      times,
+      own: false,
+      brand,
+      names: RIVALS.slice(i % 3, (i % 3) + 2 + Math.floor(rand() * 2)),
+    };
+  })
+    .filter(() => rand() < 0.8)
+    .sort((a, b) => b.times - a.times || a.host.localeCompare(b.host));
+
+  /* Read directly about half the time. Both cases are worth reviewing: the
+     panel says something different when a model opened your site and still
+     recommended somebody else. */
+  if (rand() < 0.5) {
+    rows.push({ host: phase1.domain, times: 1 + Math.floor(rand() * 3), own: true, brand: true, names: [] });
+  }
+
+  return rows.slice(0, 8);
+}
+
 function demoGrounded(phase1: ScanPhase1): ScanPhase1 {
   const rand = seeded(phase1.brand + phase1.domain + 'web');
   /* Fewer questions asked twice, exactly as the plugin does: the search fee is
@@ -192,18 +235,12 @@ function demoGrounded(phase1: ScanPhase1): ScanPhase1 {
       };
     });
     const hits = answers.filter((a) => a.mentioned);
-    /* Between three and five of the list, plus the brand's own domain whenever
-       the model named it — a model that recommends you having read your site is
-       a different finding from one that recommends you having read a listicle,
-       and the section is built to tell them apart. */
-    const cited = SOURCES.filter(() => rand() < 0.5).slice(0, 5);
     return {
       provider: p.provider,
       model: `${p.model}:online`,
       mentions: hits.length,
       positions: hits.map((a) => a.position as number),
       answers,
-      sources: hits.length > 0 ? [...cited, phase1.domain] : cited,
     };
   });
 
@@ -318,6 +355,7 @@ export function demoPhase2(phase1: ScanPhase1): ScanPhase2 {
     techScore,
     serpScore,
     grounded: demoGrounded(phase1),
+    sources: demoSources(phase1),
     grade: gradeFor(combined),
     keyInsight:
       absent.length === 0

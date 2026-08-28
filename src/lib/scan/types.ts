@@ -92,21 +92,6 @@ export interface ProviderResult {
   /** Set when the provider errored out — the row renders as unavailable rather
       than as a zero, because "we could not ask" is not "you were not named". */
   error?: string;
-  /**
-   * Hosts the searching answers cited, deduplicated across the run.
-   *
-   * Only the searching reading can carry these, and it is the evidence behind
-   * every other number in the report: a model that recommends a competitor
-   * read something to get there, and that something is a page on a domain we
-   * can name. "Earn citations on authority sites" is advice; this is the list.
-   *
-   * Optional because the reading is older than the field. The extractor exists
-   * in the plugin — `Thallo_Vis_LLM` already normalises OpenRouter's
-   * `citations` and OpenAI's `annotations` onto one shape — and until the
-   * runner keeps them per answer, the console fills this section from the
-   * retrieval engines' own citations and says which is which.
-   */
-  sources?: string[];
 }
 
 /** Free tier. Enough to prove the problem, not enough to solve it. */
@@ -142,6 +127,33 @@ export interface Competitor {
   mentions: number;
   /** Which models named them. Two models agreeing is a stronger signal than one. */
   providers: MemoryProvider[];
+}
+
+/**
+ * One website a searching model opened on its way to an answer.
+ *
+ * The evidence under every other number in the report: a model that recommends
+ * somebody else read something to get there, and this is what it read. It also
+ * turns the flattest line of advice the tool gives — "earn citations on
+ * authority sites" — into a list of named sites in your own category.
+ *
+ * Pooled across the models rather than kept per model, which is how the backend
+ * counts it: what the panel is asked is where the category gets read, and three
+ * questions opening the same directory is one finding, not three.
+ */
+export interface SourceHost {
+  /** Bare hostname, lowercased, `www.` removed. */
+  host: string;
+  /** Answers that opened it. Two is the floor for anything but your own site —
+      once is a model following a link, twice is part of how the category reads. */
+  times: number;
+  /** Your own domain. Kept and flagged rather than dropped: "the only site that
+      mentioned you was your own" is one of the strongest findings here. */
+  own: boolean;
+  /** Whether the answers this source fed named the brand at all. */
+  brand: boolean;
+  /** Companies credited to this source, from the same answers that opened it. */
+  names: string[];
 }
 
 export interface RetrievalResult {
@@ -212,6 +224,11 @@ export interface ScanPhase2 {
    *  not a fourth component, and averaging it in would weight share of voice
    *  twice for a reason the reader could not see. */
   grounded?: ScanPhase1;
+  /** The websites the searching answers were built from, most-read first, with
+      the brand's own domain last. Absent when the searching half did not run or
+      cited nothing readable — an empty table and no table are different
+      statements and the panel makes the second one. */
+  sources?: SourceHost[];
   /** Every run of this brand in this market, oldest first, including the one
       just finished. A single-point series is the normal first-scan case and the
       chart says so rather than drawing a line through one dot. */

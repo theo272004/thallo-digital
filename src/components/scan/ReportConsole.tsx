@@ -11,7 +11,6 @@ import { BTN_PRIMARY, BTN_SECONDARY, Head, Micro, Panel, ProviderMark, Stat, Tin
 import {
   MEMORY_PROVIDERS,
   PROVIDER_LABEL,
-  type AnyProvider,
   type ProviderResult,
   type ScanPhase1,
   type ScanPhase2,
@@ -494,10 +493,10 @@ function Summary({
           badge={<Trophy size={18} />}
           level="section"
           title="How each model sees you"
-          sub="One card per model: what it says from memory, what it says after searching, and where it went to find out."
+          sub="One card per model: what it says with the web shut, what it says once it can search, and how much of the difference is worth chasing."
         />
         <div className="mt-6">
-          <ModelViews phase1={phase1} phase2={phase2} grounded={grounded} onGo={onGo} />
+          <ModelViews phase1={phase1} grounded={grounded} />
         </div>
       </Panel>
     </div>
@@ -693,63 +692,7 @@ function ReadingRow({ label, hits, asked }: { label: string; hits: number; asked
 
 /* ── How each model sees you ─────────────────────────────────────────────── */
 
-/**
- * Where a searching answer went to find out.
- *
- * Only the searching half can have these: a model answering from memory reads
- * nothing, so a source list beside its verdict would be a claim about a lookup
- * that never happened. The domains come from `sources` on the provider when the
- * backend keeps them, and from the retrieval engines' own citations meanwhile —
- * which is why Perplexity is the one card with a full list today.
- */
-function sourcesFor(provider: AnyProvider, phase2: ScanPhase2, grounded: ScanPhase1 | null): string[] {
-  const fromGrounded = grounded?.providers.find((p) => p.provider === provider)?.sources ?? [];
-  const fromRetrieval = phase2.retrieval.find((r) => r.provider === provider)?.citations ?? [];
-  const all = [...fromGrounded, ...fromRetrieval]
-    .map((s) => s.replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0].toLowerCase())
-    .filter(Boolean);
-  return [...new Set(all)];
-}
-
-/** Local marks only. A favicon service would put every reader's IP address in
-    front of a third party to decorate a list of domains, which is not a trade
-    this tool gets to make on their behalf. */
-const SOURCE_LOGO: Record<string, string> = {
-  'google.com': 'google.svg',
-  'forbes.com': 'forbes.svg',
-};
-
-function SourceMark({ host }: { host: string }) {
-  const file = SOURCE_LOGO[host];
-  return (
-    <span
-      title={host}
-      className="flex items-center gap-1.5 rounded-full border border-gray-200 bg-white py-1 pl-1 pr-2.5"
-    >
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#E7ECD9] text-[10px] font-bold uppercase text-[#39471D]">
-        {file ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={`${BASE}/logos/${file}`} alt="" aria-hidden="true" className="h-3.5 w-3.5 object-contain" />
-        ) : (
-          host.charAt(0)
-        )}
-      </span>
-      <span className="text-[11.5px] font-semibold text-gray-700">{host}</span>
-    </span>
-  );
-}
-
-function ModelViews({
-  phase1,
-  phase2,
-  grounded,
-  onGo,
-}: {
-  phase1: ScanPhase1;
-  phase2: ScanPhase2;
-  grounded: ScanPhase1 | null;
-  onGo: (id: SectionId) => void;
-}) {
+function ModelViews({ phase1, grounded }: { phase1: ScanPhase1; grounded: ScanPhase1 | null }) {
   const qs = phase1.questions.length;
 
   return (
@@ -757,7 +700,6 @@ function ModelViews({
       {MEMORY_PROVIDERS.map((id) => {
         const mem = phase1.providers.find((p) => p.provider === id);
         const web = grounded?.providers.find((p) => p.provider === id);
-        const sources = sourcesFor(id, phase2, grounded);
         const hits = (mem?.mentions ?? 0) + (web?.mentions ?? 0);
         const asked = (mem && !mem.error ? qs : 0) + (web && !web.error ? grounded!.questions.length : 0);
 
@@ -802,29 +744,6 @@ function ModelViews({
                 </span>
               </div>
 
-              <Micro className="mt-3 block text-gray-400">Sources it cited</Micro>
-              {sources.length > 0 ? (
-                <div className="mt-2 flex flex-wrap gap-1.5">
-                  {sources.slice(0, 4).map((host) => (
-                    <SourceMark key={host} host={host} />
-                  ))}
-                  {sources.length > 4 && (
-                    <button
-                      type="button"
-                      onClick={() => onGo('sources')}
-                      className="rounded-full border border-gray-200 px-2.5 py-1 text-[11.5px] font-bold text-gray-600 hover:border-[#39471D] hover:text-[#39471D]"
-                    >
-                      +{sources.length - 4}
-                    </button>
-                  )}
-                </div>
-              ) : (
-                <p className="mt-1.5 text-[12px] font-medium leading-relaxed text-gray-500">
-                  {grounded && web && !web.error
-                    ? 'This model did not return its sources on this run.'
-                    : 'Nothing to cite — a model answering from memory reads nothing.'}
-                </p>
-              )}
             </div>
           </div>
         );
@@ -835,15 +754,50 @@ function ModelViews({
 
 /* ── Sources ─────────────────────────────────────────────────────────────── */
 
+/** Local marks only. A favicon service would put every reader's IP address in
+    front of a third party to decorate a list of domains, which is not a trade
+    this tool gets to make on their behalf. Everything without a file we hold
+    wears its own initial, which is enough to tell a row from its neighbours. */
+const SOURCE_LOGO: Record<string, string> = {
+  'google.com': 'google.svg',
+  'forbes.com': 'forbes.svg',
+};
+
+function SourceMark({ host, size = 'sm' }: { host: string; size?: 'sm' | 'md' }) {
+  const file = SOURCE_LOGO[host];
+  const box = size === 'md' ? 'h-7 w-7 text-[12px]' : 'h-5 w-5 text-[10px]';
+  return (
+    <span
+      className={`flex ${box} shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#E7ECD9] font-bold uppercase text-[#39471D]`}
+      aria-hidden="true"
+    >
+      {file ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={`${BASE}/logos/${file}`} alt="" className="h-4 w-4 object-contain" />
+      ) : (
+        host.charAt(0)
+      )}
+    </span>
+  );
+}
+
 /**
- * Every domain the searching answers leaned on, in one place.
+ * The websites the answers were built from.
  *
- * The section a reader arrives at asking "why does it say that about me?" — and
- * the one that turns "earn citations on authority sites" from advice into a
- * list of named sites. It is deliberately honest about how much of it is filled
- * in: the models that search do return their citations, and this scan keeps
- * only the retrieval engines' own, so the panel says which is which rather than
- * presenting a short list as a complete one.
+ * The section a reader arrives at asking "why does it say that about me?", and
+ * the one that turns the flattest line of advice this tool gives — earn
+ * citations on authority sites — into a list of named sites in their own
+ * category. Every row is a page a model actually opened on this run.
+ *
+ * Three columns of evidence per row, and each is a different question: how
+ * often it was read, whether the answers it fed named the brand, and which
+ * companies it is credited with putting there. A source read four times that
+ * never names you is the clearest brief this report can hand a writer.
+ *
+ * The shape comes from the backend, which pools the hosts across the three
+ * models rather than keeping them per model — what the panel is asked is where
+ * the category gets read, and three questions opening the same directory is one
+ * finding, not three.
  */
 function SourcesSection({
   phase1,
@@ -854,13 +808,31 @@ function SourcesSection({
   phase2: ScanPhase2;
   grounded: ScanPhase1 | null;
 }) {
-  const rows = ([...MEMORY_PROVIDERS, 'perplexity', 'ai-overview'] as AnyProvider[])
-    .map((id) => ({ id, hosts: sourcesFor(id, phase2, grounded) }))
-    .filter((row) => row.hosts.length > 0);
+  const sources = phase2.sources ?? [];
+  const own = sources.filter((s) => s.own);
+  const outside = sources.filter((s) => !s.own);
+  const naming = outside.filter((s) => s.brand).length;
+  const silent = outside.filter((s) => !s.brand);
 
-  const everyHost = [...new Set(rows.flatMap((r) => r.hosts))];
-  const yours = everyHost.filter((h) => h === phase1.domain || h.endsWith(`.${phase1.domain}`));
-  const others = everyHost.filter((h) => !yours.includes(h));
+  if (sources.length === 0) {
+    return (
+      <Panel>
+        <Head
+          badge={<Link2 size={18} />}
+          level="section"
+          title="Where the answers came from"
+          sub="The pages a searching model opened before it answered."
+        />
+        <div className="mt-6 rounded-xl border border-gray-200 p-5">
+          <p className="text-[13px] font-medium leading-relaxed text-gray-600">
+            {grounded
+              ? 'The models searched but did not hand back a readable list of what they opened on this run. Only the searching half can have sources — a model answering from memory reads nothing.'
+              : 'The searching half of this scan did not run, so there is nothing to list. A model answering from memory reads nothing.'}
+          </p>
+        </div>
+      </Panel>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-5">
@@ -869,75 +841,118 @@ function SourcesSection({
           badge={<Link2 size={18} />}
           level="section"
           title="Where the answers came from"
-          sub="The pages a searching model read before it answered. These are the sites that decide what AI says about your category — and being on them is how a brand gets into an answer it is not already in."
+          sub="Every page a model opened on its way to an answer, most-read first. These are the sites that decide what AI says about your category — and getting onto them is how a brand enters an answer it is not already in."
+          chip={`${sources.length} ${sources.length === 1 ? 'site' : 'sites'}`}
         />
 
-        {rows.length === 0 ? (
-          <div className="mt-6 rounded-xl border border-gray-200 p-5">
-            <p className="text-[13px] font-medium leading-relaxed text-gray-600">
-              No model returned its sources on this scan. Only the searching half can have them — a model answering from
-              memory reads nothing — and the engines that do search did not hand back a citation list this time.
-            </p>
-          </div>
-        ) : (
-          <div className="mt-6 flex flex-col gap-3">
-            {rows.map(({ id, hosts }) => (
-              <div key={id} className="rounded-xl border border-gray-200 p-4">
-                <div className="flex items-center gap-2.5">
-                  <ProviderMark provider={id} />
-                  <p className="text-[13.5px] font-bold text-gray-900">{PROVIDER_LABEL[id]}</p>
-                  <span className="ml-auto text-[12px] font-semibold text-gray-500">
-                    {hosts.length} {hosts.length === 1 ? 'source' : 'sources'}
-                  </span>
-                </div>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {hosts.map((host) => (
-                    <SourceMark key={host} host={host} />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        {/* The finding, above the table that supports it. */}
+        <div className="mt-6 grid grid-cols-1 divide-y divide-gray-100 border-y border-gray-100 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+          <Stat value={String(outside.length)} label="Sites outside your own" note="Third-party pages the models read" />
+          <Stat
+            value={String(naming)}
+            label={`Of those, name ${phase1.brand}`}
+            note={naming === 0 ? 'Not one of them mentions you' : 'These are the ones already working for you'}
+            muted={naming === 0}
+          />
+          <Stat
+            value={own.length > 0 ? 'Yes' : 'No'}
+            label="Your own site was read"
+            note={own.length > 0 ? `${phase1.domain} was opened directly` : 'No model opened your domain'}
+            muted={own.length === 0}
+          />
+        </div>
+
+        <div className="mt-6 overflow-x-auto">
+          <table className="w-full min-w-[560px] border-collapse text-left">
+            <thead>
+              <tr className="border-b border-gray-200">
+                <th className="pb-2.5 pr-4">
+                  <Micro className="text-gray-400">Source</Micro>
+                </th>
+                <th className="pb-2.5 pr-4">
+                  <Micro className="text-gray-400">Times read</Micro>
+                </th>
+                <th className="pb-2.5 pr-4">
+                  <Micro className="text-gray-400">Names you</Micro>
+                </th>
+                <th className="pb-2.5">
+                  <Micro className="text-gray-400">Who it recommends</Micro>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {sources.map((source) => (
+                <tr key={source.host} className="border-b border-gray-100 last:border-0">
+                  <td className="py-3.5 pr-4">
+                    <span className="flex items-center gap-2.5">
+                      <SourceMark host={source.host} size="md" />
+                      <span className="min-w-0">
+                        <span className="block truncate text-[13.5px] font-bold text-gray-900">{source.host}</span>
+                        {source.own && <Micro className="text-[#55672E]">Your site</Micro>}
+                      </span>
+                    </span>
+                  </td>
+                  <td className="py-3.5 pr-4">
+                    <span className="text-[13.5px] font-bold tabular-nums text-gray-900">{source.times}&times;</span>
+                  </td>
+                  <td className="py-3.5 pr-4">
+                    <Verdict tone={source.brand ? 'on' : 'off'}>{source.brand ? 'Yes' : 'No'}</Verdict>
+                  </td>
+                  <td className="py-3.5">
+                    {source.names.length > 0 ? (
+                      <span className="flex flex-wrap gap-1.5">
+                        {source.names.map((name) => (
+                          <span
+                            key={name}
+                            className="rounded-full border border-gray-200 px-2.5 py-1 text-[11.5px] font-semibold text-gray-600"
+                          >
+                            {name}
+                          </span>
+                        ))}
+                      </span>
+                    ) : (
+                      <span className="text-[12px] font-semibold text-gray-400">No company named</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <p className="mt-4 text-[11.5px] font-medium leading-relaxed text-gray-500">
+          A site read once is a model following a link; the table starts at twice, across different answers, which is
+          where it becomes part of how the category is read. Your own domain is kept however often it was opened.
+        </p>
       </Panel>
 
-      {everyHost.length > 0 && (
-        <Panel>
-          <Head
-            badge={<Trophy size={18} />}
-            level="section"
-            title="Are you one of them?"
-            sub="Your own domain appearing here means a model read your site before answering. Everything else is somebody else's page shaping what it said about your category."
-          />
-          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <div>
-              <Micro className="text-gray-400">Your site</Micro>
-              <div className="mt-2">
-                {yours.length > 0 ? (
-                  <div className="flex flex-wrap gap-1.5">
-                    {yours.map((host) => (
-                      <SourceMark key={host} host={host} />
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-[12.5px] font-medium leading-relaxed text-gray-600">
-                    {phase1.domain} was not among the pages any model read. That is the gap the plan under &ldquo;What
-                    to do now&rdquo; is written to close.
-                  </p>
-                )}
-              </div>
+      {/* The brief, written out of the table above. */}
+      <Panel>
+        <Head
+          badge={<Trophy size={18} />}
+          level="section"
+          title="What this list is for"
+          sub="A source that gets read and does not name you is not a fault in your website. It is a page somebody else is on and you are not."
+        />
+        <div className="mt-6 flex flex-col gap-2.5">
+          {silent.slice(0, 5).map((s) => (
+            <div key={s.host} className="flex flex-wrap items-center gap-x-3 gap-y-1.5 rounded-xl border border-gray-200 p-4">
+              <SourceMark host={s.host} />
+              <span className="text-[13.5px] font-bold text-gray-900">{s.host}</span>
+              <span className="text-[12.5px] font-medium text-gray-600">
+                read {s.times}&times; ·{' '}
+                {s.names.length > 0 ? `recommends ${s.names.slice(0, 2).join(', ')}` : 'named no company'} · not you
+              </span>
             </div>
-            <div>
-              <Micro className="text-gray-400">Everyone else · {others.length}</Micro>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                {others.slice(0, 12).map((host) => (
-                  <SourceMark key={host} host={host} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </Panel>
-      )}
+          ))}
+          {silent.length === 0 && (
+            <p className="text-[13px] font-medium leading-relaxed text-gray-600">
+              Every third-party source the models read already names {phase1.brand}. That is the position this report is
+              usually written to get a brand into.
+            </p>
+          )}
+        </div>
+      </Panel>
     </div>
   );
 }
