@@ -96,9 +96,26 @@ export default function Footer() {
         </a>
       </div>
 
+      {/* Three items on one line, and the credit is the third rather than a
+          line of its own: a studio's name under a client's copyright notice
+          reads as a second signature on the page. Here it sits at the end of
+          the row the small print already occupies, in the same grey, and only
+          the name itself is a link — "Developed by" is not part of the target,
+          so the click area is the studio and nothing else. */}
       <div className="max-w-[1440px] mx-auto px-6 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-medium tracking-wider text-gray-400">
         <span>© 2026 Thallo Digital. All rights reserved.</span>
-        <span>LinkedIn · X · hello@thallodigital.com</span>
+        <span className="order-3">
+          Developed by{' '}
+          <a
+            href="https://kaivastudio.com"
+            target="_blank"
+            rel="noopener"
+            className="font-bold text-gray-500 underline underline-offset-2 transition-colors hover:text-[#39471D]"
+          >
+            Kaiva Studio
+          </a>
+        </span>
+        <span className="order-2">LinkedIn · X · hello@thallodigital.com</span>
       </div>
     </footer>
   );

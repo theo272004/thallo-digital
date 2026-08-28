@@ -707,6 +707,18 @@ body.single .wp-site-blocks > main {
 .thallo-foot__legal a:hover {
   color: var(--wp--preset--color--olive);
 }
+/* The studio's name is the only link on the base line, so it is the only thing
+   there that is underlined — the two spans beside it are notices, not
+   destinations, and underlining all three would make the row read as a menu. */
+.thallo-foot__by {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.thallo-foot__by:hover {
+  color: var(--wp--preset--color--olive);
+}
 .thallo-foot__legal {
   max-width: 1440px;
   margin: 0 auto;
