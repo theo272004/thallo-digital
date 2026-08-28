@@ -278,7 +278,7 @@ export default function HowItWorks() {
                     the border moves: those cards also lift and cast a shadow,
                     and a 26px pill doing that reads as a button promising
                     something it does not do. */}
-                <div className="flex flex-wrap gap-1.5 mt-3.5">
+                <div className="flex flex-wrap gap-1.5 mt-3.5 justify-center lg:justify-start">
                   <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Visibility baseline</span>
                   <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Competitor citation gap</span>
                   <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Question map</span>
@@ -300,7 +300,7 @@ export default function HowItWorks() {
                   Original research and expert content built on your own data. The kind of thing a machine
                   can&rsquo;t produce, because it requires knowing something nobody else knows.
                 </p>
-                <div className="flex flex-wrap gap-1.5 mt-3.5">
+                <div className="flex flex-wrap gap-1.5 mt-3.5 justify-center lg:justify-start">
                   <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Data studies</span>
                   <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Research reports</span>
                   <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Whitepapers</span>
@@ -323,7 +323,7 @@ export default function HowItWorks() {
                   A site that search engines and AI models can parse, understand, and cite. Structured around the
                   questions your buyers actually type, not the keywords a tool suggested.
                 </p>
-                <div className="flex flex-wrap gap-1.5 mt-3.5">
+                <div className="flex flex-wrap gap-1.5 mt-3.5 justify-center lg:justify-start">
                   <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Technical SEO</span>
                   <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Pillar pages</span>
                   <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Generative Engine Optimization</span>
@@ -345,7 +345,7 @@ export default function HowItWorks() {
                   Publishing isn&rsquo;t reaching. We take the work to where opinions get formed, which is also where
                   the models go looking for sources.
                 </p>
-                <div className="flex flex-wrap gap-1.5 mt-3.5">
+                <div className="flex flex-wrap gap-1.5 mt-3.5 justify-center lg:justify-start">
                   <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">LinkedIn</span>
                   <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Communities</span>
                   <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Podcasts</span>

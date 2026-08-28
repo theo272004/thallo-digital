@@ -174,7 +174,12 @@ Website: ${payload.website}`
         </div>
       </div>
 
-      <div className="mb-3">
+      {/* En el teléfono este campo no se muestra: la fila de chips se
+          parte en varias líneas y alarga el formulario justo antes del
+          campo que de verdad importa. Es `hidden`, no una eliminación —
+          los chips siguen montados y la selección se sigue enviando,
+          porque el envío lee el estado de React y no el DOM. */}
+      <div className="mb-3 hidden sm:block">
         <PlanChips
           plans={plans}
           selected={selectedPlans}

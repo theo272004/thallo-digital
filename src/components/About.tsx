@@ -20,7 +20,15 @@ export default function About() {
 
       {/* Text — normal flow on small screens, absolute-centered on xl+ */}
       <div className="xl:absolute xl:inset-0 flex items-center justify-center px-6" style={{ zIndex: 10 }}>
-        <div className="max-w-3xl text-center relative">
+        {/* `min-w-0` + `w-full` son lo que impide que esto se desborde en el
+            teléfono. El ticker de abajo mide 420px fijos, y como este div es un
+            flex item con `min-width: auto` heredaba ese ancho como mínimo: en una
+            pantalla de 390px el bloque salía 420px de ancho, centrado, y el titular,
+            el párrafo y el propio ticker quedaban cortados por igual a lado y lado.
+            Dejándolo encoger, el ticker respeta su `maxWidth: 100%` y todo cabe.
+            En xl+ no cambia nada: ahí el contenedor sobra y `max-w-3xl` sigue
+            mandando, así que el portátil y el teléfono no se mueven. */}
+        <div className="w-full min-w-0 max-w-3xl text-center relative">
           {/* Mobile: in normal flow above the label */}
           <div className="mb-6 flex justify-center xl:hidden">
             <SpinFlower alt="Thallo" className="block w-16 h-16 opacity-80" />

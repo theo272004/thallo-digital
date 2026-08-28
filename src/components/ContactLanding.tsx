@@ -281,7 +281,12 @@ export default function ContactLanding() {
                     {/* The same field the enquiry form in the closing panels
                         carries, so an enquiry arriving here is not missing what
                         one arriving from a plans page would have. */}
-                    <div className="mt-5">
+                    {/* En el teléfono este campo no se muestra: la fila de chips se
+                        parte en varias líneas y alarga el formulario justo antes del
+                        campo que de verdad importa. Es `hidden`, no una eliminación —
+                        los chips siguen montados y la selección se sigue enviando,
+                        porque el envío lee el estado de React y no el DOM. */}
+                    <div className="mt-5 hidden sm:block">
                       <PlanChips
                         plans={ENQUIRY_PLANS}
                         selected={selectedPlans}
