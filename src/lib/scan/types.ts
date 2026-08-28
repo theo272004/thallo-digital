@@ -137,6 +137,90 @@ export interface RetrievalResult {
   citations?: string[];
 }
 
+/**
+ * What one model said when asked, by name, what this company is.
+ *
+ * ## Why this exists
+ *
+ * Nearly every brand that runs this scan comes back at 0% share of answer, and
+ * a zero tells its story exactly once. It confirms absence and gives the reader
+ * nothing to do — worse, it flattens three completely different situations into
+ * one number: the model has never heard of you, the model knows you and cannot
+ * say who you are for, and the model resolves your name to somebody else's
+ * company. The last of those is not absence at all. It is a buyer asking about
+ * you by name and being handed a different business, and it is both the most
+ * damaging of the three and the most fixable.
+ *
+ * This is the one question in the whole scan that names the brand, which every
+ * other question here is forbidden from doing. The rule it breaks exists to
+ * stop a model agreeing with a premise we handed it — that is about *ranking*.
+ * This is not a ranking question: it asks the model to identify an entity, and
+ * every part of the answer is checked against something we already hold rather
+ * than taken at its word.
+ */
+export type EntityVerdict =
+  /** Knows what you do and who you do it for. */
+  | 'resolved'
+  /** Knows the company; cannot state a buyer, or volunteered doubt. */
+  | 'partial'
+  /** Named a website that is not yours — it is describing a different company. */
+  | 'mismatch'
+  /** Said plainly that it does not recognise the name. The honest zero. */
+  | 'unknown'
+  /** The call failed. A fault at our end, never a finding about the brand. */
+  | 'unavailable';
+
+export interface EntityCheck {
+  provider: MemoryProvider;
+  /** The model id asked, printed so the row is reproducible. */
+  model: string;
+  verdict: EntityVerdict;
+  /** What the model said the company does, in its own words. */
+  what: string;
+  /** Who it said the company serves. Empty is itself the finding on `partial`. */
+  serves: string;
+  /** The site the model believes owns this name. Only set on `mismatch`, where
+      it is the evidence for the accusation and has to be visible. */
+  claimedDomain?: string;
+  /** Set on `unavailable`, and shown small and grey — it is what makes the
+      failure fixable, not a statement about the brand. */
+  error?: string;
+}
+
+/**
+ * One website the searching models opened before answering, and who was named
+ * in the answers that opened it.
+ *
+ * ## Why this is the most useful panel in the report
+ *
+ * Every other figure here tells somebody where they stand. This one tells them
+ * where the ground is. When a model searches before it answers, the pages it
+ * read are the shortest available description of what earns a recommendation in
+ * that category — and unlike a percentage, every row names something a person
+ * can go and do: get into that roundup, get reviewed on that directory, get
+ * quoted in that trade publication.
+ *
+ * It is also the only part of this report a reader could not reconstruct on
+ * their own in an afternoon, which is the honest test of whether a free report
+ * was worth their email address.
+ */
+export interface AnswerSource {
+  /** Bare host — `g2.com`, `reddit.com`. */
+  host: string;
+  /** How many answers opened it, de-duplicated within each answer. */
+  times: number;
+  /** The brand's own domain. Kept and flagged rather than dropped: "every
+      source that mentioned you was your own website" is one of the strongest
+      findings this report produces, and dropping the row would delete it. */
+  own: boolean;
+  /** Whether the brand itself was named in the answers that cited this host. */
+  brand: boolean;
+  /** Companies named in those same answers, most-named first. Not the run's
+      leaders — crediting from the whole run would put every leader against
+      every source and turn a finding into a matrix of ticks. */
+  names: string[];
+}
+
 export interface TechSignal {
   id: string;
   label: string;
@@ -185,6 +269,16 @@ export interface ScanPhase2 {
   serpScore: number;
   grade: Grade;
   keyInsight: string;
+  /** The direct question, one row per model. Absent when the check did not run
+      — a missing panel is honest, a panel reading "not measured" implies we
+      tried. */
+  entity?: EntityCheck[];
+  /** The sentence under that panel, counted from the rows on the server so it
+      cannot disagree with them. */
+  entityReading?: string;
+  /** The pages the searching models opened. Absent when the searching reading
+      did not run, or ran and cited nothing readable. */
+  sources?: AnswerSource[];
   actions: ActionItem[];
   /** The same three models over the same questions, with web search on.
    *
@@ -239,6 +333,9 @@ export interface ScanSession {
   demo: boolean;
   phase1?: ScanPhase1;
   phase2?: ScanPhase2;
+  /** What is left of the free allowance after this scan. Returned on every
+      response so the report can print "scan 2 of 3" without a second call. */
+  quota?: ScanQuota;
   /** Set on `failed`, and shown verbatim. */
   error?: string;
 }
@@ -279,6 +376,35 @@ export interface ScanInput {
 }
 
 /**
+ * The same scan, pointed at somebody else.
+ *
+ * A report ends with a leaderboard of the companies being recommended instead
+ * of the reader, and the obvious next question — *how do they score?* — used to
+ * mean going back to an empty form and retyping three questions from memory,
+ * which is enough friction that almost nobody did it. This is the setup screen
+ * seeded from the report that produced it.
+ *
+ * Everything except the company carries over, and that is the point rather than
+ * a convenience: two reports are only comparable if the questions, the category
+ * and the market are identical. The fields are all still editable — a visitor
+ * may well want to change the category once they see whose report it is — but
+ * the default is the comparison rather than a fresh unrelated scan.
+ *
+ * `domain` is the one field that usually arrives empty. See `ScanSetup`: we
+ * will not guess a website from a company name, because the brand match keys on
+ * the domain root and a wrong guess reports a competitor as absent from answers
+ * that named them.
+ */
+export interface Rematch {
+  brand: string;
+  domain: string;
+  industry: string;
+  market: string;
+  questions: string[];
+  email: string;
+}
+
+/**
  * Ceiling on the prompt list, and the free tier's whole shape.
  *
  * Three questions × three models, asked twice — once from memory, once with
@@ -302,28 +428,146 @@ export const SCAN_STEPS: readonly Omit<StepStatus, 'state'>[] = [
   { id: 'gemini', label: 'Gemini', phase: 1 },
   { id: 'perplexity', label: 'Perplexity', phase: 2 },
   { id: 'ai-overview', label: 'Google AI Overview', phase: 2 },
-  { id: 'technical', label: 'Website & technical signals', phase: 2 },
 ];
 
 /**
  * Suggestions for the category field — not the set of allowed answers.
  *
- * The setup screen offers these in a `datalist` and accepts anything else
- * typed over them, because the backend always did: `industry_label()` passes an
- * unrecognised label through untouched, and only the eight below have
- * translations. A closed dropdown made a pizzeria pick the nearest wrong box,
- * and that box is what phase 2 then searches Google for.
+ * The setup screen offers these under a free-text input and accepts anything
+ * else typed over them, because the backend always did: `industry_label()`
+ * passes an unrecognised label through untouched, and only the entries below
+ * have translations. A closed dropdown made a business pick the nearest wrong
+ * box, and that box is what phase 2 then searches Google for.
+ *
+ * **These are the five industries Thallo sells to**, in the order the site
+ * lists them, plus the two adjacent categories that come up often enough to be
+ * worth a suggestion. They used to be a general catalogue — "e-commerce &
+ * retail", "marketing & advertising" — with a placeholder reading "pizzerias,
+ * legal tech, wedding photography". Two of those three will never pay for a
+ * retainer that starts at $2,500 a month, and this field is what decides which
+ * leads come through the door: whatever is printed here is what most people
+ * type, so printing the wrong examples is not a copy problem, it is a
+ * targeting one.
  */
 export const INDUSTRIES = [
-  'Fintech & payments',
-  'Health tech & recovery',
-  'Enterprise software / SaaS',
-  'Professional services',
+  'Fintech',
+  'Health tech',
   'Legal tech',
-  'Logistics & supply chain',
-  'E-commerce & retail',
-  'Marketing & advertising',
+  'Specialized software',
+  'Professional services',
+  'Insurance & claims',
+  'Enterprise software / SaaS',
 ] as const;
+
+// ---------------------------------------------------------------------------
+// The address the report is sent to
+// ---------------------------------------------------------------------------
+
+/**
+ * Mailbox providers that are not a company.
+ *
+ * A scan costs real money on the first call and the report is a sales
+ * conversation with whoever reads it, so the address is the qualification: an
+ * engagement that starts at $2,500 a month is approved by somebody with a
+ * company domain in their signature. This is a hard gate rather than a warning
+ * — see `isWorkEmail` — and the list is deliberately short. It catches the
+ * consumer mailboxes and the throwaway ones, and nothing else: a rule broad
+ * enough to catch every free provider on earth would also start rejecting small
+ * hosts that real companies use.
+ *
+ * Kept in sync with `Thallo_Vis_REST::FREE_MAIL_DOMAINS`, which is the copy that
+ * actually enforces it — this one only exists to say so before the button is
+ * pressed instead of after.
+ */
+export const FREE_EMAIL_DOMAINS: readonly string[] = [
+  'gmail.com',
+  'googlemail.com',
+  'outlook.com',
+  'outlook.es',
+  'hotmail.com',
+  'hotmail.es',
+  'hotmail.co.uk',
+  'live.com',
+  'live.com.mx',
+  'msn.com',
+  'yahoo.com',
+  'yahoo.es',
+  'yahoo.com.mx',
+  'yahoo.com.br',
+  'ymail.com',
+  'icloud.com',
+  'me.com',
+  'mac.com',
+  'aol.com',
+  'gmx.com',
+  'gmx.net',
+  'mail.com',
+  'zoho.com',
+  'yandex.com',
+  'yandex.ru',
+  'protonmail.com',
+  'proton.me',
+  'pm.me',
+  'tutanota.com',
+  'mail.ru',
+  'inbox.ru',
+  'bol.com.br',
+  'uol.com.br',
+  'terra.com.br',
+  'hotmail.com.br',
+  'yahoo.com.ar',
+  'hotmail.com.ar',
+  // Disposable — these exist to be thrown away, which is the opposite of a lead.
+  'mailinator.com',
+  'guerrillamail.com',
+  'yopmail.com',
+  '10minutemail.com',
+  'temp-mail.org',
+  'trashmail.com',
+  'sharklasers.com',
+  'dispostable.com',
+  'getnada.com',
+  'maildrop.cc',
+];
+
+/** The domain part of an address, lowercased. Empty when there is not one. */
+export function emailDomain(value: string): string {
+  const at = value.trim().toLowerCase().lastIndexOf('@');
+  return at === -1 ? '' : value.trim().toLowerCase().slice(at + 1);
+}
+
+/** True when the address is on a company domain rather than a mailbox provider. */
+export function isWorkEmail(value: string): boolean {
+  const domain = emailDomain(value);
+  return domain !== '' && !FREE_EMAIL_DOMAINS.includes(domain);
+}
+
+// ---------------------------------------------------------------------------
+// The free allowance
+// ---------------------------------------------------------------------------
+
+/**
+ * How many free scans are left, and why — counted on the server, printed on the
+ * setup screen before anything is spent.
+ *
+ * The count is not one number. A cookie alone is cleared in ten seconds, so
+ * four things are counted together and the tightest of them wins: the browser
+ * session, the address, the network, and the domain being scanned. Only
+ * `remaining` and `limit` are rendered as "Scan 1 of 3"; `reason` is what the
+ * message says when the allowance is gone, and it is written as an invitation
+ * rather than as a technical refusal, because a visitor who has run three scans
+ * is the most interested person to reach this page all week.
+ */
+export interface ScanQuota {
+  /** Free scans still available to this visitor. Never negative. */
+  remaining: number;
+  /** The headline allowance — what the "1 of 3" counter counts against. */
+  limit: number;
+  /** Which of the four layers is binding: session, email, ip, domain, or site. */
+  limitedBy?: 'session' | 'email' | 'ip' | 'domain' | 'site';
+  /** Shown when `remaining` is 0. Prose for a person, never an error code. */
+  reason?: string;
+}
 
 export function gradeFor(score: number): Grade {
   if (score >= 80) return 'A';

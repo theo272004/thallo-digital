@@ -47,14 +47,14 @@
 </ul>
 <!-- /wp:list -->
 
-<!-- wp:group {"className":"thallo-callout","backgroundColor":"ink","style":{"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40","right":"var:preset|spacing|40"}},"border":{"radius":"14px"}},"layout":{"type":"constrained"}} -->
-<div class="wp-block-group thallo-callout has-ink-background-color has-background" style="border-radius:14px;padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40)">
+<!-- wp:group {"className":"thallo-callout","backgroundColor":"olive","style":{"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40","right":"var:preset|spacing|40"}},"border":{"radius":"14px"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group thallo-callout has-olive-background-color has-background" style="border-radius:14px;padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40)">
 <!-- wp:heading {"level":4} -->
 <h4 class="wp-block-heading">The point, in one line</h4>
 <!-- /wp:heading -->
 
-<!-- wp:paragraph {"style":{"color":{"text":"#111827"}}} -->
-<p style="color:#111827">Use this box once, for the sentence you would want quoted back to you. Twice in one post and it stops meaning anything.</p>
+<!-- wp:paragraph -->
+<p>Use this box once, for the sentence you would want quoted back to you. Twice in one post and it stops meaning anything.</p>
 <!-- /wp:paragraph -->
 </div>
 <!-- /wp:group -->
@@ -72,5 +72,5 @@
 <!-- /wp:separator -->
 
 <!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size"><em>Want to know whether the models name you? <a href="https://thallodigital.com/thallo-ai/">Run the free visibility scan</a> — fifteen buying questions, three models, every question and answer shown.</em></p>
+<p class="has-small-font-size"><em>Want to know whether the models name you? <a href="https://thallodigital.com/thallo-ai/scan/">Run the free visibility scan</a> — fifteen buying questions, three models, every question and answer shown.</em></p>
 <!-- /wp:paragraph -->

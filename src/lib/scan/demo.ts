@@ -21,7 +21,6 @@ import {
   type ScanInput,
   type ScanPhase1,
   type ScanPhase2,
-  type TechSignal,
 } from './types';
 
 /** Stable pseudo-random from a seed, so the same brand always demos the same. */
@@ -216,39 +215,13 @@ export function demoPhase2(phase1: ScanPhase1): ScanPhase2 {
     }))
     .sort((a, b) => b.mentions - a.mentions);
 
-  const checks: Omit<TechSignal, 'earned'>[] = [
-    {
-      id: 'ai-crawlers',
-      label: 'AI crawlers allowed in robots.txt',
-      status: rand() > 0.4 ? 'pass' : 'fail',
-      weight: 25,
-      note: 'GPTBot, ClaudeBot, PerplexityBot, Google-Extended',
-    },
-    { id: 'https', label: 'HTTPS enabled', status: 'pass', weight: 5 },
-    { id: 'schema', label: 'Organization schema markup', status: rand() > 0.5 ? 'pass' : 'fail', weight: 15 },
-    { id: 'about', label: 'About page with named people', status: rand() > 0.5 ? 'pass' : 'warn', weight: 10 },
-    { id: 'blog', label: 'Content published in the last 6 months', status: rand() > 0.45 ? 'pass' : 'fail', weight: 10 },
-    { id: 'faq', label: 'Structured FAQ schema', status: rand() > 0.6 ? 'pass' : 'fail', weight: 10 },
-    { id: 'citations', label: 'Cited on third-party authority sites', status: rand() > 0.55 ? 'pass' : 'fail', weight: 25 },
-    {
-      id: 'llms-txt',
-      label: 'llms.txt file',
-      status: 'warn',
-      weight: 0,
-      note: 'Not scored. No major AI system is known to read it, so its absence costs nothing.',
-    },
-  ];
-
-  const signals: TechSignal[] = checks.map((s) => ({
-    ...s,
-    earned: s.status === 'pass' ? s.weight : s.status === 'warn' ? Math.round(s.weight / 2) : 0,
-  }));
-
-  const techScore = signals.reduce((sum, s) => sum + s.earned, 0);
   /* −1 renders as a dash. Nothing was retrieved, so there is no reading to
      give — and the grade below averages only the parts that were measured. */
   const serpScore = -1;
-  const combined = Math.round((phase1.sovPct + techScore) / 2);
+  /* The share of voice alone now. There used to be a technical score averaged
+     in here; the scan no longer runs those checks — see the note in
+     `FullReport` — so there is nothing else measured to average with. */
+  const combined = phase1.sovPct;
 
   /* A sample series, so the trend chart can be shown before any brand has a
      real second run. It is invented in exactly the way every other number on
@@ -268,8 +241,6 @@ export function demoPhase2(phase1: ScanPhase1): ScanPhase2 {
     };
   });
 
-  const gaps = [...signals].filter((s) => s.weight > 0 && s.status !== 'pass').sort((a, b) => b.weight - a.weight);
-  const remedyFor = (i: number) => (gaps[i] ? REMEDY[gaps[i].id] ?? REMEDY.default : null);
   const named = phase1.providers.filter((p) => p.mentions > 0);
   const absent = phase1.providers.filter((p) => p.mentions === 0);
 
@@ -292,30 +263,72 @@ export function demoPhase2(phase1: ScanPhase1): ScanPhase2 {
         detail: 'Sample data — no search-results provider is connected, so the AI Overview was not read.',
       },
     ],
-    signals,
-    techScore,
+    /* Empty, and kept in the payload rather than removed from the type: a
+       cached bundle from before the technical panel was dropped still reads
+       these, and an empty list is what every consumer already treats as "the
+       step did not run". */
+    signals: [],
+    techScore: 0,
     serpScore,
     grounded: demoGrounded(phase1),
     grade: gradeFor(combined),
+    /* Deliberately one of each, not three tidy passes. The panel exists because
+       the three failure modes look nothing alike, and a preview that only shows
+       the healthy one teaches whoever is reviewing this interface that the other
+       two do not need designing for. Mirrors `Runner::demo_entity()`. */
+    entity: [
+      {
+        provider: 'chatgpt',
+        model: 'sample data',
+        verdict: 'partial',
+        what: `Sample data — a plausible description of what ${phase1.brand} does.`,
+        serves: '',
+      },
+      {
+        provider: 'claude',
+        model: 'sample data',
+        verdict: 'mismatch',
+        what: 'Sample data — a company of the same name in another market.',
+        serves: 'Sample data — the wrong buyer, because it is the wrong company.',
+        claimedDomain: 'example-consultancy.com',
+      },
+      {
+        provider: 'gemini',
+        model: 'sample data',
+        verdict: 'unknown',
+        what: '',
+        serves: '',
+      },
+    ],
+    entityReading: `Sample data — 1 model out of 3 resolves the name ${phase1.brand} to a different company. A buyer who asks about you by name is being shown somebody else.`,
+    /* The shape this panel takes in almost every real report: a handful of
+       third-party sources carrying the competitors, and the brand's own website
+       carrying the brand. Invented like everything else here, and it travels
+       with `demo: true` and the banner. */
+    sources: [
+      { host: 'example-reviews.com', times: 6, own: false, brand: false, names: RIVALS.slice(0, 3) },
+      { host: 'example-directory.com', times: 5, own: false, brand: false, names: RIVALS.slice(0, 2) },
+      { host: 'example-tradepress.com', times: 4, own: false, brand: false, names: RIVALS.slice(1, 3) },
+      { host: 'reddit.example', times: 3, own: false, brand: false, names: RIVALS.slice(0, 1) },
+      { host: phase1.domain, times: 2, own: true, brand: true, names: [] },
+    ],
     keyInsight:
       absent.length === 0
         ? `${phase1.brand} is named by every model tested, but rarely in first position. The gap is ranking, not recognition.`
         : named.length === 0
           ? `No model tested named ${phase1.brand} in any of the ${phase1.totalAnswers} answers. The brand is not an established entity in this category — that is a content and citation problem, not a website problem.`
           : `${phase1.brand} is recognised by some models but absent from others. Uneven coverage usually means citations exist but are concentrated in too few sources.`,
+    /* Mirrors what the plugin now produces: the technical remedies are gone
+       with the checks that generated them, so the plan is entirely about the
+       answers. */
     actions: [
-      { ...(remedyFor(0) ?? REMEDY.default), impact: 4, priority: 'high' },
-      {
-        ...(remedyFor(1) ?? (gaps[0]?.id === 'citations' ? REMEDY.default : REMEDY.citations)),
-        impact: 4,
-        priority: 'high',
-      },
+      { ...REMEDY.citations, impact: 4, priority: 'high' },
       {
         title: 'Make the entity unambiguous',
         detail:
           'Consistent name, description and category across your site, Wikidata, LinkedIn and industry directories.',
         impact: 3,
-        priority: 'medium',
+        priority: 'high',
       },
     ],
   };

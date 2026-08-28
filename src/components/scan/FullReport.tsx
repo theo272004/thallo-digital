@@ -6,15 +6,19 @@ import AnswerLists from './AnswerLists';
 import AuditTrail from './AuditTrail';
 import ScoreRing from './ScoreRing';
 import TrendChart from './TrendChart';
-import { Compass, FileText, Gauge, ListChecks, MessagesSquare, Search, TrendingUp, Trophy } from 'lucide-react';
+import { BadgeCheck, BookOpen, Compass, FileText, ListChecks, MessagesSquare, Search, TrendingUp, Trophy } from 'lucide-react';
 import { BTN_PRIMARY, BTN_SECONDARY, Head, Meter, Micro, Panel, ProviderMark, Stat, Tint, Verdict, type Tone } from './ui';
 import {
   PROVIDER_LABEL,
+  type AnswerSource,
+  type EntityCheck,
+  type EntityVerdict,
   type MemoryProvider,
+  type Rematch,
   type ScanPhase1,
   type ScanPhase2,
+  type ScanQuota,
   type RetrievalResult,
-  type TechSignal,
 } from '@/lib/scan/types';
 import { BASE } from '@/lib/site';
 
@@ -32,15 +36,218 @@ const RETRIEVAL_LABEL: Record<RetrievalResult['status'], string> = {
   unavailable: 'Not measured',
 };
 
-export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; phase2: ScanPhase2 }) {
-  const scoredSignals = phase2.signals.filter((s) => s.weight > 0);
-  const maxTech = scoredSignals.reduce((sum, s) => sum + s.weight, 0);
+/**
+ * The closing headline, derived from the report rather than fixed.
+ *
+ * A closing line that could sit under any report is a line nobody reads, and
+ * this one has to carry the whole ask. Ordered by which finding is actually the
+ * strongest, not by which panel came last:
+ *
+ *   1. The sources. "Five websites decide this category and you are on none of
+ *      them" is the most specific, most actionable thing this scan produces.
+ *   2. A wrong-entity verdict. Rarer, and more urgent than any ranking finding:
+ *      a buyer asking about you by name is being shown another company.
+ *   3. Absent from both readings — the ordinary zero, said plainly.
+ *   4. Everything else.
+ */
+/**
+ * The closing argument, written from this scan.
+ *
+ * ## Why it is not one fixed paragraph
+ *
+ * It was, and it converted nobody. "Measuring it is the easy half" is true of
+ * every report this tool has ever produced, which is exactly what makes it
+ * unreadable: a closing line that could sit under anybody's results is one the
+ * reader has already skipped by the time they reach it. There was no reason in
+ * it to act, because there was nothing in it about them.
+ *
+ * So each branch below is a finding this particular scan made, stated as a
+ * consequence rather than as a measurement. The order is by what the finding
+ * costs the reader, not by how impressive it is to report:
+ *
+ *   1. **A wrong entity.** Somebody asks for you by name and is handed another
+ *      company. Nothing else here matters while that is true, and it is the
+ *      only finding on the page costing business today.
+ *   2. **Absent from every source.** A handful of pages decide the category and
+ *      the reader is on none of them. This is the branch with a named, concrete
+ *      list attached, which is what makes it move anybody.
+ *   3. **Invisible both ways.** Not known and not found — the one case with no
+ *      shortcut to offer, so it does not pretend to have one.
+ *   4. **A gap between the readings.** Two different problems depending on
+ *      which way it leans, and a different first move for each.
+ *   5. **Doing well.** The position erodes, and that is the honest reason to
+ *      act. Manufacturing alarm for somebody whose numbers are healthy is how
+ *      you lose the reader who could actually afford the engagement.
+ *
+ * ## On the tone
+ *
+ * `urgency` decides whether the panel is drawn dark or light, and it is set by
+ * what was found rather than by what would sell. A report that shouts at
+ * somebody with good results is a report they stop believing, and the whole
+ * product rests on being believed.
+ */
+interface Closing {
+  headline: string;
+  body: React.ReactNode;
+  cta: string;
+  urgency: 'high' | 'steady';
+}
+
+function closingCase(phase1: ScanPhase1, phase2: ScanPhase2): Closing {
+  const external = (phase2.sources ?? []).filter((s) => !s.own);
+  const missing = external.filter((s) => !s.brand);
+  const mismatch = (phase2.entity ?? []).find((e) => e.verdict === 'mismatch');
+  const blank = (phase2.entity ?? []).filter((e) => e.verdict === 'unknown');
+  const grounded = phase2.grounded && phase2.grounded.totalAnswers > 0 ? phase2.grounded : null;
+
+  if (mismatch) {
+    return {
+      urgency: 'high',
+      headline: `A buyer asking for ${phase1.brand} by name is being shown someone else.`,
+      body: (
+        <>
+          {PROVIDER_LABEL[mismatch.provider]} answers &ldquo;what is {phase1.brand}&rdquo; by describing a different
+          company{mismatch.claimedDomain ? ` at ${mismatch.claimedDomain}` : ''}. That is not a ranking problem and
+          publishing more will not fix it: every mention you earn from here is being credited to whoever the model
+          thinks you are. It is also the most fixable finding in this report, and the fix has a running order.
+        </>
+      ),
+      cta: 'Get this corrected',
+    };
+  }
+
+  if (external.length > 0 && missing.length === external.length) {
+    return {
+      urgency: 'high',
+      headline: `${external.length} ${
+        external.length === 1 ? 'website decides' : 'websites decide'
+      } this category, and ${phase1.brand} is on none of them.`,
+      body: (
+        <>
+          Those are the pages the models opened before answering your questions —{' '}
+          {missing
+            .slice(0, 3)
+            .map((s) => s.host)
+            .join(', ')}
+          {missing.length > 3 ? ` and ${missing.length - 3} more` : ''}. Your competitors are on them. Until you are
+          too, the models have nothing to read that mentions you, and these answers keep coming back exactly as they
+          did today. Getting onto those pages is slow, specific work — and it is the work.
+        </>
+      ),
+      cta: 'Talk about getting on these',
+    };
+  }
+
+  if (phase1.sovPct === 0 && (!grounded || grounded.sovPct === 0)) {
+    return {
+      urgency: 'high',
+      headline: `The models neither know ${phase1.brand} nor find it when they look.`,
+      body: (
+        <>
+          {blank.length > 0
+            ? `${blank.length} of the models tested could not say what ${phase1.brand} is even when asked by name. `
+            : ''}
+          Every buyer who asks one of these assistants for a recommendation in your category is handed a list you are
+          not on — not ranked low, absent. It does not correct itself as the models update: they go on learning the
+          category from the same sources that do not mention you.
+        </>
+      ),
+      cta: 'Talk to us about fixing this',
+    };
+  }
+
+  if (grounded) {
+    const gap = grounded.sovPct - phase1.sovPct;
+
+    if (gap >= 20) {
+      return {
+        urgency: 'steady',
+        headline: 'The models find you when they search. They do not remember you.',
+        body: (
+          <>
+            {grounded.sovPct}% when searching against {phase1.sovPct}% from memory. Your own pages are working and
+            nothing durable has been written about you yet — so you reach the buyer whose assistant searches, and you
+            are invisible to the one who gets an answer straight from the model. That second half is the larger one and
+            the slower one to move.
+          </>
+        ),
+        cta: 'Talk about closing this gap',
+      };
+    }
+
+    if (gap <= -20) {
+      return {
+        urgency: 'high',
+        headline: 'The models know you, then stop recommending you once they search.',
+        body: (
+          <>
+            {phase1.sovPct}% from memory against {grounded.sovPct}% when searching. You have the reputation, and the
+            pages being retrieved today are not yours. Of everything in this report this is the gap that closes
+            fastest — and it is the one costing you buyers right now, because the searching answer is the one a buyer
+            actually sees.
+          </>
+        ),
+        cta: 'Talk about closing this gap',
+      };
+    }
+  }
+
+  return {
+    urgency: 'steady',
+    headline: `${phase1.brand} is in the answers. That is a position to defend.`,
+    body: (
+      <>
+        Being named is not a state you reach and keep. These lists are rebuilt from whatever has been published most
+        recently, so a position holds only while something keeps feeding it, and it erodes quietly — the first sign of
+        losing one is usually a scan like this, months late. Running this again in a month is the cheapest way to watch
+        for it.
+      </>
+    ),
+    cta: 'Talk about holding it',
+  };
+}
+
+export default function FullReport({
+  phase1,
+  phase2,
+  /* What is left of the free allowance, so the close can say so and offer the
+     right next step. Optional: a report re-opened from a link has no live quota
+     beside it, and a counter guessed on the client would be worse than none. */
+  quota,
+  /* Starts a new scan of a competitor, seeded from this one. Optional so the
+     report can still be rendered somewhere with no flow around it to hand the
+     rematch to — the offer simply does not appear. */
+  onRematch,
+}: {
+  phase1: ScanPhase1;
+  phase2: ScanPhase2;
+  quota?: ScanQuota | null;
+  onRematch?: (rematch: Rematch) => void;
+}) {
+  /* The closing argument, derived once. It also decides how the last panel is
+     drawn — see `closingCase`. */
+  const closing = closingCase(phase1, phase2);
 
   /* The searching reading, or nothing. `totalAnswers` rather than mere
      presence: a `grounded` object that came back with no answers in it is a
      reading that was attempted and failed, and the report has to say "not
      measured" rather than draw a ring at 0%. See the indicator pair below. */
   const grounded = phase2.grounded && phase2.grounded.totalAnswers > 0 ? phase2.grounded : null;
+
+  /* Everything a competitor's scan needs, assembled from this one. The email is
+     not here: it belongs to the visitor rather than to the report, and the flow
+     around this component is what remembers it. */
+  const rematch = onRematch
+    ? (competitor: string) =>
+        onRematch({
+          brand: competitor,
+          domain: domainFor(competitor, phase2.sources),
+          industry: phase1.industry,
+          market: phase1.market,
+          questions: phase1.questions,
+          email: '',
+        })
+    : undefined;
 
   return (
     <div className="flex flex-col gap-5">
@@ -121,16 +328,10 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
             <p className="mt-2.5 text-[14px] font-medium leading-relaxed text-white">{phase2.keyInsight}</p>
           </Tint>
 
-          {/* The two supporting scores. Deliberately below and smaller than the
-              pair above: they are evidence for AI visibility, not indicators of
-              their own — whether a crawler can read the site, and whether a
-              searching engine can surface it right now. */}
-          <div className="grid grid-cols-1 divide-y divide-gray-100 border-y border-gray-100 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
-            <Stat
-              value={`${phase2.techScore}`}
-              label={`Your site · ${phase2.techScore} of ${maxTech}`}
-              note="Whether the crawlers can read you at all"
-            />
+          {/* One supporting score, not two. There was a "Your site · 50 of 50"
+              beside this, and it was the least defensible figure in the report —
+              see the note on the technical panel's removal below. */}
+          <div className="border-y border-gray-100">
             <Stat
               value={phase2.serpScore < 0 ? '—' : String(phase2.serpScore)}
               label="Live retrieval / 100"
@@ -144,6 +345,19 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
           </div>
         </div>
       </Panel>
+
+      {/* ── What the models think you are ────────────────────────────────
+          Placed directly under the two indicators, before anything
+          comparative, because it is the panel that answers the question those
+          two figures raise and cannot settle: a zero above could mean the
+          models have never heard of you, or that they know you and reach for
+          somebody else, or that your name resolves to a different company
+          altogether. Those have three different fixes and one of them is
+          urgent. Every other panel in this report is about ranking; this one is
+          about whether there is an entity to rank. */}
+      {phase2.entity && phase2.entity.length > 0 && (
+        <EntityPanel rows={phase2.entity} reading={phase2.entityReading} brand={phase1.brand} domain={phase1.domain} />
+      )}
 
       {/* ── Memory against search, and whether anything can find you now ─── */}
       {phase2.grounded && (
@@ -161,7 +375,11 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
              indicators reads as whichever of them the reader had in mind. The
              AI visibility half is not tracked yet, and the line under the chart
              says so rather than leaving the omission to be discovered. */
-          sub={`Every scan of ${phase1.domain} in this market, oldest first — the no-search reading, which is the half that moves slowly enough for a series to mean anything. A single scan tells you where you stand; only the series tells you whether anything you changed worked. AI visibility is measured on every scan but not yet kept as a series.`}
+          /* The daily rule is stated here rather than left to be discovered.
+             Somebody who runs the same brand twice in an evening is doing what
+             the report told them to do, and getting one dot back looks like a
+             bug — it is reported as one. */
+          sub={`Every scan of ${phase1.domain} in this market, oldest first — the no-search reading, which is the half that moves slowly enough for a series to mean anything. One point per day: a second run today updates today's rather than adding to it. A single scan tells you where you stand; only the series tells you whether anything you changed worked. AI visibility is measured on every scan but not yet kept as a series.`}
         />
         <div className="mt-7">
           <TrendChart history={phase2.history ?? []} brand={phase1.brand} />
@@ -232,37 +450,58 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
 
         {/* The aggregate, after the evidence rather than before it. */}
         <div className="mt-8 border-t border-gray-100 pt-7">
-          <Rivals phase1={phase1} grounded={grounded ?? undefined} />
+          <Rivals phase1={phase1} grounded={grounded ?? undefined} onRematch={rematch} quota={quota} />
         </div>
       </Panel>
 
-      {/* ── Technical readiness ──────────────────────────────────────────── */}
-      <Panel>
-        <Head
-          badge={<Gauge size={18} />}
-          title="Website & technical signals"
-          sub={`Checked against ${phase1.domain}. Every point in the score above traces to a row here.`}
-          chip={`${phase2.techScore} / ${maxTech}`}
-        />
+      {/* ── Where those answers were read from ────────────────────────────
+          Straight after the leaderboard, because it is the answer to the
+          question the leaderboard raises and cannot settle: not "who is being
+          recommended" but "off the back of what". Every other panel in this
+          report is a measurement of the brand; this one is a description of the
+          category, and it is the only one that names things a person can go and
+          do this week. */}
+      {phase2.sources && phase2.sources.length > 0 && (
+        <SourcesPanel sources={phase2.sources} brand={phase1.brand} domain={phase1.domain} />
+      )}
 
-        {/* Two columns of rows, not one column of very wide rows. A signal is a
-            label, a note and a fraction — around 400px of content that was
-            being given the full width of the card, twelve times over. The
-            column gap is wide enough that the two fractions do not read as one
-            four-column table. */}
-        <div className="mt-7 grid grid-cols-1 gap-x-12 lg:grid-cols-2">
-          {phase2.signals.map((s) => (
-            <SignalRow key={s.id} signal={s} />
-          ))}
-        </div>
-      </Panel>
+      {/* ── Technical readiness — removed ─────────────────────────────────
+       *
+       * There was a "Website & technical signals" panel here, twelve rows of
+       * HTTPS, robots.txt, schema markup and sitemap dates, with a score out of
+       * fifty. It is gone, for two separate reasons that happened to land at
+       * the same time.
+       *
+       * **It could report a falsehood with total confidence.** When the site
+       * could not be fetched at all — a WAF refusing our server, an outbound
+       * block on the host — every content row correctly said "not scored", but
+       * the robots.txt row could not tell "there is no robots.txt" from "we
+       * never got a reply", and its no-robots branch is a *pass* worth 25
+       * points. So an unreachable site scored 25/25 on one row, picked up the
+       * other 25 from citations, and printed **50 / 50** at the top of a panel
+       * in which everything else said NOT SCORED. That was reported from a scan
+       * of allianz.com, a site that plainly has HTTPS and a robots.txt. A
+       * reader who catches one panel being confidently wrong is right to
+       * discount the rest, and the rest is the part that took the money.
+       *
+       * **It is not what this is for.** The service being sold is about what
+       * the models say, and a technical audit of a website is a different
+       * product with different buyers. Keeping it meant a scan spending its
+       * time on checks nobody here intends to act on, and it pulled the plan
+       * below towards "add Organization schema" and away from the answers.
+       *
+       * The fix for the first reason on its own would have been to tell an
+       * unreachable fetch apart from a missing file. The second reason is why
+       * that fix was not worth making. `Thallo_Vis_Tech` still exists in the
+       * plugin and is no longer called by the runner.
+       */}
 
       {/* ── Actions ──────────────────────────────────────────────────────── */}
       <Panel>
         <Head
           badge={<ListChecks size={18} />}
           title="What to do first"
-          sub="Ordered by what the scan actually found, heaviest unmet signal first — not by a fixed script."
+          sub="Ordered by what the models actually said — the sources you are missing from, the names that resolve to somebody else, the gap between the two readings. Not a fixed script, and no longer a website checklist."
         />
 
         <div className="mt-7 flex flex-col gap-3">
@@ -303,23 +542,129 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
         <AuditTrail phase1={phase1} grounded={phase2.grounded} />
       </Panel>
 
-      {/* ── Close ────────────────────────────────────────────────────────── */}
-      <Panel>
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <Head
-            badge={<Compass size={18} />}
-            title="This is the measurement. The work is the other half."
-            sub="A commissioned engagement takes the plan above and executes it — the content, the citations and the structure that move these numbers."
-          />
-          <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
-            <a href={`${BASE}/contact/`} className={BTN_PRIMARY}>
-              Talk to us <ArrowUpRight className="text-[12px]" />
+      {/* ── Close ──────────────────────────────────────────────────────────
+          The headline is written from the report rather than fixed, because a
+          closing line that could sit under any report is a line nobody reads.
+          The strongest finding this scan produces is almost always the source
+          table — a handful of websites decide the category and the reader is on
+          none of them — so when that panel ran, it supplies the sentence. */}
+      {/* Drawn dark when the finding warrants it. `!bg` because `Panel` sets
+          `bg-white` itself and two utilities of equal specificity are decided
+          by stylesheet order rather than by the order they appear here — which
+          is a coin toss, and this one may not be left to chance. */}
+      <Panel className={closing.urgency === 'high' ? '!bg-[#39471D]' : ''}>
+        <div className="flex flex-col gap-7 lg:flex-row lg:items-start lg:justify-between lg:gap-12">
+          <div className="min-w-0 lg:max-w-[62ch]">
+            <span
+              className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 ${
+                closing.urgency === 'high' ? 'bg-white/10' : 'bg-[#F4F6EE]'
+              }`}
+            >
+              <Compass size={14} className={closing.urgency === 'high' ? 'text-[#CBD0AC]' : 'text-[#39471D]'} />
+              <Micro className={closing.urgency === 'high' ? 'text-[#CBD0AC]' : 'text-[#39471D]'}>
+                What this means for you
+              </Micro>
+            </span>
+
+            {/* Bigger than any other heading in the report, on purpose. This is
+                the one paragraph written about this reader rather than about
+                the method, and it used to be set at the same weight as
+                "Structured FAQ schema". */}
+            <h3
+              className={`mt-4 text-[22px] font-bold leading-[1.25] tracking-tight sm:text-[26px] ${
+                closing.urgency === 'high' ? 'text-white' : 'text-gray-900'
+              }`}
+            >
+              {closing.headline}
+            </h3>
+
+            <p
+              className={`mt-4 text-[14px] font-medium leading-relaxed ${
+                closing.urgency === 'high' ? 'text-[#E7ECD9]' : 'text-gray-500'
+              }`}
+            >
+              {closing.body}
+            </p>
+
+            <p
+              className={`mt-4 text-[13px] font-medium leading-relaxed ${
+                closing.urgency === 'high' ? 'text-[#CBD0AC]' : 'text-gray-400'
+              }`}
+            >
+              This scan is the diagnosis, and it is the free half. The other half is the work that moves these
+              numbers — getting named in the roundups, the comparisons and the threads these models actually open —
+              and it is the slowest thing on the list to change, which is why it is worth starting before your
+              competitors finish.
+            </p>
+          </div>
+
+          <div className="flex shrink-0 flex-col gap-3">
+            <a
+              href={`${BASE}/contact/`}
+              className={
+                closing.urgency === 'high'
+                  ? 'inline-flex items-center justify-center gap-2 rounded-xl bg-white px-7 py-4 text-[15px] font-bold text-[#39471D] transition-colors hover:bg-[#E7ECD9]'
+                  : `${BTN_PRIMARY} px-7 py-4 text-[15px]`
+              }
+            >
+              {closing.cta} <ArrowUpRight className="text-[12px]" />
             </a>
-            <a href={`${BASE}/services/`} className={BTN_SECONDARY}>
-              See what we do
+            <a
+              href={`${BASE}/thallo-ai/scan/`}
+              className={
+                closing.urgency === 'high'
+                  ? 'inline-flex items-center justify-center gap-2 rounded-xl border border-white/25 px-5 py-3.5 text-[13px] font-semibold text-white transition-colors hover:border-white/60'
+                  : BTN_SECONDARY
+              }
+            >
+              {quota && quota.remaining > 0
+                ? `Run scan ${quota.limit - quota.remaining + 1} of ${quota.limit}`
+                : 'Run another scan'}
             </a>
+            <span
+              className={`max-w-[26ch] text-center text-[11.5px] font-medium leading-relaxed ${
+                closing.urgency === 'high' ? 'text-[#CBD0AC]' : 'text-gray-400'
+              }`}
+            >
+              A 30-minute call. We walk through this report and what we would do first.
+            </span>
           </div>
         </div>
+
+        {/* What is left, and what it is worth spending on. A visitor who has
+            just read a report is the one moment they know what a second scan
+            would tell them — and the two genuinely useful second scans are a
+            competitor and the same brand a month later, so say which. */}
+        {quota && (
+          <p
+            className={`mt-6 border-t pt-5 text-[12.5px] font-medium leading-relaxed ${
+              closing.urgency === 'high' ? 'border-white/15 text-[#CBD0AC]' : 'border-gray-100 text-gray-500'
+            }`}
+          >
+            {quota.remaining > 0 ? (
+              <>
+                <strong className={`font-bold ${closing.urgency === 'high' ? 'text-white' : 'text-gray-900'}`}>
+                  {quota.remaining} of your {quota.limit} free {quota.remaining === 1 ? 'scan is' : 'scans are'} left.
+                </strong>{' '}
+                {/* Deliberately not a second pitch for the competitor scan —
+                    that offer sits on the leaderboard, where the question
+                    actually occurs to the reader. This one adds the other use
+                    for a spare scan, which nothing else on the page mentions. */}
+                Besides a competitor — the button on the leaderboard runs one — the other one worth spending is{' '}
+                {phase1.brand} again in about a month, which is the first run that puts a second point on the chart
+                above.
+              </>
+            ) : (
+              <>
+                <strong className={`font-bold ${closing.urgency === 'high' ? 'text-white' : 'text-gray-900'}`}>
+                  That was your last free scan.
+                </strong>{' '}
+                {quota.reason ??
+                  'Book an audit and we will run the full question set against your category, with the sources behind every answer.'}
+              </>
+            )}
+          </p>
+        )}
       </Panel>
     </div>
   );
@@ -357,6 +702,288 @@ function Indicator({
       </div>
     </div>
   );
+}
+
+// ---------------------------------------------------------------------------
+// Where the answers were read from
+// ---------------------------------------------------------------------------
+
+/**
+ * The pages the searching models opened before they answered, by host.
+ *
+ * ## What the reader is meant to take from it
+ *
+ * One sentence, and it is usually the same sentence: *a handful of websites
+ * decide this category, and you are on none of them.* That is a different kind
+ * of statement from a percentage. A share of answer says where you stand; this
+ * says what the ground is made of, and every row is a place a person can
+ * actually go — a roundup to be included in, a directory to be reviewed on, a
+ * publication to be quoted in.
+ *
+ * ## Why the brand's own domain sits at the bottom with its own treatment
+ *
+ * Because the most common shape of this table is five third-party sources
+ * carrying the competitors and one row — your own website — carrying you. Sorted
+ * purely by frequency, a company's own site can land at the top and read as
+ * reassurance when the finding is the opposite of reassuring. Pinned last and
+ * marked, it reads as what it is: the only source vouching for you is you.
+ */
+function SourcesPanel({ sources, brand, domain }: { sources: AnswerSource[]; brand: string; domain: string }) {
+  const external = sources.filter((s) => !s.own);
+  const inNone = external.length > 0 && !external.some((s) => s.brand);
+
+  return (
+    <Panel>
+      <Head
+        badge={<BookOpen size={18} />}
+        title="Where these answers were read from"
+        sub={`When the models searched, these are the pages they opened before answering — and who each page put in front of the buyer. This is the shortest description available of what earns a recommendation in your category.`}
+        chip={`${sources.length} ${sources.length === 1 ? 'source' : 'sources'}`}
+      />
+
+      {/* A table, not cards. Five hosts with a count and a name list is tabular
+          data, and the one question a reader asks of it — "which of these carry
+          my competitors and not me" — is a column scan. Its own horizontal
+          scroll container so a long host name cannot make the page scroll. */}
+      <div className="mt-7 -mx-1 overflow-x-auto px-1">
+        <table className="w-full min-w-[560px] border-collapse text-left">
+          <thead>
+            <tr>
+              {['Source the models opened', 'Named in those answers', 'Times'].map((h, i) => (
+                <th
+                  key={h}
+                  className={`border-b border-gray-100 pb-3 pr-4 text-[10.5px] font-bold uppercase tracking-[.1em] text-gray-400 ${
+                    i === 2 ? 'text-right' : ''
+                  }`}
+                >
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {sources.map((s) => (
+              <tr key={s.host} className={s.own ? 'bg-[#FBF3EF]' : undefined}>
+                <td className="border-b border-gray-100 py-3.5 pr-4 align-top">
+                  <span className="font-mono text-[12.5px] font-semibold text-gray-900">{s.host}</span>
+                  {s.own && (
+                    <span className="ml-2 rounded-sm bg-white px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[.08em] text-[#A9502F]">
+                      Your own site
+                    </span>
+                  )}
+                </td>
+                <td className="border-b border-gray-100 py-3.5 pr-4 align-top">
+                  <span className="flex flex-wrap gap-1.5">
+                    {s.brand && (
+                      <span className="rounded-sm bg-[#39471D] px-2 py-0.5 text-[11px] font-bold text-white">
+                        {brand}
+                      </span>
+                    )}
+                    {s.names.map((n) => (
+                      <span key={n} className="rounded-sm bg-gray-50 px-2 py-0.5 text-[11px] font-medium text-gray-600">
+                        {n}
+                      </span>
+                    ))}
+                    {!s.brand && s.names.length === 0 && (
+                      <span className="text-[11px] font-medium text-gray-300">no company named</span>
+                    )}
+                  </span>
+                </td>
+                <td className="border-b border-gray-100 py-3.5 text-right align-top">
+                  <Micro className="tabular-nums text-gray-500">{s.times}×</Micro>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <p className="mt-6 max-w-[86ch] text-[13px] font-medium leading-relaxed text-gray-500">
+        <strong className="font-bold text-gray-900">Reading:</strong>{' '}
+        {external.length === 0 ? (
+          <>
+            Every page the models opened was on {domain} itself. Nothing outside your own domain was consulted, which
+            means there is nothing outside your own domain for a model to weigh — and a model with only your own
+            marketing to go on can find you and has no reason to recommend you.
+          </>
+        ) : inNone ? (
+          <>
+            {external.length} {external.length === 1 ? 'source' : 'sources'} outside anybody&rsquo;s own domain carried
+            these answers, and {brand} appears in none of them. That is the gap in one line: the companies named
+            instead of you are not better written about on their own websites, they are written about somewhere else.
+          </>
+        ) : (
+          <>
+            {brand} appears in {external.filter((s) => s.brand).length} of the {external.length} third-party sources
+            these answers were read from. Those are the pages carrying you into an answer — and the ones without you
+            are the shortlist of where to be next.
+          </>
+        )}
+      </p>
+    </Panel>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Entity accuracy
+// ---------------------------------------------------------------------------
+
+const ENTITY_TONE: Record<EntityVerdict, Tone> = {
+  resolved: 'on',
+  partial: 'mid',
+  mismatch: 'off',
+  unknown: 'off',
+  unavailable: 'off',
+};
+
+const ENTITY_LABEL: Record<EntityVerdict, string> = {
+  resolved: 'Resolved',
+  partial: 'Partial',
+  mismatch: 'Wrong company',
+  unknown: 'Not recognised',
+  unavailable: 'Not measured',
+};
+
+/**
+ * The direct question — "what is this company, and who does it serve?" — put to
+ * each model by name.
+ *
+ * ## Why the report needed this
+ *
+ * Nearly every brand that runs this scan comes back at 0%, and a zero tells its
+ * story exactly once. It confirms absence and leaves the reader with nothing to
+ * do about it. Worse, it flattens three different situations into one figure:
+ * the model has never heard of you, the model knows you and cannot say who you
+ * are for, and the model resolves your name to somebody else's company. The
+ * last of those is not absence at all — it is a buyer asking about you by name
+ * and being handed a different business — and it is the one worth interrupting
+ * a report to say.
+ *
+ * ## Why the model's own words are printed
+ *
+ * A verdict on its own is an assertion. The sentence the model actually
+ * returned is what makes it checkable, and on a `mismatch` the website it named
+ * is printed too — that string is the whole evidence for the accusation, and an
+ * accusation the reader cannot verify is worse than no panel at all.
+ */
+function EntityPanel({
+  rows,
+  reading,
+  brand,
+  domain,
+}: {
+  rows: EntityCheck[];
+  reading?: string;
+  brand: string;
+  domain: string;
+}) {
+  return (
+    <Panel>
+      <Head
+        badge={<BadgeCheck size={18} />}
+        title={`What the models think ${brand} is`}
+        sub={`Asked directly, by name, in each model — the one question in this scan that mentions you, because it is the only one that is not about ranking. Being absent is one problem. Being resolved as a different company is a different one, and the figures above cannot tell them apart.`}
+      />
+
+      <div className="mt-7 grid grid-cols-1 gap-x-10 gap-y-6 md:grid-cols-3">
+        {rows.map((row) => (
+          <div key={row.provider} className="min-w-0">
+            <div className="flex items-center gap-2.5">
+              <ProviderMark provider={row.provider} />
+              <span className="flex-1 truncate text-[13px] font-bold text-gray-900">
+                {PROVIDER_LABEL[row.provider]}
+              </span>
+              <Verdict tone={ENTITY_TONE[row.verdict]}>{ENTITY_LABEL[row.verdict]}</Verdict>
+            </div>
+
+            {row.verdict === 'unavailable' ? (
+              /* A model we could not reach is a fault at our end, said in those
+                 words. The raw message stays, small and grey, because it is what
+                 makes the failure fixable — but it must not read as a finding
+                 about the brand, which is exactly how a bare provider error
+                 printed beside two working columns reads. */
+              <p className="mt-3 text-[12.5px] font-medium leading-relaxed text-gray-500">
+                Could not be reached — not a finding about {brand}.
+                {row.error && <span className="mt-1 block font-mono text-[10px] text-gray-300">{row.error}</span>}
+              </p>
+            ) : row.verdict === 'unknown' ? (
+              <p className="mt-3 text-[12.5px] font-medium leading-relaxed text-gray-500">
+                Asked directly, it says it does not recognise the name. That is the honest floor: a model can only know
+                what it has read somewhere other than your own site.
+              </p>
+            ) : (
+              <>
+                <p className="mt-3 text-[12.5px] font-medium leading-relaxed text-gray-500">{row.what}</p>
+
+                {row.verdict === 'mismatch' && row.claimedDomain && (
+                  /* The evidence, in the model's own words rather than ours.
+                     "It thinks you are somebody else" is an accusation; naming
+                     the website it gave makes it a fact the reader can open in
+                     a new tab and check in four seconds. */
+                  <p className="mt-2.5 rounded-lg bg-[#FBF3EF] px-3 py-2.5 text-[12px] font-medium leading-relaxed text-[#8A4126]">
+                    It gives the website as <span className="font-mono font-bold">{row.claimedDomain}</span>, not{' '}
+                    <span className="font-mono font-bold">{domain}</span>. A buyer asking about you by name is being
+                    shown that company.
+                  </p>
+                )}
+
+                {row.verdict === 'partial' && (
+                  <p className="mt-2.5 text-[12px] font-medium leading-relaxed text-gray-400">
+                    It cannot say who you are for — no segment, no company size, no use case. A model that cannot state
+                    your buyer cannot match you to one.
+                  </p>
+                )}
+
+                {row.verdict === 'resolved' && row.serves && (
+                  <p className="mt-2.5 text-[12px] font-medium leading-relaxed text-gray-400">
+                    <span className="font-semibold text-gray-500">Serves:</span> {row.serves}
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {reading && (
+        <>
+          <div className="mt-7 border-t border-gray-100 pt-6" />
+          <p className="max-w-[86ch] text-[13px] font-medium leading-relaxed text-gray-500">
+            <strong className="font-bold text-gray-900">Reading:</strong> {reading}
+          </p>
+        </>
+      )}
+    </Panel>
+  );
+}
+
+/**
+ * A competitor's website, but only when the scan already found it.
+ *
+ * The setup screen needs a domain, and the temptation is to build one from the
+ * name — `northmark.com` — which is wrong often enough to be dangerous rather
+ * than merely unhelpful. The brand match keys on the domain root, so a scan run
+ * against the wrong website reports a company as absent from answers that named
+ * it, produces a confident 0%, and looks exactly like a real measurement. That
+ * is the one failure this whole report exists to avoid, and it would be us
+ * causing it.
+ *
+ * What is safe is a host the models themselves opened whose own name matches the
+ * competitor's. If a searching model read `northmark.com` while answering, that
+ * is evidence rather than a guess — and the visitor sees it in an editable field
+ * with a line saying where it came from.
+ *
+ * Returns an empty string when there is no such evidence, and the field starts
+ * blank. Typing a domain takes four seconds; discovering three weeks later that
+ * a report measured the wrong company does not.
+ */
+function domainFor(competitor: string, sources?: AnswerSource[]): string {
+  const key = nameKey(competitor);
+  if (!key || !sources) return '';
+
+  const match = sources.find((s) => !s.own && nameKey(s.host.replace(/\.[a-z.]+$/, '')) === key);
+
+  return match ? match.host : '';
 }
 
 /** Match key for a company name: case, accents and punctuation all removed.
@@ -486,7 +1113,18 @@ function tally(reading: ScanPhase1 | null | undefined, limit = 8): Rival[] {
  * right-aligned "3 mentions" — eight names came to eight nearly empty lines
  * down a 1379px card.
  */
-function Rivals({ phase1, grounded }: { phase1: ScanPhase1; grounded?: ScanPhase1 }) {
+function Rivals({
+  phase1,
+  grounded,
+  onRematch,
+  quota,
+}: {
+  phase1: ScanPhase1;
+  grounded?: ScanPhase1;
+  /** Starts a fresh scan of this company, seeded from the one just read. */
+  onRematch?: (competitor: string) => void;
+  quota?: ScanQuota | null;
+}) {
   const memory = tally(phase1);
   const searching = tally(grounded);
   const twoWay = !!grounded && grounded.totalAnswers > 0;
@@ -523,54 +1161,235 @@ function Rivals({ phase1, grounded }: { phase1: ScanPhase1; grounded?: ScanPhase
           <p className="text-[13px] font-bold tracking-tight text-gray-900">Recommended instead of you</p>
           <p className="mt-1.5 max-w-[74ch] text-[12px] font-medium leading-relaxed text-gray-500">
             {twoWay
-              ? 'The lists above, added up. The same question puts a different set of companies in front of a buyer depending on whether the model looks anything up, so the two readings are counted separately.'
+              ? 'The companies the models named when they answered your questions, most-named first. There are two lists because there are two answers: on the left, the names a model gives from memory; on the right, the names it gives after searching the web. Those are rarely the same, so they are never added together.'
               : `Every company the models named across the ${phase1.totalAnswers} answers, ranked by how often.`}
           </p>
         </div>
       </div>
 
-      <div className={`mt-7 grid grid-cols-1 gap-8 ${twoWay ? 'lg:grid-cols-2 lg:gap-12' : ''}`}>
-        <RivalList
-          title={twoWay ? 'Brand knowledge · no search' : 'Named across the run'}
-          note={`Out of ${phase1.totalAnswers} answers given with the web shut. This is who the models already associate with your category.`}
-          rivals={memory}
-          questions={phase1.questions}
-        />
+      {/* Named in both readings.
+       *
+       * The intersection is the finding, and it was invisible: two lists side
+       * by side, and the reader left to run their eye between them to work out
+       * which names are on both. A company named only from memory has a
+       * reputation and no current pages; a company named only when searching
+       * has pages and no reputation. A company on both is the benchmark — it
+       * has cleared the bar in both directions, and it is the shortest answer
+       * to "who am I actually competing with here". */}
+      {(() => {
+        const bothWays = twoWay
+          ? new Set(
+              memory
+                .map((r) => nameKey(r.name))
+                .filter((k) => searching.some((s) => nameKey(s.name) === k))
+            )
+          : new Set<string>();
 
-        {twoWay && (
-          <RivalList
-            title="AI visibility · searching"
-            note={`Out of ${grounded!.totalAnswers} answers given with the web open. This is who is being put in front of a buyer right now.`}
-            rivals={searching}
-            questions={phase1.questions}
-          />
-        )}
-      </div>
+        return (
+          <>
+            <div className={`mt-7 grid grid-cols-1 gap-8 ${twoWay ? 'lg:grid-cols-2 lg:gap-12' : ''}`}>
+              <RivalList
+                title={twoWay ? 'Brand knowledge · no search' : 'Named across the run'}
+                note={`Out of ${phase1.totalAnswers} answers given with the web shut. This is who the models already associate with your category.`}
+                rivals={memory}
+                questions={phase1.questions}
+                bothWays={bothWays}
+              />
+
+              {twoWay && (
+                <RivalList
+                  title="AI visibility · searching"
+                  note={`Out of ${grounded!.totalAnswers} answers given with the web open. This is who is being put in front of a buyer right now.`}
+                  rivals={searching}
+                  questions={phase1.questions}
+                  bothWays={bothWays}
+                />
+              )}
+            </div>
+
+            {bothWays.size > 0 && (
+              <p className="mt-5 max-w-[86ch] text-[12.5px] font-medium leading-relaxed text-gray-500">
+                <strong className="font-bold text-gray-900">
+                  {bothWays.size} {bothWays.size === 1 ? 'company is' : 'companies are'} named both ways.
+                </strong>{' '}
+                Those are the ones that clear the bar in both directions — the models already know them and still pick
+                them after searching — which makes them the benchmark rather than the two lists taken separately. A
+                name in only one column has half the problem you do.
+              </p>
+            )}
+
+            {onRematch && (
+              <RematchOffer
+                rivals={rankRivals(memory, searching, bothWays)}
+                onRematch={onRematch}
+                quota={quota}
+                brand={phase1.brand}
+              />
+            )}
+          </>
+        );
+      })()}
 
       {flagged.length > 0 && (
         <Tint edged className="mt-7">
           <p className="text-[12.5px] font-medium leading-relaxed text-[#E7ECD9]">
             <strong className="font-bold text-white">
               {flagged.length === 1
-                ? `Question ${flagged[0] + 1} is pulling a different category into these lists.`
-                : `Questions ${flagged.map((q) => q + 1).join(' and ')} are pulling different categories into these lists.`}
+                ? `Question ${flagged[0] + 1} is about a different market from the rest of your scan.`
+                : `Questions ${flagged.map((q) => q + 1).join(' and ')} are each about a different market.`}
             </strong>{' '}
             {flagged.length === 1 ? (
               <>
-                Not one of the companies the models named for{' '}
-                <em>“{phase1.questions[flagged[0]]}”</em> appears against any of your other questions. Those are real
-                answers to that question — they are just answers about something else. Ask it on its own scan if you
-                want it measured, or drop it and re-run.
+                The models named a completely different set of companies for{' '}
+                <em>“{phase1.questions[flagged[0]]}”</em> — not one of them comes up anywhere in your other questions.
+                Nothing has gone wrong: those are real answers to a real question. It is just a different competitive
+                set, and putting it in the same lists as the others makes all of them harder to read. Give that
+                question a scan of its own, or swap it for one closer to the rest and run this scan again.
               </>
             ) : (
               <>
-                Each of them produced a set of companies that overlaps none of the others. Those are real answers to the
-                questions as written; they are simply about different categories, and pooling them into one leaderboard
-                makes all of them harder to read.
+                Each of them brought back companies that appear in none of the other questions. Nothing has gone wrong —
+                they are real answers — but they describe separate markets, and one set of lists cannot rank three
+                markets at once. Give each of them a scan of its own, or bring the questions closer together and run
+                this scan again.
               </>
             )}
           </p>
         </Tint>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Which competitor to offer first, and in what order after that.
+ *
+ * Not simply the top of the memory list. The company worth measuring yourself
+ * against is the one clearing the bar in **both** readings — known to the models
+ * *and* still picked after they search — because a name in only one column has a
+ * different problem from the reader and comparing against it teaches less. So
+ * the both-ways set ranks first, ordered by their standing when the models
+ * search, which is the list a buyer is actually shown today.
+ *
+ * Falls back to the searching leaderboard, then to memory, so a scan where only
+ * one reading ran still has something to offer.
+ */
+function rankRivals(memory: Rival[], searching: Rival[], bothWays: Set<string>): string[] {
+  const ordered = [...(searching.length ? searching : memory)];
+
+  ordered.sort((a, b) => {
+    const aBoth = bothWays.has(nameKey(a.name));
+    const bBoth = bothWays.has(nameKey(b.name));
+    if (aBoth !== bBoth) return aBoth ? -1 : 1;
+    return b.mentions - a.mentions;
+  });
+
+  /* Deduplicated across the two readings — the same company reached through
+     different lists is one company, and offering it twice reads as a bug. */
+  const seen = new Set<string>();
+  const out: string[] = [];
+
+  for (const rival of [...ordered, ...memory]) {
+    const key = nameKey(rival.name);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push(rival.name);
+  }
+
+  return out;
+}
+
+/**
+ * "Run these same questions against Northmark."
+ *
+ * ## Why this belongs here and not in the closing panel
+ *
+ * The leaderboard is the moment the question occurs to the reader. They have
+ * just been shown four companies being recommended in their place, and the next
+ * thought is always the same one — *how do they score?* Until now answering it
+ * meant scrolling back to an empty form and retyping three questions from
+ * memory, which is enough friction that almost nobody did, and the second free
+ * scan went unused. A competitor's report is also the single most persuasive
+ * thing this tool can produce, because it turns an abstract score into a
+ * comparison.
+ *
+ * ## Why one button and then chips
+ *
+ * A button on every row would put a call to action on twelve lines of a table
+ * whose job is to be read. One prominent offer for the company actually worth
+ * measuring against — see `rankRivals` — and the rest as quiet chips for
+ * somebody who has a different rival in mind.
+ *
+ * ## When there is nothing left to spend
+ *
+ * The offer is not shown greyed out. A visitor with no scans left is the most
+ * interested person on the page, and the right thing to hand them is the same
+ * invitation the close makes rather than a disabled button explaining what they
+ * cannot have.
+ */
+function RematchOffer({
+  rivals,
+  onRematch,
+  quota,
+  brand,
+}: {
+  rivals: string[];
+  onRematch: (competitor: string) => void;
+  quota?: ScanQuota | null;
+  brand: string;
+}) {
+  if (!rivals.length) return null;
+
+  const [leader, ...rest] = rivals;
+  const spent = !!quota && quota.remaining <= 0;
+
+  return (
+    <div className="mt-7 rounded-xl border border-gray-200 p-5 sm:p-6">
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <div className="min-w-0">
+          <p className="text-[13px] font-bold tracking-tight text-gray-900">
+            Now run the same questions against one of them
+          </p>
+          <p className="mt-1.5 max-w-[70ch] text-[12px] font-medium leading-relaxed text-gray-500">
+            {spent ? (
+              <>
+                A rival&rsquo;s report is the same three questions with their name in the matcher instead of yours, and
+                it is the fastest way to see whether {brand} is behind or the whole category is.
+              </>
+            ) : (
+              <>
+                Same three questions, same category, same market — so the two reports line up row for row. You will need
+                their website; everything else carries over.
+              </>
+            )}
+          </p>
+        </div>
+
+        {spent ? (
+          <a href={`${BASE}/contact/`} className={`${BTN_PRIMARY} shrink-0`}>
+            Book an audit <ArrowUpRight className="text-[12px]" />
+          </a>
+        ) : (
+          <button type="button" onClick={() => onRematch(leader)} className={`${BTN_PRIMARY} shrink-0`}>
+            Run these same questions against {leader}
+          </button>
+        )}
+      </div>
+
+      {!spent && rest.length > 0 && (
+        <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-gray-100 pt-4">
+          <Micro className="text-gray-400">Or</Micro>
+          {rest.slice(0, 5).map((name) => (
+            <button
+              key={name}
+              type="button"
+              onClick={() => onRematch(name)}
+              className="rounded-lg border border-gray-200 px-3 py-1.5 text-[12px] font-semibold text-gray-600 transition-colors hover:border-[#39471D] hover:text-[#39471D]"
+            >
+              {name}
+            </button>
+          ))}
+        </div>
       )}
     </div>
   );
@@ -582,11 +1401,14 @@ function RivalList({
   note,
   rivals,
   questions,
+  bothWays,
 }: {
   title: string;
   note: string;
   rivals: Rival[];
   questions: string[];
+  /** Normalised names present in both readings. Empty when only one ran. */
+  bothWays: Set<string>;
 }) {
   /* Scaled against the strongest rival in THIS list, not across both — the two
      readings have different answer counts, and a shared scale would draw the
@@ -619,6 +1441,14 @@ function RivalList({
             >
               <Micro className="w-5 shrink-0 text-gray-400">{String(i + 1).padStart(2, '0')}</Micro>
               <span className="min-w-0 flex-1 truncate text-[13px] font-semibold text-gray-900">{r.name}</span>
+
+              {/* The intersection, marked on the row rather than left to the
+                  reader's eye travelling between two columns. */}
+              {bothWays.has(nameKey(r.name)) && (
+                <span className="hidden shrink-0 rounded-sm border border-[#39471D] px-1.5 py-0.5 text-[9.5px] font-bold uppercase tracking-[.08em] text-[#39471D] md:inline">
+                  Both ways
+                </span>
+              )}
 
               {/* Who said it. Three bare marks, no labels — the shapes are the
                   legend, and this is the answer to "three mentions by whom". */}
@@ -868,42 +1698,3 @@ function GroundedComparison({
   );
 }
 
-function SignalRow({ signal }: { signal: TechSignal }) {
-  const icon =
-    signal.status === 'pass' ? (
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#39471D]">
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round">
-          <path d="M20 6 9 17l-5-5" />
-        </svg>
-      </span>
-    ) : signal.status === 'warn' ? (
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#E7ECD9]">
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#39471D" strokeWidth="3" strokeLinecap="round">
-          <path d="M12 8v5m0 3.5v.5" />
-        </svg>
-      </span>
-    ) : (
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-gray-200">
-        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="3.5" strokeLinecap="round">
-          <path d="M18 6 6 18M6 6l12 12" />
-        </svg>
-      </span>
-    );
-
-  return (
-    /* Every row keeps its rule, including the last. `last:border-0` was right
-       in one column and wrong in two — it cleared the rule under the final row
-       of the right-hand column only, leaving the left column's bottom row
-       underlined and the pair looking misaligned. */
-    <div className="flex items-start gap-3 border-b border-gray-100 py-3.5">
-      {icon}
-      <span className="min-w-0 flex-1">
-        <span className="block text-[13px] font-semibold text-gray-900">{signal.label}</span>
-        {signal.note && <span className="mt-1 block text-[11px] font-medium leading-relaxed text-gray-400">{signal.note}</span>}
-      </span>
-      <Micro className={`shrink-0 tabular-nums ${signal.weight === 0 ? 'text-gray-300' : 'text-gray-500'}`}>
-        {signal.weight === 0 ? 'not scored' : `${signal.earned} / ${signal.weight}`}
-      </Micro>
-    </div>
-  );
-}

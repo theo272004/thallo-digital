@@ -31,6 +31,7 @@ import { buildQuestions } from './questions';
 import {
   SCAN_STEPS,
   type ScanInput,
+  type ScanQuota,
   type ScanSession,
   type StepStatus,
 } from './types';
@@ -48,12 +49,17 @@ const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export type OnUpdate = (session: ScanSession) => void;
 
-class ScanError extends Error {
+export class ScanError extends Error {
   constructor(
     message: string,
     /** Distinguishes "you have used your free scans" from "the server broke",
         so the UI can offer the right next step rather than a generic retry. */
-    readonly code: string = 'scan_failed'
+    readonly code: string = 'scan_failed',
+    /** The allowance as the server sees it, when the refusal was about the
+        allowance. It travels with the refusal so the counter on screen cannot
+        keep saying "scan 3 of 3" beside a message explaining there are none
+        left. */
+    readonly quota?: ScanQuota
   ) {
     super(message);
   }
@@ -64,6 +70,12 @@ async function post<T>(path: string, body: unknown): Promise<T> {
   try {
     res = await fetch(`${API_BASE}${path}`, {
       method: 'POST',
+      /* The free allowance is counted against a session cookie, and `fetch`
+         omits credentials cross-origin by default. Same-origin in the intended
+         setup — the site at the root, WordPress at /blog/ — so this is a no-op
+         there, and it is what makes local development against a remote
+         WordPress count the same way production does. */
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
     });
@@ -71,15 +83,19 @@ async function post<T>(path: string, body: unknown): Promise<T> {
     throw new ScanError('We could not reach the scanner. Check your connection and try again.', 'network');
   }
 
-  const data = (await res.json().catch(() => null)) as (T & { code?: string; message?: string }) | null;
+  const data = (await res.json().catch(() => null)) as
+    | (T & { code?: string; message?: string; data?: { quota?: ScanQuota } })
+    | null;
 
   if (!res.ok || !data) {
-    // WordPress returns `{ code, message }` on a WP_Error, and the plugin uses
-    // it for the things a visitor can actually do something about — the daily
-    // limit above all — so pass the message straight through.
+    // WordPress returns `{ code, message, data }` on a WP_Error, and the plugin
+    // uses it for the things a visitor can actually do something about — the
+    // free allowance above all — so pass the message straight through, and the
+    // allowance with it when one came back.
     throw new ScanError(
       data?.message ?? 'The scan could not be completed. Please try again in a moment.',
-      data?.code ?? 'scan_failed'
+      data?.code ?? 'scan_failed',
+      data?.data?.quota
     );
   }
 
@@ -216,6 +232,88 @@ export async function unlockScan(
   }
 
   return next;
+}
+
+/**
+ * How many free scans this visitor has left, asked before they start one.
+ *
+ * Two reasons it is a call of its own rather than something folded into
+ * `/scan`. First, the counter has to be on screen *before* the button is
+ * pressed — the allowance used to be discoverable only by hitting it, which
+ * meant a visitor learned there had been a limit from a refusal. Second, this
+ * is the request that mints the session cookie the allowance is counted
+ * against, and a cookie can only be set before a response body is written.
+ *
+ * Resolves to `null` rather than throwing on any failure, and the caller treats
+ * `null` as "do not print a counter". A quota lookup that fell over must never
+ * stand between somebody and a scan the server would happily have run — the
+ * server checks again at `/scan` and is the only copy that binds.
+ *
+ * In preview mode the number is invented like everything else, and it travels
+ * with the same banner.
+ */
+export async function fetchQuota(): Promise<ScanQuota | null> {
+  if (!IS_LIVE) return { remaining: 3, limit: 3 };
+
+  try {
+    const res = await fetch(`${API_BASE}/quota`, {
+      method: 'GET',
+      /* The cookie is the point of this call, and `fetch` omits credentials on
+         cross-origin requests by default. Same-origin in the intended setup, so
+         this changes nothing there and makes local development against a remote
+         WordPress behave the same way. */
+      credentials: 'include',
+      headers: { Accept: 'application/json' },
+    });
+    if (!res.ok) return null;
+
+    const data = (await res.json()) as ScanQuota;
+    return typeof data?.remaining === 'number' && typeof data?.limit === 'number' ? data : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The allowance **for a particular address**, asked before the button.
+ *
+ * `fetchQuota` above answers for the browser and the network, which is all
+ * there is to answer for on page load. This asks the harder question the
+ * server used to answer only once money was about to be spent: has this
+ * address, and this website, got a run left?
+ *
+ * It exists because of how the refusal used to arrive. A visitor filled in two
+ * screens, pressed Run scan, watched the progress screen appear — and was then
+ * returned to an empty form with a sentence at the top explaining the address
+ * had no scans left. The scan never started, the form was gone, and the only
+ * way to read the message was to have already lost the three questions it was
+ * about. Asking here means the refusal appears beside the field that caused
+ * it, with everything else still on screen.
+ *
+ * POST, not a query string: the address is a lead, and a lead in a URL is a
+ * lead in an access log.
+ *
+ * Returns `null` on any failure, and the caller treats that as "no opinion".
+ * A lookup that cannot be completed must not stand between a visitor and a
+ * scan the server would have allowed — `/scan` still enforces the real rule.
+ */
+export async function checkAllowance(email: string, domain: string): Promise<ScanQuota | null> {
+  if (!IS_LIVE) return { remaining: 3, limit: 3 };
+
+  try {
+    const res = await fetch(`${API_BASE}/quota`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ email, domain }),
+    });
+    if (!res.ok) return null;
+
+    const data = (await res.json()) as ScanQuota;
+    return typeof data?.remaining === 'number' && typeof data?.limit === 'number' ? data : null;
+  } catch {
+    return null;
+  }
 }
 
 /** The first paint of the progress screen, before the server has said anything. */

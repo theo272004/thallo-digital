@@ -1,16 +1,16 @@
 'use client';
 
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { SplitReveal, scrollToEl } from '@/components/motion';
-import ScanSetup from './ScanSetup';
+import ScanSetup, { clearScanDraft } from './ScanSetup';
 import ScanProgress from './ScanProgress';
 import ScanResults from './ScanResults';
 import FullReport from './FullReport';
 import { GROUND, Micro, Stepper, Tag } from './ui';
-import { IS_LIVE, initialSession, startScan, unlockScan } from '@/lib/scan/engine';
+import { IS_LIVE, ScanError, fetchQuota, initialSession, startScan, unlockScan } from '@/lib/scan/engine';
 import { marketLabel } from '@/lib/scan/markets';
 import { BASE } from '@/lib/site';
-import type { ScanInput, ScanSession } from '@/lib/scan/types';
+import type { Rematch, ScanInput, ScanQuota, ScanSession } from '@/lib/scan/types';
 
 type Stage = 'setup' | 'scanning' | 'results' | 'report';
 
@@ -22,7 +22,35 @@ export default function ScanFlow() {
   const [pending, setPending] = useState<ScanInput | null>(null);
   const [unlocking, setUnlocking] = useState(false);
   const [error, setError] = useState('');
+  /* What is left of the free allowance. `null` until the server has said, and
+     `null` again if that call fails — the setup screen prints no counter rather
+     than a guessed one. Every scan response carries an updated copy, so it stays
+     current without polling. */
+  const [quota, setQuota] = useState<ScanQuota | null>(null);
+  /* A competitor's scan, seeded from the report the visitor is reading — see
+     the leaderboard's "run these same questions against Northmark".
+     `rematchKey` is bumped with it and used as the setup card's React key, so
+     each rematch remounts a form that reads its seed once on mount. An effect
+     that copied the seed into state instead would have to decide what to do
+     about a field the visitor had already edited, and every answer to that is
+     wrong. */
+  const [rematch, setRematch] = useState<Rematch | null>(null);
+  const [rematchKey, setRematchKey] = useState(0);
   const sectionRef = useRef<HTMLElement>(null);
+
+  /* Asked once, on mount, because this is also the request that mints the
+     cookie the allowance is counted against — see `fetchQuota`. Deliberately
+     not awaited by anything: the form is usable before it comes back, and the
+     counter simply appears when it does. */
+  useEffect(() => {
+    let live = true;
+    fetchQuota().then((q) => {
+      if (live) setQuota(q);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
 
   /* Each stage is a full screen change, so put the reader at the top of it —
      but only on a change, never on a tick, or the page would fight the scroll
@@ -52,8 +80,17 @@ export default function ScanFlow() {
     setSession(initialSession());
     goto('scanning');
     try {
-      const done = await startScan(input, setSession);
+      const done = await startScan(input, (s) => {
+        setSession(s);
+        if (s.quota) setQuota(s.quota);
+      });
       setSession(done);
+      if (done.quota) setQuota(done.quota);
+      /* Only now. The setup card keeps a draft of what was typed so that a
+         refusal does not empty the form on the way back — and a refusal is
+         thrown from this try, so anything that clears the draft before here
+         clears it in exactly the case it exists for. */
+      clearScanDraft();
       /* When the address was given on the setup screen the server ran the whole
          thing in one go, so there is no gate to show — going to 'results' would
          park a finished report behind a form asking for an email we already
@@ -61,6 +98,10 @@ export default function ScanFlow() {
          asks. */
       goto(done.phase2 ? 'report' : 'results');
     } catch (e) {
+      /* A refusal about the allowance carries the allowance with it, so the
+         counter at the top of the setup card cannot go on saying "scan 3 of 3"
+         next to a message explaining there are none left. */
+      if (e instanceof ScanError && e.quota) setQuota(e.quota);
       setError(e instanceof Error ? e.message : 'The scan could not be completed. Please try again.');
       goto('setup');
     }
@@ -91,6 +132,30 @@ export default function ScanFlow() {
      photograph and the two-column spread — see the note on the <img> below. */
   const [setupStep, setSetupStep] = useState<1 | 2>(1);
   const hero = stage === 'setup' && setupStep === 1;
+
+  /**
+   * The visitor wants the same three questions run against a competitor.
+   *
+   * Back to step 1 rather than straight into the scan, because there is one
+   * field we deliberately do not fill in for them: the competitor's website.
+   * The brand match keys on the domain root, so a guessed domain would report a
+   * company as absent from answers that named it and hand back a confident,
+   * wrong 0%.
+   *
+   * The address carries over from the scan they just ran — `pending` is the
+   * input the setup card submitted, and it is the only place the email lives
+   * once the report is on screen.
+   */
+  const startRematch = useCallback(
+    (next: Rematch) => {
+      setError('');
+      setRematch({ ...next, email: next.email || pending?.email || '' });
+      setRematchKey((n) => n + 1);
+      setSetupStep(1);
+      goto('setup');
+    },
+    [goto, pending]
+  );
 
   /* Step 2 is a taller card on a completely different layout — the photograph
      goes, the spread collapses to one column — so leaving the viewport where it
@@ -282,7 +347,13 @@ export default function ScanFlow() {
                   fresh one — which reset the step to 1 the instant the step
                   changed to 2, and the form bounced straight back. The keys are
                   what let the left column appear and disappear without the form
-                  beside it being treated as a different element. */}
+                  beside it being treated as a different element.
+
+                  The form's key carries the rematch counter, so it changes only
+                  when a competitor scan is started and never when `hero` flips.
+                  That remount is deliberate: `ScanSetup` reads its seed once, on
+                  mount, and a fresh mount is how a rematch arrives with the
+                  questions and the category already in it. */}
               <div
                 className={
                   /* `items-end`, not `items-center`. The heading is shorter
@@ -301,7 +372,13 @@ export default function ScanFlow() {
                   </div>
                 )}
 
-                <ScanSetup key="setup" onStart={start} onStepChange={changeStep} />
+                <ScanSetup
+                  key={`setup-${rematchKey}`}
+                  onStart={start}
+                  quota={quota}
+                  initial={rematch}
+                  onStepChange={changeStep}
+                />
               </div>
             </>
           )}
@@ -320,7 +397,12 @@ export default function ScanFlow() {
           )}
 
           {stage === 'report' && session.phase1 && session.phase2 && (
-            <FullReport phase1={session.phase1} phase2={session.phase2} />
+            <FullReport
+              phase1={session.phase1}
+              phase2={session.phase2}
+              quota={quota}
+              onRematch={startRematch}
+            />
           )}
         </div>
 

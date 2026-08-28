@@ -1,0 +1,109 @@
+<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+<!-- Results, in the archive's clothes.
+
+     Without this file the search box on the index sends a reader to the parent
+     theme's own results page — the same words in somebody else's design, which
+     is how a search feels like leaving the site. It is the index with three
+     things removed: the featured article, the rail and the tail. What is left
+     is the question, the answers, and a way to ask again. -->
+<!-- wp:group {"tagName":"main","className":"thallo-archive","layout":{"type":"constrained","contentSize":"1440px"}} -->
+<main class="wp-block-group thallo-archive">
+
+<!-- wp:group {"className":"thallo-mast","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-mast">
+
+<!-- wp:group {"className":"thallo-mast__say","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-mast__say">
+
+<!-- wp:paragraph {"className":"thallo-mast__eyebrow"} -->
+<p class="thallo-mast__eyebrow"><a href="https://thallodigital.com/blog/">Back to all articles</a></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:query-title {"type":"search","showSearchTerm":true,"level":1,"className":"thallo-mast__title"} /-->
+
+</div>
+<!-- /wp:group -->
+
+<!-- wp:search {"showLabel":false,"placeholder":"Search articles…","buttonText":"Search","buttonUseIcon":true,"className":"thallo-search"} /-->
+
+</div>
+<!-- /wp:group -->
+
+<!-- wp:group {"className":"thallo-latest","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-latest">
+
+<!-- `inherit: true`, unlike every other loop in this theme: the query here is
+     the one WordPress already built from the search term, and rebuilding it
+     would be rebuilding the search. -->
+<!-- wp:query {"queryId":5,"query":{"perPage":9,"pages":0,"offset":0,"postType":"post","inherit":true},"className":"thallo-grid","layout":{"type":"default"}} -->
+<div class="wp-block-query thallo-grid">
+
+<!-- wp:post-template {"className":"thallo-grid__loop","layout":{"type":"grid","columnCount":3}} -->
+
+<!-- wp:group {"className":"thallo-card","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-card">
+
+<!-- wp:post-featured-image {"isLink":true,"className":"thallo-card__media"} /-->
+
+<!-- wp:group {"className":"thallo-card__body","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-card__body">
+
+<!-- wp:post-terms {"term":"category","className":"thallo-card__kind"} /-->
+
+<!-- wp:post-title {"level":3,"isLink":true,"className":"thallo-card__title"} /-->
+
+<!-- wp:group {"className":"thallo-meta","layout":{"type":"flex","flexWrap":"wrap"}} -->
+<div class="wp-block-group thallo-meta">
+<!-- wp:post-date {"format":"j M Y"} /-->
+<!-- wp:shortcode -->
+[thallo_reading_time]
+<!-- /wp:shortcode -->
+</div>
+<!-- /wp:group -->
+
+</div>
+<!-- /wp:group -->
+
+</div>
+<!-- /wp:group -->
+
+<!-- /wp:post-template -->
+
+<!-- wp:query-no-results -->
+<!-- wp:paragraph {"className":"thallo-empty"} -->
+<p class="thallo-empty">Nothing here matches that. Try a broader word — the blog is young, and most of what it will say has not been written yet.</p>
+<!-- /wp:paragraph -->
+<!-- /wp:query-no-results -->
+
+<!-- wp:query-pagination {"className":"thallo-pagination","layout":{"type":"flex","justifyContent":"space-between"}} -->
+<!-- wp:query-pagination-previous /-->
+<!-- wp:query-pagination-numbers /-->
+<!-- wp:query-pagination-next /-->
+<!-- /wp:query-pagination -->
+
+</div>
+<!-- /wp:query -->
+
+<!-- wp:html -->
+<section class="thallo-band">
+  <img class="thallo-band__leaf" src="https://thallodigital.com/blog-lead.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+  <div class="thallo-band__say">
+    <p class="thallo-band__eyebrow">Do you show up?</p>
+    <h2 class="thallo-band__h">Do the models recommend you <em>or someone else?</em></h2>
+    <p class="thallo-band__p">Your buying questions, put to ChatGPT, Claude and Gemini — once from memory and once with the web open. Your brand is never named in the question.</p>
+  </div>
+  <div class="thallo-band__do">
+    <a class="thallo-btn thallo-btn--solid" href="https://thallodigital.com/thallo-ai/scan/">Check my visibility <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a>
+    <span class="thallo-band__note">Free · No account · About a minute</span>
+  </div>
+</section>
+<!-- /wp:html -->
+
+</div>
+<!-- /wp:group -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->

@@ -3,7 +3,7 @@ Contributors: thallodigital
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.7.5
+Stable tag: 1.10.1
 License: GPLv2 or later
 
 Backend for the Check My Visibility tool: asks the AI models the buying
@@ -17,18 +17,28 @@ API keys on and a screen to read the leads from.
 
 What a scan does:
 
-1. Puts fifteen buying questions about a category to ChatGPT, Claude and Gemini,
-   with web search off. The brand's name never appears in a question, so no
-   answer can be led.
-2. Counts how many answers name the brand, and at what rank.
-3. Tallies every other company named — the competitors being recommended instead.
-4. Asks Perplexity the same category question with retrieval on, and reads the
+1. Puts the visitor's own buying questions — three on the free tier — to
+   ChatGPT, Claude and Gemini with web search off. The brand's name never
+   appears in one of them, so no answer can be led.
+2. Asks the same questions again with search on, which is a different
+   measurement: the first says whether a model knows you, the second whether it
+   picks you once it has looked. They are never averaged.
+3. Counts how many answers name the brand, and at what rank, in each reading.
+4. Tallies every other company named — the competitors being recommended
+   instead — and, for the searching half, which pages the models opened before
+   answering and who each page put in front of the buyer.
+5. Asks each model directly, by name, what this company is and who it serves.
+   This is the one question that mentions the brand, and it is what separates
+   "never heard of you" from "confused you with somebody else".
+6. Asks Perplexity the same category question with retrieval on, and reads the
    Google AI Overview through a search-results provider.
-5. Crawls the brand's own site for crawler access, schema, named people,
-   freshness and FAQ markup.
+7. Crawls the brand's own site for crawler access, whether the content arrives
+   in the HTML at all, schema, named people, freshness and FAQ markup.
 
-The first three steps are free to the visitor. The last two are unlocked with an
-email address, which is stored as a lead.
+A work email address is collected on the setup screen, before anything runs —
+searching costs money on the first call, so there is no free half to hand out
+first. The address is stored as a lead and the report is emailed as well as
+shown.
 
 == Installation ==
 
@@ -63,6 +73,91 @@ Leads are kept until you delete them. IP addresses are stored only as a salted
 hash, used to count scans per visitor.
 
 == Changelog ==
+
+= 1.10.1 =
+* The crawler's User-Agent pointed webmasters at `/thallo-ai/`, which the
+  visibility tool no longer lives at — the scan itself moved to
+  `/thallo-ai/scan/`. Cosmetic only: it changes what a site owner sees if
+  they look up the bot in their own logs, not the scan, the leads, or
+  anything a visitor sees.
+
+= 1.10.0 =
+* **The technical scorecard is gone.** Twelve rows of HTTPS, robots.txt, schema
+  markup and sitemap dates, scored out of fifty. Two reasons. It could be
+  confidently wrong: when the site could not be fetched at all, the robots.txt
+  check could not tell "there is no robots.txt" from "we never got a reply", and
+  its no-robots branch is a pass worth 25 points — so an unreachable site
+  printed 50 / 50 above a panel in which everything else said NOT SCORED. And it
+  was the wrong product: this measures what the models say, and a website audit
+  has different buyers. `Thallo_Vis_Tech` remains in the tree, uncalled;
+  `finish_phase2()` ships an empty signal list, which the report and the email
+  already treat as "did not run".
+* **The plan is built from the answers now.** `Analysis::actions()` used to open
+  with the two heaviest failed technical signals, which put "add Organization
+  schema" at the top of a report about model recommendations. It now leads with
+  a name resolving to another company, then the third-party sources the models
+  opened that do not mention the brand — named individually — then the gap
+  between the memory and searching readings, which is a different instruction in
+  each direction. It takes the scan state as an optional fourth argument and is
+  therefore assembled after the entity rows, the sources and the grounded
+  reading are attached.
+* One fewer step per scan, so phase 2 finishes sooner.
+
+= 1.9.0 =
+* **The allowance can be asked about before it is spent.** `/quota` now also
+  accepts POST with an address and a website, and answers exactly what `/scan`
+  would — so the site can refuse beside the field instead of on the far side of
+  a scan that appears to start and then does not. The address travels in the
+  body rather than in a query string, because a lead in a URL is a lead in an
+  access log.
+* **"You have reached the limit of free scans."** The per-address refusal used
+  to say "that address has used its free scans", which is the same sentence
+  with instructions attached: told which counter is binding, the obvious move
+  is a second address. Both the browser layer and the address layer now say the
+  same thing and neither names a counter.
+* **Addresses with no limit.** A new setting on the allowance screen takes a
+  list of IPs that skip every counter, including the site-wide one. It is for
+  the machine that demonstrates the tool — recording a walkthrough means six
+  scans of six other companies in an afternoon, which to the limiter is
+  indistinguishable from abuse. Exact matches only, and the screen prints the
+  address you are browsing from so there is nothing to guess.
+
+= 1.8.0 =
+* **The direct question.** Each model is now asked, by name, what this company
+  is and who it serves — the one question in the scan that mentions the brand,
+  because it is the only one that is not about ranking. It answers what a 0%
+  share of answer cannot: whether the models have never heard of you, know you
+  and cannot say who you are for, or resolve your name to somebody else's
+  company. The verdict is derived from the answer rather than judged by a
+  second model call: a website the model names that is not yours is a
+  wrong-company verdict, and the site it named is printed as the evidence.
+* **Where the answers were read from.** The pages the searching models opened
+  are now kept per answer and crossed against the companies that same answer
+  named, so the report can say which sources carry the category and whether the
+  brand is in any of them. Hosts seen once are dropped; the brand's own domain
+  is kept and flagged, because "every source that mentioned you was your own
+  website" is the finding.
+* **Can a crawler read the page at all.** A new technical check. robots.txt says
+  a crawler is allowed in; this says whether there is anything to read once it
+  is. None of the crawlers these models use runs JavaScript, so a page assembled
+  in the browser reaches them blank — and the report used to show a green tick
+  for crawler access above a share of answer of zero with nothing connecting the
+  two.
+* **The free allowance is counted in four layers** — browser, address, network
+  and the website being scanned — because a cookie alone is cleared in ten
+  seconds and an IP alone punishes a shared office. `GET /quota` reports what is
+  left so the site can print "Scan 1 of 3" before anything is spent, and no
+  layer is ever reported as a technical error.
+* **Free scans are for company email addresses.** Gmail, Outlook, Yahoo, iCloud
+  and the disposable providers are turned down at the REST layer, with a switch
+  on the settings screen. The address is now written to the scan row at creation
+  rather than at unlock, so an abandoned scan still counts against the allowance.
+* The report email is now the fuller document rather than a shortened copy of
+  the screen: both readings side by side, the entity verdicts, the sources, the
+  full technical read row by row, and the scan on record — date, market, models
+  and the exact questions — so it survives being forwarded without context.
+* Database: `session_hash` on the scans table, and indexes for counting by
+  address and by domain.
 
 = 1.7.5 =
 * Gemini answers. Reasoning is no longer switched off — Google refuses that

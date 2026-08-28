@@ -23,8 +23,75 @@
  */
 
 import React from 'react';
-import { Micro, ProviderMark, Verdict } from './ui';
+import { Micro, NotedLabel, ProviderMark, Verdict } from './ui';
 import { PROVIDER_LABEL, type Answer, type ScanPhase1 } from '@/lib/scan/types';
+
+/**
+ * The two readings, and how to say what each one is to somebody who has never
+ * heard of either.
+ *
+ * ## Why `empty` is three different sentences
+ *
+ * "Named no companies — the model said it did not know any for this question"
+ * was one sentence for both readings, and under the no-search column it is the
+ * single most disbelieved line in the report. The reader can open the same
+ * model in another tab, type their brand, and watch it answer — so a report
+ * saying the model named nobody is, as far as they can tell, simply wrong, and
+ * a reader who catches the tool being wrong once stops reading the rest.
+ *
+ * It is not wrong. It is the measurement: with the web shut the model can only
+ * answer from what it absorbed in training, and not knowing your category from
+ * memory is exactly the finding — one that vanishes the moment it is allowed to
+ * search, which is the column immediately to the right. That entire explanation
+ * has to be in the sentence itself, because the moment of disbelief is not a
+ * moment anybody spends clicking things.
+ *
+ * ## Why the label carries a note as well
+ *
+ * `NotedLabel` in `ui.tsx`. "Brand knowledge · no search" is our vocabulary; it
+ * earns its place in the report — see the panel that refuses to average the two
+ * — but it is jargon on first contact, and it is printed here six times per
+ * question with nothing around it to define it.
+ */
+type Mode = 'memory' | 'web' | 'single';
+
+const READINGS: Record<Mode, { label: string; note: React.ReactNode; empty: string }> = {
+  memory: {
+    label: 'Brand knowledge · no search',
+    note: (
+      <>
+        <strong className="font-bold">Asked with the model&rsquo;s internet access switched off.</strong> It could only
+        answer from what it already knows, so this is reputation rather than pages: whether the model has learned who
+        belongs in your category. A model can draw a blank here and still find you in a second — that is the reading
+        directly below.
+      </>
+    ),
+    empty:
+      'Named no companies. With the web switched off this model could not think of anyone in this category — which is about what it has learned, not about whether these companies exist. Compare it with the searching reading below.',
+  },
+  web: {
+    label: 'AI visibility · searching',
+    note: (
+      <>
+        <strong className="font-bold">The same question, with the model allowed to search the web first.</strong> This
+        is closest to what a buyer sees today: whichever pages the model found just now, and whoever those pages put in
+        front of it. It moves as fast as the pages do.
+      </>
+    ),
+    empty: 'Named no companies. The model searched and still did not put a list together for this question.',
+  },
+  single: {
+    label: 'Answered',
+    note: (
+      <>
+        <strong className="font-bold">What this model replied when asked your question.</strong> The companies are in
+        the order it gave them, which is the part that matters: being named first and being named eighth are different
+        results.
+      </>
+    ),
+    empty: 'Named no companies — the model said it did not know any for this question.',
+  },
+};
 
 /** Both readings of one question by one model. `undefined` = never asked. */
 interface Pair {
@@ -83,8 +150,8 @@ export default function AnswerLists({ phase1, grounded }: { phase1: ScanPhase1; 
                       <Micro className="text-gray-700">{PROVIDER_LABEL[p.provider]}</Micro>
                     </span>
 
-                    <Reading label={twoWay ? 'Brand knowledge · no search' : 'Answered'} answer={memory} />
-                    {twoWay && <Reading label="AI visibility · searching" answer={web} />}
+                    <Reading mode={twoWay ? 'memory' : 'single'} answer={memory} />
+                    {twoWay && <Reading mode="web" answer={web} />}
                   </div>
                 );
               })}
@@ -104,10 +171,12 @@ export default function AnswerLists({ phase1, grounded }: { phase1: ScanPhase1; 
  * is the first thing out of the model's mouth or an afterthought in eighth
  * place, and those are different problems.
  */
-function Reading({ label, answer }: { label: string; answer?: Answer }) {
+function Reading({ mode, answer }: { mode: Mode; answer?: Answer }) {
+  const { label, note, empty } = READINGS[mode];
+
   return (
     <div>
-      <Micro className="text-gray-400">{label}</Micro>
+      <NotedLabel label={label} note={note} />
 
       {/* Three states, and they must not look alike on a report whose whole
           claim is that it does not guess: not asked, asked and answered with
@@ -115,9 +184,7 @@ function Reading({ label, answer }: { label: string; answer?: Answer }) {
       {!answer ? (
         <p className="mt-2 text-[12px] font-medium text-gray-300">Not asked</p>
       ) : answer.names.length === 0 ? (
-        <p className="mt-2 text-[12px] font-medium leading-relaxed text-gray-400">
-          Named no companies — the model said it did not know any for this question.
-        </p>
+        <p className="mt-2 text-[12px] font-medium leading-relaxed text-gray-400">{empty}</p>
       ) : (
         /* Wrapping inline rather than one name per line. Eight names × two
            readings × three models × three questions is seventy-two stacked

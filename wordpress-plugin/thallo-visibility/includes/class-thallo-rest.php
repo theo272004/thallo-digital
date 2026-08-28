@@ -22,6 +22,80 @@ class Thallo_Vis_REST {
 
 	const NS = 'thallo/v1';
 
+	/**
+	 * The cookie that carries a visitor's free allowance.
+	 *
+	 * Not a login and not a nonce — an opaque random id with nothing in it but
+	 * itself, hashed before it is stored, so the table cannot be read backwards
+	 * into "who ran this scan". Clearing it is trivial and expected; that is why
+	 * it is one of four layers rather than the whole rule.
+	 */
+	const SESSION_COOKIE = 'thallo_scan_sid';
+
+	/**
+	 * Mailbox providers that are not a company.
+	 *
+	 * The site ships the same list in `FREE_EMAIL_DOMAINS` so the refusal can
+	 * appear beside the field, but this is the copy that binds: the front end is
+	 * a static export and a cached bundle cannot be trusted to have the current
+	 * one.
+	 *
+	 * Deliberately short. It catches the consumer mailboxes and the disposable
+	 * ones and stops there — a rule broad enough to catch every free provider on
+	 * earth would start rejecting the small hosts real companies actually use,
+	 * and a false refusal here costs a lead that was qualified.
+	 */
+	const FREE_MAIL_DOMAINS = array(
+		'gmail.com',
+		'googlemail.com',
+		'outlook.com',
+		'outlook.es',
+		'hotmail.com',
+		'hotmail.es',
+		'hotmail.co.uk',
+		'hotmail.com.br',
+		'hotmail.com.ar',
+		'live.com',
+		'live.com.mx',
+		'msn.com',
+		'yahoo.com',
+		'yahoo.es',
+		'yahoo.com.mx',
+		'yahoo.com.br',
+		'yahoo.com.ar',
+		'ymail.com',
+		'icloud.com',
+		'me.com',
+		'mac.com',
+		'aol.com',
+		'gmx.com',
+		'gmx.net',
+		'mail.com',
+		'zoho.com',
+		'yandex.com',
+		'yandex.ru',
+		'protonmail.com',
+		'proton.me',
+		'pm.me',
+		'tutanota.com',
+		'mail.ru',
+		'inbox.ru',
+		'bol.com.br',
+		'uol.com.br',
+		'terra.com.br',
+		// Disposable. These exist to be thrown away, which is the opposite of a lead.
+		'mailinator.com',
+		'guerrillamail.com',
+		'yopmail.com',
+		'10minutemail.com',
+		'temp-mail.org',
+		'trashmail.com',
+		'sharklasers.com',
+		'dispostable.com',
+		'getnada.com',
+		'maildrop.cc',
+	);
+
 	public static function register_routes() {
 		register_rest_route(
 			self::NS,
@@ -88,6 +162,34 @@ class Thallo_Vis_REST {
 				'args'                => array(
 					'email' => array( 'required' => true ),
 				),
+			)
+		);
+
+		/*
+		 * How many free scans are left, before one is started.
+		 *
+		 * Public, because the visitor it answers for has no account — and it
+		 * reveals nothing about anybody else: it counts only this browser and
+		 * this address. It exists so the setup screen can print "Scan 1 of 3"
+		 * rather than letting the limit be discovered by hitting it, which is
+		 * how it worked until now: a visitor ran a third scan and learned from a
+		 * 429 that there had been an allowance all along.
+		 *
+		 * It also sets the session cookie, which is why it is a GET the front
+		 * end makes on load rather than something folded into `/scan`.
+		 */
+		register_rest_route(
+			self::NS,
+			'/quota',
+			array(
+				/* GET is the one the page makes on load, and the one that mints
+				   the cookie. POST is the same answer for an address the
+				   visitor has just typed — a body rather than a query string
+				   because an address in a URL ends up in the access log of
+				   every hop between here and there, and this one is a lead. */
+				'methods'             => array( 'GET', 'POST' ),
+				'callback'            => array( __CLASS__, 'quota' ),
+				'permission_callback' => '__return_true',
 			)
 		);
 
@@ -223,20 +325,32 @@ class Thallo_Vis_REST {
 		}
 		$email = '' === $email ? '' : sanitize_email( $email );
 
-		$limited = self::check_limits();
+		/* A company domain, not a mailbox provider. Checked before the limits so
+		   that a personal address is told what is wrong with it rather than
+		   being told the allowance is spent — and before anything is started, so
+		   a refusal costs nothing. */
+		if ( '' !== $email && Thallo_Vis_Settings::get( 'require_work_email' ) && ! self::is_work_email( $email ) ) {
+			return new WP_Error(
+				'personal_email',
+				__( 'Free scans are for company email addresses. Use your work address and we will send the report there.', 'thallo-visibility' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		$limited = self::check_limits( $domain, $email );
 		if ( is_wp_error( $limited ) ) {
 			return $limited;
 		}
 
-		$session = Thallo_Vis_Runner::start( $brand, $domain, $industry, $market, 'visitor', $prompts, $email );
+		$session = Thallo_Vis_Runner::start( $brand, $domain, $industry, $market, 'visitor', $prompts, $email, self::session_hash() );
 
-		return is_wp_error( $session ) ? $session : rest_ensure_response( $session );
+		return is_wp_error( $session ) ? $session : rest_ensure_response( self::with_quota( $session ) );
 	}
 
 	public static function tick( WP_REST_Request $request ) {
 		$session = Thallo_Vis_Runner::tick( $request->get_param( 'id' ) );
 
-		return is_wp_error( $session ) ? $session : rest_ensure_response( $session );
+		return is_wp_error( $session ) ? $session : rest_ensure_response( self::with_quota( $session ) );
 	}
 
 	public static function unlock( WP_REST_Request $request ) {
@@ -246,15 +360,23 @@ class Thallo_Vis_REST {
 			return new WP_Error( 'bad_email', __( 'That email address does not look right.', 'thallo-visibility' ), array( 'status' => 400 ) );
 		}
 
+		if ( Thallo_Vis_Settings::get( 'require_work_email' ) && ! self::is_work_email( $email ) ) {
+			return new WP_Error(
+				'personal_email',
+				__( 'Free scans are for company email addresses. Use your work address and we will send the report there.', 'thallo-visibility' ),
+				array( 'status' => 400 )
+			);
+		}
+
 		$session = Thallo_Vis_Runner::unlock( $request->get_param( 'id' ), $email );
 
-		return is_wp_error( $session ) ? $session : rest_ensure_response( $session );
+		return is_wp_error( $session ) ? $session : rest_ensure_response( self::with_quota( $session ) );
 	}
 
 	public static function read( WP_REST_Request $request ) {
 		$session = Thallo_Vis_Runner::read( $request->get_param( 'id' ) );
 
-		return is_wp_error( $session ) ? $session : rest_ensure_response( $session );
+		return is_wp_error( $session ) ? $session : rest_ensure_response( self::with_quota( $session ) );
 	}
 
 	/**
@@ -360,44 +482,295 @@ class Thallo_Vis_REST {
 		return $raw;
 	}
 
+	// -----------------------------------------------------------------------
+	// The free allowance
+	// -----------------------------------------------------------------------
+
 	/**
-	 * Two ceilings.
+	 * This browser, as an opaque id.
 	 *
-	 * The per-visitor one keeps one person from sitting on the button; the
-	 * whole-site one is the actual protection, because the per-visitor count is
-	 * keyed on an address and addresses are cheap. Neither is security — they
-	 * are a cap on how large a surprise the API bill can be.
+	 * Reads the cookie and mints one when there is not one yet, hashing it with
+	 * the site's own salt before it is stored — the same treatment the IP gets,
+	 * for the same reason: the table should not be usable to look up who ran a
+	 * scan.
+	 *
+	 * `$mint` is false everywhere except `/quota`. A cookie is only settable
+	 * before output, and a GET the front end makes on load is a clean place to
+	 * do it; minting from `/scan` as well would hand a fresh allowance to
+	 * anything that skips the setup screen, which is precisely the client this
+	 * layer is counting.
 	 */
-	private static function check_limits() {
+	private static function session_hash( $mint = false ) {
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- validated by the pattern below.
+		$raw = isset( $_COOKIE[ self::SESSION_COOKIE ] ) ? (string) $_COOKIE[ self::SESSION_COOKIE ] : '';
+		$raw = preg_match( '/^[a-f0-9]{32}$/', $raw ) ? $raw : '';
+
+		if ( '' === $raw && $mint && ! headers_sent() ) {
+			$raw = bin2hex( random_bytes( 16 ) );
+
+			setcookie(
+				self::SESSION_COOKIE,
+				$raw,
+				array(
+					'expires'  => time() + YEAR_IN_SECONDS,
+					'path'     => '/',
+					'secure'   => is_ssl(),
+					'httponly' => true,
+					/* Lax, not Strict: the visitor often arrives from an email or
+					   a search result, and Strict would withhold the cookie on
+					   that first navigation — handing a fresh allowance to every
+					   visitor who did not type the URL by hand. */
+					'samesite' => 'Lax',
+				)
+			);
+
+			/* Written back so the rest of THIS request sees it. Without it the
+			   scan started in the same request as the mint would be stored
+			   against an empty session and would not count against anybody. */
+			$_COOKIE[ self::SESSION_COOKIE ] = $raw;
+		}
+
+		return '' === $raw ? '' : hash( 'sha256', $raw . wp_salt( 'nonce' ) );
+	}
+
+	/** True when the address is on a company domain rather than a mailbox provider. */
+	public static function is_work_email( $email ) {
+		$at = strrpos( (string) $email, '@' );
+		if ( false === $at ) {
+			return false;
+		}
+
+		return ! in_array( strtolower( substr( $email, $at + 1 ) ), self::FREE_MAIL_DOMAINS, true );
+	}
+
+	/**
+	 * Whether this caller is exempt from the allowance entirely.
+	 *
+	 * Matched on the address in the clear against `rate_exempt_ips`, which is a
+	 * list an administrator typed into the settings screen. Nothing a visitor
+	 * sends can put them on it, and nothing is stored as a result of the
+	 * comparison.
+	 *
+	 * Exact matches only — no ranges, no prefixes. A range would be the natural
+	 * next feature and it is deliberately absent: this is the single hole in
+	 * the thing that protects the API bill, and a mistyped CIDR mask is how a
+	 * hole becomes a door.
+	 */
+	private static function ip_exempt() {
+		$list = (string) Thallo_Vis_Settings::get( 'rate_exempt_ips', '' );
+		if ( '' === trim( $list ) ) {
+			return false;
+		}
+
+		$ip = Thallo_Vis_DB::client_ip();
+		if ( '' === $ip ) {
+			return false;
+		}
+
+		foreach ( preg_split( '/[\s,;]+/', $list ) as $entry ) {
+			if ( '' !== $entry && $entry === $ip ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * What is left of the free allowance, and which layer is binding.
+	 *
+	 * One function, two callers: `/quota` renders it as "Scan 1 of 3" before
+	 * anything is spent, and `check_limits()` refuses on it. They must not be
+	 * able to disagree — a counter that says two left in front of a server that
+	 * says none is worse than no counter at all.
+	 *
+	 * `$domain` and `$email` are empty when this is called from `/quota`, which
+	 * is before the visitor has typed either. Those two layers simply do not
+	 * apply yet, and the ones that do — the session and the network — are
+	 * enough for the number on screen. Both are checked properly at `/scan`.
+	 */
+	private static function allowance( $domain = '', $email = '' ) {
 		$since = gmdate( 'Y-m-d H:i:s', time() - DAY_IN_SECONDS );
 
-		$per_ip = (int) Thallo_Vis_Settings::get( 'rate_per_ip', 3 );
-		if ( Thallo_Vis_DB::count_recent_for_ip( $since ) >= $per_ip ) {
-			return new WP_Error(
-				'rate_limited',
-				sprintf(
-					/* translators: %d: number of free scans allowed per day. */
-					_n(
-						'That is your free scan for today. Get in touch and we will run the full audit against your category properly.',
-						'That is your %d free scans for today. Get in touch and we will run the full audit against your category properly.',
-						$per_ip,
-						'thallo-visibility'
-					),
-					$per_ip
+		/* The office, before anything is counted. See `ip_exempt()` — this is
+		   the one way past the limiter, and it is a list somebody typed rather
+		   than anything a visitor can present. */
+		if ( self::ip_exempt() ) {
+			$limit = max( 1, (int) Thallo_Vis_Settings::get( 'rate_per_session', 3 ) );
+
+			/* A full allowance rather than an infinite one. The counter on the
+			   setup screen reads `limit - remaining + 1`, so anything larger
+			   than the limit prints a nonsense scan number — and "Scan 1 of 3",
+			   every time, is a fair description of what an exempt visitor is
+			   experiencing anyway. `exempt` is there for anyone reading the
+			   response rather than for the interface. */
+			return array(
+				'remaining' => $limit,
+				'limit'     => $limit,
+				'exempt'    => true,
+			);
+		}
+
+		/* The headline: what "1 of 3" counts against. The session and the
+		   address share it deliberately — they are two ways of counting the same
+		   person, not two separate budgets. */
+		$limit = max(
+			1,
+			(int) Thallo_Vis_Settings::get( 'rate_per_session', 3 )
+		);
+
+		$layers = array(
+			array(
+				'id'    => 'session',
+				'left'  => $limit - Thallo_Vis_DB::count_for_session( self::session_hash() ),
+				'reason' => __( 'You have reached the limit of free scans. Book an audit and we will run the full question set against your category, with the sources behind every answer.', 'thallo-visibility' ),
+			),
+			array(
+				'id'    => 'ip',
+				'left'  => (int) Thallo_Vis_Settings::get( 'rate_per_ip', 6 ) - Thallo_Vis_DB::count_recent_for_ip( $since ),
+				'reason' => __( 'This network has run its scans for today. Book an audit and we will run the full question set against your category — or come back tomorrow.', 'thallo-visibility' ),
+			),
+		);
+
+		if ( '' !== $email ) {
+			$layers[] = array(
+				'id'    => 'email',
+				'left'  => max( 1, (int) Thallo_Vis_Settings::get( 'rate_per_email', 3 ) ) - Thallo_Vis_DB::count_for_email( $email ),
+				/* Not "that address has used its free scans." It is the same
+				   sentence as the session layer on purpose: told which counter
+				   is binding, the obvious next move is to try a second address,
+				   and the message would have been the instructions for getting
+				   around it. */
+				'reason' => __( 'You have reached the limit of free scans. Book an audit and we will run the full question set against your category, with the sources behind every answer.', 'thallo-visibility' ),
+			);
+		}
+
+		if ( '' !== $domain ) {
+			$layers[] = array(
+				'id'    => 'domain',
+				'left'  => (int) Thallo_Vis_Settings::get( 'rate_per_domain', 2 ) - Thallo_Vis_DB::count_recent_for_domain( $domain, $since ),
+				/* Named as a fact about the website rather than about the person
+				   asking, because usually it is not the same person: this layer
+				   fires on an agency scanning a prospect, or a competitor
+				   checking a rival. */
+				'reason' => sprintf(
+					/* translators: %s: the website being scanned. */
+					__( '%s has already been scanned today. A brand is measured once a day so a single site cannot use up the day\'s runs — book an audit if you need it looked at properly.', 'thallo-visibility' ),
+					$domain
 				),
-				array( 'status' => 429 )
 			);
 		}
 
-		$global = (int) Thallo_Vis_Settings::get( 'rate_global', 200 );
-		if ( Thallo_Vis_DB::count_recent_total( $since ) >= $global ) {
-			return new WP_Error(
-				'busy',
-				__( 'The scanner has hit its limit for today. Please try again tomorrow, or get in touch and we will run it for you.', 'thallo-visibility' ),
-				array( 'status' => 503 )
-			);
+		/* The site-wide ceiling. Last, because it is the only one that is not
+		   about this visitor at all, and it should never be the sentence
+		   somebody reads if one of the personal layers also applies. */
+		$layers[] = array(
+			'id'    => 'site',
+			'left'  => (int) Thallo_Vis_Settings::get( 'rate_global', 200 ) - Thallo_Vis_DB::count_recent_total( $since ),
+			'reason' => __( 'The scanner has hit its limit for today. Please try again tomorrow, or get in touch and we will run it for you.', 'thallo-visibility' ),
+		);
+
+		$binding = $layers[0];
+		foreach ( $layers as $layer ) {
+			if ( $layer['left'] < $binding['left'] ) {
+				$binding = $layer;
+			}
 		}
 
-		return true;
+		$remaining = max( 0, (int) $binding['left'] );
+
+		$out = array(
+			'remaining' => $remaining,
+			/* Never below what is actually left. A visitor who somehow has four
+			   left against a limit of three should not be shown "Scan 0 of 3". */
+			'limit'     => max( $limit, $remaining ),
+		);
+
+		if ( 0 === $remaining ) {
+			$out['limitedBy'] = $binding['id'];
+			$out['reason']    = $binding['reason'];
+		}
+
+		return $out;
+	}
+
+	/**
+	 * Four ceilings, and none of them an error.
+	 *
+	 * A cookie alone is cleared in ten seconds, an address alone is defeated by
+	 * a second address, and an IP alone punishes an office of forty people who
+	 * share one — so the four are counted together and the tightest binds. See
+	 * `Thallo_Vis_Settings::defaults()` for what each is actually protecting.
+	 *
+	 * The status code is still 429 because that is what it is, but the sentence
+	 * behind it is written as an invitation. Somebody who has run three scans
+	 * and is reaching for a fourth is the most interested visitor of the week,
+	 * and "rate limit exceeded" is the worst possible thing to say to them.
+	 */
+	private static function check_limits( $domain = '', $email = '' ) {
+		$quota = self::allowance( $domain, $email );
+
+		if ( $quota['remaining'] > 0 ) {
+			return true;
+		}
+
+		return new WP_Error(
+			'site' === $quota['limitedBy'] ? 'busy' : 'rate_limited',
+			$quota['reason'],
+			array(
+				'status' => 'site' === $quota['limitedBy'] ? 503 : 429,
+				'quota'  => $quota,
+			)
+		);
+	}
+
+	/**
+	 * `GET /quota` — the allowance before a scan is started.
+	 *
+	 * Optionally for a given address and website. Without them it answers for
+	 * the browser and the network only, which is all there is to answer for
+	 * when the page has just loaded and nothing has been typed.
+	 *
+	 * With them it is the same answer `/scan` would give, which is the whole
+	 * point: a visitor used to fill in two screens, press the button, watch a
+	 * scan appear to start and *then* be told the address had no runs left —
+	 * with the form behind them already gone. The setup screen now asks this
+	 * question when the address is entered and refuses beside the field.
+	 *
+	 * It reveals nothing it should not. The count is per address and per site,
+	 * both of which the caller has just typed, and a wrong guess returns the
+	 * same "3 of 3" an unused address would.
+	 */
+	public static function quota( $request = null ) {
+		/* The one place the cookie is minted. It is a GET the setup screen makes
+		   on load, so there is no output yet and `setcookie` still works. */
+		self::session_hash( true );
+
+		$email  = '';
+		$domain = '';
+
+		if ( $request instanceof WP_REST_Request ) {
+			$candidate = sanitize_email( (string) $request->get_param( 'email' ) );
+			$email     = is_email( $candidate ) ? strtolower( $candidate ) : '';
+			$domain    = self::clean_domain( (string) $request->get_param( 'domain' ) );
+		}
+
+		return rest_ensure_response( self::allowance( $domain, $email ) );
+	}
+
+	/**
+	 * The allowance, attached to a session response.
+	 *
+	 * Every scan response carries it so the report can print "scan 2 of 3" and
+	 * the CTA can say how many are left without a second round trip — and so
+	 * the two numbers cannot drift apart, which they would the moment they came
+	 * from different calls at different times.
+	 */
+	private static function with_quota( $session ) {
+		if ( is_array( $session ) ) {
+			$session['quota'] = self::allowance();
+		}
+
+		return $session;
 	}
 }

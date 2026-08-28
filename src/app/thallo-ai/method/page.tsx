@@ -20,12 +20,12 @@ import Footer from '@/components/Footer';
 export const metadata: Metadata = {
   title: 'How the AI visibility scan works',
   description:
-    'The method behind the Thallo visibility scan: the fifteen questions, the models, the scoring weights, and what the scan cannot tell you.',
+    'The method behind the Thallo visibility scan: the questions, the models, the scoring weights, and what the scan cannot tell you.',
   alternates: { canonical: 'https://thallodigital.com/thallo-ai/method/' },
   openGraph: {
     title: 'How the AI visibility scan works · Thallo Digital',
     description:
-      'The fifteen questions, the models, the scoring weights, and what the scan cannot tell you.',
+      'The questions, the models, the scoring weights, and what the scan cannot tell you.',
     url: 'https://thallodigital.com/thallo-ai/method/',
   },
 };

@@ -144,11 +144,25 @@ class Thallo_Vis_Questions {
 	 * through unchanged rather than failing.
 	 */
 	const INDUSTRIES = array(
+		/* The five Thallo sells to, in the order the site lists them. */
+		'fintech'                     => array( 'es' => 'fintech', 'pt' => 'fintech' ),
+		'health tech'                 => array( 'es' => 'tecnología de la salud', 'pt' => 'tecnologia da saúde' ),
+		'legal tech'                  => array( 'es' => 'tecnología legal', 'pt' => 'tecnologia jurídica' ),
+		'specialized software'        => array( 'es' => 'software especializado', 'pt' => 'software especializado' ),
+		'professional services'       => array( 'es' => 'servicios profesionales', 'pt' => 'serviços profissionais' ),
+
+		/* Adjacent, and asked for often enough to be worth translating. */
+		'insurance & claims'          => array( 'es' => 'seguros y siniestros', 'pt' => 'seguros e sinistros' ),
+		'enterprise software / saas'  => array( 'es' => 'software empresarial / SaaS', 'pt' => 'software empresarial / SaaS' ),
+
+		/* Retired from the site's suggestion list and kept translated anyway. A
+		   lead who typed one of these before the list changed — or who types it
+		   now, since the field has always taken free text — should still get a
+		   question in their own language rather than an English label dropped
+		   into a Spanish sentence. Removing a translation does not remove the
+		   category, it only removes the translation. */
 		'fintech & payments'          => array( 'es' => 'fintech y pagos', 'pt' => 'fintech e pagamentos' ),
 		'health tech & recovery'      => array( 'es' => 'tecnología de la salud y recuperación', 'pt' => 'tecnologia da saúde e recuperação' ),
-		'enterprise software / saas'  => array( 'es' => 'software empresarial / SaaS', 'pt' => 'software empresarial / SaaS' ),
-		'professional services'       => array( 'es' => 'servicios profesionales', 'pt' => 'serviços profissionais' ),
-		'legal tech'                  => array( 'es' => 'tecnología legal', 'pt' => 'tecnologia jurídica' ),
 		'logistics & supply chain'    => array( 'es' => 'logística y cadena de suministro', 'pt' => 'logística e cadeia de suprimentos' ),
 		'e-commerce & retail'         => array( 'es' => 'comercio electrónico y retail', 'pt' => 'e-commerce e varejo' ),
 		'marketing & advertising'     => array( 'es' => 'marketing y publicidad', 'pt' => 'marketing e publicidade' ),
@@ -262,6 +276,97 @@ class Thallo_Vis_Questions {
 		}
 
 		return $out;
+	}
+
+	// -----------------------------------------------------------------------
+	// The direct question: "what is this company?"
+	// -----------------------------------------------------------------------
+
+	/**
+	 * Asked by name, once per model, and the only question in the whole scan
+	 * that mentions the brand.
+	 *
+	 * ## Why it breaks the rule the rest of this file is built on
+	 *
+	 * Every other question here keeps the brand's name out of it, because a
+	 * model asked "is Ledgerly any good?" will have an opinion about a company
+	 * that does not exist, and a share of voice measured that way measures
+	 * nothing. That reasoning is about *ranking*. This question is not a ranking
+	 * question — it asks the model to identify an entity, and the answer is
+	 * checked against facts we already hold rather than taken at its word.
+	 *
+	 * ## What it is for
+	 *
+	 * The floor problem. Nearly every brand that runs this scan comes back at 0%
+	 * share of answer, and a zero tells a story only once: it confirms absence
+	 * and says nothing about what to do. Worse, it flattens three completely
+	 * different situations into one number — the model has never heard of you,
+	 * the model knows you and cannot say who you are for, and the model resolves
+	 * your name to somebody else's company. The last of those is not absence at
+	 * all; it is a buyer being handed the wrong business under your name, and it
+	 * is both the most damaging and the most fixable.
+	 *
+	 * ## Why it asks for a website
+	 *
+	 * `domain` is the field that makes the wrong-entity case detectable without
+	 * a second model call to judge the first. A model that has confused two
+	 * companies of the same name will confidently name the other one's website,
+	 * and comparing that string to the domain being scanned is a deterministic
+	 * check we can print the evidence for. Asked to self-assess in prose instead,
+	 * every model says it is confident.
+	 *
+	 * `certain` is asked for separately and is only ever read as a downgrade —
+	 * a model that volunteers doubt is telling us something; a model that claims
+	 * certainty is not.
+	 */
+	public static function entity_prompt( $brand, $market = self::DEFAULT_MARKET ) {
+		$lang = self::language_of( $market );
+
+		switch ( $lang ) {
+			case 'es':
+				return sprintf( '¿Qué es %s? ¿A qué se dedica y a quién le sirve?', $brand );
+			case 'pt':
+				return sprintf( 'O que é %s? O que faz e para quem trabalha?', $brand );
+			default:
+				return sprintf( 'What is %s? What do they do and who do they serve?', $brand );
+		}
+	}
+
+	/**
+	 * The system prompt for the question above.
+	 *
+	 * Separate from `system_prompt()` because it asks for a different shape and,
+	 * more importantly, gives the opposite instruction about guessing. The
+	 * ranking prompt tells a model not to pad a list; this one tells it not to
+	 * reconstruct a plausible company from a name — which is the failure this
+	 * question exists to catch, and a model left to be helpful will produce a
+	 * fluent description of a business that does not exist.
+	 */
+	public static function entity_system_prompt( $market = self::DEFAULT_MARKET ) {
+		$lines = array(
+			'You are being asked to identify a specific company by name.',
+			'Answer only from what you already know. Do not guess, and do not assemble a plausible description from the name itself.',
+			'If you do not recognise the company, say so — that is a useful and correct answer.',
+			'If the name could refer to more than one company, describe the one you know best and say which it is.',
+			'Respond with JSON only, in exactly this shape: {"known": true, "what": "one sentence on what they do", "serves": "one sentence on who their customers are", "domain": "their website, host only, or an empty string", "certain": true}.',
+			'Set "known" to false, and leave the other fields empty, when you do not recognise the company.',
+			'Leave "serves" empty rather than guessing at a customer type you are not sure of.',
+			'"domain" must be the website of the company you are actually describing, as a bare host such as example.com. Leave it empty if you do not know it. Never invent one.',
+			'Set "certain" to false whenever you are working from a weak or partial memory.',
+			'Keep "what" and "serves" to one short sentence each.',
+		);
+
+		/* The answer is read by a person in their own market, so it is written in
+		   their language — but the field names and the JSON shape stay English,
+		   because those are what the parser reads. */
+		$lang = self::language_of( $market );
+		if ( 'es' === $lang ) {
+			$lines[] = 'Write the values of "what" and "serves" in Spanish. Keep the field names in English.';
+		} elseif ( 'pt' === $lang ) {
+			$lines[] = 'Write the values of "what" and "serves" in Portuguese. Keep the field names in English.';
+		}
+
+		return implode( ' ', $lines );
 	}
 
 	/**

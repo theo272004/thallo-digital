@@ -69,9 +69,29 @@ class Thallo_Vis_Analysis {
 
 	/** The label part of a hostname: ledgerly.co.uk → ledgerly. */
 	public static function domain_root( $domain ) {
-		$domain = preg_replace( '/^www\./i', '', strtolower( (string) $domain ) );
+		$domain = self::clean_host( $domain );
 		$parts  = explode( '.', $domain );
 		return self::normalize( $parts[0] );
+	}
+
+	/**
+	 * Whatever was handed over, reduced to a bare host.
+	 *
+	 * The visitor's own domain arrives already cleaned by the REST layer, but
+	 * the entity check compares it against a string a *model* wrote — and a
+	 * model asked for "their website" returns `https://example.com/about` about
+	 * as often as `example.com`. Split on dots without this, that becomes the
+	 * label `https`, and every model that answered with a URL would be reported
+	 * as having resolved the brand to a different company. A false accusation is
+	 * the one failure this panel cannot have.
+	 */
+	public static function clean_host( $value ) {
+		$value = strtolower( trim( (string) $value ) );
+		$value = preg_replace( '#^[a-z][a-z0-9+.-]*://#', '', $value );
+		$value = preg_replace( '#^www\.#', '', $value );
+		$value = preg_replace( '#[/?\#].*$#', '', $value );
+
+		return trim( $value, ". \t\n\r" );
 	}
 
 	/**
@@ -404,6 +424,10 @@ class Thallo_Vis_Analysis {
 				'title'  => 'Unblock the AI crawlers in robots.txt',
 				'detail' => 'Your robots.txt is blocking the crawlers these models read the web with. Nothing else on this list matters until it is unblocked.',
 			),
+			'crawlable-text' => array(
+				'title'  => 'Serve your content in the HTML, not from JavaScript',
+				'detail' => 'The crawlers these models read the web with do not run JavaScript, so a page assembled in the browser reaches them blank. Server-render the pages that describe what you do, or pre-render them at build time.',
+			),
 			'schema'      => array(
 				'title'  => 'Add Organization schema markup',
 				'detail' => 'Structured data lets a model resolve who you are, what you sell and where, instead of inferring it from prose.',
@@ -436,10 +460,22 @@ class Thallo_Vis_Analysis {
 	}
 
 	/**
-	 * The plan, ordered by what the scan found: heaviest unmet technical signal
-	 * first, then whichever of the two structural problems the answers point at.
+	 * The plan, ordered by what the scan found.
+	 *
+	 * It used to open with the two heaviest failed technical signals and treat
+	 * the answers as a postscript. Those checks no longer run — see the note in
+	 * the runner's `phase2_steps()` — so `$signals` arrives empty and the plan is
+	 * built entirely from what the models said. That is the right way round: a
+	 * plan whose first two rows were "add Organization schema" and "mark up your
+	 * FAQ" was answering a question nobody asked, on a report about what the
+	 * models recommend.
+	 *
+	 * `$state` is optional so the old three-argument call still works. With it,
+	 * the plan can name the sources the brand is missing from and read the gap
+	 * between the two readings, which are the two findings a person can actually
+	 * act on this week.
 	 */
-	public static function actions( array $signals, array $phase1, array $competitors ) {
+	public static function actions( array $signals, array $phase1, array $competitors, array $state = array() ) {
 		$remedies = self::remedies();
 
 		$gaps = array_values(
@@ -460,6 +496,90 @@ class Thallo_Vis_Analysis {
 
 		$actions = array();
 		$used    = array();
+
+		/* ── The findings that outrank everything ────────────────────────────
+		 *
+		 * A model answering "who is this company" with somebody else's website
+		 * is not a ranking problem and no amount of publishing fixes it. It goes
+		 * first whenever it happens. */
+		$entity = isset( $state['phase2']['entity'] ) && is_array( $state['phase2']['entity'] ) ? $state['phase2']['entity'] : array();
+
+		foreach ( $entity as $row ) {
+			if ( isset( $row['verdict'] ) && 'mismatch' === $row['verdict'] ) {
+				$actions[] = array(
+					'title'    => 'Claim your own name before anything else',
+					'detail'   => sprintf(
+						/* translators: 1: model name, 2: the website the model named instead. */
+						__( '%1$s answers a question about you by describing a different company at %2$s. Until the name resolves to you, every other line on this list is being credited to somebody else. One consistent name, description and website across your own site, Wikidata, LinkedIn and the directories your industry uses.', 'thallo-visibility' ),
+						isset( $row['provider'] ) ? ucfirst( $row['provider'] ) : __( 'A model', 'thallo-visibility' ),
+						isset( $row['claimedDomain'] ) ? $row['claimedDomain'] : __( 'another site', 'thallo-visibility' )
+					),
+					'impact'   => 4,
+					'priority' => 'high',
+				);
+				$used[] = 'entity-mismatch';
+				break;
+			}
+		}
+
+		/* The sources the models actually opened, and whether the brand is in
+		   any of them. This is the most actionable row the scan produces: it
+		   names specific websites rather than a category of work. */
+		$sources = isset( $state['phase2']['sources'] ) ? $state['phase2']['sources'] : array();
+		$missing = array();
+
+		foreach ( $sources as $source ) {
+			if ( empty( $source['own'] ) && empty( $source['brand'] ) && ! empty( $source['host'] ) ) {
+				$missing[] = $source['host'];
+			}
+		}
+
+		if ( count( $missing ) > 0 ) {
+			$actions[] = array(
+				'title'    => sprintf(
+					/* translators: %d: how many third-party sites the models read. */
+					_n(
+						'Get named on the %d website the models read for this category',
+						'Get named on the %d websites the models read for this category',
+						count( $missing ),
+						'thallo-visibility'
+					),
+					count( $missing )
+				),
+				'detail'   => sprintf(
+					/* translators: %s: a comma-separated list of hostnames. */
+					__( 'These are the pages the models opened before answering, and you are not on any of them: %s. This is the shortest route between the two figures at the top of this report — the models cannot recommend what the sources they read do not mention.', 'thallo-visibility' ),
+					implode( ', ', array_slice( $missing, 0, 4 ) )
+				),
+				'impact'   => 4,
+				'priority' => 'high',
+			);
+			$used[] = 'citations';
+		}
+
+		/* The gap between the two readings, which is a different instruction in
+		   each direction and was previously left entirely to the key insight. */
+		$grounded_pct = isset( $state['phase2']['grounded']['sovPct'] ) ? (int) $state['phase2']['grounded']['sovPct'] : null;
+
+		if ( null !== $grounded_pct ) {
+			$gap = $grounded_pct - (int) $phase1['sovPct'];
+
+			if ( $gap >= 20 ) {
+				$actions[] = array(
+					'title'    => __( 'Turn what searching finds into what the model remembers', 'thallo-visibility' ),
+					'detail'   => __( 'The models find you when they look and do not recall you when they do not. That is a young footprint: the pages exist but nothing durable has been written about you. Sustained third-party coverage — reviews, comparisons, category roundups — is what moves the reading that does not depend on a search.', 'thallo-visibility' ),
+					'impact'   => 3,
+					'priority' => 'medium',
+				);
+			} elseif ( $gap <= -20 ) {
+				$actions[] = array(
+					'title'    => __( 'Your reputation is ahead of your pages — close the gap', 'thallo-visibility' ),
+					'detail'   => __( 'The models know you but stop recommending you once they search, which means the pages being retrieved today are not yours and do not mention you. Publish the comparison and category pages buyers ask for, and make sure the roundups that rank in your category are current.', 'thallo-visibility' ),
+					'impact'   => 3,
+					'priority' => 'high',
+				);
+			}
+		}
 
 		foreach ( array_slice( $gaps, 0, 2 ) as $gap ) {
 			$remedy    = isset( $remedies[ $gap['id'] ] ) ? $remedies[ $gap['id'] ] : $remedies['default'];
@@ -510,6 +630,373 @@ class Thallo_Vis_Analysis {
 		}
 
 		return array_slice( $actions, 0, 4 );
+	}
+
+	// -----------------------------------------------------------------------
+	// Where the answers were read from
+	// -----------------------------------------------------------------------
+
+	/**
+	 * The pages the searching models actually opened, grouped by host, crossed
+	 * against the companies each of those answers went on to name.
+	 *
+	 * ## Why this is the panel worth having
+	 *
+	 * Every other figure in this report tells somebody where they stand. This
+	 * one tells them where the ground is. When a model searches before it
+	 * answers, the sources it opened are the shortest available description of
+	 * what earns a recommendation in that category — and unlike a share of
+	 * answer, it names things a person can go and do something about: get into
+	 * that roundup, get reviewed on that directory, get quoted in that trade
+	 * publication.
+	 *
+	 * It is also the part a reader cannot reconstruct on their own in an
+	 * afternoon, which is the honest test of whether a free report is worth
+	 * anybody's email address.
+	 *
+	 * ## The rules, and why each one is there
+	 *
+	 * **Two appearances minimum.** A host cited once is a model following a link;
+	 * cited twice across different answers it is part of how the category is
+	 * read. Everything below the threshold is noise that makes the table longer
+	 * and less true.
+	 *
+	 * **The brand's own domain is kept and flagged, not dropped.** "Every source
+	 * that mentioned you was your own website" is one of the strongest findings
+	 * this report can produce, and dropping the row would delete it.
+	 *
+	 * **Names come from the same answer, not from the whole run.** A host is
+	 * credited with a company only when the answer that opened it named that
+	 * company. Crediting from the run as a whole would put every leader against
+	 * every source and turn a finding into a matrix of ticks.
+	 */
+	public static function sources( array $state, $limit = 8 ) {
+		if ( empty( $state['results_grounded'] ) ) {
+			return array();
+		}
+
+		$brand_norm  = self::normalize( $state['brand'] );
+		$domain_root = self::domain_root( $state['domain'] );
+		$own_host    = self::clean_host( $state['domain'] );
+
+		$hosts = array();
+
+		foreach ( array( 'chatgpt', 'claude', 'gemini' ) as $provider ) {
+			$results = isset( $state['results_grounded'][ $provider ] ) ? $state['results_grounded'][ $provider ] : array();
+
+			foreach ( $results as $result ) {
+				if ( ! empty( $result['error'] ) || empty( $result['citations'] ) ) {
+					continue;
+				}
+
+				/* De-duplicated within one answer: a model that opens four pages
+				   of the same directory has consulted that directory once, and
+				   counting it four times would put it on top of a table it does
+				   not belong on top of. */
+				$seen = array();
+
+				foreach ( $result['citations'] as $url ) {
+					$host = self::clean_host( $url );
+					if ( '' === $host || false === strpos( $host, '.' ) || isset( $seen[ $host ] ) ) {
+						continue;
+					}
+					$seen[ $host ] = true;
+
+					if ( ! isset( $hosts[ $host ] ) ) {
+						$hosts[ $host ] = array(
+							'host'  => $host,
+							'times' => 0,
+							'own'   => $host === $own_host || self::domain_root( $host ) === $domain_root,
+							'names' => array(),
+							'brand' => false,
+						);
+					}
+
+					++$hosts[ $host ]['times'];
+
+					foreach ( (array) $result['companies'] as $company ) {
+						if ( self::is_brand( $company, $brand_norm, $domain_root ) ) {
+							$hosts[ $host ]['brand'] = true;
+							continue;
+						}
+
+						$key = self::normalize( $company );
+						if ( '' === $key ) {
+							continue;
+						}
+
+						if ( ! isset( $hosts[ $host ]['names'][ $key ] ) ) {
+							$hosts[ $host ]['names'][ $key ] = array(
+								'label' => trim( $company ),
+								'count' => 0,
+							);
+						}
+						++$hosts[ $host ]['names'][ $key ]['count'];
+					}
+				}
+			}
+		}
+
+		$out = array();
+
+		foreach ( $hosts as $row ) {
+			/* A host seen once is a model following a link. Twice, across
+			   different answers, it is part of how the category gets read. The
+			   brand's own site is exempt — being read from your own domain three
+			   times and once are the same finding, and dropping the row would
+			   delete the sentence the panel exists to make. */
+			if ( $row['times'] < 2 && ! $row['own'] ) {
+				continue;
+			}
+
+			$names = array_values( $row['names'] );
+			usort(
+				$names,
+				static function ( $a, $b ) {
+					return $b['count'] === $a['count']
+						? strcmp( $a['label'], $b['label'] )
+						: $b['count'] - $a['count'];
+				}
+			);
+
+			$out[] = array(
+				'host'  => $row['host'],
+				'times' => (int) $row['times'],
+				'own'   => (bool) $row['own'],
+				'brand' => (bool) $row['brand'],
+				'names' => array_slice( array_column( $names, 'label' ), 0, 4 ),
+			);
+		}
+
+		/* Most-read first, with the brand's own domain last however often it was
+		   opened. The panel is about what carries the category, and a company's
+		   own website at the top of that table reads as reassurance when the
+		   finding underneath it is usually the opposite. */
+		usort(
+			$out,
+			static function ( $a, $b ) {
+				if ( $a['own'] !== $b['own'] ) {
+					return $a['own'] ? 1 : -1;
+				}
+				return $b['times'] === $a['times'] ? strcmp( $a['host'], $b['host'] ) : $b['times'] - $a['times'];
+			}
+		);
+
+		return array_slice( $out, 0, $limit );
+	}
+
+	// -----------------------------------------------------------------------
+	// Entity accuracy
+	// -----------------------------------------------------------------------
+
+	/**
+	 * What each model said when asked, by name, what this company is — and which
+	 * of four things that answer actually was.
+	 *
+	 * ## Why this is classified here and not by another model
+	 *
+	 * Judging an answer with a second call would double the cost of the check and
+	 * replace a fact with an opinion. Every branch below is a comparison against
+	 * something we already hold: whether the model admitted it did not know,
+	 * whether the website it named is the one being scanned, whether it could
+	 * state a customer. A reader can check each of those for themselves, which is
+	 * the whole standard this report is held to.
+	 *
+	 * ## The four verdicts
+	 *
+	 *   `unknown`  — the model said it does not recognise the name. This is the
+	 *                honest zero, and it is a different finding from the next one.
+	 *   `mismatch` — the model named a website that is not yours. It has resolved
+	 *                your name to somebody else's company, and a buyer asking
+	 *                about you is being shown them. The domain it named is kept
+	 *                and printed, because the finding is only worth anything if
+	 *                the reader can see the evidence.
+	 *   `partial`  — it knows the company and cannot say who the company is for.
+	 *                Common, and the reason a recommendation has nothing to
+	 *                attach to: a model that cannot state a buyer cannot match
+	 *                you to one.
+	 *   `resolved` — it knows what you do and who you do it for.
+	 *
+	 * A model that volunteers doubt (`certain: false`) is capped at `partial`
+	 * however complete its answer looks. Confidence is only ever read downwards:
+	 * a model claiming certainty tells us nothing, a model admitting doubt tells
+	 * us something.
+	 */
+	public static function entity_verdict( array $answer, $domain ) {
+		if ( ! empty( $answer['error'] ) ) {
+			return 'unavailable';
+		}
+
+		if ( empty( $answer['known'] ) ) {
+			return 'unknown';
+		}
+
+		$what   = trim( (string) ( isset( $answer['what'] ) ? $answer['what'] : '' ) );
+		$serves = trim( (string) ( isset( $answer['serves'] ) ? $answer['serves'] : '' ) );
+
+		/* Claimed to know it and then described nothing. Treated as not knowing
+		   rather than as a partial, because there is no content to be partial
+		   about — this is a model saying yes to the first field out of habit. */
+		if ( '' === $what ) {
+			return 'unknown';
+		}
+
+		/* The wrong-company case. Checked on the registrable root so that
+		   `www.example.com`, `example.com/about` and `EXAMPLE.COM` all agree, and
+		   only when the model actually named a site — an empty domain is a model
+		   that did not know the website, which is not the same as naming the
+		   wrong one and must not be reported as though it were. */
+		$claimed = self::domain_root( (string) ( isset( $answer['domain'] ) ? $answer['domain'] : '' ) );
+		if ( '' !== $claimed && $claimed !== self::domain_root( $domain ) ) {
+			return 'mismatch';
+		}
+
+		if ( '' === $serves || ! empty( $answer['uncertain'] ) ) {
+			return 'partial';
+		}
+
+		return 'resolved';
+	}
+
+	/**
+	 * One row per model, in the order the report prints them.
+	 *
+	 * Providers that were skipped or errored appear as `unavailable` rather than
+	 * being dropped. "We could not ask Claude" and "Claude does not know you" are
+	 * different findings and only one of them is about the visitor — the same
+	 * rule the share-of-answer table has always followed.
+	 */
+	public static function entity( array $state ) {
+		$out    = array();
+		$domain = isset( $state['domain'] ) ? $state['domain'] : '';
+
+		foreach ( array( 'chatgpt', 'claude', 'gemini' ) as $provider ) {
+			$answer = isset( $state['entity'][ $provider ] ) ? $state['entity'][ $provider ] : null;
+
+			if ( ! is_array( $answer ) ) {
+				continue;
+			}
+
+			$row = array(
+				'provider' => $provider,
+				'model'    => isset( $state['models'][ $provider ] ) ? $state['models'][ $provider ] : '',
+				'verdict'  => self::entity_verdict( $answer, $domain ),
+				'what'     => mb_substr( trim( (string) ( isset( $answer['what'] ) ? $answer['what'] : '' ) ), 0, 300 ),
+				'serves'   => mb_substr( trim( (string) ( isset( $answer['serves'] ) ? $answer['serves'] : '' ) ), 0, 300 ),
+			);
+
+			/* Printed whole — `example.com`, not the `example` the matcher
+			   compares on — because this is the evidence for the accusation and
+			   a reader has to be able to open it. */
+			if ( 'mismatch' === $row['verdict'] ) {
+				$row['claimedDomain'] = self::clean_host( (string) $answer['domain'] );
+			}
+
+			if ( ! empty( $answer['error'] ) ) {
+				$row['error'] = (string) $answer['error'];
+			}
+
+			$out[] = $row;
+		}
+
+		return $out;
+	}
+
+	/**
+	 * The sentence under the entity panel.
+	 *
+	 * Counted from the rows rather than written per case, because the interesting
+	 * combinations are more numerous than anybody would enumerate by hand and a
+	 * prose template that does not match the table above it is exactly the fault
+	 * this report cannot afford.
+	 */
+	public static function entity_reading( array $rows, $brand ) {
+		$measured = array_values(
+			array_filter(
+				$rows,
+				static function ( $row ) {
+					return 'unavailable' !== $row['verdict'];
+				}
+			)
+		);
+
+		if ( ! $measured ) {
+			return '';
+		}
+
+		$count = static function ( $verdict ) use ( $measured ) {
+			return count(
+				array_filter(
+					$measured,
+					static function ( $row ) use ( $verdict ) {
+						return $verdict === $row['verdict'];
+					}
+				)
+			);
+		};
+
+		$total    = count( $measured );
+		$mismatch = $count( 'mismatch' );
+		$unknown  = $count( 'unknown' );
+		$partial  = $count( 'partial' );
+		$resolved = $count( 'resolved' );
+
+		/* Ordered by what the reader should act on first, not by how many models
+		   voted for it. One model handing a buyer a different company under your
+		   name outranks two models describing you correctly. */
+		if ( $mismatch > 0 ) {
+			return sprintf(
+				/* translators: 1: how many models, 2: how many were asked, 3: the brand. */
+				_n(
+					'%1$d model out of %2$d resolves the name %3$s to a different company. A buyer who asks about you by name is being shown somebody else, and no amount of ranking work fixes that — until the entity resolves to you everywhere, a recommendation has nothing to attach to.',
+					'%1$d models out of %2$d resolve the name %3$s to a different company. A buyer who asks about you by name is being shown somebody else, and no amount of ranking work fixes that — until the entity resolves to you everywhere, a recommendation has nothing to attach to.',
+					$mismatch,
+					'thallo-visibility'
+				),
+				$mismatch,
+				$total,
+				$brand
+			);
+		}
+
+		if ( $unknown === $total ) {
+			return sprintf(
+				/* translators: 1: the brand, 2: how many models were asked. */
+				__( 'None of the %2$d models recognises %1$s by name. That is the honest starting point rather than a verdict on the company: a model can only know what it has read somewhere other than your own site.', 'thallo-visibility' ),
+				$brand,
+				$total
+			);
+		}
+
+		if ( $resolved === $total ) {
+			return sprintf(
+				/* translators: %s: the brand. */
+				__( 'Every model knows what %s does and who it is for. The entity is solid, which means the share-of-answer figures above are about ranking rather than about recognition — a different problem, and a more tractable one.', 'thallo-visibility' ),
+				$brand
+			);
+		}
+
+		if ( $partial > 0 && 0 === $resolved ) {
+			return sprintf(
+				/* translators: 1: how many models, 2: the brand. */
+				_n(
+					'%1$d model knows %2$s exists and cannot say who it is for. A model that cannot state your buyer cannot match you to one, which is how a company ends up known and still never recommended.',
+					'%1$d models know %2$s exists and cannot say who it is for. A model that cannot state your buyer cannot match you to one, which is how a company ends up known and still never recommended.',
+					$partial,
+					'thallo-visibility'
+				),
+				$partial,
+				$brand
+			);
+		}
+
+		return sprintf(
+			/* translators: 1: the brand, 2: how many models describe it correctly, 3: how many were asked. */
+			__( '%1$s resolves correctly in %2$d of %3$d models. Uneven recognition usually means the sources that describe you exist but are too few for every model to have read them.', 'thallo-visibility' ),
+			$brand,
+			$resolved,
+			$total
+		);
 	}
 
 	/** Written from the rows, never from the score — so the prose cannot tell

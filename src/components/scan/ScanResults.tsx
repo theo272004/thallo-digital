@@ -7,7 +7,7 @@ import ScoreRing from './ScoreRing';
 import { BarChart3, LockKeyhole } from 'lucide-react';
 import { BTN_PRIMARY, FIELD, Head, Meter, Micro, Notice, Panel, ProviderMark, Spinner, Stat, Tint, Verdict, type Tone } from './ui';
 import { marketLabel } from '@/lib/scan/markets';
-import { PROVIDER_LABEL, type ProviderResult, type ScanPhase1 } from '@/lib/scan/types';
+import { PROVIDER_LABEL, emailDomain, isWorkEmail, type ProviderResult, type ScanPhase1 } from '@/lib/scan/types';
 
 const LOCKED = [
   'Which competitors are recommended instead of you',
@@ -63,10 +63,27 @@ export default function ScanResults({
   error?: string;
 }) {
   const [email, setEmail] = useState('');
+  /* Local to this form, so the server's own errors — which arrive through
+     `error` — are not overwritten by it and do not overwrite it. */
+  const [emailError, setEmailError] = useState('');
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!unlocking && email.trim()) onUnlock(email.trim());
+    if (unlocking || !email.trim()) return;
+
+    /* The server enforces this too, and its copy is the one that binds. This
+       one exists so the refusal lands beside the field instead of after a round
+       trip — and so it says which part of the address is the problem, which a
+       generic rejection cannot. */
+    if (!isWorkEmail(email)) {
+      setEmailError(
+        `We run free scans for company email addresses only. ${emailDomain(email)} is a personal mailbox — use your work address and we will send the report there.`
+      );
+      return;
+    }
+
+    setEmailError('');
+    onUnlock(email.trim());
   };
 
   return (
@@ -153,7 +170,7 @@ export default function ScanResults({
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@company.com"
+                  placeholder="you@yourcompany.com"
                   autoComplete="email"
                   required
                   disabled={unlocking}
@@ -170,7 +187,7 @@ export default function ScanResults({
                 </button>
               </div>
               <ConsentCheck id="scan-consent" />
-              {error && <Notice>{error}</Notice>}
+              {(emailError || error) && <Notice>{emailError || error}</Notice>}
             </form>
           </div>
 

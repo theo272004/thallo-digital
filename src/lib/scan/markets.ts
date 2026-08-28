@@ -43,6 +43,19 @@ export interface Market {
   country: string;
   /** Shown in the picker, e.g. "Español". */
   languageLabel: string;
+  /**
+   * The country as a prepositional phrase, in the market's own language —
+   * "in the United States", "en México", "no Brasil".
+   *
+   * The preposition is baked in rather than composed, because composing it is
+   * the bug: Portuguese takes "no Brasil" and not "em Brasil", Spanish takes
+   * "en" without an article, English wants "the" for two of its countries and
+   * for none of the rest. A suggested question is shown to the visitor before
+   * they run anything, so a preposition that reads as machine translation is
+   * the first thing that makes them distrust the questions and write their own
+   * from scratch — which is the state this feature exists to fix.
+   */
+  inCountry: string;
 }
 
 /**
@@ -54,13 +67,13 @@ export interface Market {
  * catalogue to add to, not a claim about where the models are good.
  */
 export const MARKETS: readonly Market[] = [
-  { id: 'en-US', language: 'en', country: 'the United States', languageLabel: 'English' },
-  { id: 'en-GB', language: 'en', country: 'the United Kingdom', languageLabel: 'English' },
-  { id: 'es-ES', language: 'es', country: 'Spain', languageLabel: 'Español' },
-  { id: 'es-MX', language: 'es', country: 'Mexico', languageLabel: 'Español' },
-  { id: 'es-CO', language: 'es', country: 'Colombia', languageLabel: 'Español' },
-  { id: 'es-AR', language: 'es', country: 'Argentina', languageLabel: 'Español' },
-  { id: 'pt-BR', language: 'pt', country: 'Brazil', languageLabel: 'Português' },
+  { id: 'en-US', language: 'en', country: 'the United States', languageLabel: 'English', inCountry: 'in the United States' },
+  { id: 'en-GB', language: 'en', country: 'the United Kingdom', languageLabel: 'English', inCountry: 'in the United Kingdom' },
+  { id: 'es-ES', language: 'es', country: 'Spain', languageLabel: 'Español', inCountry: 'en España' },
+  { id: 'es-MX', language: 'es', country: 'Mexico', languageLabel: 'Español', inCountry: 'en México' },
+  { id: 'es-CO', language: 'es', country: 'Colombia', languageLabel: 'Español', inCountry: 'en Colombia' },
+  { id: 'es-AR', language: 'es', country: 'Argentina', languageLabel: 'Español', inCountry: 'en Argentina' },
+  { id: 'pt-BR', language: 'pt', country: 'Brazil', languageLabel: 'Português', inCountry: 'no Brasil' },
 ];
 
 export const DEFAULT_MARKET = 'en-US';
@@ -180,14 +193,27 @@ export const QUESTION_TEMPLATES: Record<ScanLanguage, readonly string[]> = {
  * — falls through unchanged rather than failing.
  */
 export const INDUSTRY_LABELS: Record<string, Partial<Record<ScanLanguage, string>>> = {
+  /* The five Thallo sells to, in the order the site lists them. */
+  Fintech: { es: 'fintech', pt: 'fintech' },
+  'Health tech': { es: 'tecnología de la salud', pt: 'tecnologia da saúde' },
+  'Legal tech': { es: 'tecnología legal', pt: 'tecnologia jurídica' },
+  'Specialized software': { es: 'software especializado', pt: 'software especializado' },
+  'Professional services': { es: 'servicios profesionales', pt: 'serviços profissionais' },
+
+  /* Adjacent, and asked for often enough to be worth a suggestion. */
+  'Insurance & claims': { es: 'seguros y siniestros', pt: 'seguros e sinistros' },
+  'Enterprise software / SaaS': { es: 'software empresarial / SaaS', pt: 'software empresarial / SaaS' },
+
+  /* Retired from the suggestion list but kept translated: a lead who typed one
+     of these before the list changed, or who types it now as free text, should
+     still get a question in their own language rather than an English label
+     dropped into a Spanish sentence. Removing a translation does not remove the
+     category — the field has always accepted anything. */
   'Fintech & payments': { es: 'fintech y pagos', pt: 'fintech e pagamentos' },
   'Health tech & recovery': {
     es: 'tecnología de la salud y recuperación',
     pt: 'tecnologia da saúde e recuperação',
   },
-  'Enterprise software / SaaS': { es: 'software empresarial / SaaS', pt: 'software empresarial / SaaS' },
-  'Professional services': { es: 'servicios profesionales', pt: 'serviços profissionais' },
-  'Legal tech': { es: 'tecnología legal', pt: 'tecnologia jurídica' },
   'Logistics & supply chain': {
     es: 'logística y cadena de suministro',
     pt: 'logística e cadeia de suprimentos',
@@ -206,4 +232,84 @@ export function buildQuestionsFor(industry: string, marketId: string): string[] 
   const market = marketById(marketId);
   const label = industryInLanguage(industry, market.language);
   return QUESTION_TEMPLATES[market.language].map((q) => q.replace(/\{industry\}/g, label));
+}
+
+// ---------------------------------------------------------------------------
+// The three the setup screen starts from
+// ---------------------------------------------------------------------------
+
+/**
+ * Three suggested questions, one per archetype, built from the category and the
+ * country — a starting point the visitor can edit, not a fixed set.
+ *
+ * ## Why the field cannot start empty
+ *
+ * A free scan is three questions and there are three of them on the free tier,
+ * so a badly written question is not a smaller measurement — it is a third of
+ * the allowance spent on nothing, and the visitor has no way of knowing that
+ * until the report comes back thin. The failures were consistent enough to name:
+ * questions with the brand in them ("is X any good?"), questions that name no
+ * category at all, and questions that quietly ask about a different market from
+ * the one selected. Every one of those returns a confident answer, which is what
+ * makes them expensive.
+ *
+ * So the rows start filled with something valid and the visitor edits from
+ * there. The three archetypes are the three shapes that actually differentiate a
+ * vendor:
+ *
+ *   1. **Category and geography** — who gets named for this category in this
+ *      country. The closest thing to the question a buyer types first.
+ *   2. **The buyer's problem** — the same category approached from a live
+ *      dissatisfaction rather than a shopping list, which surfaces a different
+ *      set of names in most categories.
+ *   3. **Alternatives to the leader** — where a challenger is either present or
+ *      conspicuously not. This is usually the most revealing of the three and
+ *      almost nobody writes it themselves.
+ *
+ * They are deliberately not the first three of `QUESTION_TEMPLATES`: those are
+ * three phrasings of one angle, which measures a phrasing.
+ */
+export const SUGGESTION_TEMPLATES: Record<ScanLanguage, readonly string[]> = {
+  en: [
+    'What are the best {industry} companies {where}?',
+    'Our current {industry} provider is not working out. Which companies should we be looking at?',
+    'Who are the main alternatives to the biggest names in {industry}?',
+  ],
+  es: [
+    '¿Cuáles son las mejores empresas de {industry} {where}?',
+    'Nuestro proveedor actual de {industry} no está funcionando. ¿Qué otras empresas deberíamos mirar?',
+    '¿Cuáles son las principales alternativas a los nombres más grandes en {industry}?',
+  ],
+  pt: [
+    'Quais são as melhores empresas de {industry} {where}?',
+    'Nosso fornecedor atual de {industry} não está funcionando. Que outras empresas deveríamos considerar?',
+    'Quais são as principais alternativas aos maiores nomes em {industry}?',
+  ],
+};
+
+/** What each suggested row is doing, printed beside it so it can be judged. */
+export const SUGGESTION_ANGLES: Record<ScanLanguage, readonly string[]> = {
+  en: ['Category and geography', 'The buyer’s problem', 'Alternatives to the leader'],
+  es: ['Categoría y geografía', 'El problema del comprador', 'Alternativas al líder'],
+  pt: ['Categoria e geografia', 'O problema do comprador', 'Alternativas ao líder'],
+};
+
+/**
+ * The three suggestions for a category in a market.
+ *
+ * Returns an empty list when the category is blank: a suggestion reading "the
+ * best companies in the United States" with no category in it is exactly the
+ * contaminated question this is meant to prevent, and offering it pre-filled
+ * would be worse than offering nothing.
+ */
+export function suggestedQuestionsFor(industry: string, marketId: string): string[] {
+  const label = industry.trim();
+  if (!label) return [];
+
+  const market = marketById(marketId);
+  const inLanguage = industryInLanguage(label, market.language);
+
+  return SUGGESTION_TEMPLATES[market.language].map((q) =>
+    q.replace(/\{industry\}/g, inLanguage).replace(/\{where\}/g, market.inCountry)
+  );
 }

@@ -23,13 +23,18 @@ export const metadata: Metadata = {
    visibility that is itself unquotable would be an odd thing to ship. The
    markup says nothing the page does not say in prose. */
 const FAQ = [
+  /* These numbers must match what the scan actually sends. The free tier was
+     three questions for some time while this answer still said fifteen and
+     forty-five answers, which is the kind of gap a reader finds by counting the
+     rows in their own report — and once they have found one, they stop trusting
+     the figures the report exists to deliver. */
   [
     'How do you measure AI visibility?',
-    'We put fifteen buying questions to ChatGPT, Claude and Gemini — forty-five answers in total — and count how many name your brand and at what rank. Your brand is never mentioned in the questions, so no answer is led. Every question and every result is shown alongside the score.',
+    'You write three buying questions — the ones your buyers actually type — and we put every one of them to ChatGPT, Claude and Gemini twice: once with the web shut, to see what they already know, and once with search on, to see what they find. That is nine answers per reading. Your brand is never a word in the questions, so no answer is led, and every question and every result is printed beside the score.',
   ],
   [
     'Is the AI visibility scan free?',
-    'The first half is free and needs no account: your share of voice across the three models, your average rank, and the full audit trail. The second half — the competitors recommended instead of you, live retrieval, and the technical scorecard — is unlocked with an email address.',
+    'Yes, and there is no account. You give a work email on the setup screen, because the report is emailed as well as shown and because each scan costs us real money on its first call. Three free scans, then the full audit is a commissioned engagement.',
   ],
   [
     'Which AI platforms do you check?',

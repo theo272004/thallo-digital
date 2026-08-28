@@ -17,7 +17,14 @@
  * sent. If you change one, change both.
  */
 
-import { DEFAULT_MARKET, QUESTION_TEMPLATES as BY_LANGUAGE, buildQuestionsFor } from './markets';
+import {
+  DEFAULT_MARKET,
+  QUESTION_TEMPLATES as BY_LANGUAGE,
+  SUGGESTION_ANGLES,
+  buildQuestionsFor,
+  marketById,
+  suggestedQuestionsFor,
+} from './markets';
 
 /**
  * The English set, flat.
@@ -33,4 +40,22 @@ export const QUESTION_COUNT = QUESTION_TEMPLATES.length;
 /** The prompts a scan of `industry` in `marketId` will send, in order. */
 export function buildQuestions(industry: string, marketId: string = DEFAULT_MARKET): string[] {
   return buildQuestionsFor(industry, marketId);
+}
+
+/**
+ * The three the setup screen starts the visitor from — one per archetype, in
+ * the market's language, with the category and the country already in them.
+ *
+ * Paired with the angle each one is playing, because a suggestion the visitor
+ * cannot see the purpose of is a suggestion they delete. Empty when no category
+ * has been typed yet.
+ */
+export function suggestedQuestions(
+  industry: string,
+  marketId: string = DEFAULT_MARKET
+): { question: string; angle: string }[] {
+  const questions = suggestedQuestionsFor(industry, marketId);
+  const angles = SUGGESTION_ANGLES[marketById(marketId).language];
+
+  return questions.map((question, i) => ({ question, angle: angles[i] ?? '' }));
 }

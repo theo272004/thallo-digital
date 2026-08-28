@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * Console chrome, shared by every screen of the scan.
  *
@@ -39,7 +41,7 @@
  * 2.8:1 on the ink and is therefore used for rules and dots, never for text.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { PROVIDER_LOGO, type AnyProvider } from '@/lib/scan/types';
 import { BASE } from '@/lib/site';
 
@@ -184,6 +186,71 @@ export function Tint({
 export const Micro = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
   <span className={`text-[11px] font-bold uppercase tracking-[0.18em] ${className}`}>{children}</span>
 );
+
+/**
+ * A label that can explain itself.
+ *
+ * "Brand knowledge · no search" and "AI visibility · searching" are our words,
+ * not the reader's. They were coined to stop the two readings being averaged —
+ * which was the right call and is the spine of the whole report — but the
+ * report then prints them as bare column headings over somebody's results and
+ * expects the distinction to be obvious. It is not obvious. It was tested on
+ * somebody who does this for a living and it was not obvious to them.
+ *
+ * The reading that goes wrong is the no-search one. A model that names nobody
+ * with the web shut produces a result the reader knows to be false — they can
+ * search their own brand and see it right there — so the honest conclusion
+ * available to them is that the tool is broken. The distinction is the whole
+ * answer, and it has to be reachable at the exact place the disbelief happens.
+ *
+ * A disclosure rather than a hover tooltip: a tooltip does not exist on a
+ * phone, `title=""` is invisible until you have already decided to investigate,
+ * and a floating panel would be clipped by the `overflow-hidden` card these sit
+ * inside. This opens in place, closes again, and costs nothing to ignore.
+ */
+export function NotedLabel({
+  label,
+  note,
+  className = 'text-gray-400',
+}: {
+  label: string;
+  note: React.ReactNode;
+  className?: string;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        className="flex items-center gap-1.5 text-left"
+      >
+        <Micro className={className}>{label}</Micro>
+        {/* Olive rather than grey. Grey reads as punctuation and nobody presses
+            punctuation; this has to look like something that answers a
+            question, because the reader who needs it has already decided the
+            number above it is wrong. */}
+        <span
+          aria-hidden
+          className={`flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-full text-[10px] font-bold leading-none transition-colors ${
+            open ? 'bg-[#39471D] text-white' : 'bg-[#E7ECD9] text-[#39471D]'
+          }`}
+        >
+          ?
+        </span>
+        <span className="sr-only">— what this means</span>
+      </button>
+
+      {open && (
+        <p className="mt-2 rounded-lg border border-[#E7ECD9] bg-[#F4F6EE] px-3 py-2.5 text-[11.5px] font-medium leading-relaxed text-[#39471D]">
+          {note}
+        </p>
+      )}
+    </div>
+  );
+}
 
 /**
  * A fact about the run, worn on the dark masthead.

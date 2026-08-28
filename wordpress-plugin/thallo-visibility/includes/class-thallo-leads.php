@@ -338,6 +338,10 @@ class Thallo_Vis_Leads {
 		$phase1 = $state['phase1'];
 		$phase2 = isset( $state['phase2'] ) ? $state['phase2'] : array();
 
+		$grounded = isset( $phase2['grounded'] ) && ! empty( $phase2['grounded']['totalAnswers'] )
+			? $phase2['grounded']
+			: null;
+
 		$lines = array(
 			sprintf( 'Your AI visibility scan — %s', $state['brand'] ),
 			str_repeat( '=', 48 ),
@@ -348,10 +352,33 @@ class Thallo_Vis_Leads {
 				strtolower( $state['industry'] )
 			),
 			'',
-			sprintf( 'Share of voice: %d%% — named in %d of %d answers.', $phase1['sovPct'], $phase1['mentions'], $phase1['totalAnswers'] ),
+			/* Both readings, and never one. The HTML copy and the screen both
+			   refuse to collapse them into a single "share of voice", and a
+			   plain-text part that did it anyway would be the same scan
+			   contradicting itself in the same message. */
+			sprintf(
+				'Brand knowledge (web shut): %d%% — named in %d of %d answers.',
+				$phase1['sovPct'],
+				$phase1['mentions'],
+				$phase1['totalAnswers']
+			),
 		);
 
+		$lines[] = $grounded
+			? sprintf(
+				'AI visibility (web open):   %d%% — named in %d of %d answers.',
+				$grounded['sovPct'],
+				$grounded['mentions'],
+				$grounded['totalAnswers']
+			)
+			: 'AI visibility (web open):   not measured on this scan — which is not a zero.';
+
+		$lines[] = '';
+		$lines[] = 'The two are never averaged. The first is reputation the models carry with them;';
+		$lines[] = 'the second is presence they can find when they look. The gap is the diagnosis.';
+
 		if ( null !== $phase1['avgPosition'] ) {
+			$lines[] = '';
 			$lines[] = sprintf( 'Average rank when named: %s.', $phase1['avgPosition'] );
 		}
 
@@ -376,8 +403,24 @@ class Thallo_Vis_Leads {
 
 		if ( ! empty( $phase2['keyInsight'] ) ) {
 			$lines[] = '';
-			$lines[] = 'WHAT IT MEANS';
+			$lines[] = 'WHAT THIS SAYS';
 			$lines[] = $phase2['keyInsight'];
+		}
+
+		if ( ! empty( $phase2['entity'] ) ) {
+			$lines[] = '';
+			$lines[] = 'HOW THE MODELS DESCRIBE YOU';
+			foreach ( $phase2['entity'] as $row ) {
+				$lines[] = sprintf( '  %-10s %s', ucfirst( $row['provider'] ), $row['verdict'] );
+				if ( 'mismatch' === $row['verdict'] && ! empty( $row['claimedDomain'] ) ) {
+					$lines[] = sprintf( '             gives the website as %s, not %s', $row['claimedDomain'], $state['domain'] );
+				} elseif ( '' !== trim( (string) $row['what'] ) ) {
+					$lines[] = '             ' . $row['what'];
+				}
+			}
+			if ( ! empty( $phase2['entityReading'] ) ) {
+				$lines[] = '  ' . $phase2['entityReading'];
+			}
 		}
 
 		if ( ! empty( $phase2['competitors'] ) ) {
@@ -388,6 +431,17 @@ class Thallo_Vis_Leads {
 			}
 		}
 
+		if ( ! empty( $phase2['sources'] ) ) {
+			$lines[] = '';
+			$lines[] = 'WHERE THOSE ANSWERS WERE READ FROM';
+			foreach ( array_slice( $phase2['sources'], 0, 8 ) as $source ) {
+				$verdict = ! empty( $source['own'] )
+					? 'your own site'
+					: ( ! empty( $source['brand'] ) ? $state['brand'] . ' is in it' : 'not in it' );
+				$lines[] = sprintf( '  %-28s %s', $source['host'], $verdict );
+			}
+		}
+
 		if ( ! empty( $phase2['actions'] ) ) {
 			$lines[] = '';
 			$lines[] = 'WHAT TO DO FIRST';
@@ -395,6 +449,27 @@ class Thallo_Vis_Leads {
 				$lines[] = sprintf( '  %d. %s', $index + 1, $action['title'] );
 				$lines[] = '     ' . $action['detail'];
 			}
+		}
+
+		if ( ! empty( $phase2['signals'] ) ) {
+			$lines[] = '';
+			$lines[] = sprintf( 'TECHNICAL READ OF %s', strtoupper( $state['domain'] ) );
+			foreach ( $phase2['signals'] as $signal ) {
+				$mark    = 'pass' === $signal['status'] ? '[x]' : ( 'warn' === $signal['status'] ? '[!]' : '[ ]' );
+				$lines[] = sprintf( '  %s %s', $mark, $signal['label'] );
+			}
+		}
+
+		/* The method, at the bottom, where a forwarded copy can be checked
+		   against it. A percentage with no method attached is an opinion inside
+		   somebody else's company. */
+		$lines[] = '';
+		$lines[] = 'THE SCAN ON RECORD';
+		$lines[] = sprintf( '  Run     %s UTC', gmdate( 'j F Y, H:i', strtotime( (string) $phase1['scannedAt'] ) ?: time() ) );
+		$lines[] = sprintf( '  Market  %s', isset( $state['market'] ) ? $state['market'] : 'en-US' );
+		$lines[] = '  Questions asked';
+		foreach ( $phase1['questions'] as $index => $question ) {
+			$lines[] = sprintf( '    %d · %s', $index + 1, $question );
 		}
 
 		$lines[] = '';

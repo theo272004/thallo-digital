@@ -14,6 +14,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * The version stamp this theme puts on its own stylesheet and scripts.
+ *
+ * It was `wp_get_theme()->get( 'Version' )`, which is the version in
+ * style.css's header — and that is only a cache key if somebody remembers to
+ * change it. Nobody did: style.css was edited perhaps a dozen times while the
+ * header said 1.6.0, so `?ver=1.6.0` kept pointing at whatever the browser had
+ * cached the first time it saw that number. The blog was correct on the server
+ * and a year out of date in the reader's browser, which is the worst of the
+ * two — it cannot be found by looking at the site, only by looking at somebody
+ * else's screen.
+ *
+ * The file's own modification time cannot be forgotten. It changes when the
+ * file changes and only then, so every visitor gets the new bytes on the first
+ * request after a deploy and the old bytes stay cached until there are new
+ * ones. The theme version is the fallback, for the case where the file cannot
+ * be stat'ed.
+ *
+ * @param string $file Path inside the theme, e.g. 'assets/nav.js'.
+ * @return string
+ */
+function thallo_blog_asset_version( $file = 'style.css' ) {
+	$path  = get_stylesheet_directory() . '/' . ltrim( $file, '/' );
+	$mtime = file_exists( $path ) ? filemtime( $path ) : false;
+
+	return $mtime ? (string) $mtime : (string) wp_get_theme()->get( 'Version' );
+}
+
+/**
  * The three faces the site uses: Inter for everything, Instrument Serif for the
  * display italics, Space Mono for machine output.
  *
@@ -41,7 +69,7 @@ function thallo_blog_fonts() {
 		'thallo-blog',
 		get_stylesheet_uri(),
 		array( 'thallo-blog-fonts' ),
-		wp_get_theme()->get( 'Version' )
+		thallo_blog_asset_version( 'style.css' )
 	);
 }
 add_action( 'wp_enqueue_scripts', 'thallo_blog_fonts' );
@@ -62,7 +90,7 @@ function thallo_blog_toc_script() {
 		'thallo-blog-toc',
 		get_stylesheet_directory_uri() . '/assets/toc.js',
 		array(),
-		wp_get_theme()->get( 'Version' ),
+		thallo_blog_asset_version( 'assets/toc.js' ),
 		array( 'strategy' => 'defer', 'in_footer' => true )
 	);
 }
@@ -80,7 +108,7 @@ function thallo_blog_nav_script() {
 		'thallo-blog-nav',
 		get_stylesheet_directory_uri() . '/assets/nav.js',
 		array(),
-		wp_get_theme()->get( 'Version' ),
+		thallo_blog_asset_version( 'assets/nav.js' ),
 		array( 'strategy' => 'defer', 'in_footer' => true )
 	);
 }
@@ -296,6 +324,13 @@ function thallo_blog_hide_default_term( $content, $block ) {
 			   and stripping a link out of the middle of a comma-separated list
 			   leaves the comma behind. */
 			$stripped = trim( wp_strip_all_tags( $content ) );
+
+			/* The count comes off before the comparison. The rail asks the
+			   Categories block for post counts, so the same lone term arrives
+			   here as "Uncategorized (1)" and matched nothing — which is how a
+			   list that should not exist ended up in the sidebar. */
+			$stripped = trim( preg_replace( '/\(\s*\d+\s*\)\s*$/', '', $stripped ) );
+
 			if ( $stripped === $term->name || '' === $stripped ) {
 				return '';
 			}
@@ -305,3 +340,81 @@ function thallo_blog_hide_default_term( $content, $block ) {
 	return $content;
 }
 add_filter( 'render_block', 'thallo_blog_hide_default_term', 10, 2 );
+
+/**
+ * The order of the archive, as a link rather than as a menu.
+ *
+ * Two orders exist — newest first, which is what a blog is, and oldest first,
+ * which is what somebody reading a series wants. A `<select>` for two options
+ * needs JavaScript to do anything and hides the second one until it is opened;
+ * a link says what it will do and works with the page turned off.
+ *
+ * The state lives in the URL, so the order survives a reload, a bookmark and a
+ * page of pagination, and the server can answer it without asking the browser
+ * anything.
+ */
+function thallo_blog_sorted_oldest_first() {
+	return isset( $_GET['orden'] ) && 'antiguos' === sanitize_key( wp_unslash( $_GET['orden'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+}
+
+function thallo_blog_sort_control() {
+	$oldest = thallo_blog_sorted_oldest_first();
+
+	$here = home_url( add_query_arg( array() ) );
+	$to   = $oldest ? remove_query_arg( 'orden', $here ) : add_query_arg( 'orden', 'antiguos', $here );
+
+	return sprintf(
+		'<div class="thallo-sort">%1$s <a href="%2$s" rel="nofollow">%3$s</a></div>',
+		esc_html__( 'Sort by:', 'thallo-blog' ),
+		esc_url( $to ),
+		esc_html( $oldest ? __( 'Oldest', 'thallo-blog' ) : __( 'Newest', 'thallo-blog' ) )
+	);
+}
+add_shortcode( 'thallo_sort', 'thallo_blog_sort_control' );
+
+/**
+ * And the order itself.
+ *
+ * `pre_get_posts` cannot do this: a Query Loop with `inherit: false` builds its
+ * own arguments and never touches the main query. This filter is the one hook
+ * that reaches them, and it reaches all three loops on the index at once —
+ * which is the point. A page cannot be half in one order.
+ */
+function thallo_blog_sort_query( $query ) {
+	if ( thallo_blog_sorted_oldest_first() ) {
+		$query['order'] = 'ASC';
+	}
+
+	return $query;
+}
+add_filter( 'query_loop_block_query_vars', 'thallo_blog_sort_query' );
+
+/**
+ * The mailing list, on the index only.
+ *
+ * The script is four lines of work: stop the form navigating away, post the
+ * address to the endpoint the contact forms already use, and say what
+ * happened. Without it the form still submits — to nowhere useful — so it is
+ * enqueued rather than optional, and the endpoint is passed in rather than
+ * built from `location`, because the blog has moved paths once already.
+ */
+function thallo_blog_list_script() {
+	if ( ! is_home() && ! is_front_page() ) {
+		return;
+	}
+
+	wp_enqueue_script(
+		'thallo-blog-list',
+		get_stylesheet_directory_uri() . '/assets/blog.js',
+		array(),
+		thallo_blog_asset_version( 'assets/blog.js' ),
+		array( 'strategy' => 'defer', 'in_footer' => true )
+	);
+
+	wp_localize_script(
+		'thallo-blog-list',
+		'thalloList',
+		array( 'endpoint' => rest_url( 'thallo/v1/enquiry' ) )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'thallo_blog_list_script' );

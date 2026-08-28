@@ -140,6 +140,7 @@ function Popover({
   anchor,
   active,
   count,
+  rowOffset = 0,
   panelRef,
   children,
 }: {
@@ -147,6 +148,11 @@ function Popover({
   label: string;
   anchor: React.RefObject<HTMLElement | null>;
   active: number;
+  /** How many non-option rows sit above the first option. The highlight is
+      kept in view by index into the panel's children, so a header row that is
+      not an option would otherwise shift every row by one and scroll to the
+      wrong place. */
+  rowOffset?: number;
   /** How many rows are in the list. Re-measures the panel when it changes,
       which is what happens as you type into `Combo` and the list narrows. */
   count: number;
@@ -204,13 +210,13 @@ function Popover({
 
   useEffect(() => {
     const panel = panelRef.current;
-    const row = panel?.children[active] as HTMLElement | undefined;
-    if (!panel || !row) return;
+    const row = panel?.children[active + rowOffset] as HTMLElement | undefined;
+    if (!panel || !row || active < 0) return;
     const top = row.offsetTop;
     const bottom = top + row.offsetHeight;
     if (top < panel.scrollTop) panel.scrollTop = top;
     else if (bottom > panel.scrollTop + panel.clientHeight) panel.scrollTop = bottom - panel.clientHeight;
-  }, [active, panelRef]);
+  }, [active, rowOffset, panelRef]);
 
   /* There is no `document` to portal into while the page is being prerendered.
      A panel cannot be open before a click, so this only ever guards the build. */
@@ -377,6 +383,27 @@ export function Combo({
   label,
   placeholder,
   maxLength,
+  /**
+   * One line at the top of the panel saying the list is optional.
+   *
+   * This field accepts anything typed into it and always did — the backend
+   * passes an unrecognised category straight through — but nothing on screen
+   * said so. A panel of seven industries under a text input reads as a menu,
+   * and a business that is not one of the seven files itself under the nearest
+   * wrong one, which is then the category the whole scan is run against. The
+   * chevron is the thing that misleads: it is the universal mark of "these are
+   * your choices".
+   *
+   * So the panel says it in words, and it stays open with nothing but this line
+   * when what has been typed matches none of the options — which is precisely
+   * the moment somebody needs to be told their answer is acceptable.
+   */
+  hint,
+  /** What the panel says when nothing on the list matches. Defaulted rather
+      than derived from `hint`, because the two sentences are about different
+      situations — one points at a list, and the other is standing where the
+      list would have been. */
+  hintEmpty = 'Nothing on our list matches, and that is fine — we will use exactly what you typed.',
   className = '',
 }: {
   value: string;
@@ -385,6 +412,8 @@ export function Combo({
   label: string;
   placeholder?: string;
   maxLength?: number;
+  hint?: string;
+  hintEmpty?: string;
   className?: string;
 }) {
   const [open, setOpen] = useState(false);
@@ -478,8 +507,26 @@ export function Combo({
         </button>
       </div>
 
-      {open && shown.length > 0 && (
-        <Popover id={`${id}-list`} label={label} anchor={fieldRef} active={active} count={shown.length} panelRef={panelRef}>
+      {open && (shown.length > 0 || !!hint) && (
+        <Popover
+          id={`${id}-list`}
+          label={label}
+          anchor={fieldRef}
+          active={active}
+          /* The hint is a row as far as measuring the panel goes, or a list
+             narrowed to nothing would be measured at zero height. */
+          count={shown.length + (hint ? 1 : 0)}
+          rowOffset={hint ? 1 : 0}
+          panelRef={panelRef}
+        >
+          {hint && (
+            <li
+              role="presentation"
+              className="border-b border-gray-100 px-4 py-2.5 text-[11.5px] font-semibold leading-relaxed text-gray-500"
+            >
+              {shown.length > 0 ? hint : hintEmpty}
+            </li>
+          )}
           {shown.map((o, i) => (
             <Row
               key={o}

@@ -23,7 +23,7 @@ class Thallo_Vis_Tech {
 	    training access; Google's indexing crawler is a separate question. */
 	const AI_BOTS = array( 'GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'anthropic-ai', 'PerplexityBot', 'Google-Extended', 'CCBot' );
 
-	const UA = 'ThalloVisibilityBot/1.0 (+https://thallodigital.com/thallo-ai/)';
+	const UA = 'ThalloVisibilityBot/1.0 (+https://thallodigital.com/thallo-ai/scan/)';
 
 	/**
 	 * @param string $domain          Bare hostname.
@@ -86,6 +86,39 @@ class Thallo_Vis_Tech {
 				true
 			);
 		}
+
+		// ── Can a crawler actually read the page ───────────────────────────
+		/*
+		 * Permission and readability are two different questions, and until now
+		 * only the first was asked. robots.txt says a crawler is *allowed* in;
+		 * this says whether there is anything to read once it is.
+		 *
+		 * The gap is not theoretical. None of the crawlers these models use runs
+		 * JavaScript — GPTBot, ClaudeBot and PerplexityBot all take the HTML the
+		 * server sends and stop there. A site rendered in the browser hands them
+		 * `<div id="root"></div>` and a script tag, which is a page with no
+		 * content on it as far as every one of them is concerned. The report
+		 * would then show a green tick for crawler access above a share of
+		 * answer of zero, and the two would look unrelated when one is the cause
+		 * of the other.
+		 *
+		 * Measured as words of text in the delivered HTML, which is exactly what
+		 * a crawler gets. The thresholds are deliberately generous: this is
+		 * meant to catch an empty shell, not to grade anybody's word count.
+		 */
+		$words = self::text_words( $html );
+		$signals[] = self::signal(
+			'crawlable-text',
+			'Crawlers can read your content',
+			$words >= 120 ? 'pass' : ( $words >= 30 ? 'warn' : 'fail' ),
+			15,
+			$words >= 120
+				? sprintf( 'About %d words of text arrive in the HTML itself, with no JavaScript needed.', $words )
+				: ( $words >= 30
+					? sprintf( 'Only about %d words arrive in the HTML. Some of this page is likely rendered in the browser, and the crawlers these models use do not run JavaScript.', $words )
+					: 'The page arrives essentially empty and fills itself in with JavaScript. AI crawlers do not run it, so they see a blank page — whatever robots.txt allows.' ),
+			$reachable
+		);
 
 		// ── Organization schema ────────────────────────────────────────────
 		$has_org = $reachable && self::has_schema_type( $html, array( 'Organization', 'Corporation', 'LocalBusiness', 'ProfessionalService' ) );
@@ -181,6 +214,47 @@ class Thallo_Vis_Tech {
 			'score'   => $score,
 			'max'     => $max,
 		);
+	}
+
+	/**
+	 * Roughly how many words of readable text the HTML actually delivers.
+	 *
+	 * Scripts, styles, templates and `<noscript>` come out first — a bundle is
+	 * tens of thousands of "words" of JavaScript and would make an empty shell
+	 * look like an encyclopaedia, which is the exact failure this check exists
+	 * to catch. `<noscript>` goes too: whatever a site puts in there is written
+	 * for a browser with scripting off, and a crawler that never ran the script
+	 * in the first place is not the audience it was written for.
+	 *
+	 * Entities are decoded before counting so that a page of `&nbsp;` does not
+	 * count as prose, and the count is words rather than characters because a
+	 * character count rewards a page of minified inline data.
+	 */
+	private static function text_words( $html ) {
+		if ( '' === trim( (string) $html ) ) {
+			return 0;
+		}
+
+		$text = preg_replace( '#<(script|style|template|noscript)\b[^>]*>.*?</\1>#is', ' ', (string) $html );
+		$text = preg_replace( '#<!--.*?-->#s', ' ', (string) $text );
+
+		/* Tags become a space rather than nothing. Stripped outright, adjacent
+		   elements run together — `<li>Home</li><li>About</li>` becomes the
+		   single "word" HomeAbout — and a navigation-heavy page would be counted
+		   at a fraction of the text it actually delivers, which is the wrong
+		   direction for a check whose whole job is to catch an empty page.
+		   `wp_strip_all_tags` still runs after it, to catch anything malformed
+		   the pattern above did not recognise as a tag. */
+		$text = preg_replace( '#<[^>]*>#', ' ', (string) $text );
+		$text = wp_strip_all_tags( (string) $text );
+		$text = html_entity_decode( (string) $text, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+		$text = trim( preg_replace( '/\s+/u', ' ', $text ) );
+
+		if ( '' === $text ) {
+			return 0;
+		}
+
+		return count( preg_split( '/\s+/u', $text, -1, PREG_SPLIT_NO_EMPTY ) );
 	}
 
 	/** A warn earns half. A check we could not run earns nothing out of nothing. */

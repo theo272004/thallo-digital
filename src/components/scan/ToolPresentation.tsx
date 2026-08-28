@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useSyncExternalStore } from 'react';
 import { gsap, useGSAP, ScrollTrigger } from '@/lib/gsap';
-import { QUESTION_COUNT } from '@/lib/scan/questions';
+import { MAX_QUESTIONS } from '@/lib/scan/types';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import { BASE } from '@/lib/site';
 
@@ -198,10 +198,15 @@ const CONTENT: Record<string, (narrow: boolean) => React.ReactNode> = {
           </div>
           <ol className="mt-9 flex flex-col gap-6">
             {[
-              '¿Cuáles son las mejores empresas de fintech y pagos ahora mismo?',
-              '¿Quiénes son los proveedores líderes en fintech y pagos?',
-              '¿Cuáles son los proveedores más confiables del sector?',
-              'Si no estoy conforme con mi proveedor, ¿a quién debería cambiarme?',
+              /* One per archetype, the same three the setup screen now starts a
+                 visitor from: the category in their country, the buyer's own
+                 problem, and the alternatives to whoever leads. The card used to
+                 show four phrasings of one angle with "+11 more" under it, which
+                 is a picture of the fifteen-question set this tool has not sent
+                 since the free tier was cut to three. */
+              '¿Cuáles son las mejores empresas de fintech en Colombia?',
+              'Nuestro proveedor actual de fintech no está funcionando. ¿Qué otras empresas deberíamos mirar?',
+              '¿Cuáles son las principales alternativas a los nombres más grandes en fintech?',
             ].map((text, i) => (
               <li key={text} data-q className="flex gap-5">
                 <span className="font-mono text-[15px] font-bold tabular-nums text-gray-300">
@@ -214,7 +219,7 @@ const CONTENT: Record<string, (narrow: boolean) => React.ReactNode> = {
             ))}
           </ol>
           <p className="mt-auto border-t pt-6 text-[16px] font-medium text-gray-400" style={{ borderColor: HAIR }}>
-            {`+ ${QUESTION_COUNT - 4} más · tu marca no aparece en ninguna`}
+            {`${MAX_QUESTIONS} preguntas · tu marca no aparece en ninguna`}
           </p>
         </div>
   ),
@@ -261,13 +266,13 @@ const CONTENT: Record<string, (narrow: boolean) => React.ReactNode> = {
             </span>
             <span className="text-[44px] font-bold text-gray-300">%</span>
           </p>
-          <p className="mt-4 text-[16px] font-medium text-gray-400">named in 11 of 45 answers</p>
+          <p className="mt-4 text-[16px] font-medium text-gray-400">named in 2 of 9 answers</p>
 
           <div className="mt-auto flex flex-col gap-6">
             {[
-              ['ChatGPT', '2/15', 13],
-              ['Claude', '5/15', 33],
-              ['Gemini', '4/15', 27],
+              ['ChatGPT', '0/3', 0],
+              ['Claude', '1/3', 33],
+              ['Gemini', '1/3', 33],
             ].map(([label, value, pct]) => (
               <div key={label as string} className="flex items-center gap-4">
                 <span className="w-[110px] shrink-0 text-[16px] font-semibold text-gray-900">{label as string}</span>
@@ -760,7 +765,7 @@ const CHAPTERS: { label: string; blurb: string }[] = [
   },
   {
     label: 'The questions',
-    blurb: `Up to ${QUESTION_COUNT} questions you write yourself — the ones your buyers actually type, in the language of the market you sell into. Your brand is in none of them.`,
+    blurb: `${MAX_QUESTIONS} questions you write yourself — the ones your buyers actually type, in the language of the market you sell into. Your brand is in none of them.`,
   },
   {
     label: 'The models',
@@ -768,7 +773,7 @@ const CHAPTERS: { label: string; blurb: string }[] = [
   },
   {
     label: 'Your share of voice',
-    blurb: 'How often you were named across all forty-five answers, and the rank you held when you were.',
+    blurb: 'How often you were named across every answer read, and the rank you held when you were.',
   },
   {
     label: 'Named instead of you',
@@ -806,7 +811,7 @@ function Opening() {
         Ask the machines what they say about you.
       </h1>
       <p className="max-w-[52ch] text-[15px] font-medium leading-relaxed text-gray-500">
-        You write up to {QUESTION_COUNT} real buying questions. We put every one of them to ChatGPT, Claude and Gemini
+        You write {MAX_QUESTIONS} real buying questions. We put every one of them to ChatGPT, Claude and Gemini
         and count how often your name comes up. Scroll to watch the report being made — then run it on your own brand.
       </p>
     </>

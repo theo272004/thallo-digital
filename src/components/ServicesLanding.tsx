@@ -19,17 +19,19 @@ const SERVICES = [
     title: 'AI Visibility Audit',
     desc: 'See exactly where you show up when buyers ask AI, where competitors beat you, and what it would take to lead.',
     deliverables: [
-      'Visibility benchmark against rivals',
-      'Share-of-answer scoring',
-      'Technical readiness review',
-      'Content and authority gaps',
-      'Prioritized 90-day roadmap',
+      "Your mention rate vs your competitors'",
+      'What it says about you when it does',
+      "The questions where they win and you don't",
+      'Whether AI can read your site properly',
+      'How to structure your site so authority compounds',
+      'The 20 sites you need to be on in your category',
+      'A 90-day plan you can act on, in-house or with us',
     ],
     /* Amount and terms split rather than run together on one line. A figure
        reads as a price; a figure with its conditions welded onto it reads as a
        sentence, and the eye stops looking for the number. */
-    price: 'From $800',
-    terms: 'One-time. No lock-in. The roadmap is yours either way.',
+    price: '$1,200',
+    terms: 'Fixed price, one-time. No lock-in. The roadmap is yours either way.',
     cta: 'Book an audit',
   },
   {

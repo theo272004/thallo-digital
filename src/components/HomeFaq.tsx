@@ -85,7 +85,7 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
       <>
         You&rsquo;ll know early, because the baseline gives us a number to move from month one. If it isn&rsquo;t
         moving, we tell you before you ask, and we either change the approach or tell you honestly that we&rsquo;re not
-        the right fit. We&rsquo;d rather lose a retainer than keep one that isn&rsquo;t earning its place.
+        the right fit.
       </>
     ),
   },
