@@ -64,7 +64,14 @@ const ARTICLES: Article[] = [
        else on the home page, so the section does not repeat a picture the
        reader has just scrolled past. */
     image: 'blog-lead.webp',
-    href:  'https://thallodigital.com/blog/2026/08/08/ranking-first-and-being-named/',
+    /* The permalink, not a guess at one. WordPress on this install is set to
+       post-name permalinks — /blog/<slug>/ — and this line carried the dated
+       shape, /blog/2026/08/08/<slug>/, which is WordPress's other default and
+       has never existed here. The one published note on the home page led to a
+       404, which is the worst link on the site to get wrong: it is the proof
+       that there is anything to read. Checked against the live URL, which
+       answers 200, while the dated one answers 404. */
+    href:  'https://thallodigital.com/blog/ranking-first-and-being-named/',
   },
   {
     badge: 'GEO',
