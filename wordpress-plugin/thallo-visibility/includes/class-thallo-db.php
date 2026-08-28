@@ -75,6 +75,7 @@ class Thallo_Vis_DB {
 			industry VARCHAR(190) NOT NULL,
 			status VARCHAR(20) NOT NULL DEFAULT 'running',
 			ip_hash CHAR(64) NOT NULL DEFAULT '',
+			session_hash CHAR(64) NOT NULL DEFAULT '',
 			email VARCHAR(190) NOT NULL DEFAULT '',
 			state LONGTEXT NOT NULL,
 			created_at DATETIME NOT NULL,
@@ -82,6 +83,9 @@ class Thallo_Vis_DB {
 			PRIMARY KEY  (id),
 			UNIQUE KEY scan_id (scan_id),
 			KEY ip_hash (ip_hash),
+			KEY session_hash (session_hash),
+			KEY email_created (email, created_at),
+			KEY domain_created (domain, created_at),
 			KEY created_at (created_at)
 		) $charset;";
 
@@ -218,6 +222,19 @@ class Thallo_Vis_DB {
 	 * visitor".
 	 */
 	public static function ip_hash() {
+		return hash( 'sha256', self::client_ip() . wp_salt( 'nonce' ) );
+	}
+
+	/**
+	 * The caller's address in the clear.
+	 *
+	 * Everything that *stores* an address stores `ip_hash()` instead — the
+	 * table should not be usable to look up who ran a scan. This exists for the
+	 * one job the hash cannot do: comparing against a list somebody typed into
+	 * the settings screen, which is how the exemption in
+	 * `Thallo_Vis_REST::allowance()` works. Nothing here is written anywhere.
+	 */
+	public static function client_ip() {
 		$ip = '';
 		foreach ( array( 'HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR' ) as $key ) {
 			if ( ! empty( $_SERVER[ $key ] ) ) {
@@ -227,25 +244,37 @@ class Thallo_Vis_DB {
 				break;
 			}
 		}
-		return hash( 'sha256', $ip . wp_salt( 'nonce' ) );
+		return $ip;
 	}
 
-	public static function create( $scan_id, $brand, $domain, $industry, array $state ) {
+	/**
+	 * @param string $email   Written at creation now that the address is
+	 *                        collected on the setup screen. It used to be
+	 *                        filled in only when phase 2 opened, which meant the
+	 *                        allowance could not be counted per address — a
+	 *                        scan that was abandoned halfway left a row with no
+	 *                        address on it and did not count against anybody.
+	 *                        Clearing cookies then reset the counter to zero.
+	 * @param string $session The browser session this scan belongs to, hashed.
+	 */
+	public static function create( $scan_id, $brand, $domain, $industry, array $state, $email = '', $session = '' ) {
 		global $wpdb;
 		$now = current_time( 'mysql', true );
 
 		$wpdb->insert(
 			self::scans_table(),
 			array(
-				'scan_id'    => $scan_id,
-				'brand'      => $brand,
-				'domain'     => $domain,
-				'industry'   => $industry,
-				'status'     => 'running',
-				'ip_hash'    => self::ip_hash(),
-				'state'      => wp_json_encode( $state ),
-				'created_at' => $now,
-				'updated_at' => $now,
+				'scan_id'      => $scan_id,
+				'brand'        => $brand,
+				'domain'       => $domain,
+				'industry'     => $industry,
+				'status'       => 'running',
+				'ip_hash'      => self::ip_hash(),
+				'session_hash' => $session,
+				'email'        => $email,
+				'state'        => wp_json_encode( $state ),
+				'created_at'   => $now,
+				'updated_at'   => $now,
 			)
 		);
 
@@ -295,6 +324,94 @@ class Thallo_Vis_DB {
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is not user input.
 		return (int) $wpdb->get_var(
 			$wpdb->prepare( "SELECT COUNT(*) FROM $table WHERE ip_hash = %s AND created_at > %s", self::ip_hash(), $since )
+		);
+	}
+
+	/**
+	 * Scans this browser has run, ever.
+	 *
+	 * Not "since yesterday". The other three layers are windowed because they
+	 * are about abuse rate; this one is the allowance itself — three free scans
+	 * is three free scans, not three a day — and a window would turn the free
+	 * tier into an unlimited one for anybody patient enough to come back
+	 * tomorrow. An empty session hash counts nothing, so a client that sends no
+	 * cookie falls through to the layers that do not need one.
+	 */
+	public static function count_for_session( $session ) {
+		global $wpdb;
+
+		if ( '' === $session ) {
+			return 0;
+		}
+
+		$table = self::scans_table();
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is not user input.
+		return (int) $wpdb->get_var(
+			$wpdb->prepare( "SELECT COUNT(*) FROM $table WHERE session_hash = %s", $session )
+		);
+	}
+
+	/**
+	 * Scans this address has run, ever.
+	 *
+	 * The layer that survives cleared cookies, and the reason the address is
+	 * written at creation rather than at unlock.
+	 *
+	 * Counted across both tables and de-duplicated on the scan id, because
+	 * neither one alone is the whole answer. Scan rows are working data and are
+	 * pruned after a fortnight — counting only those would hand everybody a
+	 * fresh three every two weeks. Lead rows are never pruned, but one is only
+	 * written when phase 2 opens, so a scan that failed before that has no lead
+	 * and would not be counted at all. The union of the two is the durable
+	 * record, and the `DISTINCT` is what stops a completed scan counting twice.
+	 */
+	public static function count_for_email( $email ) {
+		global $wpdb;
+
+		if ( '' === $email ) {
+			return 0;
+		}
+
+		$scans = self::scans_table();
+		$leads = self::leads_table();
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table names are not user input.
+		return (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(DISTINCT scan_id) FROM (
+					SELECT scan_id FROM $scans WHERE email = %s
+					UNION ALL
+					SELECT scan_id FROM $leads WHERE email = %s
+				) AS runs",
+				$email,
+				$email
+			)
+		);
+	}
+
+	/**
+	 * Scans run against one website since `$since`.
+	 *
+	 * The layer nobody thinks of until it happens: a competitor, or an agency
+	 * pitching them, scanning the same domain over and over. Every one of those
+	 * costs us a call and none of them is a lead — and worse, they consume the
+	 * daily site-wide ceiling that protects the bill. Windowed rather than
+	 * absolute, because re-running a brand next month is exactly the behaviour
+	 * the trend chart asks for.
+	 */
+	public static function count_recent_for_domain( $domain, $since ) {
+		global $wpdb;
+
+		if ( '' === $domain ) {
+			return 0;
+		}
+
+		$table = self::scans_table();
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is not user input.
+		return (int) $wpdb->get_var(
+			$wpdb->prepare( "SELECT COUNT(*) FROM $table WHERE domain = %s AND created_at > %s", $domain, $since )
 		);
 	}
 

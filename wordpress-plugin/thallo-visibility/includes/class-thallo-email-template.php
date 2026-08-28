@@ -14,23 +14,12 @@
  * is stated with what it was measured out of, and there is exactly one call to
  * action at the bottom rather than three scattered through.
  *
- * The only image is the logo, and it travels with the message rather than
- * being fetched from the website. That is the fix for the one thing the owner
- * reported about these emails: the mark did not appear. It was not a broken
- * URL — https://thallodigital.com/logo.png answers 200 — it is that a remote
- * image in an email is not loaded until the reader asks for it, and most
- * clients never ask on a first message from an unfamiliar sender. Gmail,
- * Outlook, Apple Mail and Roundcube all display an image that arrived as part
- * of the message; none of them reliably display one that has to be gone and
- * got. So the file is packaged with the plugin and embedded by PHPMailer under
- * a content id, and the remote URL is kept only as the fallback for an install
- * where the packaged copy is missing — see `logo_src()`.
- *
- * It is still optional by construction. The alt text is the company name rather
- * than the word "logo", so a client that shows nothing still says who this is
- * from, and nothing else in here is an image — every bar and rule is drawn with
- * table cells, because a chart that arrives as a broken-image icon is worse than
- * a number.
+ * The only image is the logo, and it is treated as optional by construction:
+ * most clients block remote images until the reader asks, so its alt text is the
+ * company name rather than the word "logo". Blocked, the header still says who
+ * this is from. Nothing else in here is an image — every bar and rule is drawn
+ * with table cells, because a chart that arrives as a broken-image icon is worse
+ * than a number.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -40,51 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Thallo_Vis_Email_Template {
 
 	/**
-	 * The content id the embedded logo is attached under.
-	 *
-	 * Named rather than generated: `Thallo_Vis_Leads::send()` has to reference
-	 * the same string when it hands the file to PHPMailer, and two places
-	 * inventing their own would produce a message whose `<img>` points at an
-	 * attachment that is not there — which looks exactly like the bug this
-	 * replaced.
-	 */
-	const LOGO_CID = 'thallo-logo';
-
-	/**
-	 * The packaged logo on disk, or '' if this install has not got one.
-	 *
-	 * Inside the plugin rather than anywhere on the host. The obvious place to
-	 * look is the static site at the document root — `dirname( ABSPATH )` — and
-	 * that is an assumption about somebody else's directory layout, made by code
-	 * that finds out it was wrong only when a client mentions the email looked
-	 * odd. The plugin knows where its own files are.
-	 */
-	public static function logo_file() {
-		if ( ! defined( 'THALLO_VIS_DIR' ) ) {
-			return '';
-		}
-
-		$path = THALLO_VIS_DIR . 'assets/logo.png';
-
-		return file_exists( $path ) ? $path : '';
-	}
-
-	/**
-	 * What goes in the `src` of the header image.
-	 *
-	 * `cid:` when there is a file to embed, and the website's own copy when
-	 * there is not. The fallback matters more than it looks: an install that has
-	 * been updated by copying PHP files over FTP has the new template and no
-	 * `assets/` directory, and `cid:` pointing at an attachment nobody added
-	 * renders as a broken image in every client at once — strictly worse than
-	 * the remote URL it replaced.
-	 */
-	public static function logo_src() {
-		return '' !== self::logo_file() ? 'cid:' . self::LOGO_CID : self::logo_url();
-	}
-
-	/**
-	 * Where the logo lives on the website.
+	 * Where the logo lives.
 	 *
 	 * The scheme and host of this WordPress, with the path thrown away — not
 	 * `home_url( '/logo.png' )`. WordPress runs at /blog/ on this account, so
@@ -128,22 +73,55 @@ class Thallo_Vis_Email_Template {
 	 * The plain-text version is built alongside it there, from the same figures
 	 * in the same order, and the two are sent as one message.
 	 */
+	/**
+	 * ## This carries more than the screen does, on purpose
+	 *
+	 * The web report is the lead magnet: it has to be read in three minutes by
+	 * somebody who has just handed over an address, and everything in it earns
+	 * its place by being immediately legible. This is the document that gets
+	 * forwarded. At this price point the person who ran the scan is very often
+	 * not the person who approves the spend, so this has to survive being sent
+	 * on to a director with no context and no tab open — which means it carries
+	 * the parts the screen deliberately compresses:
+	 *
+	 *   · the full technical read, row by row, rather than a strip of ticks;
+	 *   · the scan on record — when it ran, what was asked, which models, in
+	 *     what market — so the numbers are defensible inside a company;
+	 *   · the sources the searching models actually opened.
+	 *
+	 * Nothing here is a figure the screen did not show. It is the same scan,
+	 * written for a reader who cannot ask the sender what a panel meant.
+	 */
 	public static function report( array $state, array $phase1, array $phase2 ) {
-		$body  = self::paragraph( sprintf( 'Here is what the AI models say about %s.', $state['brand'] ) );
-		$body .= self::score_block(
-			(int) $phase1['sovPct'],
+		$brand    = $state['brand'];
+		$grounded = isset( $phase2['grounded'] ) && ! empty( $phase2['grounded']['totalAnswers'] )
+			? $phase2['grounded']
+			: null;
+
+		$body = self::paragraph(
 			sprintf(
-				/* translators: 1: times named, 2: answers read. */
-				__( 'Named in %1$d of the %2$d answers we read.', 'thallo-visibility' ),
-				$phase1['mentions'],
-				$phase1['totalAnswers']
+				/* translators: 1: the brand, 2: the category, 3: the country. */
+				__( 'Here is where %1$s stands in %2$s, %3$s.', 'thallo-visibility' ),
+				$brand,
+				strtolower( $state['industry'] ),
+				self::country_of( $state )
 			)
 		);
+
+		/* Two readings, side by side, never one.
+		 *
+		 * The screen makes a point of refusing to average them, because they
+		 * have different causes and different fixes — reputation the model
+		 * carries with it, and presence it can discover when it looks. An email
+		 * that collapsed them into a single "share of voice" would be the same
+		 * report contradicting itself between two surfaces, which is the fastest
+		 * way to lose a reader who is checking. */
+		$body .= self::reading_block( $phase1, $grounded );
 
 		$body .= self::note(
 			sprintf(
 				/* translators: 1: how many questions, 2: the category. */
-				__( 'We put %1$d buying questions about %2$s to ChatGPT, Claude and Gemini, with the web shut — so this is what they already knew. Your name never appeared in a question, which means an answer that names you was not led there.', 'thallo-visibility' ),
+				__( 'We put %1$d buying questions about %2$s to ChatGPT, Claude and Gemini. Your name never appeared in a question, so an answer that names you was not led there.', 'thallo-visibility' ),
 				count( $phase1['questions'] ),
 				strtolower( $state['industry'] )
 			)
@@ -159,18 +137,41 @@ class Thallo_Vis_Email_Template {
 			);
 		}
 
-		$body .= self::heading( __( 'Model by model', 'thallo-visibility' ) );
-		$body .= self::rows( self::provider_rows( $phase1 ) );
-
 		if ( ! empty( $phase2['keyInsight'] ) ) {
-			$body .= self::divider();
-			$body .= self::heading( __( 'What it means', 'thallo-visibility' ) );
+			$body .= self::heading( __( 'What this says', 'thallo-visibility' ) );
 			$body .= self::paragraph( $phase2['keyInsight'] );
 		}
 
+		/* Early, and above the leaderboard. When the share of answer is zero —
+		   which it is for most brands that run this — the leaderboard is a list
+		   of other people's names and this is the only section with something to
+		   say about the reader's own company. */
+		if ( ! empty( $phase2['entity'] ) ) {
+			$body .= self::divider();
+			$body .= self::heading( __( 'How the models describe you', 'thallo-visibility' ) );
+			$body .= self::rows( self::entity_rows( $phase2['entity'], $state['domain'] ) );
+
+			if ( ! empty( $phase2['entityReading'] ) ) {
+				$body .= self::note( $phase2['entityReading'] );
+			}
+		}
+
+		$body .= self::heading( __( 'Model by model', 'thallo-visibility' ) );
+		$body .= self::rows( self::provider_rows( $phase1 ) );
+
 		if ( ! empty( $phase2['competitors'] ) ) {
+			$body .= self::divider();
 			$body .= self::heading( __( 'Recommended instead of you', 'thallo-visibility' ) );
 			$body .= self::rows( self::competitor_rows( $phase2['competitors'] ) );
+		}
+
+		if ( ! empty( $phase2['sources'] ) ) {
+			$body .= self::divider();
+			$body .= self::heading( __( 'Where those answers were read from', 'thallo-visibility' ) );
+			$body .= self::note(
+				__( 'The pages the models opened before answering. This is the shortest description available of what earns a recommendation in your category.', 'thallo-visibility' )
+			);
+			$body .= self::rows( self::source_rows( $phase2['sources'], $brand ) );
 		}
 
 		if ( ! empty( $phase2['actions'] ) ) {
@@ -181,23 +182,307 @@ class Thallo_Vis_Email_Template {
 			}
 		}
 
+		/* The full breakdown, which the screen deliberately compresses to a
+		   strip of ticks. It is genuinely useful to a technical reader and it is
+		   the least interesting thing on a page somebody has ten seconds for —
+		   so it lives here, where a reader has arrived on purpose. */
+		if ( ! empty( $phase2['signals'] ) ) {
+			$body .= self::divider();
+			$body .= self::heading(
+				sprintf(
+					/* translators: %s: the website that was checked. */
+					__( 'Technical read of %s', 'thallo-visibility' ),
+					$state['domain']
+				)
+			);
+			$body .= self::rows( self::signal_rows( $phase2['signals'] ) );
+		}
+
+		$body .= self::divider();
+		$body .= self::heading( __( 'The scan on record', 'thallo-visibility' ) );
+		$body .= self::rows( self::record_rows( $state, $phase1, $grounded ) );
+
 		$body .= self::divider();
 		$body .= self::paragraph(
-			__( 'Measuring it is the easy half. If you want the content, the citations and the structure that move these numbers, reply to this email — a person reads it.', 'thallo-visibility' )
+			__( 'Measuring it is the easy half. If you want the research, the citations and the structure that move these numbers, reply to this email — a person reads it.', 'thallo-visibility' )
 		);
 		$body .= self::button( __( 'Talk to us', 'thallo-visibility' ), self::site_url( '/contact/' ) );
 
 		return self::wrap(
-			sprintf( 'Your AI visibility scan — %s', $state['brand'] ),
+			sprintf( 'Your AI visibility scan — %s', $brand ),
 			sprintf(
 				/* translators: 1: times named, 2: answers read, 3: the category. */
-				__( 'Named in %1$d of %2$d answers about %3$s. Here is who was named instead, and what to do about it.', 'thallo-visibility' ),
+				__( 'Named in %1$d of %2$d answers about %3$s. Here is who was named instead, and where those answers were read from.', 'thallo-visibility' ),
 				$phase1['mentions'],
 				$phase1['totalAnswers'],
 				strtolower( $state['industry'] )
 			),
 			$body
 		);
+	}
+
+	/** The market's country, for the opening sentence. */
+	private static function country_of( array $state ) {
+		$market = isset( $state['market'] ) ? $state['market'] : Thallo_Vis_Questions::DEFAULT_MARKET;
+
+		return preg_replace( '/^the /', '', Thallo_Vis_Questions::country_of( $market ) );
+	}
+
+	/**
+	 * The two readings, in one tinted block.
+	 *
+	 * Two cells of a table rather than two stacked blocks, because side by side
+	 * is the whole argument: these are two measurements of different things, and
+	 * anything that presents one above the other invites a reader to treat the
+	 * first as the real number and the second as a footnote. Collapses to one
+	 * column on a phone through the `.stack` class in the head, which is the
+	 * only responsive tool an email reliably has.
+	 *
+	 * When the searching half did not run, the block says so in words rather
+	 * than showing a second 0% — "not measured" and "zero" are different
+	 * findings and only one of them is about the reader.
+	 */
+	private static function reading_block( array $phase1, $grounded ) {
+		$cell = static function ( $pct, $label, $caption ) {
+			return '<td class="stack" width="50%" valign="top" style="padding:20px 18px;text-align:center;">'
+				. '<div style="font:700 40px/1 Helvetica,Arial,sans-serif;color:' . self::OLIVE . ';">' . esc_html( $pct ) . '</div>'
+				. '<div style="font:700 10px/1.4 Helvetica,Arial,sans-serif;color:' . self::OLIVE . ';letter-spacing:.14em;text-transform:uppercase;padding-top:8px;">' . esc_html( $label ) . '</div>'
+				. '<div style="font:400 12px/1.55 Helvetica,Arial,sans-serif;color:' . self::INK . ';padding-top:8px;">' . esc_html( $caption ) . '</div>'
+				. '</td>';
+		};
+
+		$left = $cell(
+			$phase1['sovPct'] . '%',
+			__( 'Brand knowledge', 'thallo-visibility' ),
+			sprintf(
+				/* translators: 1: times named, 2: answers read. */
+				__( 'Named in %1$d of %2$d answers given with the web shut.', 'thallo-visibility' ),
+				$phase1['mentions'],
+				$phase1['totalAnswers']
+			)
+		);
+
+		$right = $grounded
+			? $cell(
+				$grounded['sovPct'] . '%',
+				__( 'AI visibility', 'thallo-visibility' ),
+				sprintf(
+					/* translators: 1: times named, 2: answers read. */
+					__( 'Named in %1$d of %2$d answers given with the web open.', 'thallo-visibility' ),
+					$grounded['mentions'],
+					$grounded['totalAnswers']
+				)
+			)
+			: $cell(
+				'—',
+				__( 'AI visibility', 'thallo-visibility' ),
+				__( 'Not measured on this scan. That is not a zero — the searching half did not run.', 'thallo-visibility' )
+			);
+
+		return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:' . self::TINT . ';border-radius:12px;margin:0 0 18px;">'
+			. '<tr>' . $left . $right . '</tr></table>'
+			. '<p style="margin:0 0 18px;font:400 12px/1.6 Helvetica,Arial,sans-serif;color:' . self::MUTED . ';">'
+			. esc_html__( 'Both are share of answer — how often you are named across every answer read. They are never added together or averaged: the first is reputation the models carry with them, earned off your own site and slow to move; the second is presence they can discover when they look, which your own pages and citations control. The distance between the two is the diagnosis.', 'thallo-visibility' )
+			. '</p>';
+	}
+
+	/**
+	 * One row per model for the direct question.
+	 *
+	 * The verdict alone is an assertion, so the model's own sentence is printed
+	 * beside it — and on a wrong-company verdict the website it named goes in
+	 * too, because that string is the entire evidence and an accusation nobody
+	 * can check is worse than no row at all.
+	 */
+	private static function entity_rows( array $entity, $domain ) {
+		$labels   = Thallo_Vis_Runner::STEP_LABELS;
+		$verdicts = array(
+			'resolved'    => __( 'Resolved', 'thallo-visibility' ),
+			'partial'     => __( 'Partial', 'thallo-visibility' ),
+			'mismatch'    => __( 'Wrong company', 'thallo-visibility' ),
+			'unknown'     => __( 'Not recognised', 'thallo-visibility' ),
+			'unavailable' => __( 'Not measured', 'thallo-visibility' ),
+		);
+
+		$rows = '';
+
+		foreach ( $entity as $row ) {
+			$label   = isset( $labels[ $row['provider'] ] ) ? $labels[ $row['provider'] ] : $row['provider'];
+			$verdict = isset( $verdicts[ $row['verdict'] ] ) ? $verdicts[ $row['verdict'] ] : $row['verdict'];
+			$colour  = 'resolved' === $row['verdict'] ? self::OLIVE : ( 'partial' === $row['verdict'] ? self::MUTED : '#A9502F' );
+
+			if ( 'unknown' === $row['verdict'] ) {
+				$detail = __( 'Asked directly, it says it does not recognise the name.', 'thallo-visibility' );
+			} elseif ( 'unavailable' === $row['verdict'] ) {
+				$detail = __( 'Could not be reached — a fault at our end, not a finding.', 'thallo-visibility' );
+			} elseif ( 'mismatch' === $row['verdict'] && ! empty( $row['claimedDomain'] ) ) {
+				$detail = sprintf(
+					/* translators: 1: the website the model named, 2: the website being scanned. */
+					__( 'It gives the website as %1$s, not %2$s. A buyer asking about you by name is being shown that company.', 'thallo-visibility' ),
+					$row['claimedDomain'],
+					$domain
+				);
+			} elseif ( 'partial' === $row['verdict'] ) {
+				$detail = trim( $row['what'] ) . ' ' . __( 'It cannot say who you are for.', 'thallo-visibility' );
+			} else {
+				$detail = trim( $row['what'] . ( '' !== $row['serves'] ? ' ' . $row['serves'] : '' ) );
+			}
+
+			$rows .= '<tr><td style="padding:9px 0;border-bottom:1px solid ' . self::LINE . ';">'
+				. '<div style="font:700 13px/1.5 Helvetica,Arial,sans-serif;color:' . self::INK . ';">'
+				. esc_html( $label )
+				. ' <span style="font-weight:400;color:' . $colour . ';">· ' . esc_html( $verdict ) . '</span>'
+				. '</div>'
+				. '<div style="font:400 12.5px/1.6 Helvetica,Arial,sans-serif;color:' . self::MUTED . ';padding-top:3px;">' . esc_html( $detail ) . '</div>'
+				. '</td></tr>';
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * One row per source the searching models opened.
+	 *
+	 * The right-hand column is the finding, not the count: whether the reader's
+	 * own brand was in the answers that came off that page. "Not in it", five
+	 * times down a column, is the sentence this whole section exists to make.
+	 */
+	private static function source_rows( array $sources, $brand ) {
+		$rows = '';
+
+		foreach ( array_slice( $sources, 0, 8 ) as $source ) {
+			if ( ! empty( $source['own'] ) ) {
+				$verdict = __( 'Your own site', 'thallo-visibility' );
+				$colour  = self::MUTED;
+			} elseif ( ! empty( $source['brand'] ) ) {
+				$verdict = sprintf(
+					/* translators: %s: the brand. */
+					__( '%s is in it', 'thallo-visibility' ),
+					$brand
+				);
+				$colour = self::OLIVE;
+			} else {
+				$verdict = __( 'Not in it', 'thallo-visibility' );
+				$colour  = '#A9502F';
+			}
+
+			$named = ! empty( $source['names'] )
+				? implode( ', ', array_slice( $source['names'], 0, 3 ) )
+				: __( 'no company named', 'thallo-visibility' );
+
+			$rows .= '<tr>'
+				. '<td style="padding:9px 10px 9px 0;border-bottom:1px solid ' . self::LINE . ';font:600 12.5px/1.5 Menlo,Consolas,monospace;color:' . self::INK . ';">'
+				. esc_html( $source['host'] )
+				. '<div style="font:400 11.5px/1.5 Helvetica,Arial,sans-serif;color:' . self::MUTED . ';padding-top:2px;">' . esc_html( $named ) . '</div>'
+				. '</td>'
+				. '<td align="right" valign="top" style="padding:9px 0;border-bottom:1px solid ' . self::LINE . ';font:600 12px/1.5 Helvetica,Arial,sans-serif;color:' . $colour . ';white-space:nowrap;">'
+				. esc_html( $verdict )
+				. '</td>'
+				. '</tr>';
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * The technical checks, every one of them, with the note that explains it.
+	 *
+	 * A tick and a cross rather than a score per row. The points are printed
+	 * because they are what the total is made of and somebody will add them up —
+	 * but an unscored check prints "not scored" rather than "0 / 0", which reads
+	 * as a failure.
+	 */
+	private static function signal_rows( array $signals ) {
+		$rows = '';
+
+		foreach ( $signals as $signal ) {
+			$mark   = 'pass' === $signal['status'] ? '✓' : ( 'warn' === $signal['status'] ? '!' : '✕' );
+			$colour = 'pass' === $signal['status'] ? self::OLIVE : ( 'warn' === $signal['status'] ? self::MUTED : '#A9502F' );
+
+			$rows .= '<tr>'
+				. '<td valign="top" style="width:20px;padding:8px 0;border-bottom:1px solid #F0F0EA;font:700 13px/1.5 Helvetica,Arial,sans-serif;color:' . $colour . ';">' . esc_html( $mark ) . '</td>'
+				. '<td style="padding:8px 0;border-bottom:1px solid #F0F0EA;">'
+				. '<div style="font:600 13px/1.5 Helvetica,Arial,sans-serif;color:' . self::INK . ';">' . esc_html( $signal['label'] ) . '</div>'
+				. ( ! empty( $signal['note'] )
+					? '<div style="font:400 11.5px/1.55 Helvetica,Arial,sans-serif;color:' . self::MUTED . ';padding-top:2px;">' . esc_html( $signal['note'] ) . '</div>'
+					: '' )
+				. '</td>'
+				. '<td align="right" valign="top" style="padding:8px 0;border-bottom:1px solid #F0F0EA;font:400 11px/1.6 Helvetica,Arial,sans-serif;color:' . self::MUTED . ';white-space:nowrap;">'
+				. esc_html( 0 === (int) $signal['weight'] ? __( 'not scored', 'thallo-visibility' ) : $signal['earned'] . ' / ' . $signal['weight'] )
+				. '</td>'
+				. '</tr>';
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * When it ran, what was asked, and of what.
+	 *
+	 * The section that makes this forwardable. A percentage with no method
+	 * attached is an opinion inside somebody else's company; the same
+	 * percentage with the date, the models, the market and the three exact
+	 * questions under it is a measurement a reader can argue from — or check,
+	 * which is the same thing.
+	 */
+	private static function record_rows( array $state, array $phase1, $grounded ) {
+		$market = isset( $state['market'] ) ? $state['market'] : Thallo_Vis_Questions::DEFAULT_MARKET;
+		$models = array();
+
+		foreach ( $phase1['providers'] as $provider ) {
+			if ( ! empty( $provider['model'] ) ) {
+				$models[] = $provider['model'];
+			}
+		}
+
+		$asked = count( $phase1['questions'] );
+
+		/* Formatted from the stored timestamp with `gmdate`, not through
+		   WordPress's date helpers. `scannedAt` is an ISO 8601 string already in
+		   UTC, and passing it through the site's timezone would print a time
+		   that disagrees with the "UTC" printed after it. */
+		$ran  = strtotime( (string) $phase1['scannedAt'] );
+		$rows = self::detail_row(
+			__( 'Run', 'thallo-visibility' ),
+			( $ran ? gmdate( 'j F Y, H:i', $ran ) : gmdate( 'j F Y, H:i' ) ) . ' UTC'
+		);
+
+		$rows .= self::detail_row(
+			__( 'Market', 'thallo-visibility' ),
+			$market . ' · ' . preg_replace( '/^the /', '', Thallo_Vis_Questions::country_of( $market ) )
+		);
+
+		$rows .= self::detail_row(
+			__( 'Sample', 'thallo-visibility' ),
+			$grounded
+				? sprintf(
+					/* translators: 1: questions asked, 2: answers from memory, 3: answers when searching. */
+					__( '%1$d questions · %2$d answers from memory, %3$d when searching', 'thallo-visibility' ),
+					$asked,
+					(int) $phase1['totalAnswers'],
+					(int) $grounded['totalAnswers']
+				)
+				: sprintf(
+					/* translators: 1: questions asked, 2: answers read. */
+					__( '%1$d questions · %2$d answers read', 'thallo-visibility' ),
+					$asked,
+					(int) $phase1['totalAnswers']
+				)
+		);
+
+		if ( $models ) {
+			$rows .= self::detail_row( __( 'Models', 'thallo-visibility' ), implode( ', ', array_unique( $models ) ) );
+		}
+
+		$rows .= '<tr><td colspan="2" style="padding:12px 0 4px;font:700 13px/1.5 Helvetica,Arial,sans-serif;color:' . self::INK . ';">'
+			. esc_html__( 'Questions asked', 'thallo-visibility' ) . '</td></tr>';
+
+		foreach ( $phase1['questions'] as $index => $question ) {
+			$rows .= '<tr><td colspan="2" style="padding:2px 0;font:400 12.5px/1.6 Helvetica,Arial,sans-serif;color:' . self::MUTED . ';">'
+				. esc_html( ( $index + 1 ) . ' · ' . $question ) . '</td></tr>';
+		}
+
+		return $rows;
 	}
 
 	/**
@@ -272,6 +557,15 @@ class Thallo_Vis_Email_Template {
 		return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">'
 			. '<meta name="viewport" content="width=device-width,initial-scale=1">'
 			. '<meta name="color-scheme" content="light">'
+			/* The only stylesheet in the whole message, and everything in it is
+			   optional by construction: a client that strips <style> — Gmail's
+			   web app does, on forwarded mail — gets two 50%-wide cells side by
+			   side, which is legible on a phone, just tighter. Nothing here is
+			   load-bearing, which is the only way a <style> block belongs in an
+			   email at all. */
+			. '<style>@media only screen and (max-width:480px){'
+			. '.stack{display:block!important;width:100%!important;box-sizing:border-box!important;}'
+			. '}</style>'
 			. '<title>' . esc_html( $title ) . '</title></head>'
 			. '<body style="margin:0;padding:0;background:#F3F4F1;">'
 			/* Hidden, then padded with zero-width joiners so the client does not
@@ -290,19 +584,12 @@ class Thallo_Vis_Email_Template {
 			   and ignores float outright, which would drop the right-hand label
 			   onto its own line under the mark.
 
-			   The src is `cid:` — the file rides along with the message — because
-			   a remote image is not loaded until the reader asks and most never
-			   do. The alt text is still the company name rather than "logo", for
-			   the client that shows neither. */
+			   Most clients block remote images until the reader asks for them, so
+			   the alt text is the company name rather than "logo" — blocked, the
+			   header still says who this is from. */
 			. '<tr><td style="padding:22px 28px 18px;background:#FFFFFF;">'
 			. '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr>'
-			/* Not `esc_url()`: WordPress's URL escaper has no `cid` in its
-			   protocol whitelist and returns an empty string for one, which is
-			   an <img> with no src at all. The value is built two lines above
-			   from a constant and a function of `home_url()`, so there is no
-			   input here to escape — `esc_attr()` is the right guard for what it
-			   actually is, an attribute. */
-			. '<td><img src="' . esc_attr( self::logo_src() ) . '" width="150" alt="' . esc_attr( $site ) . '"'
+			. '<td><img src="' . esc_url( self::logo_url() ) . '" width="150" alt="' . esc_attr( $site ) . '"'
 			. ' style="display:block;border:0;outline:none;text-decoration:none;width:150px;max-width:150px;height:auto;font:700 15px/1.2 Helvetica,Arial,sans-serif;color:' . self::INK . ';"></td>'
 			. '<td align="right" style="font:600 10px/1.2 Helvetica,Arial,sans-serif;color:' . self::OLIVE . ';letter-spacing:.14em;text-transform:uppercase;">AI visibility scan</td>'
 			. '</tr></table>'
@@ -322,12 +609,25 @@ class Thallo_Vis_Email_Template {
 			. '</td></tr></table></body></html>';
 	}
 
-	/** The headline figure, stated with its denominator so it cannot be misread. */
-	public static function score_block( $pct, $caption ) {
+	/**
+	 * A single headline figure, stated with its denominator and with a label
+	 * given by the caller.
+	 *
+	 * The report no longer uses this — it prints the two readings side by side
+	 * through `reading_block()`, because collapsing them into one number is
+	 * exactly the thing the web report refuses to do and two surfaces of one
+	 * scan must not disagree about that. It is kept for any message that
+	 * genuinely has one figure to give, and the label is a parameter now rather
+	 * than the hardcoded "Share of voice" it used to be: that string was a third
+	 * name for a number the screen already called two other things.
+	 */
+	public static function score_block( $pct, $caption, $label = '' ) {
+		$label = '' !== $label ? $label : __( 'Share of answer', 'thallo-visibility' );
+
 		return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:' . self::TINT . ';border-radius:12px;margin:0 0 22px;">'
 			. '<tr><td style="padding:22px 24px;text-align:center;">'
 			. '<div style="font:700 46px/1 Helvetica,Arial,sans-serif;color:' . self::OLIVE . ';">' . esc_html( $pct ) . '%</div>'
-			. '<div style="font:600 11px/1.4 Helvetica,Arial,sans-serif;color:' . self::OLIVE . ';letter-spacing:.14em;text-transform:uppercase;padding-top:8px;">' . esc_html__( 'Share of voice', 'thallo-visibility' ) . '</div>'
+			. '<div style="font:600 11px/1.4 Helvetica,Arial,sans-serif;color:' . self::OLIVE . ';letter-spacing:.14em;text-transform:uppercase;padding-top:8px;">' . esc_html( $label ) . '</div>'
 			. '<div style="font:400 13px/1.6 Helvetica,Arial,sans-serif;color:' . self::INK . ';padding-top:10px;">' . esc_html( $caption ) . '</div>'
 			. '</td></tr></table>';
 	}

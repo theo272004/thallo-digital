@@ -26,9 +26,9 @@ class Thallo_Vis_Runner {
 		'claude'     => 'Claude',
 		'gemini'     => 'Gemini',
 		'grounded'   => 'The same three, searching the web',
+		'entity'     => 'What the models think you are',
 		'perplexity' => 'Perplexity',
 		'ai-overview' => 'Google AI Overview',
-		'technical'  => 'Website & technical signals',
 	);
 
 	// -----------------------------------------------------------------------
@@ -50,7 +50,13 @@ class Thallo_Vis_Runner {
 	 *                      ask for. Empty keeps the two-step flow, where the
 	 *                      free half stands alone and the rest is unlocked.
 	 */
-	public static function start( $brand, $domain, $industry, $market = Thallo_Vis_Questions::DEFAULT_MARKET, $source = 'visitor', array $prompts = array(), $email = '' ) {
+	/**
+	 * @param string $session The visitor's browser session, hashed. Stored on
+	 *                        the scan row so the free allowance can be counted
+	 *                        against it. Empty for a scheduled re-run, which
+	 *                        has no browser and no allowance.
+	 */
+	public static function start( $brand, $domain, $industry, $market = Thallo_Vis_Questions::DEFAULT_MARKET, $source = 'visitor', array $prompts = array(), $email = '', $session = '' ) {
 		$count = (int) Thallo_Vis_Settings::get( 'questions', 15 );
 
 		/* Written by the visitor when the setup screen sent them; the generated
@@ -137,7 +143,11 @@ class Thallo_Vis_Runner {
 			'email'          => $email,
 		);
 
-		if ( ! Thallo_Vis_DB::create( $scan_id, $brand, $domain, $industry, $state ) ) {
+		/* The address and the session go onto the row at creation, not at
+		   unlock. They are what the free allowance is counted against, and a
+		   scan that was abandoned halfway used to leave a row with neither on it
+		   — so it cost us three model calls and counted against nobody. */
+		if ( ! Thallo_Vis_DB::create( $scan_id, $brand, $domain, $industry, $state, $email, $session ) ) {
 			return new WP_Error( 'scan_not_created', __( 'The scan could not be started. Please try again.', 'thallo-visibility' ), array( 'status' => 500 ) );
 		}
 
@@ -425,13 +435,26 @@ class Thallo_Vis_Runner {
 	 * honest omission. Configure a provider and it comes back.
 	 */
 	private static function phase2_steps( $with_grounded ) {
-		$steps = $with_grounded ? array( 'grounded', 'perplexity' ) : array( 'perplexity' );
+		$steps = $with_grounded ? array( 'grounded', 'entity' ) : array( 'entity' );
+
+		/* 'entity' goes early, right behind the expensive reading, because it is
+		   the panel that has something to say when everything else says zero —
+		   and because it is three cheap calls that the visitor is still watching
+		   for. */
+		$steps[] = 'perplexity';
 
 		if ( 'none' !== Thallo_Vis_Settings::get( 'serp_provider', 'none' ) ) {
 			$steps[] = 'ai-overview';
 		}
 
-		$steps[] = 'technical';
+		/* No 'technical' step any more. It fetched the site and graded HTTPS,
+		   robots.txt, schema markup and sitemap dates, and it is gone for two
+		   reasons: it could report a confident falsehood — an unreachable site
+		   scored a full 25/25 on robots.txt, because a failed fetch and a
+		   missing file were the same branch — and a technical audit of a website
+		   is not what this product measures. `Thallo_Vis_Tech` is still in the
+		   tree and no longer called; `finish_phase2()` therefore ships an empty
+		   signal list, which every consumer already treats as "did not run". */
 
 		return $steps;
 	}
@@ -468,6 +491,10 @@ class Thallo_Vis_Runner {
 		}
 
 		switch ( $step ) {
+			case 'entity':
+				$state['entity'] = self::run_entity( $state );
+				break;
+
 			case 'perplexity':
 				if ( ! empty( $state['demo'] ) ) {
 					/* 'unavailable', not a status. Nothing was retrieved, so any
@@ -503,18 +530,6 @@ class Thallo_Vis_Runner {
 				$state['citation_hosts'] = array_values( array_unique( array_merge( $state['citation_hosts'], $run['citation_hosts'] ) ) );
 				break;
 
-			case 'technical':
-				if ( ! empty( $state['demo'] ) ) {
-					$state['tech'] = self::demo_tech();
-					break;
-				}
-
-				$state['tech'] = Thallo_Vis_Tech::run(
-					$state['domain'],
-					$state['citation_hosts'],
-					! empty( $state['citations_known'] )
-				);
-				break;
 		}
 
 		$state['phase2_done'][] = $step;
@@ -596,21 +611,26 @@ class Thallo_Vis_Runner {
 				$item   = $state['grounded_queue'][ $position ];
 				$parsed = Thallo_Vis_LLM::parse( $shape, $responses[ $offset ] );
 
-				/* `citations` is kept, and this is the only place it can be.
-				   The searching call returns the pages the model read on its way
-				   to the answer — `Thallo_Vis_LLM::parse` has normalised
-				   OpenRouter's `citations` and OpenAI's `annotations` onto one
-				   list for some time — and until now the runner read that list
-				   and threw it away, so the report could say a model
-				   recommended somebody else and never say what it had read to
-				   get there. It is the evidence under every other number in the
-				   report, and it costs nothing: it arrives in the response we
-				   have already paid for. */
 				$state['results_grounded'][ $item['p'] ][ $item['q'] ] = array(
 					'companies' => $parsed['companies'],
 					'error'     => $parsed['error'],
 					'model'     => $parsed['model'],
-					'citations' => isset( $parsed['citations'] ) ? $parsed['citations'] : array(),
+					/* The pages the model opened before answering, kept per
+					   answer rather than pooled.
+					 *
+					 * Pooled, they are a list of websites. Per answer, they can
+					 * be crossed against the companies that same answer named —
+					 * which is the difference between "these sites came up" and
+					 * "this is the page that put your competitor in the answer".
+					 * The second one is the finding somebody pays to act on, and
+					 * it is the one thing in this report a reader cannot work
+					 * out for themselves in an afternoon.
+					 *
+					 * Capped at twelve because a searching model can cite thirty
+					 * URLs for one answer and this is stored on every row of a
+					 * scan; the tail is long and adds nothing a host tally can
+					 * use. */
+					'citations' => array_slice( $parsed['citations'], 0, 12 ),
 				);
 
 				unset( $state['grounded_queue'][ $position ] );
@@ -620,6 +640,97 @@ class Thallo_Vis_Runner {
 		$state['grounded_queue'] = array_values( $state['grounded_queue'] );
 
 		return $state;
+	}
+
+	/**
+	 * The direct question, put to all three models at once.
+	 *
+	 * One call per model and all of them in a single tick, unlike every other
+	 * reading here — three requests fit comfortably inside one PHP request, and
+	 * the batching machinery exists for forty-five, not for three.
+	 *
+	 * The answer is not asked for as a company list, so the shared parser is
+	 * told not to expect one (`$expect_json = false`) and the JSON is read out of
+	 * the text here. That is the same reader the grounded half uses for the same
+	 * reason: what comes back is a JSON object, sometimes wrapped in prose or a
+	 * code fence, and insisting on a bare object throws away answers that were
+	 * perfectly readable.
+	 *
+	 * Whatever comes back is stored raw. The verdict is derived at serialisation
+	 * time by `Thallo_Vis_Analysis::entity()`, so re-reading a stored scan after
+	 * a change to the classification gives the corrected reading rather than the
+	 * one that was frozen into the row.
+	 */
+	private static function run_entity( array $state ) {
+		$brand  = $state['brand'];
+		$market = self::market_of( $state );
+
+		if ( ! empty( $state['demo'] ) ) {
+			return self::demo_entity( $state );
+		}
+
+		$system   = Thallo_Vis_Questions::entity_system_prompt( $market );
+		$question = Thallo_Vis_Questions::entity_prompt( $brand, $market );
+
+		$jobs      = array();
+		$providers = array();
+		$shape     = 'openai';
+
+		foreach ( self::MEMORY_PROVIDERS as $provider ) {
+			/* Skipped in phase 1 means no key for it, and asking again here would
+			   fail the same way. The panel simply has no row for that model,
+			   which is the same treatment the share-of-answer table gives it. */
+			if ( isset( $state['skipped'][ $provider ] ) ) {
+				continue;
+			}
+
+			$job = Thallo_Vis_LLM::build_job( $provider, $question, $system );
+			if ( ! $job ) {
+				continue;
+			}
+
+			$shape       = $job['shape'];
+			$jobs[]      = $job;
+			$providers[] = $provider;
+		}
+
+		if ( ! $jobs ) {
+			return array();
+		}
+
+		$timeout   = (int) Thallo_Vis_Settings::get( 'request_timeout', 25 );
+		$responses = Thallo_Vis_HTTP::post_many( $jobs, $timeout );
+		$out       = array();
+
+		foreach ( $providers as $offset => $provider ) {
+			$parsed = Thallo_Vis_LLM::parse( $shape, $responses[ $offset ], false );
+
+			if ( '' !== $parsed['error'] ) {
+				$out[ $provider ] = array( 'error' => $parsed['error'] );
+				continue;
+			}
+
+			$json = Thallo_Vis_HTTP::extract_json( $parsed['text'] );
+
+			if ( ! is_array( $json ) ) {
+				$out[ $provider ] = array( 'error' => 'the model did not answer in the format asked for' );
+				continue;
+			}
+
+			$out[ $provider ] = array(
+				'known'  => ! empty( $json['known'] ),
+				'what'   => isset( $json['what'] ) && is_string( $json['what'] ) ? trim( $json['what'] ) : '',
+				'serves' => isset( $json['serves'] ) && is_string( $json['serves'] ) ? trim( $json['serves'] ) : '',
+				'domain' => isset( $json['domain'] ) && is_string( $json['domain'] ) ? trim( $json['domain'] ) : '',
+				/* Stored inverted, because the classifier only ever reads doubt.
+				   A missing `certain` is a model that did not answer the field,
+				   which is not the same as a model volunteering doubt — so the
+				   default is "no doubt expressed" rather than "uncertain". */
+				'uncertain' => isset( $json['certain'] ) && false === $json['certain'],
+			);
+		}
+
+		return $out;
 	}
 
 	private static function finish_phase2( array $state ) {
@@ -647,14 +758,29 @@ class Thallo_Vis_Runner {
 		$state['phase2'] = array(
 			'competitors' => $competitors,
 			'retrieval'   => $retrieval,
+			/* Empty since the technical step was dropped, and still emitted:
+			   every consumer already reads an empty list as "did not run", and a
+			   cached front-end bundle from before the change still asks for it. */
 			'signals'     => $signals,
 			'techScore'   => $tech_score,
 			'serpScore'   => $serp_score,
 			'grade'       => Thallo_Vis_Analysis::grade_for( $combined ),
 			'keyInsight'  => Thallo_Vis_Analysis::key_insight( $phase1, $signals, $retrieval ),
-			'actions'     => Thallo_Vis_Analysis::actions( $signals, $phase1, $competitors ),
 			'history'     => array(),
 		);
+
+		/* Derived here rather than stored at the time of the call, so re-reading
+		   an old scan gets the current classification instead of one frozen into
+		   the row. Only when the step actually ran — an installation where it did
+		   not should show no panel rather than a panel saying nothing. */
+		if ( ! empty( $state['entity'] ) ) {
+			$entity = Thallo_Vis_Analysis::entity( $state );
+
+			if ( $entity ) {
+				$state['phase2']['entity']        = $entity;
+				$state['phase2']['entityReading'] = Thallo_Vis_Analysis::entity_reading( $entity, $state['brand'] );
+			}
+		}
 
 		/* Only when it actually ran. An installation with the grounded reading
 		   switched off should show no section rather than a section saying it
@@ -662,7 +788,25 @@ class Thallo_Vis_Runner {
 		   and could not, and this was never attempted. */
 		if ( ! empty( $state['models_grounded'] ) ) {
 			$state['phase2']['grounded'] = Thallo_Vis_Analysis::phase1( $state, '_grounded' );
+
+			/* Only the searching half has sources — a model answering from
+			   memory opened nothing. An empty list means the models cited
+			   nothing readable, and the panel says that rather than being
+			   rendered as a table with no rows. */
+			$sources = Thallo_Vis_Analysis::sources( $state );
+			if ( $sources ) {
+				$state['phase2']['sources'] = $sources;
+			}
 		}
+
+		/* The plan, last rather than first.
+		 *
+		 * It is built from the entity rows, the sources and the grounded reading
+		 * — all of which are attached above — so it cannot be assembled in the
+		 * same statement that creates `phase2`. It used to be, back when it was
+		 * built from technical signals that were ready before any of this. Those
+		 * checks are gone, and with them the only reason the ordering worked. */
+		$state['phase2']['actions'] = Thallo_Vis_Analysis::actions( $signals, $phase1, $competitors, $state );
 
 		/* Deliberately kept out of the grade. The grade already averages the
 		   memory reading, the technical score and retrieval; folding a second
@@ -877,6 +1021,43 @@ class Thallo_Vis_Runner {
 	}
 
 	/**
+	 * Sample answers to the direct question.
+	 *
+	 * Deliberately not three tidy `resolved` rows. The panel exists because the
+	 * three failure modes look nothing alike, and a preview that only ever shows
+	 * the healthy one teaches whoever is reviewing the interface that the other
+	 * two do not need designing for. It travels with `demo: true` and the banner,
+	 * like everything else here.
+	 */
+	private static function demo_entity( array $state ) {
+		$brand = $state['brand'];
+
+		return array(
+			'chatgpt' => array(
+				'known'     => true,
+				'what'      => sprintf( 'Sample data — a plausible description of what %s does.', $brand ),
+				'serves'    => '',
+				'domain'    => '',
+				'uncertain' => false,
+			),
+			'claude'  => array(
+				'known'     => true,
+				'what'      => 'Sample data — a company of the same name in another market.',
+				'serves'    => 'Sample data — the wrong buyer, because it is the wrong company.',
+				'domain'    => 'example-consultancy.com',
+				'uncertain' => false,
+			),
+			'gemini'  => array(
+				'known'     => false,
+				'what'      => '',
+				'serves'    => '',
+				'domain'    => '',
+				'uncertain' => true,
+			),
+		);
+	}
+
+	/**
 	 * A sample series, so the trend is visible before any brand has a second run.
 	 *
 	 * Nothing was written to the history table for a demo scan — see
@@ -908,29 +1089,4 @@ class Thallo_Vis_Runner {
 		return $out;
 	}
 
-	private static function demo_tech() {
-		$signals = array(
-			array( 'id' => 'https', 'label' => 'HTTPS enabled', 'status' => 'pass', 'weight' => 5, 'earned' => 5, 'note' => 'Sample data.' ),
-			array( 'id' => 'ai-crawlers', 'label' => 'AI crawlers allowed in robots.txt', 'status' => 'pass', 'weight' => 25, 'earned' => 25, 'note' => 'Sample data.' ),
-			array( 'id' => 'schema', 'label' => 'Organization schema markup', 'status' => 'fail', 'weight' => 15, 'earned' => 0, 'note' => 'Sample data.' ),
-			array( 'id' => 'about', 'label' => 'About page with named people', 'status' => 'warn', 'weight' => 10, 'earned' => 5, 'note' => 'Sample data.' ),
-			array( 'id' => 'freshness', 'label' => 'Content published in the last 6 months', 'status' => 'fail', 'weight' => 10, 'earned' => 0, 'note' => 'Sample data.' ),
-			array( 'id' => 'faq', 'label' => 'Structured FAQ schema', 'status' => 'fail', 'weight' => 10, 'earned' => 0, 'note' => 'Sample data.' ),
-			array( 'id' => 'citations', 'label' => 'Cited on third-party authority sites', 'status' => 'warn', 'weight' => 25, 'earned' => 13, 'note' => 'Sample data.' ),
-			array( 'id' => 'llms-txt', 'label' => 'llms.txt file', 'status' => 'warn', 'weight' => 0, 'earned' => 0, 'note' => 'Not scored.' ),
-		);
-
-		$score = 0;
-		$max   = 0;
-		foreach ( $signals as $signal ) {
-			$score += $signal['earned'];
-			$max   += $signal['weight'];
-		}
-
-		return array(
-			'signals' => $signals,
-			'score'   => $score,
-			'max'     => $max,
-		);
-	}
 }

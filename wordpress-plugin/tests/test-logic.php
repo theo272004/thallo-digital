@@ -51,6 +51,15 @@ function wp_json_encode( $v ) {
 function get_option( $name, $default = false ) {
 	return $default;
 }
+/* Translation is a no-op here. The strings under test are the English ones and
+   what is being checked is the sentence they compose — which branch fired, and
+   whether the singular or the plural was chosen — not the gettext call. */
+function __( $text, $domain = null ) {
+	return $text;
+}
+function _n( $single, $plural, $number, $domain = null ) {
+	return 1 === (int) $number ? $single : $plural;
+}
 
 $dir = __DIR__ . '/../thallo-visibility/includes/';
 require_once $dir . 'class-thallo-questions.php';
@@ -190,50 +199,6 @@ check( 'skipped provider is not a zero', $p1['providers'][2]['answers'], array()
    questions by it, and reading them positionally put every Claude verdict one
    question early on any run where a call failed. */
 check( 'answers carry their question index', array_column( $p1['providers'][1]['answers'], 'q' ), array( 1, 2 ) );
-
-/* -- The sources a searching answer leaned on -----------------------------
-   The reading pools them per model and reports hosts, because the question the
-   report asks of this list is "where did this model go to find out about my
-   category" -- three questions returning the same directory three times is one
-   finding. The memory reading has none and must have none: a model answering
-   with the web shut has read nothing. */
-echo "=== sources kept from the searching reading ===\n";
-$grounded_state = array(
-	'scan_id'          => 'test',
-	'brand'            => 'Ledgerly',
-	'domain'           => 'ledgerly.com',
-	'industry'         => 'fintech',
-	'created_at'       => '2026-08-01T00:00:00+00:00',
-	'questions'        => array( 'q1', 'q2' ),
-	'models_grounded'  => array( 'chatgpt' => 'gpt-4o-mini:online' ),
-	'skipped_grounded' => array( 'claude' => 'off', 'gemini' => 'off' ),
-	'results_grounded' => array(
-		'chatgpt' => array(
-			0 => array(
-				'companies' => array( 'Ledgerly' ),
-				'error'     => '',
-				'citations' => array( 'https://www.reddit.com/r/fintech/x', 'https://en.wikipedia.org/wiki/Y' ),
-			),
-			1 => array(
-				'companies' => array( 'Northwind' ),
-				'error'     => '',
-				/* The same host again, and a bare domain rather than a URL --
-				   providers hand back both shapes. */
-				'citations' => array( 'https://www.reddit.com/r/fintech/z', 'forbes.com' ),
-			),
-		),
-	),
-);
-
-$g = Thallo_Vis_Analysis::phase1( $grounded_state, '_grounded' );
-
-check(
-	'hosts, deduplicated, in the order first seen',
-	$g['providers'][0]['sources'],
-	array( 'reddit.com', 'en.wikipedia.org', 'forbes.com' )
-);
-check( 'a model with no citations carries no sources key', isset( $g['providers'][1]['sources'] ), false );
-check( 'the memory reading has no sources at all', isset( $p1['providers'][0]['sources'] ), false );
 
 echo "=== which model answered ===\n";
 check( 'exact', Thallo_Vis_LLM::same_model( 'openai/gpt-4.1-nano', 'openai/gpt-4.1-nano' ), true );
@@ -490,6 +455,186 @@ check( 'the JSON contract survives translation', strpos( $prompt_co, '{"companie
    fails, and the visitor is told they were not named when they were. */
 check( 'non-English asks for names to be left alone', strpos( $prompt_co, 'Never translate or localise a company name' ) !== false, true );
 check( 'English does not need that line', strpos( $prompt_us, 'Never translate' ) !== false, false );
+
+echo "=== a bare host out of whatever a model wrote ===\n";
+/* A model asked for "their website" answers with a URL about as often as with a
+   host. Without this the entity check split `https://example.com/about` on dots,
+   read the first label as `https`, and reported every such model as having
+   resolved the brand to a different company — a false accusation, which is the
+   one failure that panel cannot have. */
+check( 'a bare host is left alone', Thallo_Vis_Analysis::clean_host( 'example.com' ), 'example.com' );
+check( 'scheme is dropped', Thallo_Vis_Analysis::clean_host( 'https://example.com' ), 'example.com' );
+check( 'www is dropped', Thallo_Vis_Analysis::clean_host( 'https://www.Example.com' ), 'example.com' );
+check( 'the path goes', Thallo_Vis_Analysis::clean_host( 'http://example.com/about?x=1' ), 'example.com' );
+check( 'a URL still resolves to one root', Thallo_Vis_Analysis::domain_root( 'https://www.casewell.com/pricing' ), 'casewell' );
+
+echo "=== entity accuracy ===\n";
+$known = array(
+	'known'  => true,
+	'what'   => 'Contract lifecycle management software.',
+	'serves' => 'In-house legal teams at mid-market companies.',
+	'domain' => 'casewell.com',
+);
+
+check( 'knows what and who', Thallo_Vis_Analysis::entity_verdict( $known, 'casewell.com' ), 'resolved' );
+check(
+	'no buyer named is partial',
+	Thallo_Vis_Analysis::entity_verdict( array_merge( $known, array( 'serves' => '' ) ), 'casewell.com' ),
+	'partial'
+);
+/* Doubt is only ever read downwards. A model claiming certainty tells us
+   nothing; a model volunteering doubt is evidence, and it caps an otherwise
+   complete answer at partial. */
+check(
+	'volunteered doubt caps a complete answer',
+	Thallo_Vis_Analysis::entity_verdict( array_merge( $known, array( 'uncertain' => true ) ), 'casewell.com' ),
+	'partial'
+);
+check(
+	'another company\'s website is a mismatch',
+	Thallo_Vis_Analysis::entity_verdict( array_merge( $known, array( 'domain' => 'https://casewell-consulting.co.uk/' ) ), 'casewell.com' ),
+	'mismatch'
+);
+/* The same company on a different TLD is the same company. Matching on the full
+   host would report every brand that scans its .com while the model remembers
+   its .co as having been confused with somebody else. */
+check(
+	'a different TLD is not a different company',
+	Thallo_Vis_Analysis::entity_verdict( array_merge( $known, array( 'domain' => 'casewell.co' ) ), 'casewell.com' ),
+	'resolved'
+);
+/* An unknown website is not a wrong website. Reporting the two the same way
+   would accuse a model of confusion whenever it simply did not know the URL. */
+check(
+	'no website named is not a mismatch',
+	Thallo_Vis_Analysis::entity_verdict( array_merge( $known, array( 'domain' => '' ) ), 'casewell.com' ),
+	'resolved'
+);
+check( 'not recognised', Thallo_Vis_Analysis::entity_verdict( array( 'known' => false ), 'casewell.com' ), 'unknown' );
+/* Said yes and then described nothing. There is no content to be partial about,
+   so it is the same finding as not knowing. */
+check(
+	'claimed to know and described nothing',
+	Thallo_Vis_Analysis::entity_verdict( array( 'known' => true, 'what' => '   ' ), 'casewell.com' ),
+	'unknown'
+);
+check(
+	'a failed call is never a finding about the brand',
+	Thallo_Vis_Analysis::entity_verdict( array( 'error' => 'HTTP 500' ), 'casewell.com' ),
+	'unavailable'
+);
+
+$entity_rows = Thallo_Vis_Analysis::entity(
+	array(
+		'domain' => 'casewell.com',
+		'models' => array( 'chatgpt' => 'gpt-x', 'claude' => 'claude-x', 'gemini' => 'gemini-x' ),
+		'entity' => array(
+			'chatgpt' => array_merge( $known, array( 'serves' => '' ) ),
+			'claude'  => array_merge( $known, array( 'domain' => 'other-company.com' ) ),
+			'gemini'  => array( 'known' => false ),
+		),
+	)
+);
+
+check( 'one row per model asked', count( $entity_rows ), 3 );
+check( 'the evidence for the accusation is kept', $entity_rows[1]['claimedDomain'], 'other-company.com' );
+/* A wrong-company verdict outranks everything else in the summary however few
+   models voted for it — one model handing a buyer a different business is worse
+   than two describing you correctly. */
+check(
+	'the reading leads with the mismatch',
+	strpos( Thallo_Vis_Analysis::entity_reading( $entity_rows, 'Casewell' ), 'resolves the name Casewell to a different company' ) !== false,
+	true
+);
+check( 'and it counts it in the singular', strpos( Thallo_Vis_Analysis::entity_reading( $entity_rows, 'Casewell' ), '1 model out of 3' ) !== false, true );
+check( 'nothing measured says nothing', Thallo_Vis_Analysis::entity_reading( array(), 'Casewell' ), '' );
+
+echo "=== where the answers were read from ===\n";
+$sourced = array(
+	'brand'            => 'Casewell',
+	'domain'           => 'casewell.com',
+	'results_grounded' => array(
+		'chatgpt' => array(
+			array(
+				'companies' => array( 'Lexara', 'Northmark' ),
+				'error'     => '',
+				/* Two pages of one directory in a single answer is one
+				   consultation of that directory, not two. */
+				'citations' => array( 'https://g2.com/a', 'https://g2.com/b', 'https://legaltechnews.com/x' ),
+			),
+		),
+		'claude'  => array(
+			array(
+				'companies' => array( 'Lexara', 'Casewell' ),
+				'error'     => '',
+				'citations' => array( 'https://www.g2.com/c', 'https://casewell.com/about' ),
+			),
+		),
+		'gemini'  => array(
+			array(
+				'companies' => array( 'Northmark' ),
+				'error'     => 'every request failed',
+				'citations' => array( 'https://ignored.com/x' ),
+			),
+		),
+	),
+);
+
+$sources = Thallo_Vis_Analysis::sources( $sourced );
+$by_host = array_column( $sources, null, 'host' );
+
+check( 'a failed answer contributes nothing', isset( $by_host['ignored.com'] ), false );
+/* Seen once and not the brand's own site: a model following a link, not a
+   source that carries the category. */
+check( 'a host seen once is dropped', isset( $by_host['legaltechnews.com'] ), false );
+check( 'two pages of one site in one answer count once', $by_host['g2.com']['times'], 2 );
+check( 'names come from the answers that opened it', $by_host['g2.com']['names'], array( 'Lexara', 'Northmark' ) );
+/* The brand's own domain is kept even at one appearance. "Every source that
+   mentioned you was your own website" is the finding, and dropping the row
+   would delete it. */
+check( 'your own site survives the threshold', isset( $by_host['casewell.com'] ), true );
+check( 'and is flagged as yours', $by_host['casewell.com']['own'], true );
+/* The brand never appears in its own `names` list — it has its own flag — but
+   the other companies named in that same answer do, because they are the
+   finding: a model that opened your About page still went on to recommend
+   somebody else in the same breath. */
+check( 'the brand is not listed among its own rivals', in_array( 'Casewell', $by_host['casewell.com']['names'], true ), false );
+check( 'the company named alongside it is', $by_host['casewell.com']['names'], array( 'Lexara' ) );
+check( 'and the brand is recorded as present', $by_host['casewell.com']['brand'], true );
+check( 'your own site sorts last', $sources[ count( $sources ) - 1 ]['host'], 'casewell.com' );
+
+echo "=== can a crawler read the page ===\n";
+/* The gap this closes: robots.txt says a crawler is allowed in, this says
+   whether there is anything to read once it is. None of the crawlers these
+   models use runs JavaScript. */
+check( 'an empty shell counts as empty', priv( 'Thallo_Vis_Tech', 'text_words', array( '<html><body><div id="root"></div></body></html>' ) ), 0 );
+/* A bundle is tens of thousands of "words" of JavaScript. Counted, it would
+   make the emptiest possible page look like an encyclopaedia. */
+check(
+	'the bundle does not count as content',
+	priv( 'Thallo_Vis_Tech', 'text_words', array( '<div id="root"></div><script>var a = "one two three four five";</script>' ) ),
+	0
+);
+check(
+	'real prose counts',
+	priv( 'Thallo_Vis_Tech', 'text_words', array( '<p>one two three</p><h1>four five</h1>' ) ),
+	5
+);
+/* A page of non-breaking spaces is not a page of prose. */
+check( 'entities are not words', priv( 'Thallo_Vis_Tech', 'text_words', array( '<p>&nbsp;&nbsp;&nbsp;</p>' ) ), 0 );
+check( 'nothing at all', priv( 'Thallo_Vis_Tech', 'text_words', array( '' ) ), 0 );
+
+echo "=== free scans are for company addresses ===\n";
+require_once $dir . 'class-thallo-rest.php';
+check( 'a company domain', Thallo_Vis_REST::is_work_email( 'ana@casewell.com' ), true );
+check( 'gmail', Thallo_Vis_REST::is_work_email( 'ana@gmail.com' ), false );
+check( 'case does not help', Thallo_Vis_REST::is_work_email( 'ana@GMail.CoM' ), false );
+check( 'a regional free mailbox', Thallo_Vis_REST::is_work_email( 'ana@hotmail.com.br' ), false );
+check( 'a disposable address', Thallo_Vis_REST::is_work_email( 'ana@mailinator.com' ), false );
+/* A subdomain of a free provider is not the free provider. `mail.company.com`
+   is a perfectly ordinary corporate mail host and must not be caught. */
+check( 'a company subdomain is not gmail', Thallo_Vis_REST::is_work_email( 'ana@mail.casewell.com' ), true );
+check( 'not an address at all', Thallo_Vis_REST::is_work_email( 'ana' ), false );
 
 echo "\n" . str_repeat( '─', 50 ) . "\n";
 printf( "%d passed, %d failed\n", $pass, $fail );

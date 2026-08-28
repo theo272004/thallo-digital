@@ -205,26 +205,89 @@ class Thallo_Vis_Settings {
 			'request_timeout'     => 25,
 
 			/*
-			 * One free scan per visitor per day.
+			 * The free allowance, counted in four layers.
 			 *
-			 * The ceiling that protects the bill is `rate_global`, not this — at
-			 * ~$0.012 a scan, three per visitor was never the expensive part.
-			 * This number is a funnel decision: the second scan is the one a
-			 * visitor runs instead of leaving an email.
+			 * Three free scans is the offer, and the honest way to enforce it is
+			 * not one number. A cookie on its own is cleared in ten seconds; an
+			 * address on its own is defeated by a second address; an IP on its
+			 * own punishes an office of forty people who share one. So four
+			 * counters run together and the tightest of them binds:
 			 *
-			 * It is a speed bump and not a gate, and it should not be mistaken
-			 * for one. A shared office or a carrier-grade NAT puts hundreds of
-			 * people behind one address, and a VPN or mobile data defeats it in
-			 * a tap. The real gates are further down and cost more to pass:
-			 * phase 2 asks for an email, monitoring asks for an account.
+			 *   session  3 scans, ever   the ordinary case, and the only one
+			 *                            most visitors ever meet. No friction.
+			 *   email    3 scans, ever   survives cleared cookies.
+			 *   ip       6 in 24 hours   catches a run of throwaway addresses,
+			 *                            with headroom for two colleagues.
+			 *   domain   2 in 24 hours   stops a competitor — or an agency
+			 *                            pitching them — burning the allowance
+			 *                            on a website that is not theirs.
+			 *
+			 * `rate_global` is still the thing that protects the bill; these are
+			 * a funnel decision. At roughly a cent a scan, the second scan was
+			 * never the expensive part — it is the one somebody runs instead of
+			 * getting in touch.
+			 *
+			 * None of the four is security, and none of them is ever reported as
+			 * an error. Hitting one means the visitor has run three scans and is
+			 * still reading, which makes them the most interested person to
+			 * reach the page all week; the message is an invitation to book the
+			 * real audit. See `Thallo_Vis_REST::check_limits()`.
 			 */
-			/* Five while we are testing; one is the rule. Testing a change means
-			   running it repeatedly from one address, and a limit that locks out
-			   the person building the thing gets switched off and left off. Put
-			   it back to 1 before this is in front of anybody. */
-			'rate_per_ip'         => 5,
+			'rate_per_session'    => 3,
+			'rate_per_email'      => 3,
+			/* Six, not three. This layer is no longer the allowance — the
+			   session and the address are — so it can be loose enough not to
+			   punish a shared office or a carrier-grade NAT, which is what a
+			   three here was quietly doing. Its job now is narrower: a run of
+			   disposable addresses from one machine. */
+			'rate_per_ip'         => 6,
+			'rate_per_domain'     => 2,
 			'rate_global'         => 200,
+
+			/*
+			 * Addresses the allowance does not apply to.
+			 *
+			 * One comma-separated list, matched against the caller's own IP in
+			 * the clear — the only place in the plugin that looks at an
+			 * unhashed address, and nothing is written when it does.
+			 *
+			 * It exists because the people who demonstrate this tool are the
+			 * ones the limiter hits hardest: recording a walkthrough means
+			 * running six scans of six companies in an afternoon, and every
+			 * one of those is somebody else's brand and somebody else's
+			 * network by the limiter's reckoning. Rather than raising the
+			 * ceilings for everybody — which is what was being asked for, and
+			 * would have quietly turned the free tier into an open one — the
+			 * office is named.
+			 *
+			 * An exempt address skips every layer including the site-wide one,
+			 * so keep this list short: it is the one hole in the thing that
+			 * protects the API bill.
+			 *
+			 * Seeded with the office rather than left empty, because the
+			 * setting has to work on a site whose options were saved before it
+			 * existed — `all()` merges the defaults under whatever is stored,
+			 * so a key nobody has saved yet takes its value from here. Editable
+			 * on the settings screen like everything else, and the moment
+			 * somebody saves that screen this default stops being consulted.
+			 */
+			'rate_exempt_ips'     => '181.63.26.207',
 			'retention_days'      => 14,
+
+			/*
+			 * Free scans are for company addresses.
+			 *
+			 * The engagement this report sells starts at $2,500 a month and is
+			 * approved by somebody with a company domain in their signature. A
+			 * scan costs real money on its first call, so the address is the
+			 * qualification rather than a delivery detail — and unlike every
+			 * other filter on this screen, this one is about who the lead is
+			 * rather than how often they come back.
+			 *
+			 * Switch it off and personal addresses are accepted again; the lead
+			 * row still records which was used, so nothing is lost either way.
+			 */
+			'require_work_email'  => 1,
 
 			'allowed_origins'     => '',
 			'notify_email'        => '',
@@ -334,9 +397,25 @@ class Thallo_Vis_Settings {
 		$out['questions']       = self::clamp_int( $input, 'questions', 3, 15, $defaults['questions'] );
 		$out['jobs_per_tick']   = self::clamp_int( $input, 'jobs_per_tick', 1, 15, $defaults['jobs_per_tick'] );
 		$out['request_timeout'] = self::clamp_int( $input, 'request_timeout', 5, 60, $defaults['request_timeout'] );
+		$out['rate_per_session'] = self::clamp_int( $input, 'rate_per_session', 1, 100, $defaults['rate_per_session'] );
+		$out['rate_per_email']   = self::clamp_int( $input, 'rate_per_email', 1, 100, $defaults['rate_per_email'] );
 		$out['rate_per_ip']     = self::clamp_int( $input, 'rate_per_ip', 1, 100, $defaults['rate_per_ip'] );
+		$out['rate_per_domain'] = self::clamp_int( $input, 'rate_per_domain', 1, 100, $defaults['rate_per_domain'] );
 		$out['rate_global']     = self::clamp_int( $input, 'rate_global', 1, 10000, $defaults['rate_global'] );
+
+		/* Kept as typed apart from the whitespace, because it is matched
+		   literally against `REMOTE_ADDR` and a "helpful" transformation here
+		   would silently stop an entry matching. Commas and newlines are both
+		   accepted as separators — see `Thallo_Vis_REST::ip_exempt()`. */
+		$out['rate_exempt_ips'] = isset( $input['rate_exempt_ips'] )
+			? sanitize_textarea_field( $input['rate_exempt_ips'] )
+			: '';
 		$out['retention_days']  = self::clamp_int( $input, 'retention_days', 1, 365, $defaults['retention_days'] );
+
+		/* A checkbox absent from the POST means unticked — that is how HTML
+		   works — so it is read as an explicit 0 rather than falling back to the
+		   default, which would make the box impossible to switch off. */
+		$out['require_work_email'] = empty( $input['require_work_email'] ) ? 0 : 1;
 
 		$out['allowed_origins'] = isset( $input['allowed_origins'] )
 			? sanitize_textarea_field( $input['allowed_origins'] )

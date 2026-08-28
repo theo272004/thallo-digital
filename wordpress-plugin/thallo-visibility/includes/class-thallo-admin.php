@@ -360,10 +360,9 @@ class Thallo_Vis_Admin {
 				<h2><?php esc_html_e( 'Limits and behaviour', 'thallo-visibility' ); ?></h2>
 				<table class="form-table" role="presentation">
 					<?php
-					self::number_field( $name, 'questions', $s, __( 'Questions per model', 'thallo-visibility' ), 3, 15, __( 'Fifteen is the full set and what the website describes. Lowering it costs less and measures less.', 'thallo-visibility' ) );
+					self::number_field( $name, 'questions', $s, __( 'Questions per model', 'thallo-visibility' ), 3, 15, __( 'Three is the free tier and what the website describes. Raising it costs more per scan and measures more.', 'thallo-visibility' ) );
 					self::number_field( $name, 'jobs_per_tick', $s, __( 'Questions per request', 'thallo-visibility' ), 1, 15, __( 'How many are sent at once. Lower this if your host times out mid-scan.', 'thallo-visibility' ) );
 					self::number_field( $name, 'request_timeout', $s, __( 'Request timeout (seconds)', 'thallo-visibility' ), 5, 60 );
-					self::number_field( $name, 'rate_per_ip', $s, __( 'Free scans per visitor per day', 'thallo-visibility' ), 1, 100 );
 					self::number_field( $name, 'rate_global', $s, __( 'Scans per day, site-wide', 'thallo-visibility' ), 1, 10000, __( 'The ceiling on what a bad day can cost you. This is the setting that actually protects the bill.', 'thallo-visibility' ) );
 					self::number_field( $name, 'retention_days', $s, __( 'Keep scan data for (days)', 'thallo-visibility' ), 1, 365, __( 'Scan working data is deleted after this. Leads are kept until you delete them.', 'thallo-visibility' ) );
 					?>
@@ -375,6 +374,49 @@ class Thallo_Vis_Admin {
 								<?php esc_html_e( 'Return sample data even when keys are configured', 'thallo-visibility' ); ?>
 							</label>
 							<p class="description"><?php esc_html_e( 'For demonstrating the tool without spending anything. The website shows a banner saying the figures are samples the whole time this is on.', 'thallo-visibility' ); ?></p>
+						</td>
+					</tr>
+				</table>
+
+				<h2><?php esc_html_e( 'The free allowance', 'thallo-visibility' ); ?></h2>
+				<p class="description" style="max-width:46em">
+					<?php esc_html_e( 'Three free scans is the offer, and one counter cannot enforce it: a cookie is cleared in ten seconds, an address is defeated by a second address, and an IP on its own punishes an office of forty people who share one. So four counters run together and the tightest of them binds. None of them is ever shown to a visitor as an error — somebody who has run three scans and wants a fourth is the most interested person to reach the site all week, and the message they get is an invitation to book the audit.', 'thallo-visibility' ); ?>
+				</p>
+				<table class="form-table" role="presentation">
+					<?php
+					self::number_field( $name, 'rate_per_session', $s, __( 'Scans per browser', 'thallo-visibility' ), 1, 100, __( 'The headline allowance — this is the number the website counts "Scan 1 of 3" against. Counted for the life of the cookie, not per day.', 'thallo-visibility' ) );
+					self::number_field( $name, 'rate_per_email', $s, __( 'Scans per email address', 'thallo-visibility' ), 1, 100, __( 'The layer that survives cleared cookies. Counted across scans and leads together, so it still holds after scan data has been pruned.', 'thallo-visibility' ) );
+					self::number_field( $name, 'rate_per_ip', $s, __( 'Scans per network, per day', 'thallo-visibility' ), 1, 100, __( 'Loose on purpose: this is no longer the allowance, so it should not punish a shared office or a mobile carrier. Its job is a run of throwaway addresses from one machine.', 'thallo-visibility' ) );
+					self::number_field( $name, 'rate_per_domain', $s, __( 'Scans per website, per day', 'thallo-visibility' ), 1, 100, __( 'Stops one site using up the day. Usually it is not the owner scanning — it is a competitor, or an agency pitching them.', 'thallo-visibility' ) );
+					?>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Who may run one', 'thallo-visibility' ); ?></th>
+						<td>
+							<label>
+								<input type="checkbox" name="<?php echo esc_attr( $name ); ?>[require_work_email]" value="1" <?php checked( $s['require_work_email'], 1 ); ?>>
+								<?php esc_html_e( 'Company email addresses only', 'thallo-visibility' ); ?>
+							</label>
+							<p class="description" style="max-width:46em">
+								<?php esc_html_e( 'Turns down Gmail, Outlook, Yahoo, iCloud and the disposable providers. Unlike everything else on this screen, this is about who the lead is rather than how often they come back: the engagement this report sells is approved by somebody with a company domain in their signature, and a scan costs real money on its first call. Switch it off and personal addresses are accepted again.', 'thallo-visibility' ); ?>
+							</p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Addresses with no limit', 'thallo-visibility' ); ?></th>
+						<td>
+							<textarea name="<?php echo esc_attr( $name ); ?>[rate_exempt_ips]" rows="3" class="large-text code" placeholder="203.0.113.4"><?php echo esc_textarea( $s['rate_exempt_ips'] ); ?></textarea>
+							<p class="description" style="max-width:46em">
+								<?php esc_html_e( 'One IP address per line, or separated by commas. A caller from one of these skips every counter above, including the site-wide one — this is your own office, not a customer. It is here because demonstrating the tool means running six scans of six other companies in an afternoon, and to the limiter that is indistinguishable from abuse. Exact matches only: no ranges, and no partial addresses.', 'thallo-visibility' ); ?>
+							</p>
+							<p class="description">
+								<?php
+								printf(
+									/* translators: %s: the IP address this request came from. */
+									esc_html__( 'You are browsing from %s right now.', 'thallo-visibility' ),
+									'<code>' . esc_html( Thallo_Vis_DB::client_ip() ) . '</code>'
+								);
+								?>
+							</p>
 						</td>
 					</tr>
 				</table>
