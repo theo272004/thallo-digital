@@ -100,3 +100,19 @@
     }
   });
 })();
+
+/* The topic filter submits itself.
+
+   The form works without this — choose a topic, press Enter — and this is the
+   half a keystroke that a pointer expects. The submit button beside it is
+   hidden by CSS rather than removed, because hiding it here would leave a
+   keyboard user with a form they cannot send. */
+(function () {
+  var form = document.querySelector('.thallo-filter');
+  if (!form) return;
+  var select = form.querySelector('select');
+  if (!select) return;
+  select.addEventListener('change', function () {
+    form.submit();
+  });
+})();

@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.9.0
+Version:      1.10.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -1302,6 +1302,663 @@ body.single .wp-site-blocks > main {
 /* A pager under nothing is a pager that says the archive is broken. */
 .thallo-grid:has(.wp-block-query-no-results) .thallo-pagination {
   display: none;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   The hub — the blog's front page.
+
+   A publication rather than a page of cards: a masthead beside a photograph, a
+   row of subjects, one article set three times the size of the two next to it,
+   and a grid of what is recent. The rhythm down the page is deliberate — 5rem
+   between sections, a hairline rule and a small-caps label opening each — so a
+   reader scanning it in three seconds gets the shape of the thing before any
+   headline.
+
+   Everything here is drawn from the palette the rest of the site uses. The one
+   value that appears only in this file is #FBFBF8, an ivory a shade off white,
+   which is the closing panel's ground and the placeholder cards' fill. It is
+   the same ivory `--paper` (#F7F8F3) is, taken two points warmer so a card
+   sitting on paper still has an edge without a border.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.thallo-hub {
+  --hub-ivory: #fbfbf8;
+  --hub-gap: 5rem;
+}
+
+/* The rules that open each section. `--tight` is for a row that is a list of
+   controls rather than a list of articles: the topics sit closer to their
+   heading than a grid of covers does. */
+.thallo-hub .thallo-rule {
+  margin: var(--hub-gap) 0 1.5rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--wp--preset--color--hairline);
+}
+.thallo-hub .thallo-rule--tight {
+  margin-bottom: 1.1rem;
+}
+.thallo-hub .thallo-rule__h {
+  position: relative;
+  padding-left: 0.85rem;
+}
+/* The olive tick before a section label, drawn rather than typed — the same
+   mark the masthead's eyebrow carries, so the page has one way of saying "a
+   new section starts here". */
+.thallo-hub .thallo-rule__h::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 0.8rem;
+  border-radius: 2px;
+  background: var(--wp--preset--color--olive);
+}
+
+/* ── 1 · The masthead ──────────────────────────────────────────────────────
+   Type left, photograph right, both ending on the same line. The picture is
+   given a fixed ratio rather than a height so it holds its shape while the
+   column it sits in changes width. */
+.thallo-mast--hub {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: 2.5rem;
+  margin-bottom: 3.5rem;
+}
+@media (min-width: 1000px) {
+  .thallo-mast--hub {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 4rem;
+  }
+}
+.thallo-mast--hub .thallo-mast__say {
+  flex: none;
+}
+.thallo-mast--hub .thallo-mast__title {
+  max-width: 14ch;
+}
+.thallo-mast--hub .thallo-mast__lead {
+  max-width: 42ch;
+}
+.thallo-mast__art {
+  border-radius: 20px;
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  background: var(--wp--preset--color--paper);
+}
+.thallo-mast__art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+@media (max-width: 999px) {
+  .thallo-mast__art {
+    aspect-ratio: 16 / 7;
+  }
+}
+
+/* ── The two controls ──────────────────────────────────────────────────────
+   Search and filter on one line, both at the same height, so they read as a
+   pair rather than as a field with an afterthought beside it. */
+.thallo-find {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+.thallo-search--big {
+  flex: 1 1 18rem;
+  max-width: 26rem;
+}
+.thallo-search--big .wp-block-search__inside-wrapper {
+  padding: 0.35rem 0.35rem 0.35rem 0.6rem;
+}
+.thallo-search--big .wp-block-search__input {
+  padding: 0.6rem 0.6rem;
+  font-size: 0.92rem;
+}
+.thallo-search--big .wp-block-search__button {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+/* The category dropdown, dressed as the pill beside it. WordPress renders a
+   bare `<select>`; the arrow is drawn here because a native one differs on
+   every platform and this row has to look like one control twice. */
+/* The pair stands the same height. They are one control as far as the eye is
+   concerned — search on the left, topic on the right — and 56px beside 43px
+   reads as a field with an afterthought stuck to it. */
+.thallo-search--big .wp-block-search__inside-wrapper,
+.thallo-filter select {
+  /* Border-box, because this theme does not set it globally and a height on a
+     content-box element is the height of what is inside it: 56px asked for,
+     69px drawn, once the padding and the border were added on top. */
+  box-sizing: border-box;
+  height: 3.5rem;
+}
+.thallo-filter {
+  display: flex;
+  margin: 0;
+}
+.thallo-filter__label,
+.thallo-filter__go {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.thallo-filter select {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 9999px;
+  background: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.95rem center;
+  background-size: 0.7rem;
+  padding: 0.78rem 2.5rem 0.78rem 1.15rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--wp--preset--color--grey-500);
+  cursor: pointer;
+}
+.thallo-filter select:hover {
+  border-color: var(--wp--preset--color--olive);
+  color: var(--wp--preset--color--olive);
+}
+
+
+/* ── 2 · Topics ────────────────────────────────────────────────────────────
+   Six tiles that wrap, and below 720px a row that scrolls sideways — the same
+   information in the shape a narrow screen has room for, rather than six
+   full-width buttons stacked into a screen of navigation. */
+.thallo-hub__topics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.75rem;
+}
+@media (max-width: 720px) {
+  .thallo-hub__topics {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    margin: 0 -1.5rem;
+    padding: 0 1.5rem 0.5rem;
+  }
+  .thallo-topic {
+    flex: 0 0 13rem;
+    scroll-snap-align: start;
+  }
+}
+.thallo-topic {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 16px;
+  background: #fff;
+  padding: 0.9rem 1rem;
+  text-decoration: none;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+a.thallo-topic:hover {
+  border-color: #d7dbc8;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px -22px rgba(23, 26, 16, 0.4);
+}
+.thallo-topic__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 50%;
+  background: var(--wp--preset--color--olive-tint);
+  color: var(--wp--preset--color--olive);
+}
+.thallo-topic__say {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+.thallo-topic__name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--wp--preset--color--olive-ink, #171a10);
+}
+.thallo-topic__count {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--wp--preset--color--grey-500);
+}
+/* A subject with nothing filed under it yet: same tile, no link, and the ring
+   drops to the flat ivory so the row reads as five subjects of which some are
+   open and some are not. */
+.thallo-topic--soon {
+  background: var(--hub-ivory);
+}
+.thallo-topic--soon .thallo-topic__mark {
+  background: #eef0e9;
+  color: #9ca3af;
+}
+.thallo-topic--soon .thallo-topic__name {
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-topic--all .thallo-topic__name {
+  color: var(--wp--preset--color--olive);
+}
+
+/* ── 3 · Featured ──────────────────────────────────────────────────────────
+   The lead runs 60% of the width with its picture beside the words; the two
+   next to it stack, each a thumbnail and a headline. Below 1000px the lead
+   becomes a card like any other and the pair sits under it. */
+.thallo-hub__feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+}
+@media (min-width: 1000px) {
+  .thallo-hub__feature {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    align-items: stretch;
+  }
+}
+.thallo-hub__pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+}
+@media (min-width: 560px) and (max-width: 999px) {
+  .thallo-hub__pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.thallo-lead,
+.thallo-side,
+.thallo-tile {
+  position: relative;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 20px;
+  background: #fff;
+  overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s;
+}
+.thallo-lead:hover,
+.thallo-side:hover,
+.thallo-tile:hover {
+  border-color: #d7dbc8;
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px -24px rgba(23, 26, 16, 0.3);
+}
+@media (prefers-reduced-motion: reduce) {
+  .thallo-lead,
+  .thallo-side,
+  .thallo-tile,
+  .thallo-lead:hover,
+  .thallo-side:hover,
+  .thallo-tile:hover,
+  a.thallo-topic:hover {
+    transform: none;
+    transition: none;
+  }
+}
+/* The whole card is the target, with the headline's own link stretched over
+   it — one link, named by the headline, whatever a reader clicks. */
+.thallo-lead__title a::after,
+.thallo-side__title a::after,
+.thallo-tile__title a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+/* The lead: picture and words side by side above 1000px. */
+.thallo-lead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 1000px) {
+  .thallo-lead {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: stretch;
+  }
+  .thallo-lead__media {
+    order: 2;
+    height: 100%;
+  }
+}
+.thallo-lead__media {
+  aspect-ratio: 16 / 10;
+  background: var(--wp--preset--color--olive-tint);
+  overflow: hidden;
+}
+.thallo-lead__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.thallo-lead__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 2rem 2rem 1.75rem;
+}
+@media (min-width: 1000px) {
+  .thallo-lead__body {
+    justify-content: center;
+    padding: 2.5rem 2.5rem;
+  }
+}
+.thallo-lead__title {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+}
+.thallo-lead__title a,
+.thallo-side__title a,
+.thallo-tile__title a {
+  color: var(--wp--preset--color--olive-ink, #171a10);
+  text-decoration: none;
+}
+.thallo-lead:hover .thallo-lead__title a,
+.thallo-side:hover .thallo-side__title a,
+.thallo-tile:hover .thallo-tile__title a {
+  color: var(--wp--preset--color--olive);
+}
+.thallo-lead__sum {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-lead__go {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--wp--preset--color--olive);
+}
+.thallo-lead__time {
+  font-weight: 600;
+  color: #9ca3af;
+}
+
+/* The category, everywhere it appears. */
+.thallo-kind {
+  align-self: flex-start;
+  border-radius: 9999px;
+  background: var(--wp--preset--color--olive-tint);
+  padding: 0.3rem 0.7rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--olive);
+}
+
+/* The two beside the lead: thumbnail right, headline left. */
+.thallo-side {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7.5rem;
+  align-items: stretch;
+}
+.thallo-side__media {
+  order: 2;
+  background: var(--wp--preset--color--olive-tint);
+  overflow: hidden;
+}
+.thallo-side__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.thallo-side__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.25rem 1.35rem;
+}
+.thallo-side__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.28;
+  letter-spacing: -0.02em;
+}
+.thallo-side__time {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #9ca3af;
+}
+
+/* ── 4 · Latest ────────────────────────────────────────────────────────────*/
+.thallo-hub__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+@media (max-width: 1100px) {
+  .thallo-hub__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .thallo-hub__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.thallo-tile {
+  display: flex;
+  flex-direction: column;
+}
+.thallo-tile__media {
+  aspect-ratio: 16 / 10;
+  background: var(--wp--preset--color--olive-tint);
+  overflow: hidden;
+}
+.thallo-tile__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.thallo-tile__body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 0.7rem;
+  padding: 1.25rem 1.35rem 1.35rem;
+}
+.thallo-tile__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.28;
+  letter-spacing: -0.02em;
+}
+.thallo-tile__sum {
+  margin: 0;
+  flex-grow: 1;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-tile__meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--wp--preset--color--hairline);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #9ca3af;
+}
+.thallo-hub__more {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* ── The cards that are not articles yet ───────────────────────────────────
+   Flat ivory, no border on the picture, no hover, no link. They have to read
+   as a shelf waiting to be filled rather than as an article that failed to
+   load, which is why the only words on them are a subject and "Coming soon" —
+   no headline, no date, nothing that could be mistaken for a piece that
+   exists. */
+.thallo-lead--soon,
+.thallo-side--soon,
+.thallo-tile--soon {
+  background: var(--hub-ivory);
+  border-style: dashed;
+  border-color: #e4e6dd;
+}
+.thallo-lead--soon:hover,
+.thallo-side--soon:hover,
+.thallo-tile--soon:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: #e4e6dd;
+}
+.thallo-soon__media {
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(57, 71, 29, 0.045),
+    rgba(57, 71, 29, 0.045) 6px,
+    transparent 6px,
+    transparent 14px
+  );
+}
+.thallo-lead--soon .thallo-soon__media {
+  aspect-ratio: 16 / 10;
+}
+.thallo-side--soon .thallo-soon__media {
+  order: 2;
+}
+.thallo-tile--soon .thallo-soon__media {
+  aspect-ratio: 16 / 10;
+}
+.thallo-soon__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1.25rem 1.35rem 1.35rem;
+}
+.thallo-lead--soon .thallo-soon__body {
+  justify-content: center;
+  padding: 2.5rem;
+}
+.thallo-soon__label {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #9ca3af;
+}
+.thallo-lead--soon,
+.thallo-side--soon,
+.thallo-tile--soon {
+  display: grid;
+}
+.thallo-side--soon {
+  grid-template-columns: minmax(0, 1fr) 7.5rem;
+}
+@media (min-width: 1000px) {
+  .thallo-lead--soon {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .thallo-lead--soon .thallo-soon__media {
+    order: 2;
+    aspect-ratio: auto;
+  }
+}
+
+/* ── 5 · The invitation ────────────────────────────────────────────────────
+   One line, one button, ivory ground. Deliberately the plainest block on the
+   page: a publication that ends in a second landing page is a publication
+   nobody trusts. */
+.thallo-close {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: var(--hub-gap);
+  padding: 2rem 2.25rem;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 24px;
+  background: var(--hub-ivory);
+}
+.thallo-close__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  background: var(--wp--preset--color--olive);
+  overflow: hidden;
+}
+.thallo-close__mark img {
+  width: 1.9rem;
+  height: 1.9rem;
+  object-fit: contain;
+  /* The isotype is dark on transparent; on the olive disc it has to be the
+     other way round, and inverting it is cheaper than shipping a second file. */
+  filter: brightness(0) invert(1);
+}
+.thallo-close__say {
+  flex: 1 1 22rem;
+}
+.thallo-close__h {
+  margin: 0;
+  max-width: 24ch;
+  font-size: clamp(1.2rem, 2vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  color: var(--wp--preset--color--olive-ink, #171a10);
+}
+.thallo-close__p {
+  margin: 0.6rem 0 0;
+  max-width: 48ch;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-close__go {
+  flex-shrink: 0;
+  gap: 0.35rem;
+  padding: 0.85rem 1.6rem;
+}
+.thallo-hub .thallo-sub {
+  margin-top: 1.5rem;
+}
+@media (max-width: 760px) {
+  .thallo-close {
+    padding: 1.5rem 1.35rem;
+  }
 }
 
 /* ── The invitation ────────────────────────────────────────────────────────

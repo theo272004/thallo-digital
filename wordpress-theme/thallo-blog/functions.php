@@ -418,3 +418,7 @@ function thallo_blog_list_script() {
 	);
 }
 add_action( 'wp_enqueue_scripts', 'thallo_blog_list_script' );
+
+/* The blog's front page is built from its own file: five shortcodes' worth of
+   composition that would otherwise double the length of this one. */
+require_once get_stylesheet_directory() . '/inc/hub.php';
