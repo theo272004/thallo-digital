@@ -11,7 +11,7 @@ export default function HeroText() {
         as="h1"
         scroll={false}
         fade={false}
-        className="hero-tagline font-extrabold text-gray-900 mb-8 2xl:mb-10 select-none"
+        className="hero-tagline font-extrabold text-gray-900 mb-8 2xl:mb-10"
         /* Three lines now instead of two, so the type stays hero-sized on a
            longer headline — the ceiling comes down from 4.6rem to keep the
            column from running under the phone. */
