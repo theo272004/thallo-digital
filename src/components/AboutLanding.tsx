@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import SpinFlower from '@/components/ui/SpinFlower';
-// import Partners from '@/components/Partners'; ← restore with the hidden team section below
+import Partners from '@/components/Partners';
 import AuditCTA from '@/components/AuditCTA';
 import { BASE } from '@/lib/site';
 
@@ -332,21 +332,14 @@ export default function AboutLanding() {
         </div>
       </section>
 
-      {/* ── HIDDEN: who runs it ───────────────────────────────────────────────
-          <Partners /> — the team section — is not in the design this page was
-          rewritten from, and that design is the text of the page.
+      {/* Who runs it. Restored ahead of the real details: `lib/team.ts` is
+          still empty, so this renders the labelled template — dashed slots that
+          read as a form, never as invented colleagues. Fill the three fields
+          per partner there and the cards go live on their own.
 
-          Two things it took with it, both worth knowing before this stays off
-          for good:
-
-           · it was the only place the site names the people behind the company,
-             which is what a payment processor's account review looks for on an
-             about page. That is why it was put here.
-           · the footer's "The partners" link pointed at its #team anchor, so
-             that link is commented out too. Restoring one means restoring both.
-
-          <Partners />
-       ─────────────────────────────────────────────────────────────────────── */}
+          The footer's "The partners" link points at this section's #team
+          anchor, so the two move together. */}
+      <Partners />
 
       <AuditCTA
         image={`${BASE}/cta-bg.webp`}

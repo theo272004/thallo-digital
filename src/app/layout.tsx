@@ -40,6 +40,17 @@ const spaceMono = Space_Mono({
 });
 
 const SITE_URL = "https://thallodigital.com";
+
+/**
+ * The disambiguation evidence.
+ *
+ * Every URL here must be a profile we actually control and that names Thallo
+ * Digital, because Google follows them and checks that the page points back.
+ * A dead or borrowed link is worse than a short list: it weakens the whole set.
+ * Add profiles as they go live — this array is the lever that separates us from
+ * Thallo the carbon-credit company in the knowledge graph.
+ */
+const SAME_AS: string[] = ['https://www.linkedin.com/company/thallo-digital/'];
 const DESCRIPTION =
   "We make brands the default citation and recommendation in conversational LLM search answers — ChatGPT, Perplexity, Google AI and Claude.";
 
@@ -96,21 +107,42 @@ export default function RootLayout({
       style={{ scrollBehavior: 'smooth' }}
     >
       <body className="min-h-full flex flex-col font-sans bg-white text-gray-900">
-        {/* Machine-readable identity. An agency selling AI visibility should be
-            unambiguous to the crawlers and models that assemble the answers. */}
+        {/* Machine-readable identity.
+
+            An agency selling AI visibility should be unambiguous to the crawlers
+            and models that assemble the answers — and right now it is not. Google's
+            AI Overview for "thallo digital" returns Thallo the carbon-credit
+            fintech (thallo.io), because that entity has sameAs links and this one
+            had none. @id gives the entity a stable name to be referred to by,
+            sameAs is the evidence that ties it to the profiles we control, and
+            disambiguatingDescription is the field schema.org provides for exactly
+            this: saying which Thallo this is not. */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@type': 'ProfessionalService',
+              '@type': ['Organization', 'ProfessionalService'],
+              '@id': `${SITE_URL}/#organization`,
               name: 'Thallo Digital',
               alternateName: 'Thallo',
+              legalName: 'Thallo Digital',
               url: `${SITE_URL}/`,
+              mainEntityOfPage: `${SITE_URL}/about/`,
               logo: `${SITE_URL}/logo.png`,
               image: `${SITE_URL}/og.png`,
               description: DESCRIPTION,
-              email: 'hello@thallodigital.com',
+              disambiguatingDescription:
+                'Thallo Digital is a marketing agency for AI visibility and generative engine optimization. It is unrelated to Thallo, the carbon-credit trading and climate-technology company.',
+              knowsAbout: [
+                'Generative engine optimization',
+                'AI visibility',
+                'LLM search optimization',
+                'Brand authority building',
+                'Search engine optimization',
+              ],
+              sameAs: SAME_AS,
+              email: 'contact@thallodigital.com',
               areaServed: 'Worldwide',
               serviceType: [
                 'AI visibility',
@@ -120,10 +152,27 @@ export default function RootLayout({
               contactPoint: {
                 '@type': 'ContactPoint',
                 contactType: 'sales',
-                email: 'hello@thallodigital.com',
+                email: 'contact@thallodigital.com',
                 url: `${SITE_URL}/contact/`,
                 availableLanguage: ['English'],
               },
+            }),
+          }}
+        />
+        {/* The same entity, stated once more as a WebSite node pointing back at
+            it. Two nodes agreeing on one @id is a stronger claim than one. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              '@id': `${SITE_URL}/#website`,
+              url: `${SITE_URL}/`,
+              name: 'Thallo Digital',
+              description: DESCRIPTION,
+              publisher: { '@id': `${SITE_URL}/#organization` },
+              inLanguage: 'en',
             }),
           }}
         />
