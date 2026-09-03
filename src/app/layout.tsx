@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Instrument_Serif, Space_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/motion/SmoothScrollProvider";
+import Analytics from "@/components/Analytics";
 
 /**
  * Italic is loaded on purpose.
@@ -177,6 +178,8 @@ export default function RootLayout({
           }}
         />
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        {/* Renders nothing unless NEXT_PUBLIC_GA_ID was set at build time. */}
+        <Analytics />
       </body>
     </html>
   );

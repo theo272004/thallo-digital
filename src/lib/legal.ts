@@ -39,7 +39,7 @@ export const LEGAL = {
   country: 'Colombia',
 
   /** The date printed as "last updated" on all three documents. */
-  lastUpdated: '5 August 2026',
+  lastUpdated: '3 September 2026',
 } as const;
 
 /** True once the registration block is complete enough to print. */
