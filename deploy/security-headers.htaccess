@@ -1,0 +1,80 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Thallo Digital — cabeceras de seguridad HTTP
+#
+# QUÉ ES ESTO
+# securityheaders.com califica thallodigital.com con F porque el servidor no
+# manda ninguna de las seis cabeceras defensivas. No es una vulnerabilidad
+# explotada: es hardening que falta. Este bloque las añade.
+#
+# DÓNDE VA
+# Este archivo NO se despliega solo. El workflow de FTP
+# (.github/workflows/deploy-bluehost.yml) excluye `**/.htaccess` a propósito,
+# porque el .htaccess del document root es del servidor —  lo comparte con
+# WordPress— y un deploy no debe pisarlo nunca.
+#
+# Hay que pegarlo a mano, UNA vez:
+#   Bluehost → cPanel → File Manager → Settings → "Show hidden files"
+#   → el document root del sitio (Websites → Files & Access → Document Root,
+#     p. ej. /public_html/website_xxxxxxxx/) → .htaccess → Edit
+#   → pegar este bloque ARRIBA DEL TODO, antes de las reglas que ya estén ahí
+#   → Save, y volver a escanear en securityheaders.com
+#
+# Si algo se rompe, borrar el bloque y guardar: el efecto es inmediato y
+# reversible, no hay build ni deploy de por medio.
+# ─────────────────────────────────────────────────────────────────────────────
+
+<IfModule mod_headers.c>
+
+  # ── HSTS ───────────────────────────────────────────────────────────────────
+  # Obliga al navegador a usar HTTPS durante un año, así un atacante en la misma
+  # red no puede forzar la bajada a HTTP.
+  #
+  # Deliberadamente SIN `includeSubDomains`. Esa opción arrastra a TODOS los
+  # subdominios del dominio — webmail, cpanel, mail, cualquier staging — y si
+  # alguno no sirve HTTPS válido queda inaccesible durante un año en los
+  # navegadores que ya vieron la cabecera, sin forma de revertirlo del lado del
+  # visitante. Añadir `; includeSubDomains` sólo después de confirmar uno por
+  # uno que todos abren bien en https://.
+  Header always set Strict-Transport-Security "max-age=31536000"
+
+  # ── Las tres baratas ───────────────────────────────────────────────────────
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Nada del sitio pide cámara, micrófono ni ubicación, así que se niegan todas.
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+
+  # ── CSP ────────────────────────────────────────────────────────────────────
+  # El <If> deja fuera /blog/. wp-admin ejecuta inline scripts y carga desde
+  # sitios que el editor decide en el momento; una CSP pensada para el sitio
+  # estático rompe el panel de WordPress y Sara se queda sin poder publicar.
+  #
+  # 'unsafe-inline' en script-src no es pereza: el export estático de Next
+  # inyecta su payload en <script> inline y no hay servidor que pueda firmarlos
+  # con un nonce. Sin él la home no arranca. La CSP sigue valiendo por lo demás
+  # —  default-src 'self', object-src 'none', form-action 'self'—  que es lo que
+  # impide que un script inyectado cargue código de fuera o mande el formulario
+  # a otro dominio.
+  #
+  # Todo lo que el sitio consume es del mismo origen: las fuentes las
+  # self-hostea next/font, las imágenes están en /public, y el escáner de
+  # visibilidad llama a /blog/wp-json/ — mismo dominio. Por eso connect-src
+  # es 'self' a secas. Si algún día se añade analítica o un embed, hay que
+  # añadir ese dominio aquí o el navegador lo bloquea en silencio.
+  <If "%{REQUEST_URI} !~ m#^/blog/#">
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+  </If>
+
+  # ── Fuga de información ────────────────────────────────────────────────────
+  # X-Powered-By lo pone PHP y sí se puede quitar desde aquí.
+  Header always unset X-Powered-By
+
+</IfModule>
+
+# `Server: Apache` NO se puede quitar con .htaccess: depende de ServerTokens,
+# que sólo se toca en la config global del servidor y en hosting compartido no
+# está en nuestras manos. Bluehost ya lo devuelve sin versión ("Apache" a
+# secas), que es la parte que de verdad importaba — un atacante no obtiene de
+# ahí a qué versión apuntar. Se deja documentado y no se intenta arreglar.
+ServerSignature Off
