@@ -9,6 +9,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # The sitemap dates every URL from the last commit that touched the
+          # files behind it (src/lib/lastmod.ts). A shallow clone has no history
+          # to read, and every <lastmod> would silently disappear.
+          fetch-depth: 0
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -27,6 +32,10 @@ jobs:
           # This is a static export, so it is baked in at build time. Left unset,
           # the tool runs on sample data behind a "preview mode" banner.
           NEXT_PUBLIC_SCAN_API: ${{ secrets.SCAN_API_URL }}
+          # GA4 Measurement ID, G-XXXXXXXXXX. Only this workflow sets it: the
+          # Pages mirror builds the same commit, and a tag there would report
+          # traffic from a review copy as if it were the live site.
+          NEXT_PUBLIC_GA_ID: ${{ secrets.GA_MEASUREMENT_ID }}
 
       # Fails the run before a single byte is uploaded if the destination has
       # not been set. The default that used to sit in `server-dir` was
