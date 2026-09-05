@@ -3,7 +3,7 @@ Contributors: thallodigital
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.10.1
+Stable tag: 1.10.2
 License: GPLv2 or later
 
 Backend for the Check My Visibility tool: asks the AI models the buying
@@ -73,6 +73,23 @@ Leads are kept until you delete them. IP addresses are stored only as a salted
 hash, used to count scans per visitor.
 
 == Changelog ==
+
+= 1.10.2 =
+* Security. Four fixes, none of them visible to a visitor doing the normal
+  thing, and one of them the reason this release exists.
+* `client_ip()` believed CF-Connecting-IP and X-Forwarded-For. Nothing sets
+  either header on this install — WordPress answers on Apache with no proxy
+  in front — so a caller could send one and arrive as a different person on
+  every request, past the per-visitor allowance, the enquiry limit and the
+  exempt-address list at once. REMOTE_ADDR now; the headers are read again
+  only when wp-config.php declares THALLO_VIS_TRUST_PROXY.
+* The crawl went out through `wp_safe_remote_get()`. A hostname pattern
+  cannot tell 127.0.0.1 from a name, so the scan could be aimed at the
+  server it runs on. The form also refuses IP literals and reserved suffixes
+  in words now, rather than running a scan that comes back empty.
+* The lead export quotes cells beginning = + - or @. A brand name typed into
+  the public form was a formula the spreadsheet ran on open.
+* No database change, no settings change, nothing to reconfigure.
 
 = 1.10.1 =
 * The crawler's User-Agent pointed webmasters at `/thallo-ai/`, which the
