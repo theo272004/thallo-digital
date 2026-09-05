@@ -93,7 +93,35 @@ commiteado, honeypot y límites en el formulario de contacto, e ids de escaneo d
 
 ---
 
-## 2. Lo que hay que subir a mano
+## 2. ANTES DE SUBIR NADA: comprobar qué versión corre en producción
+
+Esto ya pasó una vez. En agosto el repo tenía la 1.7.5 y producción corría la
+1.10.1 — el zip construido desde el repo era un downgrade y WordPress lo
+rechazó, con razón. El código vivo era el bueno y el repo iba quince commits
+por detrás.
+
+Desde aquí **no se puede comprobar**: `/thallo/v1/status` pide sesión de
+administradora y mod_security bloquea el `readme.txt` del plugin. Lo tienes que
+mirar tú, y es un clic:
+
+- **WP → Plugins**, la línea de *Thallo Visibility Engine*, o
+- entrar a `https://thallodigital.com/blog/wp-json/thallo/v1/status` con la
+  sesión de admin abierta y leer el campo `version`.
+
+Y entonces:
+
+| Lo que diga | Qué hacer |
+|---|---|
+| **1.10.1** | Todo en orden: el repo es la fuente. Sube el zip 1.10.2. |
+| **1.10.2** | Ya está subido. No hay nada que hacer. |
+| **Cualquier cosa por encima** | **Para.** Producción va por delante del repo y subir esto perdería lo que haya de más. Dímelo y bajamos el código vivo primero, como se hizo en agosto. |
+
+Lo mismo para el tema, en **WP → Apariencia → Temas** (*Thallo Blog*): el zip
+también es 1.10.2.
+
+---
+
+## 3. Lo que hay que subir a mano
 
 Nada de esto lo despliega el push: el plugin y el tema se suben por el panel de
 WordPress, y el `.htaccess` se pega en cPanel.
@@ -110,7 +138,7 @@ escaneo normal sigue funcionando de principio a fin.
 
 ---
 
-## 3. DNS
+## 4. DNS
 
 Lo que hay hoy, mirado contra el DNS público:
 
