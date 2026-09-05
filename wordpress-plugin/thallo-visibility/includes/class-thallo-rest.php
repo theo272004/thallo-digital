@@ -252,8 +252,8 @@ class Thallo_Vis_REST {
 			return new WP_Error( 'bad_brand', __( 'Enter the brand name buyers would search for.', 'thallo-visibility' ), array( 'status' => 400 ) );
 		}
 
-		if ( ! preg_match( '/^[a-z0-9-]+(\.[a-z0-9-]+)+$/', $domain ) ) {
-			return new WP_Error( 'bad_domain', __( 'Enter a valid website, for example yourcompany.com', 'thallo-visibility' ), array( 'status' => 400 ) );
+		if ( ! preg_match( '/^[a-z0-9-]+(\.[a-z0-9-]+)+$/', $domain ) || ! self::is_public_domain( $domain ) ) {
+			return new WP_Error( 'bad_domain', __( 'Enter a valid public website, for example yourcompany.com', 'thallo-visibility' ), array( 'status' => 400 ) );
 		}
 
 		if ( '' === $industry || mb_strlen( $industry ) > 120 ) {
@@ -471,6 +471,36 @@ class Thallo_Vis_REST {
 				'perIpLimit'   => (int) Thallo_Vis_Settings::get( 'rate_per_ip' ),
 			)
 		);
+	}
+
+	/**
+	 * A name on the public internet, rather than an address inside this server.
+	 *
+	 * The hostname pattern beside this one cannot make the distinction: every
+	 * label it allows is letters, digits and hyphens, and `127.0.0.1` is four
+	 * such labels. So a scan could be pointed at the machine WordPress runs on
+	 * and would faithfully report what answered.
+	 *
+	 * `wp_safe_remote_get()` in the crawl is the guard that actually holds —
+	 * it resolves the name and refuses private addresses, which a list of
+	 * strings can never do. This is the half that can be said to the visitor:
+	 * a refusal at the form, in words, instead of a scan that runs and comes
+	 * back empty.
+	 */
+	private static function is_public_domain( $domain ) {
+		// An IP literal is not a website anybody typed by accident.
+		if ( filter_var( $domain, FILTER_VALIDATE_IP ) ) {
+			return false;
+		}
+
+		$dot = strrchr( $domain, '.' );
+		$tld = false === $dot ? '' : substr( $dot, 1 );
+
+		/* RFC 6761/6762 special-use names and the conventional intranet
+		   suffixes. None of them resolves to anything a buyer can visit. */
+		$reserved = array( 'local', 'localhost', 'localdomain', 'internal', 'intranet', 'private', 'corp', 'home', 'lan', 'test', 'example', 'invalid', 'onion' );
+
+		return ! in_array( $tld, $reserved, true );
 	}
 
 	private static function clean_domain( $raw ) {

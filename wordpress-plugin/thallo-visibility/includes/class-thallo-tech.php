@@ -276,8 +276,24 @@ class Thallo_Vis_Tech {
 		);
 	}
 
+	/**
+	 * The one request in this plugin whose address a stranger chose.
+	 *
+	 * `wp_safe_remote_get()`, not `wp_remote_get()`. The difference is
+	 * `reject_unsafe_urls`, which puts the URL through
+	 * `wp_http_validate_url()`: the host is resolved before the socket opens
+	 * and the request is refused if it lands on a loopback, link-local or
+	 * private address, or on a port that is not 80 or 443 — and every redirect
+	 * is validated again on the way.
+	 *
+	 * Without it, "scan my website" was a request to fetch any address the
+	 * visitor could name, from inside the server, and report back on what came
+	 * out. `127.0.0.1`, `192.168.1.1` and `169.254.169.254` all satisfy the
+	 * hostname pattern the form checks, because a pattern for hostnames cannot
+	 * tell a name apart from a number.
+	 */
 	private static function fetch( $url, $timeout = 12 ) {
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			$url,
 			array(
 				'timeout'     => $timeout,

@@ -422,3 +422,82 @@ add_action( 'wp_enqueue_scripts', 'thallo_blog_list_script' );
 /* The blog's front page is built from its own file: five shortcodes' worth of
    composition that would otherwise double the length of this one. */
 require_once get_stylesheet_directory() . '/inc/hub.php';
+
+/* ── Hardening ─────────────────────────────────────────────────────────────
+   Three things WordPress hands out by default that this blog has no use for.
+   None of them is a hole on its own; together they are the reconnaissance
+   half of a password-guessing run, done in three requests with no login. */
+
+/**
+ * The author list, which is a list of usernames.
+ *
+ * `/wp-json/wp/v2/users` answered anyone, unauthenticated, with every account
+ * that has published: id, display name and — the part that matters — the
+ * `slug`, which on this install is the login name. `?author=1` gave the same
+ * answer by redirecting to the author archive. That is half of a credential
+ * handed over for free, and WordPress's login form tells you when a username
+ * exists, so the other half is the only thing left to guess.
+ *
+ * Only unauthenticated callers are refused. The block editor reads this same
+ * endpoint to fill the author dropdown, and it reads it logged in — so the
+ * editor is untouched and a stranger gets a 401.
+ */
+function thallo_blog_hide_users( $result, $server, $request ) {
+	if ( is_user_logged_in() ) {
+		return $result;
+	}
+
+	if ( 0 === strpos( (string) $request->get_route(), '/wp/v2/users' ) ) {
+		return new WP_Error(
+			'rest_user_cannot_view',
+			__( 'Sorry, you are not allowed to list users.', 'thallo-blog' ),
+			array( 'status' => 401 )
+		);
+	}
+
+	return $result;
+}
+add_filter( 'rest_pre_dispatch', 'thallo_blog_hide_users', 10, 3 );
+
+/**
+ * `?author=1` redirects to `/author/<login>/`, which is the same disclosure by
+ * another door. The archive itself stays reachable by its own URL — it is a
+ * real page with real posts on it; what stops is walking the numbers.
+ */
+function thallo_blog_block_author_scan() {
+	if ( is_admin() || is_user_logged_in() ) {
+		return;
+	}
+
+	/* Only the numeric form. The author archive at its own URL is a real page
+	   with real posts on it and stays reachable; what stops is walking 1, 2, 3
+	   until a name comes back. */
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading a public query var, not acting on it.
+	if ( isset( $_GET['author'] ) && is_numeric( wp_unslash( $_GET['author'] ) ) ) {
+		wp_safe_redirect( home_url( '/' ), 301 );
+		exit;
+	}
+}
+add_action( 'template_redirect', 'thallo_blog_block_author_scan' );
+
+/**
+ * XML-RPC, off.
+ *
+ * It is the endpoint behind the pingback amplification trick and behind
+ * password guessing at a hundred attempts per request, and the only things
+ * that use it are the WordPress mobile app, Jetpack and trackbacks. Nothing
+ * here publishes through any of the three — the blog is written in the browser
+ * — so it is cost with no benefit. If the app is ever wanted, delete this
+ * block; the endpoint comes straight back.
+ */
+add_filter( 'xmlrpc_enabled', '__return_false' );
+add_filter( 'xmlrpc_methods', '__return_empty_array' );
+
+/**
+ * The generator tag, which announces the exact WordPress version in the source
+ * of every page. Removing it does not patch anything — the fix for a version
+ * with a hole in it is to update — but it does mean a scan looking for
+ * installs on a specific version does not find this one by reading the HTML.
+ */
+remove_action( 'wp_head', 'wp_generator' );
+add_filter( 'the_generator', '__return_empty_string' );

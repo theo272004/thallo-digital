@@ -235,16 +235,51 @@ class Thallo_Vis_DB {
 	 * `Thallo_Vis_REST::allowance()` works. Nothing here is written anywhere.
 	 */
 	public static function client_ip() {
-		$ip = '';
-		foreach ( array( 'HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR' ) as $key ) {
-			if ( ! empty( $_SERVER[ $key ] ) ) {
+		/* REMOTE_ADDR is the only address the server observed for itself.
+		   Everything else here is a header the caller typed.
+
+		   This used to read CF-Connecting-IP and X-Forwarded-For first and
+		   believe whichever turned up. Nothing on this site sets either one:
+		   WordPress answers on Bluehost's Apache directly, with no proxy in
+		   front to overwrite a forged header. So a visitor could send
+		   `X-Forwarded-For: <anything>` and arrive as a different person on
+		   every request — which is the entire per-visitor allowance, the
+		   five-enquiries-a-day limit, and the exempt-address list in settings,
+		   all bypassed by one header. The daily site-wide cap was the only
+		   thing left standing between a loop and the whole API budget.
+
+		   The headers are still read when the site really is behind a proxy,
+		   which has to be said out loud in wp-config.php:
+
+		       define( 'THALLO_VIS_TRUST_PROXY', true );
+
+		   Only turn that on once something in front of the server is
+		   overwriting these headers on every request. A proxy that merely
+		   passes them through is no safer than no proxy at all. */
+		if ( defined( 'THALLO_VIS_TRUST_PROXY' ) && THALLO_VIS_TRUST_PROXY ) {
+			foreach ( array( 'HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR' ) as $key ) {
+				if ( empty( $_SERVER[ $key ] ) ) {
+					continue;
+				}
+
 				$raw = sanitize_text_field( wp_unslash( $_SERVER[ $key ] ) );
 				// X-Forwarded-For is a chain; the client is the first entry.
-				$ip  = trim( explode( ',', $raw )[0] );
-				break;
+				$candidate = trim( explode( ',', $raw )[0] );
+
+				if ( filter_var( $candidate, FILTER_VALIDATE_IP ) ) {
+					return $candidate;
+				}
 			}
 		}
-		return $ip;
+
+		$remote = isset( $_SERVER['REMOTE_ADDR'] )
+			? trim( sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) )
+			: '';
+
+		/* An address that is not an address hashes to something as good as any
+		   other constant, and would put every such caller in one bucket. Empty
+		   is the honest answer. */
+		return filter_var( $remote, FILTER_VALIDATE_IP ) ? $remote : '';
 	}
 
 	/**
