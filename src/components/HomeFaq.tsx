@@ -65,13 +65,13 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
          one-time setup" with no amount attached — which is the most expensive
          sentence on the page, because it lands at the exact moment someone is
          deciding whether to enquire and leaves them to imagine the number. The
-         setup is the AI Visibility Audit, and Our Plans has priced it at $800
-         from the day that page shipped; there was never a figure being
-         withheld, only one that had not been carried across. Keep the two
-         pages in step — if the audit is repriced, this line moves with it. */
+         setup is the AI Visibility Audit, and Our Plans prices it at $1,200;
+         there was never a figure being withheld, only one that had not been
+         carried across. Keep the two pages in step — if the audit is repriced,
+         this line and the card in Services.tsx move with it. */
       <>
         Plans start at $2,500 a month, on a three-month initial term, and scale with the size of the operation.
-        Before that there&rsquo;s a one-time AI Visibility Audit from $800 — the baseline and the strategy, and
+        Before that there&rsquo;s a one-time AI Visibility Audit at $1,200 — the baseline and the strategy, and
         yours to keep whether or not you carry on. Full breakdown on{' '}
         <a href={`${BASE}/services/`} className="font-semibold text-[#39471D] underline underline-offset-2">
           Our Plans
