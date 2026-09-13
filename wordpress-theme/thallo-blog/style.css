@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.10.2
+Version:      1.11.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -2232,44 +2232,65 @@ a.thallo-topic:hover {
 }
 
 /* ── The contents, beside the article ──────────────────────────────────────
-   Above 1180px there is room for a rail without squeezing the reading
-   measure: 13rem of list, 4rem of air, 44rem of prose, centred. Below that
-   the grid collapses and the list sits above the article as a box — the same
-   information in the shape that fits, not a degraded version of the rail. */
-@media (min-width: 1180px) {
+   The prose sits in the same 52rem column the hero's title uses, centred on
+   the page, and the list hangs in the left margin beside it. It used to be a
+   two-column grid — list, then prose — centred as a pair, which pushed the
+   article ~200px to the right of the headline it continues from: the title
+   started at one edge, the paragraphs at another, and the page read as two
+   layouts stacked. Three columns, the outer two equal, keeps the middle where
+   the hero put it whatever the list weighs.
+
+   The rail needs 12rem of margin on each side of the measure to exist at all,
+   which is 1380px of viewport; below that the list sits above the article as
+   a box — the same information in the shape that fits. */
+/* The box, at the article's width and on its edge. The group it sits in is
+   alignwide, and without this the list ran the full 72rem while the prose
+   under it ran 52rem: a box wider than the thing it is a contents of. */
+.thallo-post__with-toc > .thallo-toc {
+  box-sizing: border-box;
+  max-width: 52rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (min-width: 1380px) {
   .thallo-post__with-toc {
     display: grid;
-    grid-template-columns: 14rem minmax(0, 52rem);
-    gap: 4.5rem;
-    justify-content: center;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 52rem) minmax(0, 1fr);
+    column-gap: 3.5rem;
     align-items: start;
-    /* The whole reason the article was unreadable.
-
-       This group sits inside main's constrained layout, whose contentSize is
-       44rem — so the grid was clamped to 704px and then had to fit a 13rem
-       table of contents inside it. The columns resolved to 208px and 432px:
-       the prose ran at 432px, about fifty characters, on a 1440px screen with
-       500px of empty page on either side. The article was not long because it
-       was wordy; it was long because the column was half the width it was
-       drawn for.
-
-       The override has to be !important because the constrained layout writes
-       its max-width inline, from the block editor's own stylesheet. */
-    max-width: 70.5rem !important;
+    /* The group is alignwide inside main's constrained layout, which writes a
+       72rem max-width from the block editor's own stylesheet — too narrow for
+       a margin either side of the measure. The override has to be !important
+       for the same reason it did when this was a pair. */
+    max-width: none !important;
     width: 100%;
   }
   .thallo-post__with-toc > .thallo-toc {
+    grid-column: 1;
+    justify-self: end;
+    width: 100%;
+    max-width: 14rem;
     position: sticky;
     top: 7.5rem;
     margin: 0;
     max-height: calc(100vh - 10rem);
     overflow-y: auto;
   }
-  /* The prose column is already at its measure inside the grid, so the
-     constrained layout's auto margins would centre it against nothing. */
   .thallo-post__prose {
+    grid-column: 2;
     margin: 0;
   }
+}
+
+/* Flush left inside the column. The paragraphs are capped at 68ch for the
+   reading line, and the constrained layout centres anything narrower than the
+   column with `margin-inline: auto !important` — so every paragraph started
+   50px in from its own heading, and 250px in from the title above the fold.
+   Same edge for all of it now. Higher specificity and !important, because the
+   rule this beats has both. */
+.thallo-post__prose .wp-block-post-content > :is(p, ul, ol) {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 
@@ -2323,6 +2344,13 @@ select:focus-visible,
 .thallo-hero {
   overflow: hidden;
   position: relative;
+  /* The same side padding the page has (theme.json's root 1.5rem), so the
+     52rem column inside the cover is the 52rem column the article uses and
+     the title lands on the paragraphs' edge at every width — not only the
+     wide ones where both fit with room to spare. The template writes 3.25rem
+     inline, which put the hero 28px in from the prose on a phone. */
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
 }
 /* El contenedor interno del cover viene posicionado, así que una caja absoluta
    dentro se cuelga de él — de la columna de texto, no del panel. Devolverlo a
@@ -2392,14 +2420,16 @@ select:focus-visible,
 /* The excerpt is the promise the title makes, so it reads as prose rather than
    as a caption — the same size it had on white, with enough contrast against
    the photograph to be read rather than glanced at. */
-/* Flush left, under the title. `margin: 0` alone loses: the cover's
-   constrained layout writes `margin-inline: auto` at a specificity a bare
-   class cannot reach, and a 46ch paragraph centred inside a 52rem column is
-   indented from the headline above it by exactly half the difference. */
+/* Flush left, under the title. The block is as wide as the title's column —
+   52rem, the cover's own contentSize — so the layout's auto margins put it
+   exactly where they put the headline; the 46ch reading line is on the
+   paragraph inside. It used to be the block that was 46ch, and the cover's
+   `margin-left: auto !important` centred that inside the column: every post
+   opened with its standfirst a hand's width in from its own title. */
 .thallo-hero__lead,
 .thallo-hero .wp-block-cover__inner-container > .thallo-hero__lead {
   margin: 0;
-  max-width: 46ch;
+  max-width: 52rem;
   line-height: 1.6;
 }
 /* The excerpt block renders the text in a child paragraph that carries the
@@ -2408,6 +2438,7 @@ select:focus-visible,
    what has to be told. */
 .thallo-hero__lead .wp-block-post-excerpt__excerpt {
   margin: 0;
+  max-width: 46ch;
   color: #ffffff;
 }
 .thallo-hero__lead .wp-block-post-excerpt__more-text {

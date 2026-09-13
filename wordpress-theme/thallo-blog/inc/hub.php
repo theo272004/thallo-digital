@@ -293,30 +293,43 @@ add_shortcode( 'thallo_hub_featured', 'thallo_blog_hub_featured' );
    Latest — the grid under the fold
    ───────────────────────────────────────────────────────────────────────── */
 
+/**
+ * Unlike the featured row, this section does not pad itself with "Coming
+ * soon" tiles, and it does not exist at all until there is a fourth article
+ * to put in it — heading included, which is why the rule is printed here and
+ * not in the template. Camila's call (2026-09-12): the front page should show
+ * what has been written and nothing that stands in for it, and this section
+ * fills in on its own as the articles arrive.
+ */
 function thallo_blog_hub_latest() {
 	$posts = thallo_blog_hub_posts( 4, 3 );
-	$topics = array_keys( thallo_blog_hub_categories() );
 
-	$out = '<div class="thallo-hub__grid">';
+	if ( empty( $posts ) ) {
+		return '';
+	}
 
-	for ( $i = 0; $i < 4; $i++ ) {
-		if ( isset( $posts[ $i ] ) ) {
-			$post = $posts[ $i ];
-			$term = thallo_blog_hub_term( $post->ID );
+	$out = sprintf(
+		'<div class="thallo-rule"><h2 class="thallo-rule__h">%1$s</h2><a class="thallo-rule__more" href="%2$s">%3$s</a></div>',
+		esc_html__( 'Latest articles', 'thallo-blog' ),
+		esc_url( home_url( '/' ) ),
+		esc_html__( 'View all articles →', 'thallo-blog' )
+	);
 
-			$out .= sprintf(
-				'<article class="thallo-tile">%1$s<div class="thallo-tile__body">%2$s<h3 class="thallo-tile__title"><a href="%3$s">%4$s</a></h3><p class="thallo-tile__sum">%5$s</p><p class="thallo-tile__meta"><span>%6$s</span><span>%7$s</span></p></div></article>',
-				thallo_blog_hub_media( $post->ID, 'thallo-tile__media' ),
-				'' !== $term ? '<span class="thallo-kind">' . esc_html( $term ) . '</span>' : '',
-				esc_url( get_permalink( $post->ID ) ),
-				esc_html( get_the_title( $post->ID ) ),
-				esc_html( wp_trim_words( get_the_excerpt( $post->ID ), 18 ) ),
-				esc_html( thallo_blog_hub_minutes( $post->ID ) ),
-				esc_html( get_the_date( 'M j, Y', $post->ID ) )
-			);
-		} else {
-			$out .= thallo_blog_hub_soon( 'thallo-tile', $topics[ ( $i + 3 ) % count( $topics ) ] );
-		}
+	$out .= '<div class="thallo-hub__grid">';
+
+	foreach ( $posts as $post ) {
+		$term = thallo_blog_hub_term( $post->ID );
+
+		$out .= sprintf(
+			'<article class="thallo-tile">%1$s<div class="thallo-tile__body">%2$s<h3 class="thallo-tile__title"><a href="%3$s">%4$s</a></h3><p class="thallo-tile__sum">%5$s</p><p class="thallo-tile__meta"><span>%6$s</span><span>%7$s</span></p></div></article>',
+			thallo_blog_hub_media( $post->ID, 'thallo-tile__media' ),
+			'' !== $term ? '<span class="thallo-kind">' . esc_html( $term ) . '</span>' : '',
+			esc_url( get_permalink( $post->ID ) ),
+			esc_html( get_the_title( $post->ID ) ),
+			esc_html( wp_trim_words( get_the_excerpt( $post->ID ), 18 ) ),
+			esc_html( thallo_blog_hub_minutes( $post->ID ) ),
+			esc_html( get_the_date( 'M j, Y', $post->ID ) )
+		);
 	}
 
 	$out .= '</div>';
