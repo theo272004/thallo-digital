@@ -3,7 +3,8 @@
  * Title: Thallo · post skeleton
  * Slug: thallo-blog/post-skeleton
  * Categories: text
- * Description: The whole shape of a Thallo post — lead, sections, a callout, the sign-off. Insert it into an empty post and write over it.
+ * Description: The whole shape of a Thallo post — lead, sections, a callout. Insert it into an empty post and write over it. The closing CTA is not here: the template adds it to every post.
+ * Post Types: post
  * Keywords: thallo, post, skeleton, plantilla, articulo
  * Block Types: core/post-content
  */
@@ -65,12 +66,4 @@
 
 <!-- wp:paragraph -->
 <p>End on something the reader can act on this week. A post that describes a problem and stops is an advertisement wearing an article's clothes.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:separator {"className":"is-style-wide"} -->
-<hr class="wp-block-separator has-alpha-channel-opacity is-style-wide"/>
-<!-- /wp:separator -->
-
-<!-- wp:paragraph {"fontSize":"small"} -->
-<p class="has-small-font-size"><em>Want to know whether the models name you? <a href="https://thallodigital.com/thallo-ai/scan/">Run the free visibility scan</a> — fifteen buying questions, three models, every question and answer shown.</em></p>
 <!-- /wp:paragraph -->
