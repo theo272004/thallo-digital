@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.13.5
+Version:      1.13.6
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -56,13 +56,16 @@ Text Domain:  thallo-blog
    deep green it read as a stripe of a different green rather than as a mark.
    Same measure as the paragraphs — 68ch — and flush left with them, or the
    box runs on past the line the text ends on and the page looks off-centre
-   to its right. And a breath above it: the block gap that separates two
-   paragraphs is too little for a solid block arriving after a paragraph. */
+   to its right. And room above it — 3.25rem, the site's own step — because the
+   block gap between two paragraphs is far too little for a solid block
+   arriving after one; a little under it too, so it does not sit on the
+   next line. */
 .wp-block-post-content .thallo-callout {
   max-width: 68ch;
   margin-left: 0 !important;
   margin-right: 0 !important;
-  margin-top: 2rem;
+  margin-top: var(--wp--preset--spacing--50);
+  margin-bottom: 2rem;
 }
 
 /* ── The ground under the filled blocks ────────────────────────────────────
@@ -242,7 +245,8 @@ Text Domain:  thallo-blog
   max-width: 68ch;
   margin-left: 0 !important;
   margin-right: 0 !important;
-  margin-top: 2rem;
+  margin-top: var(--wp--preset--spacing--50);
+  margin-bottom: 2rem;
 }
 .thallo-answer__label {
   letter-spacing: 0.13em;
