@@ -103,18 +103,55 @@ function thallo_blog_hub_term( $post_id ) {
  * stock photograph or a grey rectangle: it reads as a deliberate cover on a
  * page of covers, and it is the one option that cannot look like a broken
  * image.
+ *
+ * The one with a picture asks for the full-size file and says so in `sizes`.
+ * The card crops with object-fit, so a wide photograph is scaled to the box's
+ * height and most of its width is cut away — the strip that shows may come
+ * from a picture three times wider than the box. WordPress's default `sizes`
+ * reports the box width, the browser fetches a 1024px file, and a 4:1 banner
+ * arrives at a third of the resolution the card paints it at. Asking for the
+ * widest candidate costs a couple of hundred KB on the lead card and ends
+ * that. The small cards are a third of the width, so they ask for half as much.
+ *
+ * What no attribute can fix is a picture without the pixels. The card paints
+ * roughly 900 device pixels across on a retina screen; a featured image should
+ * be at least 1600px wide and somewhere near 16:10, or the card shows a strip
+ * of it, enlarged. readme.txt says so where a writer will read it.
+ *
+ * WordPress 6.7+ prepends `auto,` to the sizes of any lazy image, and a
+ * browser that understands `auto` measures the box and ignores the hint that
+ * follows — which is exactly the default this function exists to override.
+ * It is added late, by wp_filter_content_tags() over the finished template,
+ * so it cannot be switched off around this call; instead the call leaves a
+ * flag, and thallo_blog_hub_no_auto_sizes() reads it when that filter runs.
  */
-function thallo_blog_hub_media( $post_id, $class ) {
+function thallo_blog_hub_media( $post_id, $class, $sizes = '(min-width: 761px) 768px, 100vw' ) {
 	if ( has_post_thumbnail( $post_id ) ) {
+		$GLOBALS['thallo_blog_hub_drew_media'] = true;
+
 		return sprintf(
 			'<div class="%1$s">%2$s</div>',
 			esc_attr( $class ),
-			get_the_post_thumbnail( $post_id, 'large', array( 'loading' => 'lazy', 'decoding' => 'async' ) )
+			get_the_post_thumbnail(
+				$post_id,
+				'full',
+				array(
+					'loading'  => 'lazy',
+					'decoding' => 'async',
+					'sizes'    => $sizes,
+				)
+			)
 		);
 	}
 
 	return sprintf( '<div class="%1$s %1$s--bare" aria-hidden="true"></div>', esc_attr( $class ) );
 }
+
+/** No `auto,` on a page that drew a hub card — see thallo_blog_hub_media(). */
+function thallo_blog_hub_no_auto_sizes( $enabled ) {
+	return empty( $GLOBALS['thallo_blog_hub_drew_media'] ) ? $enabled : false;
+}
+add_filter( 'wp_img_tag_add_auto_sizes', 'thallo_blog_hub_no_auto_sizes' );
 
 /** Posts for the hub, newest first, skipping the ones already used above. */
 function thallo_blog_hub_posts( $count, $offset = 0 ) {
@@ -252,7 +289,7 @@ function thallo_blog_hub_featured() {
 
 		$out .= sprintf(
 			'<article class="thallo-lead">%1$s<div class="thallo-lead__body">%2$s<h3 class="thallo-lead__title"><a href="%3$s">%4$s</a></h3><p class="thallo-lead__sum">%5$s</p><p class="thallo-lead__go"><span>%6$s</span><span class="thallo-lead__time">%7$s</span></p></div></article>',
-			thallo_blog_hub_media( $lead->ID, 'thallo-lead__media' ),
+			thallo_blog_hub_media( $lead->ID, 'thallo-lead__media', '(min-width: 761px) 1536px, 100vw' ),
 			'' !== $term ? '<span class="thallo-kind">' . esc_html( $term ) . '</span>' : '',
 			esc_url( get_permalink( $lead->ID ) ),
 			esc_html( get_the_title( $lead->ID ) ),

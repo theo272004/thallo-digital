@@ -32,6 +32,17 @@ New post -> the + button -> Patterns -> search "Thallo".
 * **Thallo · run the scan** — the dark panel that sends a reader to the free
   visibility scan. At the end, once.
 
+== The featured image ==
+
+It is the picture on the article's card on the blog front page, and the card
+crops it to fit. Two rules keep it sharp:
+
+* **At least 1600px wide.** The big card paints about 900 device pixels
+  across on a retina screen, so anything smaller is enlarged and goes soft.
+* **Roughly landscape, near 16:10.** A very wide banner (4:1, say) gets
+  cropped to a strip of its middle, blown up, and looks pixelated even when
+  the file is big. Use a photograph, not a header banner.
+
 == Two publications, two doors ==
 
 The admin menu has a door for each, and the difference is the whole
