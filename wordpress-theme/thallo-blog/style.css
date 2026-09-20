@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.13.3
+Version:      1.13.4
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -50,10 +50,19 @@ Text Domain:  thallo-blog
 }
 
 /* The callout used by the "Thallo · callout" pattern. A group with a
-   background gets its padding from theme.json; the rule it hangs on does not
-   exist there. */
-.thallo-callout {
-  border-left: 3px solid var(--wp--preset--color--olive-soft);
+   background gets its padding from theme.json.
+
+   No rule down its left edge: it used to carry a pale olive bar, and on the
+   deep green it read as a stripe of a different green rather than as a mark.
+   Same measure as the paragraphs — 68ch — and flush left with them, or the
+   box runs on past the line the text ends on and the page looks off-centre
+   to its right. And a breath above it: the block gap that separates two
+   paragraphs is too little for a solid block arriving after a paragraph. */
+.wp-block-post-content .thallo-callout {
+  max-width: 68ch;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: 2rem;
 }
 
 /* ── The ground under the filled blocks ────────────────────────────────────
@@ -226,10 +235,14 @@ Text Domain:  thallo-blog
 
 /* ── The short answer ──────────────────────────────────────────────────────
    Set apart from the prose on purpose. A reader skimming should be able to
-   stop here and leave with the answer; the rule down the left is what tells
-   them this block is that, and not a pull quote or an aside. */
-.thallo-answer {
-  border-left: 3px solid var(--wp--preset--color--olive-soft);
+   stop here and leave with the answer. The deep green is what says so; the
+   pale rule it used to carry down its left read as a stripe, not a mark, and
+   is gone. Same measure and margins as the callout, for the same reasons. */
+.wp-block-post-content .thallo-answer {
+  max-width: 68ch;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: 2rem;
 }
 .thallo-answer__label {
   letter-spacing: 0.13em;
@@ -266,7 +279,7 @@ Text Domain:  thallo-blog
   display: none;
 }
 .thallo-toc {
-  border-left: 2px solid var(--wp--preset--color--olive-soft);
+  border-left: 2px solid var(--wp--preset--color--olive);
   padding: 0.1rem 0 0.1rem 1.1rem;
   margin: 0 0 var(--wp--preset--spacing--50);
 }
@@ -295,7 +308,7 @@ Text Domain:  thallo-blog
 }
 .thallo-toc__list a::before {
   content: counter(toc) ". ";
-  color: var(--wp--preset--color--olive-soft);
+  color: var(--wp--preset--color--olive);
 }
 .thallo-toc__list a:hover,
 .thallo-toc__list a.is-current {
@@ -2244,10 +2257,13 @@ body.blog .thallo-foot {
    a box — the same information in the shape that fits. */
 /* The box, at the article's width and on its edge. The group it sits in is
    alignwide, and without this the list ran the full 72rem while the prose
-   under it ran 52rem: a box wider than the thing it is a contents of. */
+   under it ran 52rem: a box wider than the thing it is a contents of. The
+   same 52rem as the prose column, not narrower — anything narrower is
+   centred in it, and the list started 64px to the right of the paragraphs
+   it was a contents of. */
 .thallo-post__with-toc > .thallo-toc {
   box-sizing: border-box;
-  max-width: 44rem;
+  max-width: 52rem;
   margin-left: auto;
   margin-right: auto;
 }
