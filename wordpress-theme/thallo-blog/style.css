@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.13.4
+Version:      1.13.5
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -279,7 +279,7 @@ Text Domain:  thallo-blog
   display: none;
 }
 .thallo-toc {
-  border-left: 2px solid var(--wp--preset--color--olive);
+  border-left: 3px solid var(--wp--preset--color--olive);
   padding: 0.1rem 0 0.1rem 1.1rem;
   margin: 0 0 var(--wp--preset--spacing--50);
 }
@@ -306,9 +306,14 @@ Text Domain:  thallo-blog
   color: var(--wp--preset--color--grey-500);
   text-decoration: none;
 }
+/* The numbers carry the same weight as the rule on the left, whichever entry
+   is current — a bold rule beside light numerals read as two different
+   things, and a numeral that changed weight with the section read as a
+   flicker. */
 .thallo-toc__list a::before {
   content: counter(toc) ". ";
   color: var(--wp--preset--color--olive);
+  font-weight: 700;
 }
 .thallo-toc__list a:hover,
 .thallo-toc__list a.is-current {
