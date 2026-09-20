@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.13.0
+Version:      1.13.1
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -1337,23 +1337,11 @@ body.single .wp-site-blocks > main {
 .thallo-hub .thallo-rule--tight {
   margin-bottom: 1.1rem;
 }
+/* The label alone. It used to carry a small olive tick on its left, the same
+   mark the masthead's eyebrow has; on the hub the words are enough. */
 .thallo-hub .thallo-rule__h {
   position: relative;
-  padding-left: 0.85rem;
-}
-/* The olive tick before a section label, drawn rather than typed — the same
-   mark the masthead's eyebrow carries, so the page has one way of saying "a
-   new section starts here". */
-.thallo-hub .thallo-rule__h::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 2px;
-  height: 0.8rem;
-  border-radius: 2px;
-  background: var(--wp--preset--color--olive);
+  padding-left: 0;
 }
 
 /* ── 1 · The masthead ──────────────────────────────────────────────────────
@@ -1957,6 +1945,19 @@ a.thallo-topic:hover {
 }
 .thallo-hub .thallo-sub {
   margin-top: 1.5rem;
+}
+
+/* The floor of the hub. The list card is the last thing on the page, and the
+   footer used to sit fifteen rem under it behind its own hairline — three
+   separate margins stacked on one another. On the hub the footer follows the
+   card at ordinary section distance, with no rule between them. */
+body.blog .thallo-hub.thallo-archive {
+  padding-bottom: 2rem;
+}
+body.blog .thallo-foot {
+  border-top: 0;
+  margin-top: 0;
+  padding-top: var(--wp--preset--spacing--50);
 }
 @media (max-width: 760px) {
   .thallo-close {
