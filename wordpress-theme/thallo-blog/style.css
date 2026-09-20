@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.13.1
+Version:      1.13.2
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -1814,23 +1814,17 @@ a.thallo-topic:hover {
 }
 
 /* ── The cards that are not articles yet ───────────────────────────────────
-   Flat ivory, no border on the picture, no hover, no link. They have to read
-   as a shelf waiting to be filled rather than as an article that failed to
-   load, which is why the only words on them are a subject and "Coming soon" —
-   no headline, no date, nothing that could be mistaken for a piece that
-   exists. */
+   Flat ivory, dashed edge, no link — but the same lift on hover as a real
+   card, so the shelf feels like part of the grid and not a dead patch of it.
+   They have to read as a shelf waiting to be filled rather than as an
+   article that failed to load, which is why the only words on them are a
+   subject and "Coming soon" — no headline, no date, nothing that could be
+   mistaken for a piece that exists. */
 .thallo-lead--soon,
 .thallo-side--soon,
 .thallo-tile--soon {
   background: var(--hub-ivory);
   border-style: dashed;
-  border-color: #e4e6dd;
-}
-.thallo-lead--soon:hover,
-.thallo-side--soon:hover,
-.thallo-tile--soon:hover {
-  transform: none;
-  box-shadow: none;
   border-color: #e4e6dd;
 }
 .thallo-soon__media {
@@ -1948,14 +1942,13 @@ a.thallo-topic:hover {
 }
 
 /* The floor of the hub. The list card is the last thing on the page, and the
-   footer used to sit fifteen rem under it behind its own hairline — three
-   separate margins stacked on one another. On the hub the footer follows the
-   card at ordinary section distance, with no rule between them. */
+   footer used to sit fifteen rem under it — three separate margins stacked
+   on one another. On the hub the footer follows the card at ordinary section
+   distance. Its hairline stays: the rule is the footer's edge. */
 body.blog .thallo-hub.thallo-archive {
-  padding-bottom: 2rem;
+  padding-bottom: 2.5rem;
 }
 body.blog .thallo-foot {
-  border-top: 0;
   margin-top: 0;
   padding-top: var(--wp--preset--spacing--50);
 }
@@ -2077,7 +2070,7 @@ body.blog .thallo-foot {
   border: 1px solid var(--wp--preset--color--hairline);
   border-radius: 24px;
   margin-top: 1.5rem;
-  padding: 1.75rem 2.5rem;
+  padding: 1.75rem 2.25rem;
 }
 .thallo-sub__say {
   display: flex;
@@ -2101,9 +2094,13 @@ body.blog .thallo-foot {
   line-height: 1.55;
   color: var(--wp--preset--color--olive-ink, #171a10);
 }
+/* A grid, not a wrapping flex row. A wrapping row is as wide as everything
+   laid end to end — field, button and the note under them — so the form used
+   to be a hundred and fifty pixels wider than it looked and the button sat
+   that far short of the edge. The note gets a row of its own. */
 .thallo-sub__form {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: auto auto;
   align-items: center;
   gap: 0.6rem;
 }
@@ -2150,7 +2147,7 @@ body.blog .thallo-foot {
   cursor: pointer;
 }
 .thallo-sub__note {
-  flex-basis: 100%;
+  grid-column: 1 / -1;
   margin: 0;
   font-size: 0.68rem;
   color: #9ca3af;
@@ -2169,9 +2166,10 @@ body.blog .thallo-foot {
   }
   .thallo-sub__form {
     width: 100%;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
   .thallo-sub__input {
-    flex: 1;
+    width: 100%;
   }
 }
 
