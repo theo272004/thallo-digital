@@ -828,3 +828,218 @@ function thallo_shortlist_rank_table( $content, $block ) {
 	return $out;
 }
 add_filter( 'render_block', 'thallo_shortlist_rank_table', 10, 2 );
+
+/* ─────────────────────────────────────────────────────────────────────────
+   wp-admin: two doors, clearly labelled
+   ───────────────────────────────────────────────────────────────────────── */
+
+/**
+ * "Posts" is called "Blog" in the menu.
+ *
+ * The rule for the two publications is "an article is a post, a study is a
+ * page under the hub", and the first time somebody tried it they inserted
+ * the article pattern into a page and got neither. The rule is right; the
+ * labels were not. With "Blog" on one door and "AI Shortlist" on the other,
+ * nobody has to know what a post is.
+ */
+function thallo_shortlist_blog_labels( $labels ) {
+	$labels->menu_name      = __( 'Blog', 'thallo-blog' );
+	$labels->all_items      = __( 'All articles', 'thallo-blog' );
+	$labels->add_new        = __( 'New article', 'thallo-blog' );
+	$labels->add_new_item   = __( 'New article', 'thallo-blog' );
+	$labels->name_admin_bar = __( 'Article', 'thallo-blog' );
+
+	return $labels;
+}
+add_filter( 'post_type_labels_post', 'thallo_shortlist_blog_labels' );
+
+/**
+ * The "AI Shortlist" menu: the volumes, a new one, the hub.
+ *
+ * All three are pages underneath — this adds no post type and stores nothing
+ * new. The menu is a set of shortcuts that do the two things a person would
+ * otherwise have to know: file the page under the hub, and start it from the
+ * volume pattern.
+ */
+function thallo_shortlist_admin_menu() {
+	add_menu_page(
+		__( 'The AI Shortlist', 'thallo-blog' ),
+		__( 'AI Shortlist', 'thallo-blog' ),
+		'edit_pages',
+		'thallo-shortlist',
+		'__return_null',
+		'dashicons-chart-bar',
+		5.5
+	);
+	add_submenu_page( 'thallo-shortlist', __( 'All volumes', 'thallo-blog' ), __( 'All volumes', 'thallo-blog' ), 'edit_pages', 'thallo-shortlist', '__return_null' );
+	add_submenu_page( 'thallo-shortlist', __( 'New volume', 'thallo-blog' ), __( 'New volume', 'thallo-blog' ), 'edit_pages', 'thallo-shortlist-new', '__return_null' );
+	add_submenu_page( 'thallo-shortlist', __( 'The hub page', 'thallo-blog' ), __( 'The hub page', 'thallo-blog' ), 'edit_pages', 'thallo-shortlist-hub', '__return_null' );
+}
+add_action( 'admin_menu', 'thallo_shortlist_admin_menu' );
+
+/**
+ * The three entries redirect rather than render — to the pages list filtered
+ * to the hub's children, to a fresh volume in the editor, to the hub in the
+ * editor. Done on `load-*`, before any output, which is the one moment a
+ * menu entry can still send somebody somewhere else.
+ */
+function thallo_shortlist_admin_routes() {
+	add_action(
+		'load-toplevel_page_thallo-shortlist',
+		function () {
+			$hub = thallo_shortlist_hub_or_create();
+			wp_safe_redirect( admin_url( 'edit.php?post_type=page&thallo_volumes=' . (int) $hub->ID ) );
+			exit;
+		}
+	);
+	add_action(
+		'load-ai-shortlist_page_thallo-shortlist-new',
+		function () {
+			$id = thallo_shortlist_create_volume();
+			wp_safe_redirect( admin_url( 'post.php?post=' . (int) $id . '&action=edit' ) );
+			exit;
+		}
+	);
+	add_action(
+		'load-ai-shortlist_page_thallo-shortlist-hub',
+		function () {
+			$hub = thallo_shortlist_hub_or_create();
+			wp_safe_redirect( admin_url( 'post.php?post=' . (int) $hub->ID . '&action=edit' ) );
+			exit;
+		}
+	);
+}
+add_action( 'admin_init', 'thallo_shortlist_admin_routes' );
+
+/**
+ * The hub, made if it is missing.
+ *
+ * As a draft, with the slug that makes it the hub and the copy from the
+ * brief already in it, so the person who opens it has only to read it and
+ * press Publish. Nothing goes live on its own.
+ */
+function thallo_shortlist_hub_or_create() {
+	$hub = thallo_shortlist_hub();
+	if ( $hub ) {
+		return $hub;
+	}
+
+	$id = wp_insert_post(
+		array(
+			'post_type'    => 'page',
+			'post_status'  => 'draft',
+			'post_title'   => 'The AI Shortlist',
+			'post_name'    => THALLO_SHORTLIST_SLUG,
+			'post_excerpt' => 'When buyers ask AI for a provider, which firms get named — and where does the answer come from?',
+			'post_content' => "<!-- wp:paragraph -->\n<p>Buyers now build their shortlist before they speak to anyone, and they build it by asking a model. We run the questions those buyers actually ask, record every firm the models name, and publish the results one category at a time.</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:paragraph -->\n<p>Nothing is picked in advance. The ranking is whatever comes back.</p>\n<!-- /wp:paragraph -->",
+		),
+		true
+	);
+
+	if ( is_wp_error( $id ) ) {
+		wp_die( esc_html( $id->get_error_message() ) );
+	}
+
+	return get_post( $id );
+}
+
+/**
+ * A new volume: a page under the hub, starting as the volume pattern.
+ *
+ * An auto-draft, which is exactly what WordPress itself makes when somebody
+ * presses "Add New" — it shows as an empty editor and is cleaned up on its
+ * own if it is abandoned. The only differences from "Add New Page" are the
+ * two things this menu exists for: the parent is already the hub, and the
+ * content is already the study.
+ *
+ * @return int
+ */
+function thallo_shortlist_create_volume() {
+	$hub     = thallo_shortlist_hub_or_create();
+	$pattern = WP_Block_Patterns_Registry::get_instance()->get_registered( 'thallo-blog/shortlist-volume' );
+
+	$id = wp_insert_post(
+		array(
+			'post_type'    => 'page',
+			'post_status'  => 'auto-draft',
+			/* The title WordPress gives its own auto-drafts; the editor knows
+			   to show it as empty. */
+			'post_title'   => __( 'Auto Draft' ),
+			'post_parent'  => (int) $hub->ID,
+			'post_content' => $pattern ? $pattern['content'] : '',
+			'post_author'  => get_current_user_id(),
+		),
+		true
+	);
+
+	if ( is_wp_error( $id ) ) {
+		wp_die( esc_html( $id->get_error_message() ) );
+	}
+
+	return (int) $id;
+}
+
+/**
+ * "All volumes" is the pages list, shown only the hub's children, in series
+ * order. `thallo_volumes` is the hub's id in the address, and this is the
+ * only place it means anything.
+ */
+function thallo_shortlist_admin_list( $query ) {
+	if ( ! is_admin() || ! $query->is_main_query() ) {
+		return;
+	}
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a read-only filter on a list screen.
+	$parent = isset( $_GET['thallo_volumes'] ) ? (int) $_GET['thallo_volumes'] : 0;
+	if ( ! $parent || 'page' !== $query->get( 'post_type' ) ) {
+		return;
+	}
+
+	$query->set( 'post_parent', $parent );
+	$query->set(
+		'orderby',
+		array(
+			'menu_order' => 'ASC',
+			'date'       => 'ASC',
+		)
+	);
+}
+add_action( 'pre_get_posts', 'thallo_shortlist_admin_list' );
+
+/** The list says what it is showing, with a button that makes a volume. */
+function thallo_shortlist_admin_list_title() {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( ! isset( $_GET['thallo_volumes'] ) ) {
+		return;
+	}
+
+	printf(
+		'<div class="notice notice-info"><p><strong>%1$s</strong> — %2$s <a class="button button-primary" href="%3$s">%4$s</a></p></div>',
+		esc_html__( 'The AI Shortlist', 'thallo-blog' ),
+		esc_html__( 'the volumes of the series, in order. A scheduled one shows on the hub as "Coming soon" with its date.', 'thallo-blog' ),
+		esc_url( admin_url( 'admin.php?page=thallo-shortlist-new' ) ),
+		esc_html__( 'New volume', 'thallo-blog' )
+	);
+}
+add_action( 'admin_notices', 'thallo_shortlist_admin_list_title' );
+
+/**
+ * The "AI Shortlist" menu stays lit while a volume or the hub is being
+ * edited, and "Pages" does not light up for them. Small, and the thing that
+ * tells a person which of the two publications they are in.
+ */
+function thallo_shortlist_admin_parent( $parent_file ) {
+	global $post;
+
+	if ( $post && 'page' === $post->post_type && ( thallo_shortlist_is_hub( $post ) || thallo_shortlist_is_volume( $post ) ) ) {
+		return 'thallo-shortlist';
+	}
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( isset( $_GET['thallo_volumes'] ) ) {
+		return 'thallo-shortlist';
+	}
+
+	return $parent_file;
+}
+add_filter( 'parent_file', 'thallo_shortlist_admin_parent' );

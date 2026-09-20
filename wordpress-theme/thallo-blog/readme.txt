@@ -32,6 +32,21 @@ New post -> the + button -> Patterns -> search "Thallo".
 * **Thallo · run the scan** — the dark panel that sends a reader to the free
   visibility scan. At the end, once.
 
+== Two publications, two doors ==
+
+The admin menu has a door for each, and the difference is the whole
+instruction:
+
+* **Blog -> New article.** A post. The article pattern is offered in the
+  empty editor; the featured image, excerpt and category are the only
+  choices. Everything else — the photograph as the ground of the page, the
+  contents list, the sign-off, "Keep reading" — is the template.
+* **AI Shortlist -> New volume.** A page under the hub, already filed there,
+  already holding the volume pattern. Write over the brackets, set the
+  Industry and the excerpt, choose the date, publish or schedule. "All
+  volumes" lists only the series; "The hub page" opens the hub (and makes
+  it, as a draft, if it does not exist yet).
+
 == The AI Shortlist ==
 
 The research series is pages, not posts. It does not appear in the blog's

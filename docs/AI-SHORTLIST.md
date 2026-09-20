@@ -9,6 +9,24 @@ configura: el tema reconoce la serie por dónde están las páginas.
 | El hub | Página con slug `ai-shortlist` | Plantilla `page-ai-shortlist.html`, sola |
 | Un volumen | Página hija del hub | Plantilla `AI Shortlist · Volume`, sola |
 
+## Las dos puertas
+
+En el menú de WordPress hay una entrada para cada publicación, y ésa es toda
+la diferencia:
+
+- **Blog → New article**: un artículo. Se inserta el patrón *Thallo · post
+  skeleton*, se pone imagen destacada, extracto y categoría. Todo lo demás
+  (foto de fondo con el título encima, menú lateral, CTA, "Keep reading")
+  lo pone la plantilla.
+- **AI Shortlist → New volume**: un estudio. Abre el editor con la página ya
+  colgada del hub y el patrón del volumen ya cargado. Se escribe encima, se
+  pone Industry y extracto, se elige la fecha y se publica o programa.
+  **All volumes** lista sólo la serie; **The hub page** abre el hub (y lo
+  crea como borrador si aún no existe).
+
+Los dos caminos de abajo siguen valiendo, pero con el menú no hace falta
+saber qué es una entrada ni elegir padre a mano.
+
 ## El hub
 
 Una página, slug `ai-shortlist`. **Título** = el nombre grande de arriba (la
