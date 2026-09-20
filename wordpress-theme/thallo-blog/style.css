@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.11.0
+Version:      1.12.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -2248,7 +2248,7 @@ a.thallo-topic:hover {
    under it ran 52rem: a box wider than the thing it is a contents of. */
 .thallo-post__with-toc > .thallo-toc {
   box-sizing: border-box;
-  max-width: 52rem;
+  max-width: 44rem;
   margin-left: auto;
   margin-right: auto;
 }
@@ -2451,6 +2451,822 @@ select:focus-visible,
   .thallo-hero {
     min-height: 0 !important;
   }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   The AI Shortlist — the research series.
+
+   Two pages: the hub at /ai-shortlist/ and one page per volume under it.
+   Both wear the blog's shell (.thallo-archive) so the navbar, the 1440px
+   measure, the rules between sections and the closing blocks are the ones a
+   reader has already seen — and both draw only from the five colours the
+   rest of the site uses. The two things that are new here are the panel of
+   figures on the hub, which is the site's own "measured" panel with its glass
+   cards, and the ranking table, which is the results page's table with a bar
+   in every row.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.thallo-shortlist {
+  --hub-ivory: #fbfbf8;
+  --hub-gap: 5rem;
+  --cream: #f3e6c1; /* the figure colour on the site's dark panels */
+}
+
+/* ── The entrance ──────────────────────────────────────────────────────────
+   Classes assets/shortlist.js adds as it goes, never written into markup: a
+   page without the script, or a reader who asked for less motion, sees the
+   page at rest. The easing is the site's — a fast start that settles. */
+.thallo-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s ease, transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.thallo-reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+.thallo-reveal--table tbody tr {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.thallo-reveal--table.is-in tbody tr {
+  opacity: 1;
+  transform: none;
+}
+.thallo-reveal--table .thallo-rate__fill {
+  transform: scaleX(0);
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.thallo-reveal--table.is-in .thallo-rate__fill {
+  transform: scaleX(1);
+}
+
+/* ── The masthead ──────────────────────────────────────────────────────────
+   Type alone, larger than the blog's: it is the name of a series, not a
+   tagline. The question under it is set in the serif italic — the one
+   register the site keeps for the line it wants remembered. */
+.thallo-mast--series {
+  margin-bottom: 3.25rem;
+}
+.thallo-mast__title--series {
+  max-width: 12ch;
+  font-size: clamp(2.8rem, 6vw, 4.6rem);
+}
+.thallo-series__question {
+  margin: 1.5rem 0 0;
+}
+.thallo-series__question .wp-block-post-excerpt__excerpt,
+.thallo-series__question p {
+  margin: 0;
+  max-width: 34ch;
+  font-family: var(--wp--preset--font-family--serif);
+  font-style: italic;
+  font-size: clamp(1.35rem, 2.3vw, 1.75rem);
+  line-height: 1.35;
+  color: var(--wp--preset--color--grey-900);
+}
+.thallo-series__intro {
+  margin-top: 1.75rem;
+}
+.thallo-series__intro p {
+  max-width: 62ch;
+  margin: 0 0 0.9rem;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-series__intro p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── The method ────────────────────────────────────────────────────────────
+   The site's photograph panel: rounded, the picture pinned to its bottom
+   edge, a scrim down the left so the heading clears AA on the lit part of the
+   wall, and the four figures in dark glass cards that lift on hover. Nothing
+   here is new to a reader who has seen /results/. */
+.thallo-method {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  padding: clamp(2.25rem, 4vw, 3.5rem) clamp(1.5rem, 4vw, 4rem);
+  background: #171a10 url('https://thallodigital.com/measured-bg.webp') center 100% / cover no-repeat;
+  color: #fff;
+}
+.thallo-method__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(23, 26, 16, 0.6), rgba(23, 26, 16, 0.22) 55%, transparent);
+}
+.thallo-method__say {
+  position: relative;
+  max-width: 34rem;
+  margin-bottom: 2.25rem;
+}
+.thallo-method__h {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.75rem, 3vw, 2.4rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #fff;
+}
+.thallo-method__p {
+  margin: 0;
+  max-width: 48ch;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+}
+.thallo-method__grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+.thallo-method__card {
+  border-radius: 24px;
+  padding: 1.75rem;
+  background: rgba(20, 20, 18, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.28);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (hover: hover) {
+  .thallo-method__card:hover {
+    transform: translateY(-6px) scale(1.02);
+  }
+}
+.thallo-method__n {
+  margin: 0 0 0.85rem;
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--cream);
+}
+.thallo-method__l {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #fff;
+}
+.thallo-method__c {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.82);
+}
+@media (max-width: 1100px) {
+  .thallo-method__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .thallo-method__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .thallo-method__card {
+    padding: 1.4rem;
+  }
+}
+
+/* ── The volumes ───────────────────────────────────────────────────────────
+   One row each, on hairlines: the number in the serif at the left, the
+   category and its teaser in the middle, the date and the button at the
+   right. A published volume is a link the whole width of the row and lifts
+   on hover, the way every card on the site does; a scheduled one is the
+   same row in grey with "Coming soon" said on it — never implied by the
+   grey alone. */
+.thallo-rule__note {
+  margin: 0 0 0 auto;
+  max-width: 46ch;
+  text-align: right;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-vols {
+  display: block;
+}
+.thallo-vol {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr) auto;
+  gap: 1.5rem 2rem;
+  align-items: start;
+  padding: 1.9rem 0;
+  border-top: 1px solid var(--wp--preset--color--hairline);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.thallo-vols {
+  border-bottom: 1px solid var(--wp--preset--color--hairline);
+}
+.thallo-vols__item {
+  display: block;
+}
+.thallo-vol__num {
+  font-family: var(--wp--preset--font-family--serif);
+  font-size: 2.75rem;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--wp--preset--color--olive);
+  font-variant-numeric: tabular-nums;
+}
+.thallo-vol__say {
+  display: block;
+  min-width: 0;
+}
+.thallo-vol__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+}
+.thallo-tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.28rem 0.7rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.thallo-tag--olive {
+  color: var(--wp--preset--color--olive);
+  background: rgba(57, 71, 29, 0.1);
+}
+.thallo-tag--grey {
+  color: #9ca3af;
+  background: #f3f4f6;
+}
+.thallo-vol__title {
+  display: block;
+  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--wp--preset--color--grey-900);
+  transition: color 0.2s;
+}
+.thallo-vol__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.thallo-vol__teaser {
+  display: block;
+  margin-top: 0.6rem;
+  max-width: 56ch;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-vol__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+  padding-top: 0.35rem;
+  text-align: right;
+}
+.thallo-vol__meta time {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-vol__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 9999px;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--wp--preset--color--olive);
+  color: #fff;
+  transition: background-color 0.2s;
+}
+.thallo-vol__go--soon {
+  background: transparent;
+  border: 1px solid var(--wp--preset--color--hairline);
+  color: #9ca3af;
+}
+@media (hover: hover) {
+  a.thallo-vol:hover {
+    transform: translateY(-3px);
+  }
+  a.thallo-vol:hover .thallo-vol__title {
+    color: var(--wp--preset--color--olive);
+  }
+  a.thallo-vol:hover .thallo-vol__go {
+    background: var(--wp--preset--color--olive-mid);
+  }
+}
+a.thallo-vol:focus-visible {
+  outline: 2px solid var(--wp--preset--color--olive);
+  outline-offset: 6px;
+  border-radius: 4px;
+}
+.thallo-vol--soon .thallo-vol__num {
+  color: #d1d5db;
+}
+.thallo-vol--soon .thallo-vol__title {
+  color: #9ca3af;
+}
+.thallo-vol--soon .thallo-vol__teaser,
+.thallo-vol--soon .thallo-vol__meta time {
+  color: #9ca3af;
+}
+.thallo-vols__empty {
+  margin: 0;
+  padding: 2rem 0;
+  border-top: 1px solid var(--wp--preset--color--hairline);
+  border-bottom: 1px solid var(--wp--preset--color--hairline);
+  max-width: 56ch;
+  color: var(--wp--preset--color--grey-500);
+}
+@media (max-width: 760px) {
+  .thallo-rule--tight {
+    flex-wrap: wrap;
+  }
+  .thallo-rule__note {
+    flex-basis: 100%;
+    margin: 0.4rem 0 0;
+    max-width: none;
+    text-align: left;
+  }
+  .thallo-vol {
+    grid-template-columns: 3.25rem minmax(0, 1fr);
+    gap: 1rem 1.1rem;
+    padding: 1.5rem 0;
+  }
+  .thallo-vol__num {
+    font-size: 2rem;
+  }
+  .thallo-vol__meta {
+    grid-column: 2;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 0;
+    text-align: left;
+  }
+}
+
+/* The list and the invitation sit at the section rhythm on both pages. */
+.thallo-shortlist .thallo-sub--series {
+  margin-top: var(--hub-gap);
+}
+.thallo-shortlist .thallo-sub--series + .thallo-close {
+  margin-top: 1.5rem;
+}
+.thallo-sub--series .thallo-sub__p strong {
+  font-weight: 700;
+  color: var(--wp--preset--color--grey-900);
+}
+
+/* ── A volume ──────────────────────────────────────────────────────────────
+   A document: it opens at the reading measure, left-aligned, and the study
+   follows in one column. Only the two ranking tables are allowed out to the
+   wide measure — five columns of figures do not fit in 52rem. */
+.thallo-volume > .thallo-volume__head,
+.thallo-volume > .thallo-next {
+  max-width: 44rem;
+}
+.thallo-volume > .thallo-close,
+.thallo-volume > .thallo-sub {
+  max-width: 72rem;
+}
+.thallo-volume__head {
+  padding-bottom: 2.75rem;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid var(--wp--preset--color--hairline);
+}
+.thallo-volume__back {
+  margin: 0 0 2rem;
+}
+.thallo-volume__back a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.thallo-volume__back a:hover {
+  color: var(--wp--preset--color--olive);
+}
+.thallo-volume__title {
+  max-width: 16ch;
+  font-size: clamp(2.5rem, 5.2vw, 3.8rem);
+}
+
+/* The rhythm of the study: a hairline and a full section's worth of air
+   before every h2, the three h3 pairs on their own hairlines, the h4 group
+   labels in the small capitals theme.json already gives them. Direct
+   children only — a heading inside a group (the colophon) keeps its own
+   spacing. */
+.thallo-volume__body .wp-block-post-content > h2 {
+  margin-top: 3.75rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--wp--preset--color--hairline);
+  margin-bottom: 1.25rem;
+}
+.thallo-volume__body .wp-block-post-content > h3 {
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--wp--preset--color--hairline);
+  margin-bottom: 0.5rem;
+}
+.thallo-volume__body .wp-block-post-content > h2 + h3 {
+  margin-top: 1.5rem;
+  padding-top: 0;
+  border-top: 0;
+}
+.thallo-volume__body .wp-block-post-content > h4 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+.thallo-volume__body .wp-block-post-content > p,
+.thallo-volume__body .wp-block-post-content > .thallo-finding__p {
+  max-width: 44rem;
+}
+.thallo-volume__body .wp-block-post-content > :is(h2, h3, h4) + p {
+  margin-top: 0;
+}
+
+/* ── The finding ───────────────────────────────────────────────────────────
+   One number, as large as the page allows, and two sentences. Set in Inter
+   rather than the serif because that is how every figure on the site is set
+   — the serif is for words, and this is a measurement. */
+.thallo-finding {
+  padding-bottom: 2.5rem;
+  /* No rule of its own: the h2 that follows draws it. */
+}
+.thallo-finding__stat {
+  margin: 0 0 1.25rem !important;
+  font-size: clamp(4.25rem, 10vw, 7.5rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
+}
+.thallo-finding__p {
+  margin: 0 !important;
+  max-width: none !important;
+  line-height: 1.5;
+}
+.thallo-cutoff {
+  margin-top: -0.25rem;
+  color: var(--wp--preset--color--grey-500);
+}
+
+/* ── The ranking table ─────────────────────────────────────────────────────
+   The results page's panel: white, a hairline, a 24px radius, a soft shadow.
+   The bar is drawn from the percentage the writer typed — see
+   thallo_shortlist_rank_table() — and the track is the palest olive so the
+   fill reads against it at any width. The two note columns drop out on a
+   phone rather than scrolling the whole table sideways. */
+.thallo-rank {
+  margin: 1.5rem 0 1rem;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 1px solid var(--wp--preset--color--hairline);
+  background: #fff;
+  box-shadow: 0 6px 20px -8px rgba(23, 26, 16, 0.14);
+}
+.thallo-rank table {
+  width: 100%;
+  min-width: 0;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+.thallo-rank :is(th, td) {
+  padding: 1.1rem 1.5rem;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid #f3f4f6;
+}
+.thallo-rank th {
+  padding-top: 1rem;
+  padding-bottom: 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--wp--preset--color--grey-500);
+  border-bottom: 1px solid var(--wp--preset--color--hairline);
+  white-space: nowrap;
+}
+.thallo-rank :is(th, td):first-child {
+  padding-left: 1.75rem;
+}
+.thallo-rank :is(th, td):last-child {
+  padding-right: 1.75rem;
+}
+.thallo-rank tbody tr:last-child td {
+  border-bottom: 0;
+}
+.thallo-rank tbody tr {
+  transition: background-color 0.2s;
+}
+@media (hover: hover) {
+  .thallo-rank tbody tr:hover {
+    background: rgba(249, 250, 251, 0.7);
+  }
+}
+.thallo-rank__rank {
+  width: 3rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #9ca3af;
+  font-variant-numeric: tabular-nums;
+}
+.thallo-rank__firm {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--wp--preset--color--grey-900);
+}
+.thallo-rank__rate {
+  width: 36%;
+  min-width: 11rem;
+}
+.thallo-rank__pos {
+  width: 7rem;
+  text-align: right !important;
+  font-weight: 600;
+  color: var(--wp--preset--color--grey-900);
+  font-variant-numeric: tabular-nums;
+}
+.thallo-rank__note {
+  font-size: 0.9rem;
+  white-space: nowrap;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-rate {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+.thallo-rate__track {
+  display: block;
+  flex: 1 1 auto;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--wp--preset--color--olive-tint);
+  overflow: hidden;
+}
+.thallo-rate__fill {
+  display: block;
+  height: 100%;
+  width: calc(var(--pct, 0) * 1%);
+  border-radius: 9999px;
+  background: var(--wp--preset--color--olive);
+  transform-origin: left center;
+}
+.thallo-rate__num {
+  flex: 0 0 auto;
+  min-width: 3.2rem;
+  text-align: right;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--wp--preset--color--olive);
+  font-variant-numeric: tabular-nums;
+}
+.thallo-rank figcaption,
+.thallo-sources figcaption {
+  margin: 0;
+  font-family: var(--wp--preset--font-family--mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  text-align: left;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-rank figcaption {
+  padding: 0.85rem 1.75rem 0.95rem;
+  border-top: 1px solid var(--wp--preset--color--hairline);
+  background: var(--wp--preset--color--paper);
+}
+@media (max-width: 720px) {
+  .thallo-rank__pos,
+  .thallo-rank__note {
+    display: none;
+  }
+  .thallo-rank :is(th, td) {
+    padding: 0.9rem 0.9rem;
+  }
+  .thallo-rank :is(th, td):first-child {
+    padding-left: 1.1rem;
+  }
+  .thallo-rank :is(th, td):last-child {
+    padding-right: 1.1rem;
+  }
+  .thallo-rank__rate {
+    min-width: 0;
+    width: 42%;
+  }
+  .thallo-rank__rank {
+    width: 1.25rem;
+    padding-right: 0.25rem;
+  }
+  .thallo-rank__firm {
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+  .thallo-rank figcaption {
+    padding: 0.75rem 1.1rem 0.85rem;
+  }
+}
+/* The Google comparison has no rank column; the firm carries the row. */
+.thallo-rank--gap .thallo-rank__firm {
+  padding-left: 1.75rem;
+}
+
+/* The parent theme rules every table cell on three sides. These tables draw
+   their own hairlines and nothing else. */
+.thallo-rank :is(th, td),
+.thallo-sources :is(th, td),
+.thallo-colophon__table :is(th, td) {
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+}
+.thallo-rank :is(thead, tfoot),
+.thallo-sources :is(thead, tfoot),
+.thallo-colophon__table :is(thead, tfoot),
+.thallo-rank table,
+.thallo-sources table,
+.thallo-colophon__table table {
+  border: 0;
+}
+
+/* ── The sources ───────────────────────────────────────────────────────────
+   No panel: three columns on hairlines, the share in olive at the right.
+   It is a list with numbers, not a chart, and dressing it as one would put
+   two panels of the same weight on one page. */
+.thallo-sources {
+  margin: 1.5rem 0 1.5rem;
+}
+.thallo-sources table {
+  width: 100%;
+  min-width: 0;
+  border-collapse: collapse;
+}
+.thallo-sources :is(th, td) {
+  padding: 0.85rem 1rem 0.85rem 0;
+  border-bottom: 1px solid var(--wp--preset--color--hairline);
+  text-align: left;
+  vertical-align: baseline;
+}
+.thallo-sources :is(th, td):last-child {
+  padding-right: 0;
+  text-align: right;
+  white-space: nowrap;
+}
+.thallo-sources th {
+  border-bottom-color: var(--wp--preset--color--grey-900);
+}
+.thallo-sources td:first-child {
+  font-weight: 700;
+  color: var(--wp--preset--color--grey-900);
+}
+.thallo-sources td:nth-child(2) {
+  font-size: 0.9rem;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-sources td:last-child {
+  font-weight: 700;
+  color: var(--wp--preset--color--olive);
+  font-variant-numeric: tabular-nums;
+}
+.thallo-sources figcaption {
+  padding-top: 0.75rem;
+}
+
+/* ── The closing line ──────────────────────────────────────────────────────
+   The serif italic, on its own rule: the one sentence of the section a
+   reader should leave with. */
+.thallo-volume__body .wp-block-post-content > .thallo-closing-note {
+  margin-top: 2.25rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--wp--preset--color--hairline);
+  max-width: 44rem;
+  font-family: var(--wp--preset--font-family--serif);
+  font-style: italic;
+  font-size: 1.35rem;
+  line-height: 1.4;
+  color: var(--wp--preset--color--grey-900);
+}
+
+/* ── The questions ─────────────────────────────────────────────────────── */
+.thallo-questions {
+  margin: 0;
+  padding-left: 2.25em;
+  max-width: 44rem;
+}
+.thallo-questions li {
+  margin: 0 0 0.6rem;
+  padding-left: 0.25rem;
+  color: var(--wp--preset--color--grey-900);
+}
+.thallo-questions li::marker {
+  font-weight: 700;
+  color: var(--wp--preset--color--olive);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── The colophon ──────────────────────────────────────────────────────────
+   On paper, so it reads as the note at the end and not as another section.
+   The two-column table is the method — a definition list the editor can
+   write into — and the paragraph under it is the honesty clause every volume
+   carries. */
+.thallo-colophon {
+  margin-top: 3.5rem;
+  padding: 1.75rem 2rem 1.9rem;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 20px;
+  background: var(--wp--preset--color--paper);
+}
+.thallo-colophon > h4 {
+  margin: 0 0 0.75rem;
+}
+.thallo-colophon__table {
+  margin: 0;
+}
+.thallo-colophon__table table {
+  width: 100%;
+  min-width: 0;
+  border-collapse: collapse;
+}
+.thallo-colophon__table td {
+  padding: 0.55rem 1rem 0.55rem 0;
+  border-bottom: 1px solid rgba(23, 26, 16, 0.08);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  vertical-align: top;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-colophon__table td:first-child {
+  width: 9.5rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--wp--preset--color--grey-900);
+}
+.thallo-colophon__table tr:last-child td {
+  border-bottom: 0;
+}
+.thallo-colophon__honesty {
+  margin: 1.1rem 0 0;
+  max-width: 68ch;
+  color: var(--wp--preset--color--grey-500);
+}
+@media (max-width: 560px) {
+  .thallo-colophon {
+    padding: 1.35rem 1.25rem 1.5rem;
+  }
+  .thallo-colophon__table td:first-child {
+    width: 6.5rem;
+    white-space: normal;
+  }
+}
+
+/* ── What comes next ─────────────────────────────────────────────────────── */
+.thallo-next {
+  margin-top: 2.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--wp--preset--color--hairline);
+}
+.thallo-next p {
+  margin: 0;
+  max-width: 60ch;
+  font-size: 1rem;
+  color: var(--wp--preset--color--grey-900);
+}
+.thallo-next a {
+  color: var(--wp--preset--color--olive);
+}
+.thallo-volume .thallo-close--volume {
+  margin-top: 3.5rem;
 }
 
 /* Al final del archivo a propósito: la regla que fija el ancho de la barra

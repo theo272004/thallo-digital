@@ -423,6 +423,10 @@ add_action( 'wp_enqueue_scripts', 'thallo_blog_list_script' );
    composition that would otherwise double the length of this one. */
 require_once get_stylesheet_directory() . '/inc/hub.php';
 
+/* The AI Shortlist — the research series, published as pages under
+   /ai-shortlist/. Its own file for the same reason the hub has one. */
+require_once get_stylesheet_directory() . '/inc/shortlist.php';
+
 /* ── Hardening ─────────────────────────────────────────────────────────────
    Three things WordPress hands out by default that this blog has no use for.
    None of them is a hole on its own; together they are the reconnaissance

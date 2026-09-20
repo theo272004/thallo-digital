@@ -59,8 +59,11 @@
         /* The honeypot, forwarded exactly as the endpoint expects it: empty
            from a person, filled by anything that walks the form. */
         website_url: (form.querySelector('input[name="website_url"]') || {}).value || '',
-        message: 'Subscribed from the blog.',
-        plans: ['Blog newsletter']
+        /* Which list this is. The blog's index says nothing and gets the
+           default; the AI Shortlist passes its own, so the row in wp-admin
+           says where the address came from. */
+        message: (window.thalloList && window.thalloList.message) || 'Subscribed from the blog.',
+        plans: (window.thalloList && window.thalloList.plans) || ['Blog newsletter']
       })
     })
       .then(function (response) {

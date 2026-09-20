@@ -32,6 +32,40 @@ New post -> the + button -> Patterns -> search "Thallo".
 * **Thallo · run the scan** — the dark panel that sends a reader to the free
   visibility scan. At the end, once.
 
+== The AI Shortlist ==
+
+The research series is pages, not posts. It does not appear in the blog's
+archive or feed, and nothing about it is configured: the theme recognises it
+by where the pages sit.
+
+* **The hub** is the page whose slug is `ai-shortlist`. Its title is the
+  masthead, its excerpt is the italic question under it, and its content is
+  the introduction (two short paragraphs). The template
+  `templates/page-ai-shortlist.html` applies itself to that slug.
+* **A volume** is any page filed under the hub (Page Attributes -> Parent ->
+  The AI Shortlist). Its title is the category ("Executive search firms"),
+  its excerpt is the question under the title and the teaser on the hub, and
+  the **Industry** box in the sidebar is the label on the hub row. The
+  template `AI Shortlist · Volume` applies itself to every child page; it is
+  also listed under Templates for the odd case.
+* **The number** of a volume is its position in the list, by date. Nobody
+  types "Volume 03". To force an order, set Page Attributes -> Order.
+* **Scheduled volumes appear on the hub.** Set a future date and publish:
+  the row shows in grey with "Coming soon" and the date, with no link, until
+  WordPress publishes it. Drafts do not appear.
+* **Writing a volume:** new page under the hub -> the + button -> Patterns
+  -> "Thallo · AI Shortlist volume". It is the whole shape of a study, in
+  the order every volume keeps. Write over the brackets; do not reorder.
+* **The ranking tables** are ordinary table blocks. Type the mention rate
+  as a percentage — "78%" — and the theme draws the bar. The header row
+  decides the columns: "#", "Firm", a heading containing "rate" gets the
+  bar, "position" or "Google rank" is the right-aligned figure, anything
+  else is a note that drops out on a phone.
+* **The address.** On the production host WordPress is at /blog/, so the
+  series answers at /blog/ai-shortlist/ until the rule in
+  `deploy/ai-shortlist.htaccess` is pasted into the root .htaccess. The
+  theme notices the rule and moves its links to the root on its own.
+
 == How it is styled ==
 
 Almost entirely from `theme.json`, which WordPress applies to the editor and
