@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.19.1
+Version:      1.19.2
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -2900,9 +2900,16 @@ a.thallo-vol:focus-visible {
   }
 }
 
-/* The list and the invitation sit at the section rhythm on both pages. */
+/* The list sits at the section rhythm on the hub, where it follows the
+   volumes. In a volume it follows the invitation — two cards, one after the
+   other — and a card's distance from a card is 1.5rem, the hub's own number
+   for the same pair; 5rem between them read as two sections (Cami,
+   2026-09-20). */
 .thallo-shortlist .thallo-sub--series {
   margin-top: var(--hub-gap);
+}
+.thallo-volume .thallo-close--volume + .thallo-sub--series {
+  margin-top: 1.5rem;
 }
 .thallo-shortlist .thallo-sub--series + .thallo-close {
   margin-top: 1.5rem;
@@ -3846,6 +3853,15 @@ a.thallo-vol:focus-visible {
 }
 .thallo-volume .thallo-close--volume {
   margin-top: 3.5rem;
+}
+/* The floor of a volume, as on the hub: the "next volume" line is the last
+   thing on the page and the footer used to sit 138px under it — the main's
+   padding and the footer's margin stacked. One ordinary section distance. */
+body.thallo-shortlist-volume .thallo-volume.thallo-archive {
+  padding-bottom: 2.5rem;
+}
+body.thallo-shortlist-volume .thallo-foot {
+  margin-top: 0;
 }
 
 /* Al final del archivo a propósito: la regla que fija el ancho de la barra
