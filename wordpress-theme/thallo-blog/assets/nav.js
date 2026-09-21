@@ -18,6 +18,34 @@
 		return;
 	}
 
+	/* Which tab is lit.
+	 *
+	 * One header part serves the blog's front page, an article, the AI
+	 * Shortlist's hub and every volume of it. While "Blog" carried
+	 * aria-current in the markup, it was therefore wrong on half the pages
+	 * that use it — a reader on a volume was told they were in the blog, which
+	 * is the one thing the series is not.
+	 *
+	 * Decided from the body class the theme sets in PHP, with the address as
+	 * the fallback for the case where the series moves to the root. With the
+	 * script blocked nothing is lit, which is the honest failure: no tab
+	 * claimed is better than the wrong tab claimed. */
+	var onSeries =
+		document.body.classList.contains('thallo-shortlist-hub') ||
+		document.body.classList.contains('thallo-shortlist-volume') ||
+		window.location.pathname.indexOf('/ai-shortlist') !== -1;
+
+	var here = document.querySelectorAll(
+		onSeries ? '[data-thallo-nav-research]' : '[data-thallo-nav-blog]'
+	);
+
+	Array.prototype.forEach.call(here, function (link) {
+		link.setAttribute('aria-current', 'page');
+		if (link.closest('.thallo-drawer__links')) {
+			link.classList.add('is-here');
+		}
+	});
+
 	var burger = document.querySelector('[data-thallo-burger]');
 	var drawer = document.querySelector('[data-thallo-drawer]');
 	var close = document.querySelector('[data-thallo-close]');

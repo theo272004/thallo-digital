@@ -1,0 +1,109 @@
+<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+<!-- ══ The AI Shortlist — one volume ══════════════════════════════════════════
+
+     Applied to every child page of the hub by inc/shortlist.php, and listed
+     in the editor as "AI Shortlist · Volume" for the case where a volume has
+     to live somewhere else.
+
+     What the page reads from the editor: the title (the category — "Executive
+     search firms"), the excerpt (the italic question), the Industry term, and
+     the content, which is the study itself. The content is written into the
+     "Thallo · AI Shortlist volume" pattern: the finding, the ranking table,
+     the three surprises, the sources, the patterns, the Google comparison,
+     the questions and the colophon, in that order. The order is fixed across
+     volumes on purpose — a reader of Volume 03 already knows where the table
+     is — so the pattern is not a suggestion.
+
+     What is computed: the volume number and the industry in the eyebrow, the
+     "next volume" line at the foot, the title tag, the description and the
+     card — see inc/shortlist.php. -->
+<!-- wp:group {"tagName":"main","className":"thallo-archive thallo-shortlist thallo-volume","layout":{"type":"constrained","contentSize":"1440px"}} -->
+<main class="wp-block-group thallo-archive thallo-shortlist thallo-volume">
+
+<!-- ══ 1 · The opening ════════════════════════════════════════════════════════
+
+     The way back, the eyebrow, the category and the question. Left-aligned at
+     the reading measure — a volume is a document, and it opens like one. -->
+<!-- wp:group {"className":"thallo-volume__head","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-volume__head">
+
+<!-- wp:html -->
+<p class="thallo-volume__back"><a href="[thallo_shortlist_hub_url]"><span aria-hidden="true">&larr;</span> The AI Shortlist</a></p>
+<!-- /wp:html -->
+
+<!-- wp:html -->
+<p class="thallo-mast__eyebrow">[thallo_shortlist_label]</p>
+<!-- /wp:html -->
+
+<!-- wp:post-title {"level":1,"className":"thallo-mast__title thallo-volume__title"} /-->
+
+<!-- wp:post-excerpt {"className":"thallo-series__question"} /-->
+
+</div>
+<!-- /wp:group -->
+
+<!-- ══ 2 · The study ══════════════════════════════════════════════════════════
+
+     The content, at the reading measure. The two ranking tables inside it are
+     allowed out to the wide measure by the stylesheet, because five columns of
+     figures do not fit in 52rem and a table that scrolls sideways is a table
+     nobody reads to the end. -->
+<!-- wp:group {"className":"thallo-volume__body","layout":{"type":"constrained","contentSize":"44rem","wideSize":"72rem"}} -->
+<div class="wp-block-group thallo-volume__body">
+<!-- wp:post-content {"align":"wide","layout":{"type":"constrained","contentSize":"44rem","wideSize":"72rem"}} /-->
+</div>
+<!-- /wp:group -->
+
+<!-- ══ 3 · Run your own ═══════════════════════════════════════════════════════
+
+     Directly under the questions, because that is the moment a reader wants
+     to type their own. -->
+<!-- wp:html -->
+<section class="thallo-close thallo-close--volume" data-reveal>
+  <span class="thallo-close__mark" aria-hidden="true">
+    <img src="https://thallodigital.com/flower.webp" alt="" decoding="async" loading="lazy" />
+  </span>
+  <div class="thallo-close__say">
+    <h2 class="thallo-close__h">Run your own questions</h2>
+    <p class="thallo-close__p">Write the questions your buyers ask and see how the models answer them today. Free, no account, under a minute.</p>
+  </div>
+  <a class="thallo-btn thallo-btn--solid thallo-close__go" href="https://thallodigital.com/thallo-ai/scan/">
+    Run my scan
+    <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg>
+  </a>
+</section>
+<!-- /wp:html -->
+
+<!-- ══ 4 · What comes next ════════════════════════════════════════════════════
+
+     Read from the calendar, never typed. See thallo_shortlist_next(). -->
+<!-- wp:html -->
+<div class="thallo-next" data-reveal>
+  [thallo_shortlist_next]
+</div>
+<!-- /wp:html -->
+
+<!-- ══ 5 · The list ═══════════════════════════════════════════════════════════ -->
+<!-- wp:html -->
+<section class="thallo-sub thallo-sub--series" data-reveal>
+  <div class="thallo-sub__say">
+    <span class="thallo-sub__mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5" /><path d="m3.5 7 8.5 6 8.5-6" /></svg>
+    </span>
+    <p class="thallo-sub__p"><strong>Get the next volume first.</strong><br />One email when a volume goes up. Nothing else.</p>
+  </div>
+  <form class="thallo-sub__form" data-thallo-subscribe novalidate>
+    <label class="thallo-sub__label" for="thallo-sub-email">Your email address</label>
+    <input class="thallo-sub__input" id="thallo-sub-email" type="email" name="email" placeholder="you@company.com" autocomplete="email" required />
+    <input class="thallo-sub__pot" type="text" name="website_url" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    <button class="thallo-btn thallo-btn--solid thallo-sub__go" type="submit">Send me the next volume</button>
+    <p class="thallo-sub__note" data-thallo-subscribe-note>No spam. Unsubscribe anytime.</p>
+  </form>
+</section>
+<!-- /wp:html -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->

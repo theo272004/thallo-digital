@@ -1,6 +1,13 @@
 {
   "$schema": "https://schemas.wp.org/trunk/theme.json",
   "version": 3,
+  "customTemplates": [
+    {
+      "name": "shortlist-volume",
+      "title": "AI Shortlist · Volume",
+      "postTypes": ["page"]
+    }
+  ],
   "settings": {
     "appearanceTools": true,
     "layout": {

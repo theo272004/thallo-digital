@@ -28,10 +28,6 @@
 <!-- wp:group {"className":"thallo-mast__say","layout":{"type":"default"}} -->
 <div class="wp-block-group thallo-mast__say">
 
-<!-- wp:paragraph {"className":"thallo-mast__eyebrow"} -->
-<p class="thallo-mast__eyebrow">Insights that build authority</p>
-<!-- /wp:paragraph -->
-
 <!-- wp:heading {"level":1,"className":"thallo-mast__title"} -->
 <h1 class="wp-block-heading thallo-mast__title">Ideas that make your brand <em>more visible to AI.</em></h1>
 <!-- /wp:heading -->
@@ -71,22 +67,7 @@
 </div>
 <!-- /wp:group -->
 
-<!-- ══ 2 · Topics ═════════════════════════════════════════════════════════════
-
-     The five subjects this publication is organised around, each with what it
-     holds today. A category with nothing in it says "coming soon" and is not a
-     link, because an empty archive is a dead end dressed as a destination. -->
-<!-- wp:html -->
-<div class="thallo-rule thallo-rule--tight">
-  <h2 class="thallo-rule__h">Top categories</h2>
-</div>
-<!-- /wp:html -->
-
-<!-- wp:shortcode -->
-[thallo_hub_topics]
-<!-- /wp:shortcode -->
-
-<!-- ══ 3 · Featured ═══════════════════════════════════════════════════════════
+<!-- ══ 2 · Featured ═══════════════════════════════════════════════════════════
 
      One article at three times the size of the two beside it. The asymmetry is
      the whole point: a grid of equal cards makes no argument about what to read
@@ -102,19 +83,16 @@
 [thallo_hub_featured]
 <!-- /wp:shortcode -->
 
-<!-- ══ 4 · Latest ═════════════════════════════════════════════════════════════ -->
-<!-- wp:html -->
-<div class="thallo-rule">
-  <h2 class="thallo-rule__h">Latest articles</h2>
-  <a class="thallo-rule__more" href="https://thallodigital.com/blog/">View all articles →</a>
-</div>
-<!-- /wp:html -->
+<!-- ══ 3 · Latest ═════════════════════════════════════════════════════════════
 
+     The heading lives inside the shortcode, not here, because the whole
+     section — rule and grid — is absent until there is a fourth article to
+     put in it. See inc/hub.php. -->
 <!-- wp:shortcode -->
 [thallo_hub_latest]
 <!-- /wp:shortcode -->
 
-<!-- ══ 5 · The invitation ═════════════════════════════════════════════════════
+<!-- ══ 4 · The invitation ═════════════════════════════════════════════════════
 
      One line, one button, and no second landing page at the foot of a
      publication. Everything the scan is and does has a page of its own. -->
@@ -134,7 +112,7 @@
 </section>
 <!-- /wp:html -->
 
-<!-- ══ 6 · The list ═══════════════════════════════════════════════════════════
+<!-- ══ 5 · The list ═══════════════════════════════════════════════════════════
 
      The address goes to the same place the contact form goes — the plugin's
      `enquiry` endpoint, which already has the honeypot, the daily cap and a

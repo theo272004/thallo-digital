@@ -1,0 +1,150 @@
+<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+<!-- ══ The AI Shortlist — the hub ═════════════════════════════════════════════
+
+     Applies itself to the page whose slug is `ai-shortlist`; that is
+     WordPress's own rule for a template named page-<slug>.html, and it is why
+     nothing has to be chosen in the editor.
+
+     What the page reads from the editor: the title (the masthead), the
+     excerpt (the italic question under it) and the content (the introduction
+     — two short paragraphs). Everything else on the page is computed: the
+     volumes are the child pages of this one, published and scheduled, in
+     order — see inc/shortlist.php.
+
+     Same shell as the blog's front page — .thallo-archive .thallo-hub — so the
+     rules, the rhythm between sections, the closing panel and the list are the
+     ones a reader has already seen. -->
+<!-- wp:group {"tagName":"main","className":"thallo-archive thallo-hub thallo-shortlist","layout":{"type":"constrained","contentSize":"1440px"}} -->
+<main class="wp-block-group thallo-archive thallo-hub thallo-shortlist">
+
+<!-- ══ 1 · The masthead ═══════════════════════════════════════════════════════
+
+     Type alone, centred. No photograph beside it: the series is measurement,
+     and the picture it has is the panel of figures directly below.
+
+     No eyebrow either. It read "A research series · Thallo Digital" above the
+     title, and both halves of it were already on the page — the name of the
+     series is the title itself, and whose it is, is the logo in the bar above
+     and the footer below. A line that repeats what is already said twice is a
+     line the eye has to get past to reach the point. -->
+<!-- wp:group {"className":"thallo-mast thallo-mast--solo thallo-mast--series","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-mast thallo-mast--solo thallo-mast--series">
+
+<!-- The title with its last word in the serif italic, from the page's own
+     title. See thallo_shortlist_title(). -->
+<!-- wp:html -->
+<h1 class="thallo-mast__title thallo-mast__title--series">[thallo_shortlist_title]</h1>
+<!-- /wp:html -->
+
+<!-- wp:post-excerpt {"className":"thallo-series__question"} /-->
+
+<!-- wp:group {"className":"thallo-series__intro","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-series__intro">
+<!-- wp:post-content {"layout":{"type":"default"}} /-->
+</div>
+<!-- /wp:group -->
+
+</div>
+<!-- /wp:group -->
+
+<!-- ══ 2 · The method ═════════════════════════════════════════════════════════
+
+     Four figures on the photograph, in the dark glass cards the site uses for
+     its own numbers. Static per season: when the method changes — a fourth
+     model, a different number of runs — this block changes with it, and the
+     colophon on every volume already says which method it was run under. -->
+<!-- wp:html -->
+<section class="thallo-method" data-reveal aria-labelledby="thallo-method-h">
+  <div class="thallo-method__scrim" aria-hidden="true"></div>
+  <div class="thallo-method__say">
+    <h2 class="thallo-method__h" id="thallo-method-h">How every volume is run.</h2>
+    <p class="thallo-method__p">The same questions, the same three models, the same clean sessions — so a volume in Finance can be read against one in Professional Services.</p>
+  </div>
+  <div class="thallo-method__grid">
+    <div class="thallo-method__card">
+      <p class="thallo-method__n" data-count="12">12</p>
+      <h3 class="thallo-method__l">Buying questions</h3>
+      <p class="thallo-method__c">By function, by sector, by situation, and four a buyer would type with no context at all.</p>
+    </div>
+    <div class="thallo-method__card">
+      <p class="thallo-method__n" data-count="3">3</p>
+      <h3 class="thallo-method__l">Models</h3>
+      <p class="thallo-method__c">ChatGPT, Claude and Gemini, asked the same thing on the same day.</p>
+    </div>
+    <div class="thallo-method__card">
+      <p class="thallo-method__n" data-count="3">3</p>
+      <h3 class="thallo-method__l">Runs per question</h3>
+      <p class="thallo-method__c">Because one answer is an anecdote. Three is the start of a pattern.</p>
+    </div>
+    <div class="thallo-method__card">
+      <p class="thallo-method__n" data-count="108">108</p>
+      <h3 class="thallo-method__l">Responses per volume</h3>
+      <p class="thallo-method__c">Every firm named in any of them is counted. Nothing is picked in advance.</p>
+    </div>
+  </div>
+</section>
+<!-- /wp:html -->
+
+<!-- ══ 3 · The volumes ════════════════════════════════════════════════════════
+
+     Published ones link; scheduled ones sit in the list in grey with their
+     date. The list is the child pages of this one — see
+     thallo_shortlist_list(). -->
+<!-- wp:html -->
+<div class="thallo-rule thallo-rule--tight">
+  <h2 class="thallo-rule__h">The volumes</h2>
+  <p class="thallo-rule__note">A new category every three weeks. Dates are fixed; categories after the next one may change.</p>
+</div>
+<!-- /wp:html -->
+
+<!-- wp:shortcode -->
+[thallo_shortlist_volumes]
+<!-- /wp:shortcode -->
+
+<!-- ══ 4 · The list ═══════════════════════════════════════════════════════════
+
+     Same block, same endpoint as the blog's; the note on the row says it came
+     from here. -->
+<!-- wp:html -->
+<section class="thallo-sub thallo-sub--series" data-reveal>
+  <div class="thallo-sub__say">
+    <span class="thallo-sub__mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5" /><path d="m3.5 7 8.5 6 8.5-6" /></svg>
+    </span>
+    <p class="thallo-sub__p"><strong>Get the next volume first.</strong><br />One email when a volume goes up. Nothing else.</p>
+  </div>
+  <form class="thallo-sub__form" data-thallo-subscribe novalidate>
+    <label class="thallo-sub__label" for="thallo-sub-email">Your email address</label>
+    <input class="thallo-sub__input" id="thallo-sub-email" type="email" name="email" placeholder="you@company.com" autocomplete="email" required />
+    <input class="thallo-sub__pot" type="text" name="website_url" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    <button class="thallo-btn thallo-btn--solid thallo-sub__go" type="submit">Send me the next volume</button>
+    <p class="thallo-sub__note" data-thallo-subscribe-note>No spam. Unsubscribe anytime.</p>
+  </form>
+</section>
+<!-- /wp:html -->
+
+<!-- ══ 5 · The invitation ═════════════════════════════════════════════════════
+
+     The scan, offered once, as the thing a reader of this series most
+     obviously wants next: the same questions, on their own category. -->
+<!-- wp:html -->
+<section class="thallo-close" data-reveal>
+  <span class="thallo-close__mark" aria-hidden="true">
+    <img src="https://thallodigital.com/flower.webp" alt="" decoding="async" loading="lazy" />
+  </span>
+  <div class="thallo-close__say">
+    <h2 class="thallo-close__h">Run the questions on your own category</h2>
+    <p class="thallo-close__p">Write the questions your buyers ask and see how the models answer them today. Free, no account, under a minute.</p>
+  </div>
+  <a class="thallo-btn thallo-btn--solid thallo-close__go" href="https://thallodigital.com/thallo-ai/scan/">
+    Run my scan
+    <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg>
+  </a>
+</section>
+<!-- /wp:html -->
+
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->

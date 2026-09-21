@@ -42,3 +42,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Los recorridos grabados y las capturas de revisión. El script que los hace
+# (scripts/record-walkthrough.mjs) sí se versiona — el resultado no: el tutorial
+# de publicar un artículo pesa 6 MB, y un binario de ese tamaño entra en la
+# historia para siempre aunque luego se borre. Se regeneran con el script y se
+# comparten por otro canal.
+/docs/video/
