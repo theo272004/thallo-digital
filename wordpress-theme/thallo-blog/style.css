@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.19.0
+Version:      1.19.1
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -1932,9 +1932,16 @@ a.thallo-topic:hover {
   gap: 1.5rem;
   margin-top: var(--hub-gap);
   padding: 2rem 2.25rem;
-  border: 1px solid var(--wp--preset--color--hairline);
+  border: 1px solid var(--wp--preset--color--olive);
   border-radius: 24px;
-  background: var(--hub-ivory);
+  /* The dark olive, white letters: of the two surfaces the series keeps (Cami,
+     2026-09-20 — grey for what informs, olive for what matters) this is the
+     card that asks the reader to do something, so it takes the dark one. It
+     sat on the ivory before, which read to her as the pale green it was not.
+     The disc and the button swap to white on it so the card has one ground
+     and two lights, rather than olive on olive. */
+  background: var(--wp--preset--color--olive);
+  color: #fff;
 }
 .thallo-close__mark {
   display: flex;
@@ -1944,16 +1951,15 @@ a.thallo-topic:hover {
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;
-  background: var(--wp--preset--color--olive);
+  background: #fff;
   overflow: hidden;
 }
 .thallo-close__mark img {
   width: 1.9rem;
   height: 1.9rem;
   object-fit: contain;
-  /* The isotype is dark on transparent; on the olive disc it has to be the
-     other way round, and inverting it is cheaper than shipping a second file. */
-  filter: brightness(0) invert(1);
+  /* The isotype is dark on transparent, which on the white disc is the right
+     way round already. */
 }
 .thallo-close__say {
   flex: 1 1 22rem;
@@ -1965,19 +1971,28 @@ a.thallo-topic:hover {
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.025em;
-  color: var(--wp--preset--color--olive-ink, #171a10);
+  color: #fff;
 }
 .thallo-close__p {
   margin: 0.6rem 0 0;
   max-width: 48ch;
   font-size: 0.88rem;
   line-height: 1.6;
-  color: var(--wp--preset--color--grey-500);
+  color: rgba(255, 255, 255, 0.78);
 }
 .thallo-close__go {
   flex-shrink: 0;
   gap: 0.35rem;
   padding: 0.85rem 1.6rem;
+}
+.thallo-close .thallo-btn--solid {
+  background: #fff;
+  border-color: #fff;
+  color: var(--wp--preset--color--olive);
+}
+.thallo-close .thallo-btn--solid:hover {
+  background: #f3f4f6;
+  border-color: #f3f4f6;
 }
 .thallo-hub .thallo-sub {
   margin-top: 1.5rem;
@@ -3177,7 +3192,7 @@ a.thallo-vol:focus-visible {
 .thallo-rank figcaption {
   padding: 0.85rem 1.75rem 0.95rem;
   border-top: 1px solid var(--wp--preset--color--hairline);
-  background: var(--wp--preset--color--paper);
+  background: #f9fafb;
 }
 @media (max-width: 720px) {
   .thallo-rank__pos,
@@ -3757,7 +3772,10 @@ a.thallo-vol:focus-visible {
 }
 
 /* ── The colophon ──────────────────────────────────────────────────────────
-   On paper, so it reads as the note at the end and not as another section.
+   On plain grey — it informs, it does not argue — so it reads as the note at
+   the end and not as another section. It was on paper, the site's ivory,
+   which Cami read as a pale green next to the white; grey is the surface the
+   series keeps for what is not the point.
    The two-column table is the method — a definition list the editor can
    write into — and the paragraph under it is the honesty clause every volume
    carries. */
@@ -3766,7 +3784,7 @@ a.thallo-vol:focus-visible {
   padding: 1.75rem 2rem 1.9rem;
   border: 1px solid var(--wp--preset--color--hairline);
   border-radius: 20px;
-  background: var(--wp--preset--color--paper);
+  background: #f9fafb;
 }
 .thallo-colophon > h4 {
   margin: 0 0 0.75rem;
