@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.17.0
+Version:      1.18.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -50,10 +50,22 @@ Text Domain:  thallo-blog
 }
 
 /* The callout used by the "Thallo · callout" pattern. A group with a
-   background gets its padding from theme.json; the rule it hangs on does not
-   exist there. */
-.thallo-callout {
-  border-left: 3px solid var(--wp--preset--color--olive-soft);
+   background gets its padding from theme.json.
+
+   No rule down its left edge: it used to carry a pale olive bar, and on the
+   deep green it read as a stripe of a different green rather than as a mark.
+   Same measure as the paragraphs — 68ch — and flush left with them, or the
+   box runs on past the line the text ends on and the page looks off-centre
+   to its right. And room above it — 3.25rem, the site's own step — because the
+   block gap between two paragraphs is far too little for a solid block
+   arriving after one; a little under it too, so it does not sit on the
+   next line. */
+.wp-block-post-content .thallo-callout {
+  max-width: 68ch;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: var(--wp--preset--spacing--50);
+  margin-bottom: 2rem;
 }
 
 /* ── The ground under the filled blocks ────────────────────────────────────
@@ -226,10 +238,15 @@ Text Domain:  thallo-blog
 
 /* ── The short answer ──────────────────────────────────────────────────────
    Set apart from the prose on purpose. A reader skimming should be able to
-   stop here and leave with the answer; the rule down the left is what tells
-   them this block is that, and not a pull quote or an aside. */
-.thallo-answer {
-  border-left: 3px solid var(--wp--preset--color--olive-soft);
+   stop here and leave with the answer. The deep green is what says so; the
+   pale rule it used to carry down its left read as a stripe, not a mark, and
+   is gone. Same measure and margins as the callout, for the same reasons. */
+.wp-block-post-content .thallo-answer {
+  max-width: 68ch;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: var(--wp--preset--spacing--50);
+  margin-bottom: 2rem;
 }
 .thallo-answer__label {
   letter-spacing: 0.13em;
@@ -266,7 +283,7 @@ Text Domain:  thallo-blog
   display: none;
 }
 .thallo-toc {
-  border-left: 2px solid var(--wp--preset--color--olive-soft);
+  border-left: 3px solid var(--wp--preset--color--olive);
   padding: 0.1rem 0 0.1rem 1.1rem;
   margin: 0 0 var(--wp--preset--spacing--50);
 }
@@ -293,9 +310,14 @@ Text Domain:  thallo-blog
   color: var(--wp--preset--color--grey-500);
   text-decoration: none;
 }
+/* The numbers carry the same weight as the rule on the left, whichever entry
+   is current — a bold rule beside light numerals read as two different
+   things, and a numeral that changed weight with the section read as a
+   flicker. */
 .thallo-toc__list a::before {
   content: counter(toc) ". ";
-  color: var(--wp--preset--color--olive-soft);
+  color: var(--wp--preset--color--olive);
+  font-weight: 700;
 }
 .thallo-toc__list a:hover,
 .thallo-toc__list a.is-current {
@@ -1365,23 +1387,11 @@ body.single .wp-site-blocks > main {
 .thallo-hub .thallo-rule--tight {
   margin-bottom: 1.1rem;
 }
+/* The label alone. It used to carry a small olive tick on its left, the same
+   mark the masthead's eyebrow has; on the hub the words are enough. */
 .thallo-hub .thallo-rule__h {
   position: relative;
-  padding-left: 0.85rem;
-}
-/* The olive tick before a section label, drawn rather than typed — the same
-   mark the masthead's eyebrow carries, so the page has one way of saying "a
-   new section starts here". */
-.thallo-hub .thallo-rule__h::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 2px;
-  height: 0.8rem;
-  border-radius: 2px;
-  background: var(--wp--preset--color--olive);
+  padding-left: 0;
 }
 
 /* ── 1 · The masthead ──────────────────────────────────────────────────────
@@ -1854,23 +1864,17 @@ a.thallo-topic:hover {
 }
 
 /* ── The cards that are not articles yet ───────────────────────────────────
-   Flat ivory, no border on the picture, no hover, no link. They have to read
-   as a shelf waiting to be filled rather than as an article that failed to
-   load, which is why the only words on them are a subject and "Coming soon" —
-   no headline, no date, nothing that could be mistaken for a piece that
-   exists. */
+   Flat ivory, dashed edge, no link — but the same lift on hover as a real
+   card, so the shelf feels like part of the grid and not a dead patch of it.
+   They have to read as a shelf waiting to be filled rather than as an
+   article that failed to load, which is why the only words on them are a
+   subject and "Coming soon" — no headline, no date, nothing that could be
+   mistaken for a piece that exists. */
 .thallo-lead--soon,
 .thallo-side--soon,
 .thallo-tile--soon {
   background: var(--hub-ivory);
   border-style: dashed;
-  border-color: #e4e6dd;
-}
-.thallo-lead--soon:hover,
-.thallo-side--soon:hover,
-.thallo-tile--soon:hover {
-  transform: none;
-  box-shadow: none;
   border-color: #e4e6dd;
 }
 .thallo-soon__media {
@@ -1985,6 +1989,18 @@ a.thallo-topic:hover {
 }
 .thallo-hub .thallo-sub {
   margin-top: 1.5rem;
+}
+
+/* The floor of the hub. The list card is the last thing on the page, and the
+   footer used to sit fifteen rem under it — three separate margins stacked
+   on one another. On the hub the footer follows the card at ordinary section
+   distance. Its hairline stays: the rule is the footer's edge. */
+body.blog .thallo-hub.thallo-archive {
+  padding-bottom: 2.5rem;
+}
+body.blog .thallo-foot {
+  margin-top: 0;
+  padding-top: var(--wp--preset--spacing--50);
 }
 @media (max-width: 760px) {
   .thallo-close {
@@ -2104,7 +2120,7 @@ a.thallo-topic:hover {
   border: 1px solid var(--wp--preset--color--hairline);
   border-radius: 24px;
   margin-top: 1.5rem;
-  padding: 1.75rem 2.5rem;
+  padding: 1.75rem 2.25rem;
 }
 .thallo-sub__say {
   display: flex;
@@ -2128,9 +2144,13 @@ a.thallo-topic:hover {
   line-height: 1.55;
   color: var(--wp--preset--color--olive-ink, #171a10);
 }
+/* A grid, not a wrapping flex row. A wrapping row is as wide as everything
+   laid end to end — field, button and the note under them — so the form used
+   to be a hundred and fifty pixels wider than it looked and the button sat
+   that far short of the edge. The note gets a row of its own. */
 .thallo-sub__form {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: auto auto;
   align-items: center;
   gap: 0.6rem;
 }
@@ -2177,7 +2197,7 @@ a.thallo-topic:hover {
   cursor: pointer;
 }
 .thallo-sub__note {
-  flex-basis: 100%;
+  grid-column: 1 / -1;
   margin: 0;
   font-size: 0.68rem;
   color: #9ca3af;
@@ -2196,9 +2216,10 @@ a.thallo-topic:hover {
   }
   .thallo-sub__form {
     width: 100%;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
   .thallo-sub__input {
-    flex: 1;
+    width: 100%;
   }
 }
 
@@ -2273,10 +2294,13 @@ a.thallo-topic:hover {
    a box — the same information in the shape that fits. */
 /* The box, at the article's width and on its edge. The group it sits in is
    alignwide, and without this the list ran the full 72rem while the prose
-   under it ran 52rem: a box wider than the thing it is a contents of. */
+   under it ran 52rem: a box wider than the thing it is a contents of. The
+   same 52rem as the prose column, not narrower — anything narrower is
+   centred in it, and the list started 64px to the right of the paragraphs
+   it was a contents of. */
 .thallo-post__with-toc > .thallo-toc {
   box-sizing: border-box;
-  max-width: 44rem;
+  max-width: 52rem;
   margin-left: auto;
   margin-right: auto;
 }
