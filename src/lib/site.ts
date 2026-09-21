@@ -42,3 +42,28 @@ export const SITE_URL = 'https://thallodigital.com';
  * WordPress and the theme carries a copy of the navbar and footer instead.
  */
 export const BLOG_URL = `${SITE_URL}/blog/`;
+
+/**
+ * The research.
+ *
+ * The AI Shortlist — the hub, and every volume under it. WordPress again, and
+ * absolute for the same reason BLOG_URL is.
+ *
+ * ## Why this says /blog/ when the series is meant to live at the root
+ *
+ * It has two addresses. WordPress is installed in /blog/, so the hub answers
+ * at /blog/ai-shortlist/ always. It *also* answers at /ai-shortlist/ — the
+ * address Camila asked for, beside /services/ and /results/ — but only once
+ * the rewrite in `deploy/ai-shortlist.htaccess` is pasted into the root
+ * .htaccess by hand. That has not happened yet.
+ *
+ * The theme handles this on its own: it reads the .htaccess, and every link it
+ * prints — the breadcrumb, the hub's list, the canonical, the sitemap — moves
+ * to the root the moment the rule is there. This constant cannot, because it
+ * is baked into a static build that never sees that file.
+ *
+ * So it points at the address that works today. When the rule goes in, change
+ * the line below to `${SITE_URL}/ai-shortlist/` and rebuild — one edit, and it
+ * is the only place on this side that names the series.
+ */
+export const RESEARCH_URL = `${SITE_URL}/blog/ai-shortlist/`;

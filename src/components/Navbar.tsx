@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import { Magnetic } from '@/components/motion';
-import { BASE, BLOG_URL } from '@/lib/site';
+import { BASE, BLOG_URL, RESEARCH_URL } from '@/lib/site';
 
 /**
  * `page` is the route this link owns, when it owns one. The two anchors point
@@ -15,6 +15,14 @@ const LINKS = [
   { label: 'Our Plans', href: `${BASE}/services/`, page: '/services' },
   { label: 'Industries', href: `${BASE}/industries/`, page: '/industries' },
   { label: 'Case Studies', href: `${BASE}/results/`, page: '/results' },
+  /* The AI Shortlist's hub, and through it every volume. Its own entry rather
+     than a link inside the blog: the series is not articles, it does not appear
+     in the blog's archive or feed, and a reader who wants the research should
+     not have to know it was built on WordPress pages to find it.
+
+     Before Blog, because the research is the thing being sold and the blog is
+     the thing around it. See RESEARCH_URL for the two addresses it has. */
+  { label: 'AI Shortlist Series', href: RESEARCH_URL },
   /* WordPress, at /blog/ — index and articles both. It briefly was not: the
      index lived here at /articles/ so it could reuse these components, which
      bought the look and cost the URL. /blog/ and /blog/name/ is the coherent
@@ -79,7 +87,17 @@ export default function Navbar() {
         </a>
 
         {/* Desktop Menu — the page you are on wears the hover colour for good */}
-        <div className="hidden md:flex items-center gap-7">
+        {/* Five labels beside two buttons, so two things give before the words
+            do: the gap closes below xl, and the whole row collapses into the
+            drawer below 1100 rather than the 768 it used to.
+
+            "AI Shortlist Series" is what forced the second one. It is 119px
+            where the label it replaced was 62, and at 1024 the row hung "Book
+            an audit" off the right edge of its own pill by 44px. The client
+            named the series and the pill is the design; what gives is the width
+            at which a bar this full still fits. The blog's copy of this navbar
+            carries the same 1100. */}
+        <div className="hidden min-[1100px]:flex items-center gap-5 xl:gap-7">
           {LINKS.map((l) => {
             const here = isCurrent(l.page);
             return (
@@ -87,7 +105,7 @@ export default function Navbar() {
                 key={l.label}
                 href={l.href}
                 aria-current={here ? 'page' : undefined}
-                className={`text-sm font-semibold transition-colors hover:text-[#39471D] ${
+                className={`whitespace-nowrap text-sm font-semibold transition-colors hover:text-[#39471D] ${
                   here ? 'text-[#39471D]' : 'text-gray-500'
                 }`}
               >
@@ -98,7 +116,7 @@ export default function Navbar() {
         </div>
 
         {/* Right CTA */}
-        <div className="hidden md:flex items-center gap-3 shrink-0">
+        <div className="hidden min-[1100px]:flex items-center gap-3 shrink-0">
           <a
             href={`${BASE}/thallo-ai/scan/`}
             className="px-4 py-2 border border-gray-200 rounded-full text-sm font-semibold text-gray-800 hover:border-gray-400 hover:bg-gray-50 transition-all"
@@ -114,7 +132,7 @@ export default function Navbar() {
 
         {/* Mobile Hamburger */}
         <button
-          className="md:hidden flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 text-gray-800 shrink-0"
+          className="min-[1100px]:hidden flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 text-gray-800 shrink-0"
           onClick={() => setMobileMenuOpen(true)}
           aria-label="Toggle navigation menu"
         >
