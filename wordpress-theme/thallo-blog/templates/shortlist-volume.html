@@ -45,13 +45,14 @@
 
 <!-- ══ 2 · The study ══════════════════════════════════════════════════════════
 
-     The content, at the reading measure. The two ranking tables inside it are
-     allowed out to the wide measure by the stylesheet, because five columns of
-     figures do not fit in 52rem and a table that scrolls sideways is a table
-     nobody reads to the end. -->
-<!-- wp:group {"className":"thallo-volume__body","layout":{"type":"constrained","contentSize":"44rem","wideSize":"72rem"}} -->
+     The content, at the reading measure — 50rem, the same number as
+     `--volume-measure` in the stylesheet; change both or neither. The two
+     ranking tables inside it are allowed out to the wide measure by the
+     stylesheet, because five columns of figures do not fit in 50rem and a
+     table that scrolls sideways is a table nobody reads to the end. -->
+<!-- wp:group {"className":"thallo-volume__body","layout":{"type":"constrained","contentSize":"50rem","wideSize":"72rem"}} -->
 <div class="wp-block-group thallo-volume__body">
-<!-- wp:post-content {"align":"wide","layout":{"type":"constrained","contentSize":"44rem","wideSize":"72rem"}} /-->
+<!-- wp:post-content {"align":"wide","layout":{"type":"constrained","contentSize":"50rem","wideSize":"72rem"}} /-->
 </div>
 <!-- /wp:group -->
 
@@ -75,16 +76,7 @@
 </section>
 <!-- /wp:html -->
 
-<!-- ══ 4 · What comes next ════════════════════════════════════════════════════
-
-     Read from the calendar, never typed. See thallo_shortlist_next(). -->
-<!-- wp:html -->
-<div class="thallo-next" data-reveal>
-  [thallo_shortlist_next]
-</div>
-<!-- /wp:html -->
-
-<!-- ══ 5 · The list ═══════════════════════════════════════════════════════════ -->
+<!-- ══ 4 · The list ═══════════════════════════════════════════════════════════ -->
 <!-- wp:html -->
 <section class="thallo-sub thallo-sub--series" data-reveal>
   <div class="thallo-sub__say">
@@ -101,6 +93,17 @@
     <p class="thallo-sub__note" data-thallo-subscribe-note>No spam. Unsubscribe anytime.</p>
   </form>
 </section>
+<!-- /wp:html -->
+
+<!-- ══ 5 · What comes next ════════════════════════════════════════════════════
+
+     Read from the calendar, never typed — see thallo_shortlist_next(). Under
+     the list, not over it: Cami moved it here (2026-09-20) so the page ends on
+     what is coming rather than asking for an address after saying so. -->
+<!-- wp:html -->
+<div class="thallo-next" data-reveal>
+  [thallo_shortlist_next]
+</div>
 <!-- /wp:html -->
 
 </main>
