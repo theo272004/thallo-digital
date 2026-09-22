@@ -698,10 +698,31 @@ function thallo_shortlist_list() {
 		return '<p class="thallo-cards__empty">' . esc_html__( 'The first volume is being run now. Leave your address below and it comes to you the day it goes up.', 'thallo-blog' ) . '</p>';
 	}
 
+	/* One row — three cards, no more (Cami, 2026-09-21): what is published,
+	   and after it the next dates on the calendar until the row is full. With
+	   one volume out that is the volume and the two in preparation; with four
+	   out it is the three most recent, and the calendar waits its turn. The
+	   numbering is still the volume's place in the full list. */
+	$row  = array();
+	$live_volumes = array();
+	$soon_volumes = array();
+	foreach ( $volumes as $i => $volume ) {
+		if ( 'publish' === $volume->post_status ) {
+			$live_volumes[ $i ] = $volume;
+		} else {
+			$soon_volumes[ $i ] = $volume;
+		}
+	}
+	$row = array_slice( $live_volumes, -3, 3, true );
+	if ( count( $row ) < 3 ) {
+		$row = $row + array_slice( $soon_volumes, 0, 3 - count( $row ), true );
+	}
+	ksort( $row );
+
 	$industries = array();
 	$cards      = '';
 
-	foreach ( $volumes as $i => $volume ) {
+	foreach ( $row as $i => $volume ) {
 		$live     = 'publish' === $volume->post_status;
 		$number   = thallo_shortlist_pad( $i + 1 );
 		$title    = wp_strip_all_tags( get_the_title( $volume ) );
