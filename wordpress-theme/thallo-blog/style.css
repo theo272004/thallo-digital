@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.35.1
+Version:      1.35.2
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -6589,15 +6589,16 @@ body.thallo-shortlist-volume .thallo-foot {
 }
 
 /* The pair, one step further apart: AI back to the dark olive, Google a
-   lighter slate — the two now differ in colour and in weight (Cami,
-   2026-09-22). */
+   lighter slate (Cami, 2026-09-22). The olive rules must exclude Google -
+   the AI surface carries no modifier of its own, so a bare .thallo-surface
+   would paint both. */
 .thallo-volume {
   --google: #6b7280;
 }
-.thallo-volume .thallo-surface {
+.thallo-volume .thallo-surface:not(.thallo-surface--google) {
   --surface: var(--wp--preset--color--olive);
 }
-.thallo-volume .thallo-both__stat {
+.thallo-volume .thallo-both__stat--ai {
   --surface: var(--wp--preset--color--olive);
 }
 .thallo-volume .thallo-catgrid .thallo-cat__n {
@@ -6612,4 +6613,22 @@ body.thallo-shortlist-volume .thallo-foot {
 .thallo-volume .thallo-tag--olive {
   color: var(--wp--preset--color--olive);
   background: rgba(57, 71, 29, 0.1);
+}
+/* And Google, after them, so nothing above can claim its half. */
+.thallo-volume .thallo-surface--google,
+.thallo-volume .thallo-both__stat--google {
+  --surface: var(--google);
+}
+.thallo-volume .thallo-both__stat--google b {
+  color: var(--google);
+}
+.thallo-volume .thallo-mix .thallo-mix__fill {
+  background: var(--google);
+}
+.thallo-volume .thallo-mix .thallo-mix__n {
+  color: var(--google);
+}
+.thallo-volume .thallo-tag--ink {
+  color: #fff;
+  background: var(--google);
 }
