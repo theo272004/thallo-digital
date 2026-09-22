@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.28.12
+Version:      1.28.13
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -3557,9 +3557,18 @@ a.thallo-card:focus-visible {
    archive rule at the foot caps it at 1440 and 90vw. */
 /* 2.5rem past the study on either side — a step out, not the site's
    full width, which read as too far (Cami, 2026-09-22). */
-.thallo-volume > .thallo-panel {
+.thallo-volume > .thallo-panel,
+.thallo-volume > .thallo-volume__colophon,
+.thallo-volume > .thallo-next {
   max-width: min(calc(var(--volume-wide) + 5rem), 90vw);
+}
+.thallo-volume > .thallo-panel {
   padding-inline: 2rem;
+}
+/* The colophon and the next-volume line under the panel take the panel's
+   edges, not the study's (Cami, 2026-09-22). */
+.thallo-volume > .thallo-next p {
+  max-width: none;
 }
 /* Its text starts where the study's does: the inner box is the study's
    measure, centred, so the panel steps out and the words stay on the
@@ -4571,7 +4580,6 @@ a.thallo-card:focus-visible {
   display: none;
 }
 .thallo-volume > .thallo-volume__colophon {
-  max-width: min(var(--volume-wide), 90vw);
   margin-inline: auto;
 }
 .thallo-volume__colophon .thallo-colophon {
@@ -5616,4 +5624,8 @@ body.thallo-shortlist-volume .thallo-foot {
 }
 .thallo-volume__colophon .thallo-colophon {
   margin-top: 0;
+}
+.thallo-volume > .thallo-volume__colophon,
+.thallo-volume > .thallo-next {
+  max-width: min(calc(var(--volume-wide) + 5rem), 90vw);
 }
