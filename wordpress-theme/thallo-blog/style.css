@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.24.8
+Version:      1.24.9
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -4649,12 +4649,27 @@ a.thallo-card:focus-visible {
   margin-top: 1rem;
 }
 
-/* The sources, one column: the bars and the domains at the reading
-   measure, with nothing beside them (the quote card came out — Cami,
-   2026-09-21). */
+/* Edge to edge. The text of a section runs the section's width — the bars,
+   the domains, the case's lines, the aside — instead of stopping at a
+   reading measure with the right half of the page empty (Cami,
+   2026-09-21). The theme's 68ch cap on paragraphs is lifted inside a
+   section for the same reason. Only the finding's two columns keep a
+   measure, because there the figure fills the other half. */
+.thallo-sec p,
+.thallo-sec ul,
+.thallo-sec ol,
 .thallo-sec > .thallo-mix,
-.thallo-sec > .thallo-domains {
-  max-width: 44rem;
+.thallo-sec > .thallo-domains,
+.thallo-volume .thallo-sec > p,
+.thallo-volume .thallo-case .thallo-case__caveat,
+.thallo-volume .thallo-colophon__honesty {
+  max-width: none;
+}
+.thallo-volume .thallo-sec > h2 {
+  max-width: 32ch;
+}
+.thallo-sec__two .thallo-sec__say > p {
+  max-width: 58ch;
 }
 .thallo-sec > .thallo-mix + p,
 .thallo-sec > .thallo-domains + p {
@@ -4755,12 +4770,8 @@ a.thallo-card:focus-visible {
 }
 /* The measure of the text under a heading: wide enough not to leave half
    the column empty, narrow enough to read. One number everywhere. */
-.thallo-volume .thallo-sec > p,
 .thallo-volume .thallo-sec > h2 {
-  max-width: 64ch;
-}
-.thallo-volume .thallo-sec > h2 {
-  max-width: 26ch;
+  max-width: 32ch;
 }
 
 /* ── The head, as the reference opens ──
