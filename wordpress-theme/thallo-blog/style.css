@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.32.1
+Version:      1.32.2
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -6115,4 +6115,32 @@ body.thallo-shortlist-volume .thallo-foot {
 .thallo-card__media--bare::before,
 .thallo-card__media--bare::after {
   content: none;
+}
+
+/* The blog's line under its title in Inter, as the site's standfirsts —
+   the italic is the series', not the blog's (Cami, 2026-09-22). */
+.thallo-blog-home .thallo-blog-hero .thallo-series__question {
+  font-family: var(--wp--preset--font-family--sans);
+  font-style: normal;
+  font-size: var(--t-body);
+  font-weight: 500;
+  line-height: 1.6;
+  max-width: 44ch;
+  color: var(--wp--preset--color--grey-500);
+}
+/* The article card's button in grey — the ghost button — with the olive
+   edge and lift on hover, as the filter pills. The date on one line. */
+.thallo-card--article .thallo-card__go {
+  background: #f3f4f6;
+  color: var(--wp--preset--color--grey-900);
+  border: 1px solid transparent;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+.thallo-card--article:hover .thallo-card__go {
+  background: #fff;
+  border-color: var(--wp--preset--color--olive);
+  color: var(--wp--preset--color--olive);
+}
+.thallo-card--article .thallo-card__date {
+  white-space: nowrap;
 }
