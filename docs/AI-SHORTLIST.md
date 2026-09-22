@@ -62,6 +62,19 @@ con los textos exactos que pidió Camila.
    Tres bloques van como HTML dentro del editor y no como tabla: el reparto
    por tipo de pregunta, la lista de de qué están hechos los resultados y la
    de dominios citados. Se editan, pero con más cuidado que una celda.
+   **La forma nueva (desde el 21-09-2026) es por secciones.** Cami pidió
+   que un estudio se lea como su referencia: cada apartado es un grupo
+   `thallo-sec` a lo ancho, con una etiqueta pequeña encima (`thallo-kicker`:
+   "The finding", "Ranking overview", "Agreement"…), el titular, el texto y
+   el material a dos columnas — `thallo-sec__grid` con `__main` y `__side`,
+   donde el lado es una foto (`thallo-photo`, de las del sitio), una nota
+   (`thallo-note`) o una cita (`thallo-quote`) — sobre bandas grises
+   alternas (`thallo-sec--band`). **La referencia de esa forma es
+   `content/ai-shortlist/executive-search-firms.html`**: para un volumen
+   nuevo, copiar ese archivo y escribir encima, no el patrón (que todavía
+   tiene la forma de una sola columna). El hero lo pone la plantilla: la foto
+   de la derecha la elige el tema por la industria (`thallo_shortlist_art()`).
+
 3. Las tablas de ranking son bloques de tabla normales. La tasa de mención se
    escribe como porcentaje — `78%` — y el tema dibuja la barra en la página.
    La fila de cabecera decide las columnas: `#`, `Firm`, una cabecera con

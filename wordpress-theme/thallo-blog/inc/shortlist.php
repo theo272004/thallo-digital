@@ -597,6 +597,49 @@ function thallo_shortlist_label() {
 add_shortcode( 'thallo_shortlist_label', 'thallo_shortlist_label' );
 
 /**
+ * The photograph beside a volume's title, with the method on a chip.
+ *
+ * Chosen by the volume's industry, from the pictures the site already keeps
+ * for its industry pages — the boardroom for Professional Services, the
+ * tower for Finance, the corridor for Health — so a volume opens on the
+ * same picture as the page that sells work in its category. Anything else
+ * gets the desk with the notebook. Matching is by word, not by slug, so
+ * "Finance", "Fintech" and "Financial services" all land on the same one.
+ *
+ * The chip states the method — three models, 108 responses — because that
+ * is what Cami's reference carries in the corner of its opening picture:
+ * the scope of the study, said once, where the eye lands first.
+ */
+function thallo_shortlist_art() {
+	if ( ! thallo_shortlist_is_volume() ) {
+		return '';
+	}
+
+	$industry = strtolower( thallo_shortlist_industry() );
+	$file     = 'notebook-desk.webp';
+	$map      = array(
+		'professional' => 'industry-professional-services-bg.webp',
+		'finan'        => 'industry-fintech-bg.webp',
+		'fintech'      => 'industry-fintech-bg.webp',
+		'health'       => 'industry-health-tech-bg.webp',
+	);
+	foreach ( $map as $word => $candidate ) {
+		if ( false !== strpos( $industry, $word ) ) {
+			$file = $candidate;
+			break;
+		}
+	}
+
+	return sprintf(
+		'<figure class="thallo-volume__art"><img src="%1$s" alt="" decoding="async" /><span class="thallo-volume__chip"><span class="thallo-volume__chip-l">%2$s</span>%3$s</span></figure>',
+		esc_url( 'https://thallodigital.com/' . $file ),
+		esc_html__( 'The study', 'thallo-blog' ),
+		esc_html__( '12 questions · 3 models · 108 responses', 'thallo-blog' )
+	);
+}
+add_shortcode( 'thallo_shortlist_art', 'thallo_shortlist_art' );
+
+/**
  * The line at the foot of a volume that says what comes next.
  *
  * Read from the calendar rather than typed, so it is never a promise about a

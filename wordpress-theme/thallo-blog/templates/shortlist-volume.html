@@ -28,6 +28,9 @@
 <!-- wp:group {"className":"thallo-volume__head","layout":{"type":"default"}} -->
 <div class="wp-block-group thallo-volume__head">
 
+<!-- wp:group {"className":"thallo-volume__text","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-volume__text">
+
 <!-- wp:html -->
 <p class="thallo-volume__back"><a href="[thallo_shortlist_hub_url]"><span aria-hidden="true">&larr;</span> The AI Shortlist</a></p>
 <!-- /wp:html -->
@@ -39,6 +42,18 @@
 <!-- wp:post-title {"level":1,"className":"thallo-mast__title thallo-volume__title"} /-->
 
 <!-- wp:post-excerpt {"className":"thallo-series__question"} /-->
+
+</div>
+<!-- /wp:group -->
+
+<!-- The photograph beside the title, chosen by the volume's industry — the
+     boardroom for Professional Services, the tower for Finance — with the
+     method on a chip in its corner. See thallo_shortlist_art(). Cami's
+     reference (2026-09-21) opens every study this way: text left, picture
+     right, the two ending on the same line. -->
+<!-- wp:html -->
+[thallo_shortlist_art]
+<!-- /wp:html -->
 
 </div>
 <!-- /wp:group -->
@@ -56,50 +71,30 @@
 </div>
 <!-- /wp:group -->
 
-<!-- ══ 3 · Run your own ═══════════════════════════════════════════════════════
+<!-- ══ 3 · The invitation ═════════════════════════════════════════════════════
 
-     Directly under the questions, because that is the moment a reader wants
-     to type their own. -->
+     The site's closing photograph panel, as on the hub: the scan as the
+     first button, the audit as the second. It replaces the olive card and
+     the mailing list that used to follow it — with "Book an audit" on the
+     panel the list was a second ask on the same screen (Cami, 2026-09-21). -->
 <!-- wp:html -->
-<section class="thallo-close thallo-close--volume" data-reveal>
-  <span class="thallo-close__mark" aria-hidden="true">
-    <img src="https://thallodigital.com/flower.webp" alt="" decoding="async" loading="lazy" />
-  </span>
-  <div class="thallo-close__say">
-    <h2 class="thallo-close__h">Run your own questions</h2>
-    <p class="thallo-close__p">Write the questions your buyers ask and see how the models answer them today. Free, no account, under a minute.</p>
+<section class="thallo-panel thallo-panel--volume" data-reveal aria-labelledby="thallo-panel-h">
+  <img class="thallo-panel__img" src="https://thallodigital.com/results-bg.webp" alt="" decoding="async" loading="lazy" />
+  <div class="thallo-panel__scrim" aria-hidden="true"></div>
+  <div class="thallo-panel__say">
+    <h2 class="thallo-panel__h" id="thallo-panel-h">Run the questions on your own category.</h2>
+    <p class="thallo-panel__p">Write the questions your buyers ask and see how the models answer them today. Free, no account, under a minute.</p>
+    <div class="thallo-panel__go">
+      <a class="thallo-panel__btn thallo-panel__btn--solid" href="https://thallodigital.com/thallo-ai/scan/">Run my scan <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a>
+      <a class="thallo-panel__btn thallo-panel__btn--ghost" href="https://thallodigital.com/contact/">Book an audit <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a>
+    </div>
   </div>
-  <a class="thallo-btn thallo-btn--solid thallo-close__go" href="https://thallodigital.com/thallo-ai/scan/">
-    Run my scan
-    <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg>
-  </a>
 </section>
 <!-- /wp:html -->
 
-<!-- ══ 4 · The list ═══════════════════════════════════════════════════════════ -->
-<!-- wp:html -->
-<section class="thallo-sub thallo-sub--series" data-reveal>
-  <div class="thallo-sub__say">
-    <span class="thallo-sub__mark" aria-hidden="true">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5" /><path d="m3.5 7 8.5 6 8.5-6" /></svg>
-    </span>
-    <p class="thallo-sub__p"><strong>Get the next volume first.</strong><br />One email when a volume goes up. Nothing else.</p>
-  </div>
-  <form class="thallo-sub__form" data-thallo-subscribe novalidate>
-    <label class="thallo-sub__label" for="thallo-sub-email">Your email address</label>
-    <input class="thallo-sub__input" id="thallo-sub-email" type="email" name="email" placeholder="you@company.com" autocomplete="email" required />
-    <input class="thallo-sub__pot" type="text" name="website_url" tabindex="-1" autocomplete="off" aria-hidden="true" />
-    <button class="thallo-btn thallo-btn--solid thallo-sub__go" type="submit">Send me the next volume</button>
-    <p class="thallo-sub__note" data-thallo-subscribe-note>No spam. Unsubscribe anytime.</p>
-  </form>
-</section>
-<!-- /wp:html -->
+<!-- ══ 4 · What comes next ════════════════════════════════════════════════════
 
-<!-- ══ 5 · What comes next ════════════════════════════════════════════════════
-
-     Read from the calendar, never typed — see thallo_shortlist_next(). Under
-     the list, not over it: Cami moved it here (2026-09-20) so the page ends on
-     what is coming rather than asking for an address after saying so. -->
+     Read from the calendar, never typed — see thallo_shortlist_next(). -->
 <!-- wp:html -->
 <div class="thallo-next" data-reveal>
   [thallo_shortlist_next]
