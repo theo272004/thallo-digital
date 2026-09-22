@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.29.1
+Version:      1.29.2
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -3539,7 +3539,7 @@ a.thallo-card:focus-visible {
   --volume-measure: 50rem;
   /* The wide measure: 80rem. The site’s 1440 left the text of a section
      in the left third with nothing beside it; 72rem boxed the page. */
-  --volume-wide: 80rem; /* a little more of the sides again, by Cami (2026-09-22); 90vw still caps it below 1424px */
+  --volume-wide: 78rem; /* 76 then "a little more" (Cami, 2026-09-22); the study stops 1.5rem short of 90vw so the panel can still step out past it */
 }
 /* Both measures are centred boxes with left-aligned text, so the head, the
    study and the wide tables all hang from the same two verticals — the study
@@ -3560,10 +3560,10 @@ a.thallo-card:focus-visible {
 .thallo-volume > .thallo-panel,
 .thallo-volume > .thallo-volume__colophon,
 .thallo-volume > .thallo-next {
-  max-width: min(calc(var(--volume-wide) + 5rem), 90vw);
+  max-width: min(calc(var(--volume-wide) + 3rem), 90vw);
 }
 .thallo-volume > .thallo-panel {
-  padding-inline: 2rem;
+  padding-inline: 1.5rem;
 }
 /* The colophon and the next-volume line under the panel take the panel's
    edges, not the study's (Cami, 2026-09-22). */
@@ -3574,7 +3574,7 @@ a.thallo-card:focus-visible {
    measure, centred, so the panel steps out and the words stay on the
    line (Cami, 2026-09-22). */
 .thallo-volume > .thallo-panel > .thallo-panel__say {
-  max-width: min(var(--volume-wide), calc(90vw - 4rem));
+  max-width: min(var(--volume-wide), calc(90vw - 3rem));
   width: 100%;
   margin-inline: auto;
 }
@@ -3585,7 +3585,7 @@ a.thallo-card:focus-visible {
 .thallo-volume > .thallo-end,
 .thallo-volume > .thallo-next,
 .thallo-volume > .thallo-volume__body {
-  max-width: min(var(--volume-wide), 90vw);
+  max-width: min(var(--volume-wide), calc(90vw - 3rem));
   margin-inline: auto;
 }
 /* The study's wide track is capped at 90vw between 1024 and 1700 by the
@@ -5627,7 +5627,7 @@ body.thallo-shortlist-volume .thallo-foot {
 }
 .thallo-volume > .thallo-volume__colophon,
 .thallo-volume > .thallo-next {
-  max-width: min(calc(var(--volume-wide) + 5rem), 90vw);
+  max-width: min(calc(var(--volume-wide) + 3rem), 90vw);
 }
 
 /* ── The rhythm inside a section ──────────────────────────────────────────
