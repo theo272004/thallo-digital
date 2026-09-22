@@ -360,7 +360,10 @@ add_filter( 'body_class', 'thallo_shortlist_body_class' );
  * endpoint with a different note on the row it writes.
  */
 function thallo_shortlist_scripts() {
-	if ( ! is_page() || ( ! thallo_shortlist_is_hub() && ! thallo_shortlist_is_volume() ) ) {
+	/* The blog's front page speaks the series' language now — the same cards,
+	   filter, pager and mark — so it takes the same script. */
+	$blog_home = is_home() || is_front_page();
+	if ( ! $blog_home && ( ! is_page() || ( ! thallo_shortlist_is_hub() && ! thallo_shortlist_is_volume() ) ) ) {
 		return;
 	}
 
