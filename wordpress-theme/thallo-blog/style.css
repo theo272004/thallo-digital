@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.29.0
+Version:      1.29.1
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -3539,7 +3539,7 @@ a.thallo-card:focus-visible {
   --volume-measure: 50rem;
   /* The wide measure: 80rem. The site’s 1440 left the text of a section
      in the left third with nothing beside it; 72rem boxed the page. */
-  --volume-wide: 76rem; /* 72 left too much at the sides, 80 ran loose; 76 uses the room and keeps an edge (Cami, 2026-09-22) */
+  --volume-wide: 80rem; /* a little more of the sides again, by Cami (2026-09-22); 90vw still caps it below 1424px */
 }
 /* Both measures are centred boxes with left-aligned text, so the head, the
    study and the wide tables all hang from the same two verticals — the study
