@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.28.2
+Version:      1.28.3
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -5196,22 +5196,25 @@ a.thallo-card:focus-visible {
    like every block; without it, or with less motion asked for, both are
    simply there. */
 /* From the right, both — the aside first, the card after (Cami, 2026-09-22). */
+/* A longer travel, the site's easing — a fast start that settles — and the
+   two a beat apart, so they read as one gesture rather than two pops
+   (Cami, 2026-09-22: "más fluido"). */
 .thallo-reveal .thallo-volume__note,
 .thallo-reveal .thallo-volume__chip {
   opacity: 0;
-  transform: translateX(28px);
+  transform: translateX(72px);
 }
 .thallo-reveal.is-in .thallo-volume__note,
 .thallo-reveal.is-in .thallo-volume__chip {
   opacity: 1;
   transform: none;
-  transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 0.9s ease-out, transform 1.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .thallo-reveal.is-in .thallo-volume__note {
-  transition-delay: 0.5s;
+  transition-delay: 0.35s;
 }
 .thallo-reveal.is-in .thallo-volume__chip {
-  transition-delay: 0.8s;
+  transition-delay: 0.6s;
 }
 .thallo-volume__note {
   position: absolute;
