@@ -434,7 +434,8 @@ function thallo_blog_articles() {
 			. '<span class="thallo-card__h">' . esc_html( get_the_title( $post ) ) . '</span>'
 			. '<span class="thallo-card__p">' . esc_html( wp_trim_words( get_the_excerpt( $post ), 28 ) ) . '</span>'
 			. '<span class="thallo-card__foot">'
-			. '<span class="thallo-card__date">' . esc_html( get_the_date( 'j F Y', $post ) ) . ' · ' . esc_html( thallo_blog_hub_minutes( $post->ID ) ) . '</span>'
+			/* The reading time alone — no date (Cami, 2026-09-22). */
+			. '<span class="thallo-card__date">' . esc_html( thallo_blog_hub_minutes( $post->ID ) ) . '</span>'
 			. '<span class="thallo-card__go">' . esc_html__( 'Read article', 'thallo-blog' ) . ' <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></span>'
 			. '</span>'
 			. '</span>';
