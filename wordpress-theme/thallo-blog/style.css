@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.34.4
+Version:      1.35.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -6530,4 +6530,60 @@ body.thallo-shortlist-volume .thallo-foot {
 }
 .thallo-card--article.thallo-card--soon .thallo-card__media--bare {
   background: #eef0f2;
+}
+
+/* Google in a mid slate rather than the ink: against olive the near-black
+   read as "dark", not as a second colour (Cami, 2026-09-22). One value,
+   said once, for every Google figure in a volume. */
+.thallo-volume {
+  --google: #4b5563;
+}
+.thallo-volume .thallo-surface--google {
+  --surface: var(--google);
+}
+.thallo-volume .thallo-both__stat--google {
+  --surface: var(--google);
+}
+.thallo-volume .thallo-mix .thallo-mix__fill {
+  background: var(--google);
+}
+.thallo-volume .thallo-mix .thallo-mix__n {
+  color: var(--google);
+}
+.thallo-volume .thallo-tag--ink {
+  background: var(--google);
+}
+
+/* The questions print under the invitation (thallo_shortlist_questions);
+   hidden where the writer keeps them, at the end of the content. */
+/* The questions are the last section of the content and print again under
+   the invitation, so the copy in the body is hidden — as the colophon is. */
+.thallo-volume__body .wp-block-post-content > .thallo-sec:last-child {
+  display: none;
+}
+.thallo-volume__questions .thallo-sec {
+  margin-top: 0;
+}
+.thallo-volume > .thallo-volume__questions {
+  max-width: min(calc(var(--volume-wide) + 6rem), calc(100vw - 3rem));
+  margin: var(--sec-gap, 4rem) auto 0;
+}
+.thallo-volume__questions .thallo-sec > .thallo-kicker,
+.thallo-volume__questions .thallo-sec > h2,
+.thallo-volume__questions .thallo-sec > p,
+.thallo-volume__questions .thallo-qgrid {
+  max-width: min(var(--volume-wide), calc(90vw - 3rem));
+  margin-inline: auto;
+}
+
+/* The two readings start on one line: the tag sits above its paragraph
+   rather than in front of it, so "In the answers" and "On the page" — two
+   labels of different widths — no longer push their text to different
+   places (Cami, 2026-09-22). */
+.thallo-both p .thallo-tag {
+  display: table;
+  margin: 0 0 0.5rem;
+}
+.thallo-volume .thallo-both p + p {
+  margin-top: 1.25rem;
 }

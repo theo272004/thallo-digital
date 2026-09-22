@@ -720,6 +720,41 @@ function thallo_shortlist_colophon() {
 add_shortcode( 'thallo_shortlist_colophon', 'thallo_shortlist_colophon' );
 
 /**
+ * The twelve questions, for the foot of the page.
+ *
+ * Cami moved them under the invitation (2026-09-22): the study ends on its
+ * argument, the reader is asked, and the questions are the appendix that
+ * lets them check the work. Lifted from the content the same way the
+ * colophon is, so the writer keeps every part of a volume in one file.
+ */
+function thallo_shortlist_questions() {
+	if ( ! thallo_shortlist_is_volume() ) {
+		return '';
+	}
+
+	$content = (string) get_post()->post_content;
+	$start   = strpos( $content, '<!-- wp:paragraph {"className":"thallo-kicker"} -->' . "
+" . '<p class="thallo-kicker">The questions</p>' );
+	if ( false === $start ) {
+		return '';
+	}
+
+	/* Back up to the section that holds it. */
+	$open = strrpos( substr( $content, 0, $start ), '<!-- wp:group {"className":"thallo-sec"' );
+	if ( false === $open ) {
+		return '';
+	}
+
+	$blocks = parse_blocks( substr( $content, $open ) );
+	if ( empty( $blocks[0] ) ) {
+		return '';
+	}
+
+	return '<div class="thallo-volume__questions">' . render_block( $blocks[0] ) . '</div>';
+}
+add_shortcode( 'thallo_shortlist_questions', 'thallo_shortlist_questions' );
+
+/**
  * The line at the foot of a volume that says what comes next.
  *
  * Read from the calendar rather than typed, so it is never a promise about a
