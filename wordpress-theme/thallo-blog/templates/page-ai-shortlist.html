@@ -58,40 +58,97 @@
 </div>
 <!-- /wp:group -->
 
-<!-- ══ 2 · The method ═════════════════════════════════════════════════════════
+<!-- ══ 2 · The tool, run on a category ══════════════════════════════════════
 
-     Four figures on the photograph, in the dark glass cards the site uses for
-     its own numbers. Static per season: when the method changes — a fourth
-     model, a different number of runs — this block changes with it, and the
-     colophon on every volume already says which method it was run under. -->
+     What a volume is: the scan anybody can run on their own brand, pointed
+     at a whole category instead. So the block says how the tool works and
+     shows it working — Cami's ask (2026-09-21): the method as the tool, with
+     a visual of the tool.
+
+     Left, the four steps of the scan as the scan itself numbers them,
+     rewritten for the series, with the figures in them. Right, the scan's
+     own white card as it looks mid-run, on the site's photograph: one of
+     Volume 01's questions typing itself, the three models answering with the
+     firms they name, and the shortlist filling in underneath. Every figure on
+     the card is from Volume 01 — the tool does not invent numbers, and its
+     demo must not either. The motion is CSS, started by the same reveal that
+     lifts every block on this page; a reader who asked for less motion sees
+     the card finished.
+
+     Static per season: when the method changes — a fourth model, a different
+     number of runs — this block changes with it, and the colophon on every
+     volume already says which method it was run under. -->
 <!-- wp:html -->
-<section class="thallo-method" data-reveal aria-labelledby="thallo-method-h">
-  <div class="thallo-method__scrim" aria-hidden="true"></div>
-  <div class="thallo-method__say">
-    <h2 class="thallo-method__h" id="thallo-method-h">How every volume is run.</h2>
-    <p class="thallo-method__p">The same questions, the same three models, the same clean sessions — so a volume in Finance can be read against one in Professional Services.</p>
-  </div>
-  <div class="thallo-method__grid">
-    <div class="thallo-method__card">
-      <p class="thallo-method__n" data-count="12">12</p>
-      <h3 class="thallo-method__l">Buying questions</h3>
-      <p class="thallo-method__c">By function, by sector, by situation, and four a buyer would type with no context at all.</p>
+<section class="thallo-run" data-reveal aria-labelledby="thallo-run-h">
+  <div class="thallo-run__scrim" aria-hidden="true"></div>
+  <div class="thallo-run__grid">
+
+    <div class="thallo-run__say">
+      <p class="thallo-run__eyebrow">How a volume is made</p>
+      <h2 class="thallo-run__h" id="thallo-run-h">The same scan, run on a whole category.</h2>
+      <p class="thallo-run__p">Every volume is the scan you can run on your own brand, pointed at an industry instead: the questions its buyers ask, put to three models, and every firm they name, counted.</p>
+
+      <ol class="thallo-steps">
+        <li class="thallo-step">
+          <span class="thallo-step__n">1</span>
+          <span class="thallo-step__say"><strong>One category</strong>Executive search, tax resolution, fractional CFOs — one at a time, three weeks apart.</span>
+        </li>
+        <li class="thallo-step">
+          <span class="thallo-step__n">2</span>
+          <span class="thallo-step__say"><strong>12 buying questions</strong>By function, by sector, by situation, and four a buyer would type with no context at all.</span>
+        </li>
+        <li class="thallo-step">
+          <span class="thallo-step__n">3</span>
+          <span class="thallo-step__say"><strong>3 models, 3 runs each</strong>ChatGPT, Claude and Gemini, clean sessions, the same day. 108 answers per volume.</span>
+        </li>
+        <li class="thallo-step">
+          <span class="thallo-step__n">4</span>
+          <span class="thallo-step__say"><strong>The shortlist</strong>Every firm named in any answer is counted. Nothing is picked in advance.</span>
+        </li>
+      </ol>
+
+      <a class="thallo-run__go" href="https://thallodigital.com/thallo-ai/scan/">Run it on your brand <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a>
     </div>
-    <div class="thallo-method__card">
-      <p class="thallo-method__n" data-count="3">3</p>
-      <h3 class="thallo-method__l">Models</h3>
-      <p class="thallo-method__c">ChatGPT, Claude and Gemini, asked the same thing on the same day.</p>
+
+    <div class="thallo-console" aria-label="The scan, mid-run, on Volume 01">
+      <div class="thallo-console__top">
+        <ol class="thallo-console__steps" aria-hidden="true">
+          <li>Brand</li><li>Questions</li><li class="is-on">Scanning</li><li>Report</li>
+        </ol>
+        <span class="thallo-console__tag">Volume 01</span>
+      </div>
+
+      <p class="thallo-console__q"><span class="thallo-console__ql">Question 10 of 12</span><span class="thallo-console__type">What are the best executive search firms in the US?</span></p>
+
+      <ul class="thallo-console__models">
+        <li class="thallo-console__model" style="--i: 0">
+          <span class="thallo-console__who">ChatGPT</span>
+          <span class="thallo-console__named"><span>Korn Ferry</span><span>Spencer Stuart</span><span>JM Search</span></span>
+        </li>
+        <li class="thallo-console__model" style="--i: 1">
+          <span class="thallo-console__who">Claude</span>
+          <span class="thallo-console__named"><span>Korn Ferry</span><span>Spencer Stuart</span><span>Heidrick &amp; Struggles</span></span>
+        </li>
+        <li class="thallo-console__model" style="--i: 2">
+          <span class="thallo-console__who">Gemini</span>
+          <span class="thallo-console__named"><span>Korn Ferry</span><span>Cowen Partners</span><span>Talentfoot</span></span>
+        </li>
+      </ul>
+
+      <div class="thallo-console__list">
+        <p class="thallo-console__ll">Named by AI <span>Mention rate · 108 responses</span></p>
+        <ol class="thallo-console__rows">
+          <li style="--pct: 72; --i: 0"><span>Korn Ferry</span><span class="thallo-console__bar"><i></i></span><b>72%</b></li>
+          <li style="--pct: 71; --i: 1"><span>Spencer Stuart</span><span class="thallo-console__bar"><i></i></span><b>71%</b></li>
+          <li style="--pct: 70; --i: 2"><span>Heidrick &amp; Struggles</span><span class="thallo-console__bar"><i></i></span><b>70%</b></li>
+          <li style="--pct: 69; --i: 3"><span>Russell Reynolds</span><span class="thallo-console__bar"><i></i></span><b>69%</b></li>
+          <li style="--pct: 47; --i: 4"><span>Egon Zehnder</span><span class="thallo-console__bar"><i></i></span><b>47%</b></li>
+        </ol>
+      </div>
+
+      <p class="thallo-console__foot"><span class="thallo-console__dot" aria-hidden="true"></span>Run 3 of 3 · 12 questions · 3 models · 108 responses</p>
     </div>
-    <div class="thallo-method__card">
-      <p class="thallo-method__n" data-count="3">3</p>
-      <h3 class="thallo-method__l">Runs per question</h3>
-      <p class="thallo-method__c">Because one answer is an anecdote. Three is the start of a pattern.</p>
-    </div>
-    <div class="thallo-method__card">
-      <p class="thallo-method__n" data-count="108">108</p>
-      <h3 class="thallo-method__l">Responses per volume</h3>
-      <p class="thallo-method__c">Every firm named in any of them is counted. Nothing is picked in advance.</p>
-    </div>
+
   </div>
 </section>
 <!-- /wp:html -->
