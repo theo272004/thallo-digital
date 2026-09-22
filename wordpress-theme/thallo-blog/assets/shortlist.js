@@ -90,6 +90,7 @@
     var start = null;
 
     el.style.fontVariantNumeric = 'tabular-nums';
+    var delay = again ? 0 : parseInt(el.dataset.delay || '0', 10);
 
     function frame(now) {
       if (start === null) start = now;
@@ -101,7 +102,8 @@
     }
 
     el.textContent = prefix + (0).toFixed(decimals).replace('.', sep) + suffix;
-    requestAnimationFrame(frame);
+    if (delay) setTimeout(function () { requestAnimationFrame(frame); }, delay);
+    else requestAnimationFrame(frame);
   }
 
   /* The big number of the finding counts too; it is not marked in the
@@ -116,6 +118,14 @@
      volume should be typing "96%", not an attribute. */
   root.querySelectorAll('.thallo-cat__n, .thallo-mix__n').forEach(function (el) {
     el.setAttribute('data-count', '');
+  });
+
+  /* The hub's card: its four rates count as their bars fill, 3.2s after
+     the panel arrives — the moment the stylesheet gives the bars — and a
+     click on a row runs the row again (Cami, 2026-09-22). */
+  root.querySelectorAll('.thallo-console__rows b').forEach(function (el) {
+    el.setAttribute('data-count', '');
+    el.dataset.delay = '3200';
   });
 
   /* The per-model table has no bars, but its figures count — on entrance
@@ -175,7 +185,7 @@
      reading's two stats. The bar is reset by dropping its transition,
      collapsing it, forcing a frame, and letting it grow. */
   function replay(scope) {
-    var fills = scope.querySelectorAll('.thallo-rate__fill, .thallo-mix__fill');
+    var fills = scope.querySelectorAll('.thallo-rate__fill, .thallo-mix__fill, .thallo-console__bar i');
     var figs = scope.querySelectorAll('[data-count], .thallo-both__stat b');
     /* Bars drawn as pseudo-elements — the four by type, a reading's two —
        are collapsed by a class for one frame; the track under them never
@@ -200,7 +210,7 @@
 
   root.addEventListener('click', function (event) {
     if (event.target.closest('a, button')) return;
-    var hit = event.target.closest('.thallo-rank tbody tr, .thallo-models tbody tr, .thallo-mix li, .thallo-catgrid > div, .thallo-both');
+    var hit = event.target.closest('.thallo-rank tbody tr, .thallo-models tbody tr, .thallo-mix li, .thallo-catgrid > div, .thallo-both, .thallo-console__rows li');
     if (hit) replay(hit);
   });
 })();

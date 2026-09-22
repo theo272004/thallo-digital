@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.31.0
+Version:      1.31.1
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -3027,14 +3027,9 @@ select:focus-visible,
   transition-delay: calc(3.2s + var(--i, 0) * 0.12s);
   transform: scaleX(1);
 }
-.thallo-reveal .thallo-console__rows b {
-  opacity: 0;
-}
-.thallo-reveal.is-in .thallo-console__rows b {
-  transition: opacity 0.4s;
-  transition-delay: calc(3.6s + var(--i, 0) * 0.12s);
-  opacity: 1;
-}
+/* The figures count (assets/shortlist.js) instead of fading in: a fade
+   over a count hid half of it. They are simply there, at 0, until the
+   bars start. */
 @media (max-width: 1023.98px) {
   .thallo-run__grid {
     grid-template-columns: minmax(0, 1fr);
@@ -5794,7 +5789,8 @@ body.thallo-shortlist-volume .thallo-foot {
 .thallo-models tbody tr,
 .thallo-mix li,
 .thallo-catgrid > div,
-.thallo-both {
+.thallo-both,
+.thallo-console__rows li {
   cursor: pointer;
 }
 
