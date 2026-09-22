@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.22.2
+Version:      1.23.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -2529,6 +2529,22 @@ select:focus-visible,
   --hub-ivory: #fbfbf8;
   --hub-gap: 5rem;
   --cream: #f3e6c1; /* the figure colour on the site's dark panels */
+
+  /* The type scale — five sizes, and every heading and paragraph on the hub
+     and in a volume takes one of them. There were eleven (Cami, 2026-09-21:
+     "una melcocha de tamaños"). The page title; the section heading, which
+     is also the heading of the two dark panels; the card heading, for
+     anything at h3 — a volume card, a note, a firm's reading, the case, the
+     aside; the body; and the label, small capitals. The one line in the
+     serif italic — the question, a quote, the overlap — has its own size,
+     because it is a different voice, not a different rank. */
+  --t-page: clamp(2.25rem, 4vw, 3rem);
+  --t-section: clamp(1.75rem, 2.8vw, 2.25rem);
+  --t-card: 1.35rem;
+  --t-body: 1rem;
+  --t-small: 0.9rem;
+  --t-label: 0.68rem;
+  --t-italic: 1.35rem;
 }
 
 /* ── The entrance ──────────────────────────────────────────────────────────
@@ -2585,7 +2601,7 @@ select:focus-visible,
 .thallo-mast__title--series {
   max-width: 16ch;
   margin-inline: auto;
-  font-size: clamp(2.25rem, 4vw, 3rem);
+  font-size: var(--t-page);
   line-height: 1.05;
   letter-spacing: -0.025em;
 }
@@ -2604,7 +2620,7 @@ select:focus-visible,
   max-width: 56ch;
   font-family: var(--wp--preset--font-family--serif);
   font-style: italic;
-  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-size: var(--t-italic);
   line-height: 1.35;
   color: var(--wp--preset--color--grey-900);
 }
@@ -2652,10 +2668,12 @@ select:focus-visible,
 .thallo-series__intro {
   margin-top: 1.25rem;
 }
+/* 100ch: two lines at 1280 and up, without running the width of the
+   page — 118 did, and read as a banner (Cami, 2026-09-21). */
 .thallo-series__intro p {
-  max-width: 118ch;
+  max-width: 100ch;
   margin: 0 auto 0.6rem;
-  font-size: 0.95rem;
+  font-size: var(--t-small);
   line-height: 1.6;
   color: var(--wp--preset--color--grey-500);
 }
@@ -2692,7 +2710,7 @@ select:focus-visible,
 }
 .thallo-run__eyebrow {
   margin: 0 0 0.75rem;
-  font-size: 0.68rem;
+  font-size: var(--t-label);
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -2701,7 +2719,7 @@ select:focus-visible,
 .thallo-run__h {
   margin: 0 0 0.75rem;
   max-width: 18ch;
-  font-size: clamp(1.75rem, 2.8vw, 2.25rem);
+  font-size: var(--t-section);
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: -0.03em;
@@ -2710,7 +2728,7 @@ select:focus-visible,
 .thallo-run__p {
   margin: 0;
   max-width: 48ch;
-  font-size: 0.92rem;
+  font-size: var(--t-body);
   line-height: 1.55;
   color: var(--wp--preset--color--olive-soft);
 }
@@ -2745,14 +2763,14 @@ select:focus-visible,
 }
 .thallo-step__say {
   padding-top: 0.15rem;
-  font-size: 0.82rem;
+  font-size: var(--t-small);
   line-height: 1.45;
   color: var(--wp--preset--color--olive-soft);
 }
 .thallo-step__say strong {
   display: block;
   margin-bottom: 0.1rem;
-  font-size: 0.92rem;
+  font-size: var(--t-body);
   font-weight: 700;
   color: #fff;
 }
@@ -3124,7 +3142,7 @@ a.thallo-card:focus-visible {
 .thallo-card__h {
   display: block;
   margin-top: 1.25rem;
-  font-size: 1.5rem;
+  font-size: var(--t-card);
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.025em;
@@ -3154,7 +3172,7 @@ a.thallo-card:focus-visible {
 .thallo-card__label {
   display: block;
   margin-top: 0.5rem;
-  font-size: 0.875rem;
+  font-size: var(--t-small);
   font-weight: 600;
   line-height: 1.375;
   color: var(--wp--preset--color--olive);
@@ -3164,14 +3182,14 @@ a.thallo-card:focus-visible {
 .thallo-card__soon {
   display: block;
   margin-top: 0.75rem;
-  font-size: 0.875rem;
+  font-size: var(--t-small);
   font-weight: 500;
   color: #9ca3af;
 }
 .thallo-card__p {
   display: block;
   margin-top: 1rem;
-  font-size: 0.875rem;
+  font-size: var(--t-small);
   font-weight: 500;
   line-height: 1.625;
   color: var(--wp--preset--color--grey-500);
@@ -3185,7 +3203,7 @@ a.thallo-card:focus-visible {
   padding-top: 1.5rem;
 }
 .thallo-card__date {
-  font-size: 0.68rem;
+  font-size: var(--t-label);
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -3266,6 +3284,58 @@ a.thallo-card:focus-visible {
 .thallo-cards__item.is-off {
   display: none;
 }
+
+/* The pager under the row: an arrow, the page numbers, an arrow — round
+   buttons in the filter's own language, the current page in olive, the
+   arrows dimmed when there is nowhere to go. Drawn by the script from what
+   is on the page; the nav is empty without it, and takes no room. */
+.thallo-pager {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.75rem;
+}
+.thallo-pager:empty {
+  display: none;
+}
+.thallo-pager__n,
+.thallo-pager__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 50%;
+  background: #fff;
+  font: inherit;
+  font-size: var(--t-small);
+  font-weight: 600;
+  color: var(--wp--preset--color--grey-500);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+}
+.thallo-pager__n:hover,
+.thallo-pager__arrow:hover:not([disabled]) {
+  color: var(--wp--preset--color--olive);
+  border-color: var(--wp--preset--color--olive);
+}
+.thallo-pager__n.is-on {
+  background: var(--wp--preset--color--olive);
+  border-color: var(--wp--preset--color--olive);
+  color: #fff;
+}
+.thallo-pager__arrow[disabled] {
+  color: #d1d5db;
+  cursor: default;
+}
+.thallo-pager__n:focus-visible,
+.thallo-pager__arrow:focus-visible {
+  outline: 2px solid var(--wp--preset--color--olive);
+  outline-offset: 3px;
+}
 @media (max-width: 1023.98px) {
   .thallo-cards__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3290,7 +3360,7 @@ a.thallo-card:focus-visible {
 .thallo-panel {
   position: relative;
   overflow: hidden;
-  margin-top: 1.5rem;
+  margin-top: 3rem;
   padding: clamp(2.5rem, 5vw, 3.5rem) clamp(2rem, 5vw, 4rem);
   border-radius: 28px;
   background: #171a10;
@@ -3315,8 +3385,9 @@ a.thallo-card:focus-visible {
   max-width: 40rem;
 }
 .thallo-panel__h {
-  margin: 0 0 2rem;
-  font-size: clamp(2.25rem, 4.5vw, 3.75rem);
+  margin: 0 0 1.25rem;
+  max-width: 18ch;
+  font-size: var(--t-section);
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: -0.025em;
@@ -3325,7 +3396,7 @@ a.thallo-card:focus-visible {
 .thallo-panel__p {
   margin: 0;
   max-width: 44ch;
-  font-size: clamp(1rem, 1.4vw, 1.125rem);
+  font-size: var(--t-body);
   font-weight: 500;
   line-height: 1.625;
   color: var(--wp--preset--color--olive-soft);
@@ -3379,8 +3450,7 @@ a.thallo-card:focus-visible {
 .thallo-volume .thallo-close--volume + .thallo-sub--series {
   margin-top: 1.5rem;
 }
-.thallo-shortlist .thallo-sub--series + .thallo-close,
-.thallo-shortlist .thallo-sub--series + .thallo-panel {
+.thallo-shortlist .thallo-sub--series + .thallo-close {
   margin-top: 1.5rem;
 }
 .thallo-sub--series .thallo-sub__p strong {
@@ -3512,7 +3582,7 @@ a.thallo-card:focus-visible {
 }
 .thallo-volume__title {
   max-width: 16ch;
-  font-size: clamp(2.5rem, 5.2vw, 3.8rem);
+  font-size: var(--t-page);
 }
 
 /* The rhythm of the study: a hairline and a full section's worth of air
@@ -3940,7 +4010,7 @@ a.thallo-card:focus-visible {
   border-top: 1px solid var(--wp--preset--color--ink);
   font-family: var(--wp--preset--font-family--serif);
   font-style: italic;
-  font-size: 1.2rem;
+  font-size: var(--t-italic);
   line-height: 1.45;
   color: var(--wp--preset--color--grey-900);
 }
@@ -4029,7 +4099,7 @@ a.thallo-card:focus-visible {
 }
 .thallo-both h3 {
   margin: 0 0 0.6rem;
-  font-size: 1.15rem;
+  font-size: var(--t-card);
   font-weight: 700;
   letter-spacing: -0.01em;
 }
@@ -4190,7 +4260,7 @@ a.thallo-card:focus-visible {
 }
 .thallo-case h3 {
   margin: 0 0 0.75rem;
-  font-size: 1.35rem;
+  font-size: var(--t-card);
   font-weight: 700;
   letter-spacing: -0.02em;
   color: #fff;
@@ -4247,7 +4317,7 @@ a.thallo-card:focus-visible {
 }
 .thallo-aside h3 {
   margin: 0 0 0.6rem;
-  font-size: 1.1rem;
+  font-size: var(--t-card);
   font-weight: 700;
   letter-spacing: -0.01em;
 }
@@ -4287,7 +4357,7 @@ a.thallo-card:focus-visible {
   max-width: var(--volume-measure);
   font-family: var(--wp--preset--font-family--serif);
   font-style: italic;
-  font-size: 1.35rem;
+  font-size: var(--t-italic);
   line-height: 1.4;
   color: var(--wp--preset--color--grey-900);
 }
@@ -4386,7 +4456,7 @@ a.thallo-card:focus-visible {
 }
 .thallo-kicker {
   margin: 0 0 0.6rem;
-  font-size: 0.68rem;
+  font-size: var(--t-label);
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -4395,7 +4465,7 @@ a.thallo-card:focus-visible {
 .thallo-sec > h2 {
   margin: 0 0 0.75rem;
   max-width: 24ch;
-  font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+  font-size: var(--t-section);
   line-height: 1.1;
   letter-spacing: -0.03em;
 }
@@ -4456,12 +4526,12 @@ a.thallo-card:focus-visible {
 .thallo-finding__l {
   margin: 0;
   max-width: 24ch;
-  font-size: 0.9rem;
+  font-size: var(--t-small);
   line-height: 1.5;
   color: var(--wp--preset--color--grey-500);
 }
 .thallo-sec .thallo-finding__p {
-  font-size: 1.05rem;
+  font-size: var(--t-body);
 }
 
 /* The photograph at the side: the site’s own pictures, in a rounded
@@ -4497,7 +4567,7 @@ a.thallo-card:focus-visible {
 }
 .thallo-note h3 {
   margin: 0 0 0.6rem;
-  font-size: 1.2rem;
+  font-size: var(--t-card);
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.02em;
@@ -4505,7 +4575,7 @@ a.thallo-card:focus-visible {
 }
 .thallo-note p {
   margin: 0;
-  font-size: 0.92rem;
+  font-size: var(--t-small);
   line-height: 1.6;
   color: var(--wp--preset--color--grey-500);
 }
@@ -4515,7 +4585,7 @@ a.thallo-card:focus-visible {
   margin: 0;
   font-family: var(--wp--preset--font-family--serif);
   font-style: italic;
-  font-size: 1.35rem;
+  font-size: var(--t-italic);
   line-height: 1.4;
   color: var(--wp--preset--color--grey-900);
 }

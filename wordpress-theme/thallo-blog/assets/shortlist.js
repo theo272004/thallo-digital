@@ -162,41 +162,91 @@
 })();
 
 /**
- * The hub's filter — the pills over the cards.
+ * The hub's filter and its pager — the pills over the cards, the
+ * "‹ 1 2 ›" under them.
  *
  * Its own closure, outside the motion above, because a reader who asked for
- * less motion still gets to filter. One click: the pill pressed goes olive,
- * the cards whose industry is not the one chosen are switched off with a
- * class, and "All volumes" switches them all back. Nothing is fetched and
- * nothing is re-rendered: every card is in the markup from the start, so the
- * page without this script is the page with every card showing.
+ * less motion still gets to filter. The cards are all in the markup; what
+ * this does is decide which three show. A click on a pill narrows the set
+ * to one industry and goes back to page one; a click on a number, or an
+ * arrow, moves within the set. The pager is redrawn from the set each time,
+ * so with three cards it reads "‹ 1 ›" with both arrows off, and with six
+ * "‹ 1 2 ›". Nothing is fetched and nothing is re-rendered: without this
+ * script every card shows and the pager is an empty nav.
  */
 (function () {
   'use strict';
 
-  var filter = document.querySelector('.thallo-filter');
-  if (!filter) return;
+  var wrap = document.querySelector('.thallo-cards');
+  if (!wrap) return;
 
-  var pills = [].slice.call(filter.querySelectorAll('.thallo-filter__pill'));
-  var cards = [].slice.call(document.querySelectorAll('.thallo-cards__grid .thallo-cards__item'));
+  var filter = wrap.querySelector('.thallo-filter');
+  var pager = wrap.querySelector('.thallo-pager');
+  var pills = filter ? [].slice.call(filter.querySelectorAll('.thallo-filter__pill')) : [];
+  var cards = [].slice.call(wrap.querySelectorAll('.thallo-cards__grid .thallo-cards__item'));
+  var perPage = pager ? parseInt(pager.getAttribute('data-per-page'), 10) || 3 : 3;
 
-  filter.addEventListener('click', function (event) {
-    var pill = event.target.closest('.thallo-filter__pill');
-    if (!pill) return;
+  var want = '';
+  var page = 1;
 
-    var want = pill.getAttribute('data-industry') || '';
+  var ARROW_L = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6" /></svg>';
+  var ARROW_R = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>';
 
-    pills.forEach(function (p) {
-      var on = p === pill;
-      p.classList.toggle('is-on', on);
-      p.setAttribute('aria-pressed', on ? 'true' : 'false');
+  function set() {
+    return cards.filter(function (card) {
+      var mine = card.getAttribute('data-industry') || '';
+      return want === '' || mine === want;
     });
+  }
+
+  function draw() {
+    var shown = set();
+    var pages = Math.max(1, Math.ceil(shown.length / perPage));
+    if (page > pages) page = pages;
 
     cards.forEach(function (card) {
-      var mine = card.getAttribute('data-industry') || '';
-      card.classList.toggle('is-off', want !== '' && mine !== want);
+      var i = shown.indexOf(card);
+      var on = i !== -1 && Math.floor(i / perPage) === page - 1;
+      card.classList.toggle('is-off', !on);
     });
-  });
+
+    if (!pager) return;
+    var html = '<button type="button" class="thallo-pager__arrow" data-go="prev" aria-label="Previous"' + (page === 1 ? ' disabled' : '') + '>' + ARROW_L + '</button>';
+    for (var n = 1; n <= pages; n++) {
+      html += '<button type="button" class="thallo-pager__n' + (n === page ? ' is-on' : '') + '" data-go="' + n + '"' + (n === page ? ' aria-current="page"' : '') + '>' + n + '</button>';
+    }
+    html += '<button type="button" class="thallo-pager__arrow" data-go="next" aria-label="Next"' + (page === pages ? ' disabled' : '') + '>' + ARROW_R + '</button>';
+    pager.innerHTML = html;
+  }
+
+  if (filter) {
+    filter.addEventListener('click', function (event) {
+      var pill = event.target.closest('.thallo-filter__pill');
+      if (!pill) return;
+      want = pill.getAttribute('data-industry') || '';
+      page = 1;
+      pills.forEach(function (p) {
+        var on = p === pill;
+        p.classList.toggle('is-on', on);
+        p.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      draw();
+    });
+  }
+
+  if (pager) {
+    pager.addEventListener('click', function (event) {
+      var b = event.target.closest('[data-go]');
+      if (!b || b.disabled) return;
+      var go = b.getAttribute('data-go');
+      if (go === 'prev') page -= 1;
+      else if (go === 'next') page += 1;
+      else page = parseInt(go, 10) || 1;
+      draw();
+    });
+  }
+
+  draw();
 })();
 
 /**
