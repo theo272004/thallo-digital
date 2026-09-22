@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.31.2
+Version:      1.31.3
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -5899,17 +5899,17 @@ body.thallo-shortlist-volume .thallo-foot {
   }
 }
 
-/* The step rings on the method panel fill with olive and lift under the
-   pointer — the whole step is the hover target, so passing over its text
+/* The step rings on the method panel go white under the pointer — the
+   Engine's move on /services/, where the glass card turns white and its
+   type dark. The whole step is the hover target, so passing over its text
    lights its number too (Cami, 2026-09-22). */
 .thallo-step__n {
-  transition: background-color 0.25s, border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+  transition: background-color 0.4s, border-color 0.4s, color 0.4s;
 }
 @media (hover: hover) {
   .thallo-step:hover .thallo-step__n {
-    background: var(--wp--preset--color--olive);
-    border-color: var(--wp--preset--color--olive);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.6);
+    background: #fff;
+    border-color: #fff;
+    color: var(--wp--preset--color--ink);
   }
 }
