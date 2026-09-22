@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.27.7
+Version:      1.28.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -3397,7 +3397,7 @@ a.thallo-card:focus-visible {
   position: relative;
   overflow: hidden;
   margin-top: 3rem;
-  padding: clamp(2.5rem, 5vw, 3.5rem) clamp(2rem, 5vw, 4rem);
+  padding: clamp(3.5rem, 6vw, 5rem) clamp(2rem, 5vw, 4rem);
   border-radius: 28px;
   background: #171a10;
   color: #fff;
@@ -4180,6 +4180,56 @@ a.thallo-card:focus-visible {
 .thallo-both p {
   margin: 0 0 0.6rem;
 }
+/* The two figures a firm has — what the models did, what Google did —
+   over the reading, each with its bar in its colour, so the card says
+   its point before it argues it (Cami, 2026-09-22: the cards were flat). */
+.thallo-both__stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin: 0 0 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--wp--preset--color--hairline);
+}
+.thallo-both__stat {
+  --surface: var(--wp--preset--color--olive);
+  display: block;
+}
+.thallo-both__stat--google {
+  --surface: var(--wp--preset--color--ink);
+}
+.thallo-both__stat b {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--surface);
+  font-variant-numeric: tabular-nums;
+}
+.thallo-both__stat i {
+  display: block;
+  height: 6px;
+  margin: 0.6rem 0 0.5rem;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--surface) calc(var(--pct, 0) * 1%), var(--wp--preset--color--hairline) calc(var(--pct, 0) * 1%));
+  transform-origin: left center;
+}
+.thallo-both__stat small {
+  display: block;
+  font-size: var(--t-label);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-reveal .thallo-both__stat i {
+  transform: scaleX(0);
+}
+.thallo-reveal.is-in .thallo-both__stat i {
+  transform: scaleX(1);
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+}
 .thallo-both .thallo-tag {
   margin-right: 0.5rem;
   vertical-align: 0.05em;
@@ -4208,9 +4258,31 @@ a.thallo-card:focus-visible {
   color: var(--wp--preset--color--olive);
   font-variant-numeric: tabular-nums;
 }
+/* A bar under each figure, filled to it, in the site's olive — the load
+   line the reference had, and the thing that makes four numbers read as
+   four measurements (Cami, 2026-09-22). Grows on reveal. */
+.thallo-catgrid > div {
+  position: relative;
+}
+.thallo-catgrid .thallo-cat__n::after {
+  content: '';
+  display: block;
+  height: 6px;
+  margin-top: 0.75rem;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--wp--preset--color--olive) calc(var(--pct, 0) * 1%), var(--wp--preset--color--hairline) calc(var(--pct, 0) * 1%));
+}
+.thallo-reveal .thallo-cat__n::after {
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.thallo-reveal.is-in .thallo-cat__n::after {
+  transform: scaleX(1);
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+}
 .thallo-catgrid .thallo-cat__l {
   display: block;
-  margin-top: 0.4rem;
+  margin-top: 0.6rem;
   font-size: 0.78rem;
   line-height: 1.45;
   color: var(--wp--preset--color--grey-500);
@@ -5118,6 +5190,31 @@ a.thallo-card:focus-visible {
 }
 /* The reference’s handwritten aside, in our italic, off the picture’s
    top-right corner. */
+/* The aside and the card arrive on the photograph when the page opens —
+   the aside from above, the card from below, each settling where it
+   sits — and stay (Cami, 2026-09-22). The head is revealed by the script
+   like every block; without it, or with less motion asked for, both are
+   simply there. */
+.thallo-reveal .thallo-volume__note {
+  opacity: 0;
+  transform: translateY(-14px);
+}
+.thallo-reveal .thallo-volume__chip {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.thallo-reveal.is-in .thallo-volume__note,
+.thallo-reveal.is-in .thallo-volume__chip {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.6s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.thallo-reveal.is-in .thallo-volume__note {
+  transition-delay: 0.5s;
+}
+.thallo-reveal.is-in .thallo-volume__chip {
+  transition-delay: 0.8s;
+}
 .thallo-volume__note {
   position: absolute;
   top: 1.25rem;
@@ -5335,6 +5432,12 @@ a.thallo-card:focus-visible {
   height: 2rem;
   background: url("https://thallodigital.com/flower.webp") center / contain no-repeat;
   filter: brightness(0) invert(1);
+  animation: thallo-turn 30s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .thallo-volume .thallo-stage .thallo-note::before {
+    animation: none;
+  }
 }
 .thallo-stage .thallo-note h3 {
   color: #fff;
@@ -5416,11 +5519,43 @@ a.thallo-card:focus-visible {
 }
 
 .thallo-volume .thallo-surface__h {
-  font-size: var(--t-small);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: var(--t-body);
   font-weight: 700;
   letter-spacing: 0;
   text-transform: none;
   color: var(--wp--preset--color--grey-900);
+}
+/* The marks of the surface — the three models, or Google's G — before its
+   label, so a reader knows whose list it is before reading (Cami,
+   2026-09-22). Each on a white disc with a hairline, overlapping a little. */
+.thallo-surface__marks {
+  display: inline-flex;
+  align-items: center;
+}
+.thallo-surface__marks img {
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0.3rem;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 50%;
+  background: #fff;
+  object-fit: contain;
+  box-sizing: border-box;
+}
+.thallo-surface__marks img + img {
+  margin-left: -0.4rem;
+}
+/* And a swatch of the surface's colour on the label, the same as its bars. */
+.thallo-volume .thallo-surface__h::after {
+  content: '';
+  width: 1.5rem;
+  height: 4px;
+  margin-left: 0.25rem;
+  border-radius: 9999px;
+  background: var(--surface);
 }
 .thallo-volume .thallo-sec__main .thallo-catgrid > div {
   background: #fff;
