@@ -554,7 +554,11 @@ function thallo_shortlist_title() {
 
 	$out = $words ? esc_html( implode( ' ', $words ) ) . ' ' : '';
 
-	return $out . '<em>' . esc_html( $last ) . '</em>';
+	/* Emphasis by colour, as everywhere on the site — /results/ opens with
+	   "Companies that became <the answer.>" in olive. It was the serif italic;
+	   Cami's rule (2026-09-21) is that the title is not the place for it: the
+	   italic is the question underneath, and only there. */
+	return $out . '<span class="thallo-mast__accent">' . esc_html( $last ) . '</span>';
 }
 add_shortcode( 'thallo_shortlist_title', 'thallo_shortlist_title' );
 
@@ -640,25 +644,62 @@ function thallo_shortlist_next() {
 add_shortcode( 'thallo_shortlist_next', 'thallo_shortlist_next' );
 
 /**
- * The list of volumes on the hub.
+ * The headline finding of a volume — the figure and the sentence over it.
  *
- * One row per volume, in order. A published volume is a link the whole width
- * of the row; a scheduled one is the same row in grey with its date and no
- * link, because the calendar is part of the pitch and a card that looks
- * clickable and is not is the one thing worse than no card.
+ * Read from the study itself: the first `.thallo-finding__stat` in the content
+ * ("2 of 12") and the h2 that stands over it ("The firms AI trusts most are
+ * nearly invisible on Google"). Nothing has to be typed twice: the card on the
+ * hub shows the figure the volume opens with, and if the volume is edited the
+ * card follows. A volume with no finding block yet gets an empty pair and the
+ * card leaves the line out.
+ *
+ * @return array{stat:string,label:string}
+ */
+function thallo_shortlist_finding( $post ) {
+	$post    = get_post( $post );
+	$content = $post ? (string) $post->post_content : '';
+	$finding = array( 'stat' => '', 'label' => '' );
+
+	if ( ! preg_match( '/<p class="thallo-finding__stat[^"]*"[^>]*>(.*?)<\/p>/s', $content, $m, PREG_OFFSET_CAPTURE ) ) {
+		return $finding;
+	}
+
+	$finding['stat'] = trim( wp_strip_all_tags( $m[1][0] ) );
+
+	/* The last h2 before the figure. */
+	if ( preg_match_all( '/<h2[^>]*>(.*?)<\/h2>/s', substr( $content, 0, $m[0][1] ), $hs ) && $hs[1] ) {
+		$finding['label'] = trim( wp_strip_all_tags( end( $hs[1] ) ) );
+	}
+
+	return $finding;
+}
+
+/**
+ * The list of volumes on the hub — the cards.
+ *
+ * Built to read as /results/ does, because Cami asked for the hub to look like
+ * Case Studies (2026-09-21): a filter of pills over a grid of three, and one
+ * card per volume with the same parts a case card has — the industry pill,
+ * the headline, one figure in olive, a line under it, the blurb, and a date
+ * against a button. A published volume is a link the whole card; a scheduled
+ * one is a plain box on the grey ground with "Coming soon" said on it — never
+ * implied by the grey alone — and nothing on it that looks clickable.
+ *
+ * The filter is markup only; assets/shortlist.js switches the cards. Without
+ * the script the pills sit inert and every card shows, which is the page.
  *
  * While there are no volumes at all — the state the series is in before the
- * first study runs — the list says so in a line, rather than rendering an
- * empty rule.
+ * first study runs — the list says so in a line.
  */
 function thallo_shortlist_list() {
 	$volumes = thallo_shortlist_volumes();
 
 	if ( ! $volumes ) {
-		return '<p class="thallo-vols__empty">' . esc_html__( 'The first volume is being run now. Leave your address below and it comes to you the day it goes up.', 'thallo-blog' ) . '</p>';
+		return '<p class="thallo-cards__empty">' . esc_html__( 'The first volume is being run now. Leave your address below and it comes to you the day it goes up.', 'thallo-blog' ) . '</p>';
 	}
 
-	$out = '<div class="thallo-vols">';
+	$industries = array();
+	$cards      = '';
 
 	foreach ( $volumes as $i => $volume ) {
 		$live     = 'publish' === $volume->post_status;
@@ -667,6 +708,11 @@ function thallo_shortlist_list() {
 		$teaser   = trim( wp_strip_all_tags( get_the_excerpt( $volume ) ) );
 		$industry = thallo_shortlist_industry( $volume );
 		$date     = thallo_shortlist_date( $volume );
+		$finding  = $live ? thallo_shortlist_finding( $volume ) : array( 'stat' => '', 'label' => '' );
+
+		if ( '' !== $industry && ! in_array( $industry, $industries, true ) ) {
+			$industries[] = $industry;
+		}
 
 		if ( ! $live ) {
 			/* translators: %s: "27 October". */
@@ -681,39 +727,59 @@ function thallo_shortlist_list() {
 			$pills .= sprintf( '<span class="thallo-tag thallo-tag--grey">%s</span>', esc_html__( 'Coming soon', 'thallo-blog' ) );
 		}
 
+		/* The figure line. A live volume with a finding shows it large, in
+		   olive; a scheduled one says the figures are not out, small and grey —
+		   set large, it would read as a result whatever the words said. */
+		if ( $live && '' !== $finding['stat'] ) {
+			$figure = '<span class="thallo-card__stat">' . esc_html( $finding['stat'] ) . '</span>'
+				. ( '' !== $finding['label'] ? '<span class="thallo-card__label">' . esc_html( $finding['label'] ) . '</span>' : '' );
+		} elseif ( $live ) {
+			$figure = '';
+		} else {
+			$figure = '<span class="thallo-card__soon">' . esc_html__( 'Figures not yet published', 'thallo-blog' ) . '</span>';
+		}
+
 		/* On one line, deliberately. The template's output passes through
 		   wpautop on its way out, and a newline inside this markup comes back
-		   as a <br> between two grid cells. */
-		$body = sprintf(
-			'<span class="thallo-vol__num" aria-hidden="true">%1$s</span>'
-			. '<span class="thallo-vol__say">'
-			. '<span class="thallo-vol__pills">%2$s</span>'
-			. '<span class="thallo-vol__title"><span class="thallo-vol__sr">%3$s</span>%4$s</span>'
-			. '%5$s'
-			. '</span>'
-			. '<span class="thallo-vol__meta">'
-			. '<time datetime="%6$s">%7$s</time>'
-			. '%8$s'
-			. '</span>',
-			esc_html( $number ),
-			$pills,
-			/* translators: %s: two-digit volume number. */
-			esc_html( sprintf( __( 'Volume %s: ', 'thallo-blog' ), $number ) ),
-			esc_html( $title ),
-			'' !== $teaser ? '<span class="thallo-vol__teaser">' . esc_html( $teaser ) . '</span>' : '',
-			esc_attr( get_the_date( 'Y-m-d', $volume ) ),
-			esc_html( $date ),
-			$live
-				? '<span class="thallo-vol__go">' . esc_html__( 'Read the volume', 'thallo-blog' ) . ' <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></span>'
-				: '<span class="thallo-vol__go thallo-vol__go--soon">' . esc_html__( 'In preparation', 'thallo-blog' ) . '</span>'
-		);
+		   as a <br> between two boxes. */
+		$body = '<span class="thallo-card__pills">' . $pills . '</span>'
+			. '<span class="thallo-card__h"><span class="thallo-card__sr">' . esc_html( sprintf( /* translators: %s: two-digit volume number. */ __( 'Volume %s: ', 'thallo-blog' ), $number ) ) . '</span>' . esc_html( $title ) . '</span>'
+			. $figure
+			. ( '' !== $teaser ? '<span class="thallo-card__p">' . esc_html( $teaser ) . '</span>' : '' )
+			. '<span class="thallo-card__foot">'
+			. '<time class="thallo-card__date" datetime="' . esc_attr( get_the_date( 'Y-m-d', $volume ) ) . '">' . esc_html( $date ) . '</time>'
+			. ( $live
+				? '<span class="thallo-card__go">' . esc_html__( 'Read the volume', 'thallo-blog' ) . ' <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></span>'
+				: '<span class="thallo-card__go thallo-card__go--soon">' . esc_html__( 'In preparation', 'thallo-blog' ) . '</span>' )
+			. '</span>';
 
-		$out .= $live
-			? sprintf( '<div class="thallo-vols__item"><a class="thallo-vol" href="%1$s" data-reveal>%2$s</a></div>', esc_url( get_permalink( $volume ) ), $body )
-			: sprintf( '<div class="thallo-vols__item"><div class="thallo-vol thallo-vol--soon" data-reveal>%s</div></div>', $body );
+		$attr = ' data-industry="' . esc_attr( $industry ) . '"';
+
+		/* Each card in a box of its own: the shortcode block runs this through
+		   wpautop, and an <a> standing free in the grid came back with an empty
+		   <p> beside it — a seventh cell. The box carries the industry for the
+		   filter, so what is switched off is the cell and not the card inside it. */
+		$cards .= $live
+			? '<div class="thallo-cards__item"' . $attr . '><a class="thallo-card" href="' . esc_url( get_permalink( $volume ) ) . '">' . $body . '</a></div>'
+			: '<div class="thallo-cards__item"' . $attr . '><div class="thallo-card thallo-card--soon" aria-disabled="true">' . $body . '</div></div>';
 	}
 
-	return $out . '</div>';
+	/* The filter: every option visible at a glance, "All volumes" first and
+	   pressed. One pill per industry that has a volume, in the order the
+	   volumes fall — so the count of pills stays honest about how much is
+	   published. With one industry there is nothing to filter and the row is
+	   left out. */
+	$filter = '';
+	if ( count( $industries ) > 1 ) {
+		$filter = '<div class="thallo-filter" role="group" aria-label="' . esc_attr__( 'Filter volumes by industry', 'thallo-blog' ) . '">'
+			. '<button type="button" class="thallo-filter__pill is-on" data-industry="" aria-pressed="true">' . esc_html__( 'All volumes', 'thallo-blog' ) . '</button>';
+		foreach ( $industries as $name ) {
+			$filter .= '<button type="button" class="thallo-filter__pill" data-industry="' . esc_attr( $name ) . '" aria-pressed="false">' . esc_html( $name ) . '</button>';
+		}
+		$filter .= '</div>';
+	}
+
+	return '<div class="thallo-cards" data-reveal>' . $filter . '<div class="thallo-cards__grid">' . $cards . '</div></div>';
 }
 add_shortcode( 'thallo_shortlist_volumes', 'thallo_shortlist_list' );
 

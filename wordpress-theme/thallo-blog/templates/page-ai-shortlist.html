@@ -31,8 +31,9 @@
 <!-- wp:group {"className":"thallo-mast thallo-mast--solo thallo-mast--series","layout":{"type":"default"}} -->
 <div class="wp-block-group thallo-mast thallo-mast--solo thallo-mast--series">
 
-<!-- The title with its last word in the serif italic, from the page's own
-     title. See thallo_shortlist_title(). -->
+<!-- The title with its last word in olive, from the page's own title — the
+     emphasis /results/ uses, "Companies that became <the answer.>". See
+     thallo_shortlist_title(). The italic is the question under it, only. -->
 <!-- wp:html -->
 <h1 class="thallo-mast__title thallo-mast__title--series">[thallo_shortlist_title]</h1>
 <!-- /wp:html -->
@@ -44,6 +45,15 @@
 <!-- wp:post-content {"layout":{"type":"default"}} /-->
 </div>
 <!-- /wp:group -->
+
+<!-- The turning isotype under the masthead, as on /results/. A CSS turn
+     rather than the site's draggable one: the blog ships no script for it,
+     and the one thing the mark has to do here is be there. -->
+<!-- wp:html -->
+<span class="thallo-mast__flower" aria-hidden="true">
+  <img src="https://thallodigital.com/flower.webp" alt="" decoding="async" />
+</span>
+<!-- /wp:html -->
 
 </div>
 <!-- /wp:group -->
@@ -88,16 +98,10 @@
 
 <!-- ══ 3 · The volumes ════════════════════════════════════════════════════════
 
-     Published ones link; scheduled ones sit in the list in grey with their
+     A filter of pills over a grid of cards, as /results/ lists its cases.
+     Published ones link; scheduled ones sit on the grey ground with their
      date. The list is the child pages of this one — see
-     thallo_shortlist_list(). -->
-<!-- wp:html -->
-<div class="thallo-rule thallo-rule--tight">
-  <h2 class="thallo-rule__h">The volumes</h2>
-  <p class="thallo-rule__note">A new category every three weeks. Dates are fixed; categories after the next one may change.</p>
-</div>
-<!-- /wp:html -->
-
+     thallo_shortlist_list(). No heading over it: the cards say what they are. -->
 <!-- wp:shortcode -->
 [thallo_shortlist_volumes]
 <!-- /wp:shortcode -->
@@ -127,20 +131,22 @@
 <!-- ══ 5 · The invitation ═════════════════════════════════════════════════════
 
      The scan, offered once, as the thing a reader of this series most
-     obviously wants next: the same questions, on their own category. -->
+     obviously wants next: the same questions, on their own category. The
+     site's closing photograph panel — the one /results/ ends on — with the
+     scan as its first button and the audit as its second; no form, because
+     the ask here is a minute, not a message. -->
 <!-- wp:html -->
-<section class="thallo-close" data-reveal>
-  <span class="thallo-close__mark" aria-hidden="true">
-    <img src="https://thallodigital.com/flower.webp" alt="" decoding="async" loading="lazy" />
-  </span>
-  <div class="thallo-close__say">
-    <h2 class="thallo-close__h">Run the questions on your own category</h2>
-    <p class="thallo-close__p">Write the questions your buyers ask and see how the models answer them today. Free, no account, under a minute.</p>
+<section class="thallo-panel" data-reveal aria-labelledby="thallo-panel-h">
+  <img class="thallo-panel__img" src="https://thallodigital.com/results-bg.webp" alt="" decoding="async" loading="lazy" />
+  <div class="thallo-panel__scrim" aria-hidden="true"></div>
+  <div class="thallo-panel__say">
+    <h2 class="thallo-panel__h" id="thallo-panel-h">Run the questions on your own category.</h2>
+    <p class="thallo-panel__p">Write the questions your buyers ask and see how the models answer them today. Free, no account, under a minute.</p>
+    <div class="thallo-panel__go">
+      <a class="thallo-panel__btn thallo-panel__btn--solid" href="https://thallodigital.com/thallo-ai/scan/">Run my scan <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a>
+      <a class="thallo-panel__btn thallo-panel__btn--ghost" href="https://thallodigital.com/contact/">Book an audit <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a>
+    </div>
   </div>
-  <a class="thallo-btn thallo-btn--solid thallo-close__go" href="https://thallodigital.com/thallo-ai/scan/">
-    Run my scan
-    <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg>
-  </a>
 </section>
 <!-- /wp:html -->
 

@@ -160,3 +160,41 @@
     seen.observe(el);
   });
 })();
+
+/**
+ * The hub's filter — the pills over the cards.
+ *
+ * Its own closure, outside the motion above, because a reader who asked for
+ * less motion still gets to filter. One click: the pill pressed goes olive,
+ * the cards whose industry is not the one chosen are switched off with a
+ * class, and "All volumes" switches them all back. Nothing is fetched and
+ * nothing is re-rendered: every card is in the markup from the start, so the
+ * page without this script is the page with every card showing.
+ */
+(function () {
+  'use strict';
+
+  var filter = document.querySelector('.thallo-filter');
+  if (!filter) return;
+
+  var pills = [].slice.call(filter.querySelectorAll('.thallo-filter__pill'));
+  var cards = [].slice.call(document.querySelectorAll('.thallo-cards__grid .thallo-cards__item'));
+
+  filter.addEventListener('click', function (event) {
+    var pill = event.target.closest('.thallo-filter__pill');
+    if (!pill) return;
+
+    var want = pill.getAttribute('data-industry') || '';
+
+    pills.forEach(function (p) {
+      var on = p === pill;
+      p.classList.toggle('is-on', on);
+      p.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+
+    cards.forEach(function (card) {
+      var mine = card.getAttribute('data-industry') || '';
+      card.classList.toggle('is-off', want !== '' && mine !== want);
+    });
+  });
+})();
