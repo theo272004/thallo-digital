@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.28.7
+Version:      1.28.8
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -5217,11 +5217,10 @@ a.thallo-card:focus-visible {
   transform: none;
   transition: opacity 0.9s ease-out, transform 1.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.thallo-reveal.is-in .thallo-volume__note {
-  transition-delay: 0.35s;
-}
+/* The same moment for both: one motion, one delay (Cami, 2026-09-22). */
+.thallo-reveal.is-in .thallo-volume__note,
 .thallo-reveal.is-in .thallo-volume__chip {
-  transition-delay: 0.6s;
+  transition-delay: 0.4s;
 }
 .thallo-volume__note {
   position: absolute;
@@ -5248,8 +5247,9 @@ a.thallo-card:focus-visible {
   color: var(--wp--preset--color--grey-900);
   transition: transform 0.2s;
 }
-.thallo-volume__chip:hover {
+.thallo-reveal.is-in .thallo-volume__chip:hover {
   transform: translateY(-2px);
+  transition: transform 0.2s;
 }
 .thallo-volume__chip-i {
   display: inline-flex;
