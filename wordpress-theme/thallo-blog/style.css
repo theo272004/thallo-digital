@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.37.0
+Version:      1.37.1
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -6640,6 +6640,12 @@ body.thallo-shortlist-volume .thallo-foot {
 .thallo-volume .thallo-surface--google .thallo-surface__h,
 .thallo-volume .thallo-mix .thallo-mix__n {
   color: var(--google-deep);
+}
+/* And if Google's label carries its colour, so does the other one (Cami,
+   2026-09-22): a title in ink beside a title in sand reads as one of them
+   being the heading and the other a note. */
+.thallo-volume .thallo-surface:not(.thallo-surface--google) .thallo-surface__h {
+  color: var(--wp--preset--color--olive);
 }
 .thallo-volume .thallo-surface--google .thallo-rate__num {
   color: var(--google-deep) !important;
