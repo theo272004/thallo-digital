@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.27.6
+Version:      1.27.7
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -4460,7 +4460,7 @@ a.thallo-card:focus-visible {
   grid-column: 1 / -1;
 }
 .thallo-aside > p {
-  margin-top: 0 !important;
+  margin-top: 1rem !important;
   margin-bottom: 0;
 }
 @media (max-width: 781px) {
@@ -4823,10 +4823,19 @@ a.thallo-card:focus-visible {
    rule across, one rule down, meeting in the middle (Cami, 2026-09-22) —
    rather than two rules that happen to sit at different heights. Each
    cell pads away from the rules; the outer edges pad nothing. */
+/* Two rows of one height — the taller of the two — so the cross sits at
+   the middle whatever the groups hold; each cell centres its group in
+   its half (Cami, 2026-09-22: "no me gusta que sea irregular"). */
 .thallo-qgrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
   margin-top: 1.5rem;
+}
+.thallo-qcell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 .thallo-qgrid > * {
   margin-top: 0 !important;
