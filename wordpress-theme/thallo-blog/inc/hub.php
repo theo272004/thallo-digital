@@ -462,3 +462,13 @@ function thallo_blog_articles() {
 	return '<div class="thallo-cards" data-reveal>' . $filter . '<div class="' . $grid . '">' . $cards . '</div>' . $pager . '</div>';
 }
 add_shortcode( 'thallo_articles', 'thallo_blog_articles' );
+
+/** An <img> for a file that ships inside the theme: [thallo_theme_img file="assets/img/x.jpg"]. */
+function thallo_blog_theme_img( $atts ) {
+	$atts = shortcode_atts( array( 'file' => '', 'alt' => '' ), $atts );
+	if ( '' === $atts['file'] ) {
+		return '';
+	}
+	return '<img src="' . esc_url( get_theme_file_uri( $atts['file'] ) ) . '" alt="' . esc_attr( $atts['alt'] ) . '" decoding="async" fetchpriority="high" />';
+}
+add_shortcode( 'thallo_theme_img', 'thallo_blog_theme_img' );
