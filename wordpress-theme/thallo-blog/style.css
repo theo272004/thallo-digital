@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.27.4
+Version:      1.27.5
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -3586,7 +3586,7 @@ a.thallo-card:focus-visible {
   gap: 2rem 3.5rem;
   align-items: end;
   padding-bottom: 2.5rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: var(--sec-gap, 4rem);
   border-bottom: 1px solid var(--wp--preset--color--hairline);
 }
 .thallo-volume__art {
@@ -4851,9 +4851,32 @@ a.thallo-card:focus-visible {
 .thallo-qcell h4 {
   margin: 0 0 1rem;
 }
+/* The numbers stand on the label's edge and the text on one edge after
+   them — a hanging figure, not an indented list (Cami, 2026-09-22: the
+   cross "aún no se ve ordenado"). */
 .thallo-qcell .thallo-questions {
   max-width: none;
+  padding-left: 0;
+  list-style: none;
+  counter-reset: thallo-q;
 }
+.thallo-qcell .thallo-questions li {
+  counter-increment: thallo-q;
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: 0 0.25rem;
+  padding-left: 0;
+}
+.thallo-qcell .thallo-questions li::before {
+  content: counter(thallo-q) ".";
+  font-weight: 700;
+  color: var(--wp--preset--color--olive);
+  font-variant-numeric: tabular-nums;
+}
+/* The lists start at 4, 7 and 10; the counter has to know. */
+.thallo-qcell .thallo-questions[start="4"] { counter-reset: thallo-q 3; }
+.thallo-qcell .thallo-questions[start="7"] { counter-reset: thallo-q 6; }
+.thallo-qcell .thallo-questions[start="10"] { counter-reset: thallo-q 9; }
 .thallo-qcell .thallo-questions li {
   margin-bottom: 0.85rem;
 }
@@ -4954,8 +4977,38 @@ a.thallo-card:focus-visible {
   --band: #f7f8f9;   /* the house tint, the grey every tinted section of the site carries */
   --ring: rgba(23, 26, 16, 0.18);
 }
+/* One distance between every block of a volume: 4rem, the gap Cami picked
+   as right (2026-09-22, aside → questions). The head to the first
+   section, the last section to the panel, the panel to the colophon and
+   the colophon to the next-volume line all say the same number. */
+.thallo-volume {
+  --sec-gap: 4rem;
+}
 .thallo-volume .thallo-sec {
-  margin-top: 4rem;
+  margin-top: var(--sec-gap);
+}
+.thallo-volume > .thallo-volume__body {
+  margin-top: 0 !important;
+}
+.thallo-volume__body .wp-block-post-content > .thallo-sec:first-of-type,
+.thallo-volume__body .wp-block-post-content > .thallo-lede + .thallo-sec {
+  margin-top: 0;
+}
+.thallo-volume .thallo-close--volume,
+.thallo-volume .thallo-panel--volume {
+  margin-top: var(--sec-gap);
+}
+.thallo-volume > .thallo-volume__colophon {
+  margin-top: var(--sec-gap);
+}
+.thallo-volume__colophon .thallo-colophon {
+  margin-top: 0;
+}
+.thallo-volume > .thallo-next {
+  margin-top: var(--sec-gap);
+}
+.thallo-volume .thallo-sec .thallo-aside {
+  margin-top: 2rem;
 }
 .thallo-volume .thallo-sec--band {
   background: var(--band);
@@ -5402,4 +5455,16 @@ body.thallo-shortlist-volume .thallo-foot {
   .thallo-archive > * {
     max-width: 90vw;
   }
+}
+
+/* Last on purpose, after every rule that names these blocks: the one
+   section gap of a volume, said once more where nothing can outrank it. */
+.thallo-volume .thallo-panel--volume,
+.thallo-volume .thallo-close--volume,
+.thallo-volume > .thallo-volume__colophon,
+.thallo-volume > .thallo-next {
+  margin-top: var(--sec-gap, 4rem);
+}
+.thallo-volume__colophon .thallo-colophon {
+  margin-top: 0;
 }
