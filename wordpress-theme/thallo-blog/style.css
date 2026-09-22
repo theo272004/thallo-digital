@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.29.5
+Version:      1.29.6
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -3560,10 +3560,10 @@ a.thallo-card:focus-visible {
 .thallo-volume > .thallo-panel,
 .thallo-volume > .thallo-volume__colophon,
 .thallo-volume > .thallo-next {
-  max-width: min(calc(var(--volume-wide) + 3rem), 90vw);
+  max-width: min(calc(var(--volume-wide) + 6rem), calc(100vw - 3rem)); /* 3rem past the study on either side — a step past the navbar's edge, which is the point (Cami, 2026-09-22) */
 }
 .thallo-volume > .thallo-panel {
-  padding-inline: 1.5rem;
+  padding-inline: 3rem;
 }
 /* The colophon and the next-volume line under the panel take the panel's
    edges, not the study's (Cami, 2026-09-22). */
@@ -3574,7 +3574,7 @@ a.thallo-card:focus-visible {
    measure, centred, so the panel steps out and the words stay on the
    line (Cami, 2026-09-22). */
 .thallo-volume > .thallo-panel > .thallo-panel__say {
-  max-width: min(var(--volume-wide), calc(90vw - 3rem));
+  max-width: min(var(--volume-wide), calc(90vw - 3rem)); /* the study's own formula, so the two edges are one */
   width: 100%;
   margin-inline: auto;
 }
@@ -5627,7 +5627,7 @@ body.thallo-shortlist-volume .thallo-foot {
 }
 .thallo-volume > .thallo-volume__colophon,
 .thallo-volume > .thallo-next {
-  max-width: min(calc(var(--volume-wide) + 3rem), 90vw);
+  max-width: min(calc(var(--volume-wide) + 6rem), calc(100vw - 3rem)); /* 3rem past the study on either side — a step past the navbar's edge, which is the point (Cami, 2026-09-22) */
 }
 
 /* ── The rhythm inside a section ──────────────────────────────────────────
