@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.27.0
+Version:      1.27.1
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -4318,80 +4318,103 @@ a.thallo-card:focus-visible {
 
 /* ══ The case ═══════════════════════════════════════════════════════════════
 
-   One firm, read at length. On the dark olive with white letters — the
-   site's contrast card — so it reads as the held-up example and not as another
-   section, with the caveat fenced off at the bottom: the paragraph that says
-   what this is not a claim about. It was on the pale tint; the tint is gone
-   from the series (see the per-model table), and of the two surfaces left this
-   is the one that matters, so it takes the dark one. Every colour inside is
-   white at some opacity: 100 for what is read, 72 for what is said around it,
-   and the labels in olive-soft, the palette's light green on its dark one. */
+   The Engine's panel on /services/ — "What the Engine runs every month":
+   the photograph, the name over it in white, three cards of glass in a row
+   — with the firm read at length: who it is, what it publishes, what that
+   produced. The caveat runs under the cards, fenced by a rule. Cami asked
+   for this shape (2026-09-22) in place of the flat olive box. */
 .thallo-case {
+  position: relative;
+  overflow: hidden;
   margin-top: 1.75rem;
-  padding: clamp(1.5rem, 3vw, 2.5rem);
-  border-radius: 18px;
-  background: var(--wp--preset--color--olive);
+  padding: clamp(2rem, 3.5vw, 3rem) clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: 24px;
+  background: #171a10 url('https://thallodigital.com/engine-bg.webp') center / cover no-repeat;
   color: #fff;
+}
+.thallo-case::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(23, 26, 16, 0.55), rgba(23, 26, 16, 0.35));
+}
+.thallo-case > * {
+  position: relative;
 }
 .thallo-case h3 {
-  margin: 0 0 0.75rem;
-  font-size: var(--t-card);
+  margin: 0 0 0.6rem;
+  font-size: var(--t-section);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
   color: #fff;
 }
-.thallo-case h4 {
-  margin: 1.4rem 0 0.5rem;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--wp--preset--color--olive-soft);
+/* The line under the name, as the Engine's panel carries its line. */
+.thallo-case .thallo-case__lede {
+  margin: 0 0 1.5rem;
+  max-width: 52ch;
+  font-size: var(--t-body);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
 }
-.thallo-case p,
-.thallo-case li {
-  color: rgba(255, 255, 255, 0.86);
-}
-/* Two columns under the name and the line: what it publishes on the left,
-   what that produced on the right, the caveat across both — so the eye
-   reads down a column instead of across the whole width (Cami,
-   2026-09-22). The markup is a heading, a paragraph, two h4+list pairs and
-   the caveat; the grid places them by their order. */
-.thallo-case {
+.thallo-case__cards {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: auto auto auto auto auto;
-  column-gap: clamp(2rem, 4vw, 4rem);
+  gap: 1rem;
+  margin-top: 0 !important;
 }
-.thallo-case > h3 { grid-column: 1 / -1; grid-row: 1; }
-.thallo-case > p:not(.thallo-case__caveat) { grid-column: 1 / -1; grid-row: 2; max-width: 68ch; }
-.thallo-case > h4:nth-of-type(1) { grid-column: 1; grid-row: 3; }
-.thallo-case > ul:nth-of-type(1) { grid-column: 1; grid-row: 4; }
-.thallo-case > h4:nth-of-type(2) { grid-column: 2; grid-row: 3; }
-.thallo-case > ul:nth-of-type(2) { grid-column: 2; grid-row: 4; }
-.thallo-case > .thallo-case__caveat { grid-column: 1 / -1; grid-row: 5; }
-.thallo-case > * { margin-top: 0 !important; }
-.thallo-case > h4 { margin-top: 1.5rem !important; }
-.thallo-case > .thallo-case__caveat { margin-top: 1.75rem !important; }
-.thallo-case ul {
+.thallo-case__cards > * {
+  margin-top: 0 !important;
+}
+/* The glass halfway, as on the agreement stage. */
+.thallo-case__card {
+  padding: 1.35rem 1.4rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  background: rgba(20, 20, 18, 0.42);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+.thallo-case__card h4 {
+  margin: 0 0 0.6rem;
+  font-size: var(--t-small);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: #fff;
+}
+.thallo-case__card p,
+.thallo-case__card li {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+}
+.thallo-case__card p {
   margin: 0;
-  padding-left: 1.15em;
 }
-.thallo-case li {
-  margin-bottom: 0.6rem;
+.thallo-case__card ul {
+  margin: 0;
+  padding-left: 1.05em;
 }
-@media (max-width: 781px) {
-  .thallo-case {
-    display: block;
-  }
+.thallo-case__card li {
+  margin-bottom: 0.5rem;
+}
+.thallo-case__card li:last-child {
+  margin-bottom: 0;
 }
 .thallo-case .thallo-case__caveat {
   margin: 1.5rem 0 0;
   padding-top: 1.1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
-  font-size: 0.9rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  max-width: none;
+  font-size: 0.82rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.7);
+}
+@media (max-width: 1023.98px) {
+  .thallo-case__cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 /* ══ The aside ══════════════════════════════════════════════════════════════
