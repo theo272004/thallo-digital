@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.28.6
+Version:      1.28.7
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -4744,11 +4744,10 @@ a.thallo-card:focus-visible {
 .thallo-sec .thallo-finding {
   padding-bottom: 0;
 }
-/* "2 of 12" counts Google searches, so it wears Google's ink — the rule
-   is the colour says whose figure it is. !important against the block's
-   own has-olive-color. */
+/* The finding's figure in the button's olive — the dark one, the one
+   "Read the findings" wears (Cami, 2026-09-22). */
 .thallo-sec .thallo-finding__stat {
-  color: var(--wp--preset--color--ink) !important;
+  color: var(--wp--preset--color--olive) !important;
   margin: 0 0 0.6rem !important;
   font-size: clamp(3.25rem, 5.5vw, 4.75rem);
 }
