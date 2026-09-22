@@ -746,11 +746,51 @@ function thallo_shortlist_questions() {
 	}
 
 	$blocks = parse_blocks( substr( $content, $open ) );
-	if ( empty( $blocks[0] ) ) {
+	if ( empty( $blocks[0][ 'innerBlocks' ] ) ) {
 		return '';
 	}
 
-	return '<div class="thallo-volume__questions">' . render_block( $blocks[0] ) . '</div>';
+	/*
+	 * The twelve are the appendix: worth having, in the way while you read
+	 * (Cami, 2026-09-22). So the section keeps its label, its title and the
+	 * line under it, and the grid itself goes behind a disclosure.
+	 *
+	 * A <details> rather than a button and a script: it opens without
+	 * JavaScript, it is a disclosure to a screen reader without being told
+	 * to be one, and the browser finds the text inside it when a reader
+	 * searches the page.
+	 */
+	$head = '';
+	$body = '';
+
+	foreach ( $blocks[0][ 'innerBlocks' ] as $block ) {
+		$class = isset( $block[ 'attrs' ][ 'className' ] ) ? (string) $block[ 'attrs' ][ 'className' ] : '';
+
+		if ( false !== strpos( $class, 'thallo-qgrid' ) ) {
+			$body .= render_block( $block );
+		} else {
+			$head .= render_block( $block );
+		}
+	}
+
+	/* No grid found — print what there is rather than an empty fold. */
+	if ( '' === $body ) {
+		return '<div class="thallo-volume__questions"><div class="thallo-sec">' . $head . '</div></div>';
+	}
+
+	$chevron = '<svg class="thallo-qdrop__chev" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>';
+
+	return '<div class="thallo-volume__questions"><div class="thallo-sec">'
+		. $head
+		. '<details class="thallo-qdrop">'
+		. '<summary class="thallo-qdrop__s">'
+		. '<span class="thallo-qdrop__t thallo-qdrop__t--shut">' . esc_html__( 'Show the twelve questions', 'thallo-blog' ) . '</span>'
+		. '<span class="thallo-qdrop__t thallo-qdrop__t--open">' . esc_html__( 'Hide the questions', 'thallo-blog' ) . '</span>'
+		. $chevron
+		. '</summary>'
+		. '<div class="thallo-qdrop__body">' . $body . '</div>'
+		. '</details>'
+		. '</div></div>';
 }
 add_shortcode( 'thallo_shortlist_questions', 'thallo_shortlist_questions' );
 

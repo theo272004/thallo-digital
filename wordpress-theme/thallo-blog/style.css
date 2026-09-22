@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.36.1
+Version:      1.37.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -4489,10 +4489,12 @@ a.thallo-card:focus-visible {
   letter-spacing: -0.03em;
   color: #fff;
 }
-/* The line under the name, as the Engine's panel carries its line. */
+/* The line under the name, as the Engine's panel carries its line. It runs
+   the whole width of the box rather than breaking at 52ch: one line, not
+   two, and the section is that much shorter (Cami, 2026-09-22). */
 .thallo-case .thallo-case__lede {
   margin: 0 0 1.5rem;
-  max-width: 52ch;
+  max-width: none;
   font-size: var(--t-body);
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.78);
@@ -4518,11 +4520,12 @@ a.thallo-card:focus-visible {
   text-transform: none;
   color: #fff;
 }
-/* The body size, as everywhere: the Engine's 13px cards hold a line each,
-   these hold a study (Cami, 2026-09-22). */
+/* A step down, to the size the caveat under them is already set at (Cami,
+   2026-09-22): two lists of five lines read as a note beside the finding,
+   not as a second argument. */
 .thallo-case__card p,
 .thallo-case__card li {
-  font-size: var(--t-body);
+  font-size: var(--t-small);
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.8);
 }
@@ -6590,11 +6593,18 @@ body.thallo-shortlist-volume .thallo-foot {
 }
 
 /* The pair, one step further apart: AI back to the dark olive, Google a
-   lighter slate (Cami, 2026-09-22). The olive rules must exclude Google -
-   the AI surface carries no modifier of its own, so a bare .thallo-surface
-   would paint both. */
+   blue (Cami, 2026-09-22). The olive rules must exclude Google - the AI
+   surface carries no modifier of its own, so a bare .thallo-surface would
+   paint both.
+
+   Two tones, not one. Cami picked #bb9a71, a warm sand that sits away from
+   the olive without fighting it - but at 2.6:1 on white it cannot carry
+   text. So the sand draws (bars, fills, swatches, the big figures) and a
+   deeper cut of the same hue writes (labels, the table's percentages, the
+   tag). Same colour, read twice. */
 .thallo-volume {
-  --google: #6b7280;
+  --google: #bb9a71;
+  --google-deep: #8a6d45;
 }
 .thallo-volume .thallo-surface:not(.thallo-surface--google) {
   --surface: var(--wp--preset--color--olive);
@@ -6626,6 +6636,18 @@ body.thallo-shortlist-volume .thallo-foot {
 .thallo-volume .thallo-both__stat--google b {
   color: var(--google);
 }
+/* What is written rather than drawn. */
+.thallo-volume .thallo-surface--google .thallo-surface__h,
+.thallo-volume .thallo-mix .thallo-mix__n {
+  color: var(--google-deep);
+}
+.thallo-volume .thallo-surface--google .thallo-rate__num {
+  color: var(--google-deep) !important;
+}
+.thallo-volume .thallo-tag--ink {
+  color: #fff;
+  background: var(--google-deep);
+}
 .thallo-volume .thallo-mix .thallo-mix__fill {
   background: var(--google);
 }
@@ -6635,4 +6657,97 @@ body.thallo-shortlist-volume .thallo-foot {
 .thallo-volume .thallo-tag--ink {
   color: #fff;
   background: var(--google);
+}
+
+/* ══ The twelve questions, folded away ══════════════════════════════════════
+   The section keeps its label, its title and its line; the grid opens on a
+   click (Cami, 2026-09-22: "esa parte estorba un poco"). The summary is a
+   row on a rule, the way the rest of the study divides itself, rather than
+   a button — nothing else on the page is a button that is not a call to
+   action. */
+.thallo-volume__questions .thallo-qdrop {
+  max-width: min(var(--volume-wide), calc(90vw - 3rem));
+  margin: 2rem auto 0;
+  border-top: 1px solid var(--wp--preset--color--hairline);
+  border-bottom: 1px solid var(--wp--preset--color--hairline);
+}
+.thallo-qdrop__s {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 1.15rem 0;
+  cursor: pointer;
+  list-style: none;
+  font-size: var(--t-small);
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  color: var(--wp--preset--color--olive);
+  transition: color 0.25s ease;
+}
+/* Safari still draws the triangle from the shadow tree. */
+.thallo-qdrop__s::-webkit-details-marker {
+  display: none;
+}
+.thallo-qdrop__s::marker {
+  content: '';
+}
+@media (hover: hover) {
+  .thallo-qdrop__s:hover {
+    color: var(--wp--preset--color--grey-900);
+  }
+}
+.thallo-qdrop__s:focus-visible {
+  outline: 2px solid var(--wp--preset--color--olive);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+.thallo-qdrop__chev {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.thallo-qdrop[open] .thallo-qdrop__chev {
+  transform: rotate(180deg);
+}
+/* One label at a time: "Show…" while it is shut, "Hide…" once it is open. */
+.thallo-qdrop__t--open,
+.thallo-qdrop[open] .thallo-qdrop__t--shut {
+  display: none;
+}
+.thallo-qdrop[open] .thallo-qdrop__t--open {
+  display: inline;
+}
+.thallo-qdrop__body {
+  padding-bottom: 1.75rem;
+}
+.thallo-volume__questions .thallo-qdrop__body .thallo-qgrid {
+  margin-top: 0;
+  max-width: none;
+}
+/* It slides where the browser can measure a height it was never given, and
+   simply appears where it cannot. Scoped to the fold: interpolate-size on
+   :root would change how every other keyword size on the page animates. */
+@supports (interpolate-size: allow-keywords) {
+  .thallo-qdrop {
+    interpolate-size: allow-keywords;
+  }
+  .thallo-qdrop::details-content {
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition:
+      height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.35s ease,
+      content-visibility 0.45s allow-discrete;
+  }
+  .thallo-qdrop[open]::details-content {
+    height: auto;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .thallo-qdrop::details-content {
+    transition: none;
+  }
+  .thallo-qdrop__chev {
+    transition: none;
+  }
 }
