@@ -440,7 +440,7 @@ function thallo_blog_articles() {
 			. '</span>';
 
 		$cards .= '<div class="thallo-cards__item" data-industry="' . esc_attr( $topic ) . '">'
-			. '<a class="thallo-card thallo-card--article" href="' . esc_url( get_permalink( $post ) ) . '">' . $body . '</a>'
+			. '<a class="thallo-card thallo-card--article' . ( has_post_thumbnail( $post->ID ) ? '' : ' thallo-card--quiet' ) . '" href="' . esc_url( get_permalink( $post ) ) . '">' . $body . '</a>'
 			. '</div>';
 	}
 

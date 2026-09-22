@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.32.2
+Version:      1.32.3
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -6101,8 +6101,13 @@ body.thallo-shortlist-volume .thallo-foot {
   margin-top: auto;
   padding-top: 2rem;
 }
+/* "Ideas that make your brand / more visible to AI." — the break is the
+   sentence's, not the width's (Cami, 2026-09-22). */
 .thallo-blog-hero .thallo-mast__title--series {
-  max-width: 16ch;
+  max-width: none;
+}
+.thallo-blog-hero .thallo-mast__title--series .thallo-mast__br {
+  display: block;
 }
 .thallo-blog-hero__art {
   aspect-ratio: 16 / 10;
@@ -6128,19 +6133,23 @@ body.thallo-shortlist-volume .thallo-foot {
   max-width: 44ch;
   color: var(--wp--preset--color--grey-500);
 }
-/* The article card's button in grey — the ghost button — with the olive
-   edge and lift on hover, as the filter pills. The date on one line. */
-.thallo-card--article .thallo-card__go {
-  background: #f3f4f6;
-  color: var(--wp--preset--color--grey-900);
-  border: 1px solid transparent;
-  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
-}
-.thallo-card--article:hover .thallo-card__go {
-  background: #fff;
-  border-color: var(--wp--preset--color--olive);
-  color: var(--wp--preset--color--olive);
-}
+/* An article without a picture is the quiet one: its button grey, and
+   under the pointer its edge and shadow grey where a published card's go
+   olive (Cami, 2026-09-22). The date on one line. */
 .thallo-card--article .thallo-card__date {
   white-space: nowrap;
+}
+.thallo-card--quiet .thallo-card__go {
+  background: #f3f4f6;
+  color: var(--wp--preset--color--grey-500);
+}
+@media (hover: hover) {
+  a.thallo-card--quiet:hover {
+    border-color: #9ca3af;
+    box-shadow: 0 24px 60px -30px rgba(23, 26, 16, 0.25);
+  }
+  a.thallo-card--quiet:hover .thallo-card__go {
+    background: #e5e7eb;
+    color: var(--wp--preset--color--grey-900);
+  }
 }
