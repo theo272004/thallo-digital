@@ -93,13 +93,22 @@ calendario, nunca se escribe.
 
 ## La dirección
 
-En producción WordPress está en `/blog/`, así que la serie contesta en
-`thallodigital.com/blog/ai-shortlist/` hasta que se pegue la regla de
-[`deploy/ai-shortlist.htaccess`](../deploy/ai-shortlist.htaccess) en el
-`.htaccess` de la raíz (instrucciones dentro del archivo). El tema mira si
-esa regla existe: mientras no esté, todos sus enlaces siguen bajo `/blog/`;
-en cuanto esté, los pasa a `thallodigital.com/ai-shortlist/` solo, sin volver
-a subir nada.
+En producción WordPress está en `/blog/`, así que la serie contesta siempre
+en `thallodigital.com/blog/ai-shortlist/`. La regla de
+[`deploy/ai-shortlist.htaccess`](../deploy/ai-shortlist.htaccess) **ya está
+pegada** en el `.htaccess` de la raíz, así que contesta también en
+`thallodigital.com/ai-shortlist/` — la dirección buena, la que se enseña.
+
+El tema mira si esa regla existe: mientras no esté, todos sus enlaces siguen
+bajo `/blog/`; en cuanto esté, los pasa a la raíz solo. Eso vale para lo que
+imprime WordPress (el breadcrumb, la lista del hub, el canonical, el sitemap)
+y, desde 1.36.1, también para el botón "AI Shortlist Series" de la barra, que
+está escrito a mano en `parts/header.html` y se quedaba bajo `/blog/`
+(`thallo_shortlist_nav_link()`).
+
+El sitio estático nombra la serie en un solo sitio, `RESEARCH_URL` en
+[`src/lib/site.ts`](../src/lib/site.ts). Ese no lee el `.htaccess`: si algún
+día se quita la regla, hay que devolverlo a `/blog/ai-shortlist/` a mano.
 
 ## Local
 

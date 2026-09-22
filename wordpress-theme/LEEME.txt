@@ -10,4 +10,6 @@ AI Shortlist — paquete para subir (tema 1.26.1)
    Hay que hacerlo cada vez que este archivo cambie: es la estructura del
    estudio, no sólo el estilo.
 
-3. Ctrl+F5 en /blog/ai-shortlist/ y en el volumen.
+3. Ctrl+F5 en /ai-shortlist/ y en el volumen (/ai-shortlist/<estudio>/).
+   Esas son las direcciones buenas; /blog/ai-shortlist/ también funciona,
+   pero ya no es la que enseñan los enlaces.

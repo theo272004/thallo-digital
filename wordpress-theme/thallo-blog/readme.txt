@@ -88,9 +88,11 @@ by where the pages sit.
   bar, "position" or "Google rank" is the right-aligned figure, anything
   else is a note that drops out on a phone.
 * **The address.** On the production host WordPress is at /blog/, so the
-  series answers at /blog/ai-shortlist/ until the rule in
-  `deploy/ai-shortlist.htaccess` is pasted into the root .htaccess. The
-  theme notices the rule and moves its links to the root on its own.
+  series answers at /blog/ai-shortlist/ always. The rule in
+  `deploy/ai-shortlist.htaccess` is in the root .htaccess, so it answers at
+  /ai-shortlist/ too — the address the site shows. The theme notices the
+  rule and moves its links to the root on its own, including the nav's own
+  button, which is written by hand in parts/header.html.
 
 == How it is styled ==
 

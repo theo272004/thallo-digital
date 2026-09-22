@@ -49,21 +49,19 @@ export const BLOG_URL = `${SITE_URL}/blog/`;
  * The AI Shortlist — the hub, and every volume under it. WordPress again, and
  * absolute for the same reason BLOG_URL is.
  *
- * ## Why this says /blog/ when the series is meant to live at the root
+ * ## Why this says /ai-shortlist/ and not /blog/ai-shortlist/
  *
  * It has two addresses. WordPress is installed in /blog/, so the hub answers
  * at /blog/ai-shortlist/ always. It *also* answers at /ai-shortlist/ — the
- * address Camila asked for, beside /services/ and /results/ — but only once
- * the rewrite in `deploy/ai-shortlist.htaccess` is pasted into the root
- * .htaccess by hand. That has not happened yet.
+ * address Camila asked for, beside /services/ and /results/ — because the
+ * rewrite in `deploy/ai-shortlist.htaccess` is now in the root .htaccess.
  *
- * The theme handles this on its own: it reads the .htaccess, and every link it
- * prints — the breadcrumb, the hub's list, the canonical, the sitemap — moves
- * to the root the moment the rule is there. This constant cannot, because it
- * is baked into a static build that never sees that file.
+ * That is the address the nav has to use (Cami, 2026-09-22): the button was
+ * still sending readers into /blog/. The theme moves its own links by itself,
+ * because it reads the .htaccess; this constant is baked into a static build
+ * that never sees that file, so it is named here by hand.
  *
- * So it points at the address that works today. When the rule goes in, change
- * the line below to `${SITE_URL}/ai-shortlist/` and rebuild — one edit, and it
- * is the only place on this side that names the series.
+ * If the rule is ever taken out of the root .htaccess, this line has to go
+ * back to `${SITE_URL}/blog/ai-shortlist/` or the button 404s.
  */
-export const RESEARCH_URL = `${SITE_URL}/blog/ai-shortlist/`;
+export const RESEARCH_URL = `${SITE_URL}/ai-shortlist/`;

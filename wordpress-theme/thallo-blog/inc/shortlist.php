@@ -1302,3 +1302,32 @@ function thallo_shortlist_admin_parent( $parent_file ) {
 	return $parent_file;
 }
 add_filter( 'parent_file', 'thallo_shortlist_admin_parent' );
+
+/**
+ * The nav's own link to the series.
+ *
+ * parts/header.html is a static template part: WordPress prints its hrefs
+ * exactly as written, so thallo_shortlist_page_link() above never sees them.
+ * The one button that names the series stayed under /blog/ while every other
+ * link the theme prints had already moved to the root (Cami, 2026-09-22).
+ *
+ * This moves it, and only when thallo_shortlist_at_root() says the rewrite is
+ * in — so the nav keeps the same fallback as the rest: no rule, no move,
+ * nothing broken.
+ */
+function thallo_shortlist_nav_link( $html ) {
+	if ( ! thallo_shortlist_at_root() ) {
+		return $html;
+	}
+
+	if ( false === strpos( $html, 'data-thallo-nav-research' ) ) {
+		return $html;
+	}
+
+	return str_replace(
+		'/blog/' . THALLO_SHORTLIST_SLUG . '/',
+		'/' . THALLO_SHORTLIST_SLUG . '/',
+		$html
+	);
+}
+add_filter( 'render_block', 'thallo_shortlist_nav_link' );
