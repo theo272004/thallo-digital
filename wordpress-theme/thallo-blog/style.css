@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.37.2
+Version:      1.37.3
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -6757,5 +6757,40 @@ body.thallo-shortlist-volume .thallo-foot {
   }
   .thallo-qdrop__chev {
     transition: none;
+  }
+}
+
+/* ══ The pair's two readings line up ════════════════════════════════════════
+   "On the page" has to start on the same line in both cards, without moving
+   "In the answers" (Cami, 2026-09-22). The two paragraphs above it are four
+   lines in one card and one in the other, so nothing inside a card can do
+   it: the cards have to measure their rows together.
+
+   Subgrid. The pair owns four rows — the name, the two figures, the first
+   reading, the second — and each card adopts them instead of laying out its
+   own. Row three takes the height of the taller paragraph, so row four
+   begins at the same y in both. Equal card heights come free with it.
+
+   Where subgrid is missing the cards lay out as they did, which is the
+   thing being fixed, not a break. The row gap goes to zero because the
+   spacing between these four is margins, set above, and a grid gap would
+   land on top of them. */
+@supports (grid-template-rows: subgrid) {
+  .thallo-sec__pair:has(> .thallo-both) {
+    grid-template-rows: repeat(4, auto);
+    row-gap: 0;
+  }
+  .thallo-sec__pair > .thallo-both {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 4;
+  }
+}
+/* Under 1024 the pair stacks and is no longer a grid, so the cards have no
+   rows to adopt. They go back to block flow, where their margins collapse
+   the way the spacing above was written for. */
+@media (max-width: 1023.98px) {
+  .thallo-sec__pair > .thallo-both {
+    display: block;
   }
 }
