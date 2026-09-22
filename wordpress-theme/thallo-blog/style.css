@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.34.1
+Version:      1.34.2
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -6429,5 +6429,47 @@ body.thallo-shortlist-volume .thallo-foot {
   .thallo-volume__chip-a,
   .thallo-volume__chip-i {
     display: none;
+  }
+}
+
+/* ══ The blog's front page on a phone ═══════════════════════════════════════
+   Last, after the hero's unconditional two-column rules: the text at the
+   page's width, the search under it, the photograph under that
+   (Cami, 2026-09-22). */
+@media (max-width: 1023.98px) {
+  .thallo-blog-hero {
+    display: block;
+    padding-bottom: 2rem;
+  }
+  .thallo-blog-hero__text {
+    display: block;
+  }
+  .thallo-blog-hero .thallo-mast__title--series {
+    max-width: none;
+    font-size: clamp(2rem, 8vw, 2.6rem);
+  }
+  .thallo-blog-hero .thallo-mast__title--series .thallo-mast__br {
+    display: inline;
+  }
+  .thallo-blog-home .thallo-blog-hero .thallo-series__question {
+    max-width: none;
+  }
+  .thallo-find--hero {
+    margin-top: 1.5rem;
+    padding-top: 0;
+  }
+  .thallo-find--hero .thallo-search--big {
+    max-width: none;
+    flex: 1 1 auto;
+  }
+  .thallo-blog-hero__art {
+    margin-top: 2rem !important;
+    aspect-ratio: 4 / 3;
+  }
+  .thallo-blog-home .thallo-vols__head {
+    margin-top: 3rem;
+  }
+  .thallo-blog-home .thallo-panel {
+    margin-top: 3rem;
   }
 }
