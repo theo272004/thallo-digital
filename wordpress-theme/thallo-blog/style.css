@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.24.3
+Version:      1.24.4
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -4973,19 +4973,62 @@ a.thallo-card:focus-visible {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(23, 26, 16, 0.45), rgba(23, 26, 16, 0.15));
+  background: linear-gradient(90deg, rgba(23, 26, 16, 0.55), rgba(23, 26, 16, 0.3));
 }
 .thallo-stage > .thallo-sec__grid {
   position: relative;
   margin-top: 0 !important;
+  align-items: center;
 }
-.thallo-stage .thallo-rank {
+.thallo-stage .thallo-sec__side {
+  justify-content: center;
+}
+/* Glass, as the Engine's cards on /services/ — "What the Engine runs every
+   month": white at 8% with a white/15 edge and the photograph blurred
+   behind, white type. The table and the card become the same glass, so
+   the photograph reads through both. */
+.thallo-stage .thallo-rank,
+.thallo-stage .thallo-note {
   margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  color: #fff;
 }
 .thallo-stage .thallo-note {
-  background: #fff;
-  border: 0;
-  box-shadow: 0 6px 20px -8px rgba(23, 26, 16, 0.14);
+  align-self: auto;
+}
+.thallo-stage .thallo-note::before {
+  border-color: rgba(255, 255, 255, 0.35);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.6'%3E%3Ccircle cx='9' cy='12' r='5'/%3E%3Ccircle cx='15' cy='12' r='5'/%3E%3C/svg%3E");
+}
+.thallo-stage .thallo-note h3 {
+  color: #fff;
+}
+.thallo-stage .thallo-note p {
+  color: rgba(255, 255, 255, 0.7);
+}
+.thallo-stage .thallo-models thead,
+.thallo-stage .thallo-models th {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.thallo-stage .thallo-models td {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+.thallo-stage .thallo-models td:first-child {
+  color: #fff;
+}
+.thallo-stage .thallo-models figcaption {
+  border-top-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.6);
+}
+.thallo-stage .thallo-rank tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 .thallo-sec > .thallo-stage + p {
   margin-top: 0;
