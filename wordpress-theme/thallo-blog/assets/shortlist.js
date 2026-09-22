@@ -265,6 +265,8 @@
     });
 
     if (!pager) return;
+    /* One page is no pager: nothing to turn to. */
+    if (pages < 2) { pager.innerHTML = ''; return; }
     var html = '<button type="button" class="thallo-pager__arrow" data-go="prev" aria-label="Previous"' + (page === 1 ? ' disabled' : '') + '>' + ARROW_L + '</button>';
     for (var n = 1; n <= pages; n++) {
       html += '<button type="button" class="thallo-pager__n' + (n === page ? ' is-on' : '') + '" data-go="' + n + '"' + (n === page ? ' aria-current="page"' : '') + '>' + n + '</button>';
