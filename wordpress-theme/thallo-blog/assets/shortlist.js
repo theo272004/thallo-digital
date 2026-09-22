@@ -175,9 +175,12 @@
      reading's two stats. The bar is reset by dropping its transition,
      collapsing it, forcing a frame, and letting it grow. */
   function replay(scope) {
-    var fills = scope.querySelectorAll('.thallo-rate__fill, .thallo-mix__fill, .thallo-both__stat i');
+    var fills = scope.querySelectorAll('.thallo-rate__fill, .thallo-mix__fill');
     var figs = scope.querySelectorAll('[data-count], .thallo-both__stat b');
-    var pseudo = scope.querySelectorAll('.thallo-cat__n');
+    /* Bars drawn as pseudo-elements — the four by type, a reading's two —
+       are collapsed by a class for one frame; the track under them never
+       moves. */
+    var pseudo = scope.querySelectorAll('.thallo-cat__n, .thallo-both__stat');
 
     fills.forEach(function (f) {
       f.style.transition = 'none';
