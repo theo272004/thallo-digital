@@ -455,8 +455,50 @@ function thallo_blog_articles() {
 		$filter .= '</div>';
 	}
 
+	/* Fewer than three published and the row has holes. Scheduled posts
+	   fill them first — the real title, on the grey ground, no link — and
+	   after those a card that says the next article is on its way, so the
+	   row reads as a publication from the first day (Cami, 2026-09-22), as
+	   the volumes do on the series' hub. */
 	$count = count( $posts );
-	$grid  = 'thallo-cards__grid' . ( $count < 3 ? ' thallo-cards__grid--' . $count : '' );
+	if ( $count < 3 ) {
+		$soon = get_posts(
+			array(
+				'numberposts'      => 3 - $count,
+				'post_status'      => 'future',
+				'orderby'          => 'date',
+				'order'            => 'ASC',
+				'suppress_filters' => false,
+			)
+		);
+		foreach ( $soon as $post ) {
+			$topic = thallo_blog_hub_term( $post->ID );
+			$cards .= '<div class="thallo-cards__item" data-industry="' . esc_attr( $topic ) . '">'
+				. '<div class="thallo-card thallo-card--article thallo-card--soon" aria-disabled="true">'
+				. '<span class="thallo-card__media thallo-card__media--bare" aria-hidden="true"></span>'
+				. '<span class="thallo-card__body">'
+				. '<span class="thallo-card__pills">' . ( '' !== $topic ? '<span class="thallo-tag thallo-tag--olive">' . esc_html( $topic ) . '</span>' : '' ) . '<span class="thallo-tag thallo-tag--grey">' . esc_html__( 'Coming soon', 'thallo-blog' ) . '</span></span>'
+				. '<span class="thallo-card__h">' . esc_html( get_the_title( $post ) ) . '</span>'
+				. '<span class="thallo-card__p">' . esc_html( wp_trim_words( get_the_excerpt( $post ), 28 ) ) . '</span>'
+				. '<span class="thallo-card__foot"><span class="thallo-card__date">' . esc_html( get_the_date( 'j F', $post ) ) . '</span>'
+				. '<span class="thallo-card__go thallo-card__go--soon">' . esc_html__( 'In preparation', 'thallo-blog' ) . '</span></span>'
+				. '</span></div></div>';
+			$count++;
+		}
+		for ( ; $count < 3; $count++ ) {
+			$cards .= '<div class="thallo-cards__item" data-industry="">'
+				. '<div class="thallo-card thallo-card--article thallo-card--soon" aria-disabled="true">'
+				. '<span class="thallo-card__media thallo-card__media--bare" aria-hidden="true"></span>'
+				. '<span class="thallo-card__body">'
+				. '<span class="thallo-card__pills"><span class="thallo-tag thallo-tag--grey">' . esc_html__( 'Coming soon', 'thallo-blog' ) . '</span></span>'
+				. '<span class="thallo-card__h">' . esc_html__( 'The next article', 'thallo-blog' ) . '</span>'
+				. '<span class="thallo-card__p">' . esc_html__( 'Being written now. It goes up here the day it is published.', 'thallo-blog' ) . '</span>'
+				. '<span class="thallo-card__foot"><span class="thallo-card__date">' . esc_html__( 'In preparation', 'thallo-blog' ) . '</span>'
+				. '<span class="thallo-card__go thallo-card__go--soon">' . esc_html__( 'In preparation', 'thallo-blog' ) . '</span></span>'
+				. '</span></div></div>';
+		}
+	}
+	$grid = 'thallo-cards__grid';
 	$pager = '<nav class="thallo-pager" aria-label="' . esc_attr__( 'More articles', 'thallo-blog' ) . '" data-per-page="3"></nav>';
 
 	return '<div class="thallo-cards" data-reveal>' . $filter . '<div class="' . $grid . '">' . $cards . '</div>' . $pager . '</div>';
