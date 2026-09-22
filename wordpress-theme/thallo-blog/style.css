@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.35.2
+Version:      1.36.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -4776,13 +4776,14 @@ a.thallo-card:focus-visible {
   gap: 2rem 2.5rem;
   align-items: center;
 }
-/* Stretch, not start: the two cards of a pair stand the same height
-   whatever they hold (Cami, 2026-09-21). */
+/* Start, not stretch: each card of a pair is as tall as what it holds
+   again — made equal, the shorter one carried a block of empty white
+   under its last line (Cami, 2026-09-22). */
 .thallo-sec__pair {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.5rem 2.5rem;
-  align-items: stretch;
+  align-items: start;
 }
 /* WordPress gives every block after another its block gap as a top margin,
    grid or not — so the second column of a pair started 1.5rem under the
@@ -6610,9 +6611,12 @@ body.thallo-shortlist-volume .thallo-foot {
 .thallo-volume .thallo-domains .thallo-d__c {
   color: var(--wp--preset--color--olive);
 }
+/* "In the answers" reads as its surface does: the dark olive, white on
+   it — the pale green was the one thing still tinted (Cami, 2026-09-22).
+   Its opposite number, "On the page", is the same shape in the grey. */
 .thallo-volume .thallo-tag--olive {
-  color: var(--wp--preset--color--olive);
-  background: rgba(57, 71, 29, 0.1);
+  color: #fff;
+  background: var(--wp--preset--color--olive);
 }
 /* And Google, after them, so nothing above can claim its half. */
 .thallo-volume .thallo-surface--google,
