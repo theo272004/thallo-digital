@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.26.3
+Version:      1.27.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -3164,6 +3164,11 @@ a.thallo-card:focus-visible {
   color: #9ca3af;
   background: #f3f4f6;
 }
+/* Google's tag, in Google's colour. */
+.thallo-tag--ink {
+  color: #fff;
+  background: var(--wp--preset--color--ink);
+}
 .thallo-card__pills {
   display: flex;
   flex-wrap: wrap;
@@ -3984,9 +3989,12 @@ a.thallo-card:focus-visible {
   --surface: var(--wp--preset--color--olive);
   --surface-soft: var(--wp--preset--color--hairline);
 }
+/* Google is the ink, not a grey: grey beside olive read as the same colour
+   at a glance (Cami, 2026-09-22). Olive is AI, ink is Google, on every bar
+   and figure of the study. */
 .thallo-surface--google {
-  --surface: #6b7280;
-  --surface-soft: #f3f4f6;
+  --surface: var(--wp--preset--color--ink);
+  --surface-soft: var(--wp--preset--color--hairline);
 }
 .thallo-surface__h {
   margin: 0 0 0.25rem;
@@ -4071,8 +4079,8 @@ a.thallo-card:focus-visible {
    section a reader should leave with (the question under the title, the
    closing note). Upright it was a third face; italic it is the same one. */
 .thallo-overlap {
-  margin-top: 1.75rem;
-  padding-top: 1.25rem;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
   border-top: 1px solid var(--wp--preset--color--ink);
   font-family: var(--wp--preset--font-family--serif);
   font-style: italic;
@@ -4238,7 +4246,7 @@ a.thallo-card:focus-visible {
   position: relative;
   height: 8px;
   border-radius: 9999px;
-  background: var(--wp--preset--color--hairline);
+  background: #e5e7eb;
   overflow: hidden;
 }
 .thallo-mix .thallo-mix__fill {
@@ -4246,13 +4254,13 @@ a.thallo-card:focus-visible {
   inset: 0 auto 0 0;
   width: calc(var(--pct, 0) * 1%);
   border-radius: 9999px;
-  background: var(--wp--preset--color--olive);
+  background: var(--wp--preset--color--ink);
   transform-origin: left center;
 }
 .thallo-mix .thallo-mix__n {
   text-align: right;
   font-weight: 700;
-  color: var(--wp--preset--color--olive);
+  color: var(--wp--preset--color--ink);
   font-variant-numeric: tabular-nums;
 }
 .thallo-reveal .thallo-mix__fill {
@@ -4302,7 +4310,8 @@ a.thallo-card:focus-visible {
 }
 .thallo-domains .thallo-d__c {
   flex: 0 0 auto;
-  color: var(--wp--preset--color--grey-500);
+  font-weight: 700;
+  color: var(--wp--preset--color--olive);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -4343,12 +4352,38 @@ a.thallo-card:focus-visible {
 .thallo-case li {
   color: rgba(255, 255, 255, 0.86);
 }
+/* Two columns under the name and the line: what it publishes on the left,
+   what that produced on the right, the caveat across both — so the eye
+   reads down a column instead of across the whole width (Cami,
+   2026-09-22). The markup is a heading, a paragraph, two h4+list pairs and
+   the caveat; the grid places them by their order. */
+.thallo-case {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: auto auto auto auto auto;
+  column-gap: clamp(2rem, 4vw, 4rem);
+}
+.thallo-case > h3 { grid-column: 1 / -1; grid-row: 1; }
+.thallo-case > p:not(.thallo-case__caveat) { grid-column: 1 / -1; grid-row: 2; max-width: 68ch; }
+.thallo-case > h4:nth-of-type(1) { grid-column: 1; grid-row: 3; }
+.thallo-case > ul:nth-of-type(1) { grid-column: 1; grid-row: 4; }
+.thallo-case > h4:nth-of-type(2) { grid-column: 2; grid-row: 3; }
+.thallo-case > ul:nth-of-type(2) { grid-column: 2; grid-row: 4; }
+.thallo-case > .thallo-case__caveat { grid-column: 1 / -1; grid-row: 5; }
+.thallo-case > * { margin-top: 0 !important; }
+.thallo-case > h4 { margin-top: 1.5rem !important; }
+.thallo-case > .thallo-case__caveat { margin-top: 1.75rem !important; }
 .thallo-case ul {
   margin: 0;
   padding-left: 1.15em;
 }
 .thallo-case li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+@media (max-width: 781px) {
+  .thallo-case {
+    display: block;
+  }
 }
 .thallo-case .thallo-case__caveat {
   margin: 1.5rem 0 0;
@@ -4395,6 +4430,24 @@ a.thallo-card:focus-visible {
 .thallo-aside p:last-child {
   margin-bottom: 0;
 }
+.thallo-aside {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(2rem, 4vw, 4rem);
+}
+.thallo-aside > .thallo-aside__eyebrow,
+.thallo-aside > h3 {
+  grid-column: 1 / -1;
+}
+.thallo-aside > p {
+  margin-top: 0 !important;
+  margin-bottom: 0;
+}
+@media (max-width: 781px) {
+  .thallo-aside {
+    display: block;
+  }
+}
 
 /* ══ The lede ═══════════════════════════════════════════════════════════════
    The two paragraphs that open a volume, a step up from body copy and a step
@@ -4402,8 +4455,14 @@ a.thallo-card:focus-visible {
 /* On the wide track, like the head above it and the sections under it:
    the reading column would leave it a hand's width in from both. */
 .thallo-volume__body .wp-block-post-content > .thallo-colophon {
-  grid-column: wide;
-  max-width: none;
+  display: none;
+}
+.thallo-volume > .thallo-volume__colophon {
+  max-width: min(var(--volume-wide), 90vw);
+  margin-inline: auto;
+}
+.thallo-volume__colophon .thallo-colophon {
+  margin-top: 3rem;
 }
 .thallo-volume__body .wp-block-post-content > .thallo-lede {
   grid-column: wide;
@@ -4730,7 +4789,7 @@ a.thallo-card:focus-visible {
   max-width: 32ch;
 }
 .thallo-sec__two .thallo-sec__say > p {
-  max-width: 58ch;
+  max-width: 68ch;
 }
 .thallo-sec > .thallo-mix + p,
 .thallo-sec > .thallo-domains + p {
@@ -4742,10 +4801,20 @@ a.thallo-card:focus-visible {
 
 /* The questions, two columns of two groups. */
 .thallo-qcol h4 {
-  margin: 1.5rem 0 0.75rem;
+  margin: 2.5rem 0 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--wp--preset--color--hairline);
 }
 .thallo-qcol > h4:first-child {
   margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+.thallo-qcol .thallo-questions li {
+  margin-bottom: 0.85rem;
+}
+.thallo-sec__pair--questions {
+  column-gap: clamp(3rem, 6vw, 6rem);
 }
 .thallo-qcol .thallo-questions {
   max-width: none;
@@ -5003,7 +5072,7 @@ a.thallo-card:focus-visible {
    line. No photograph — the number is the picture. */
 .thallo-sec__two {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.55fr);
   gap: 2rem clamp(2.5rem, 5vw, 5rem);
   align-items: start;
 }
@@ -5019,20 +5088,30 @@ a.thallo-card:focus-visible {
   letter-spacing: -0.03em;
 }
 .thallo-sec__two .thallo-sec__say > p {
-  max-width: 58ch;
+  max-width: 68ch;
+}
+.thallo-sec__two .thallo-sec__say > h2 {
+  max-width: 28ch;
 }
 .thallo-sec__two .thallo-finding__l {
   max-width: 30ch;
 }
 /* The figure sits at the vertical centre of the text beside it; the rule
    still runs the column's full height (Cami, 2026-09-21). */
+/* Centred both ways in its column — the middle of the square the column
+   is (Cami, 2026-09-22). */
 .thallo-sec__two .thallo-finding {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  text-align: center;
   padding-left: clamp(2rem, 4vw, 3.5rem);
   border-left: 1px solid var(--wp--preset--color--hairline);
   align-self: stretch;
+}
+.thallo-sec__two .thallo-finding__l::after {
+  margin-inline: auto;
 }
 @media (max-width: 1023.98px) {
   .thallo-sec__two {

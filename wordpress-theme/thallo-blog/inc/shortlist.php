@@ -687,6 +687,36 @@ function thallo_shortlist_lede() {
 add_shortcode( 'thallo_shortlist_lede', 'thallo_shortlist_lede' );
 
 /**
+ * The colophon — "How this volume was run" — for the foot of the page.
+ *
+ * Cami wants it under the closing panel (2026-09-22), and the panel is the
+ * template's, after the content. So, as with the lede, the block is lifted
+ * out of the content and rendered where the template says; the stylesheet
+ * hides it where it sits in the body. The writer keeps editing it in the
+ * volume, where the dates and the models are.
+ */
+function thallo_shortlist_colophon() {
+	if ( ! thallo_shortlist_is_volume() ) {
+		return '';
+	}
+
+	$content = (string) get_post()->post_content;
+	$start   = strpos( $content, '<!-- wp:group {"className":"thallo-colophon"' );
+	if ( false === $start ) {
+		return '';
+	}
+
+	$block = substr( $content, $start );
+	$blocks = parse_blocks( $block );
+	if ( empty( $blocks[0] ) ) {
+		return '';
+	}
+
+	return '<div class="thallo-volume__colophon">' . render_block( $blocks[0] ) . '</div>';
+}
+add_shortcode( 'thallo_shortlist_colophon', 'thallo_shortlist_colophon' );
+
+/**
  * The line at the foot of a volume that says what comes next.
  *
  * Read from the calendar rather than typed, so it is never a promise about a
