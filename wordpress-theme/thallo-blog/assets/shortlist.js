@@ -118,6 +118,12 @@
     el.setAttribute('data-count', '');
   });
 
+  /* The per-model table has no bars, but its figures count — on entrance
+     and on a click on the row (Cami, 2026-09-22). */
+  root.querySelectorAll('.thallo-models tbody td:not(:first-child)').forEach(function (el) {
+    el.setAttribute('data-count', '');
+  });
+
   /* A bar in the mix list carries its figure twice: once as the number a
      reader sees and once as the width. Reading the width back off the number
      keeps the two from drifting apart when somebody corrects one and forgets
@@ -191,7 +197,7 @@
 
   root.addEventListener('click', function (event) {
     if (event.target.closest('a, button')) return;
-    var hit = event.target.closest('.thallo-rank tbody tr, .thallo-mix li, .thallo-catgrid > div, .thallo-both');
+    var hit = event.target.closest('.thallo-rank tbody tr, .thallo-models tbody tr, .thallo-mix li, .thallo-catgrid > div, .thallo-both');
     if (hit) replay(hit);
   });
 })();
@@ -427,5 +433,61 @@
       }
       requestAnimationFrame(step);
     });
+  });
+})();
+
+/**
+ * No short last lines. A paragraph whose last line carries a word or two
+ * — "the list." under six full lines — has words pulled down onto it, one
+ * at a time, until that line is at least a third of the measure or six
+ * words have moved (Cami, 2026-09-22). Done by joining spaces at the end
+ * of the text with non-breaking ones and measuring after each, so it
+ * holds at any width the paragraph is given. Text nodes only: a paragraph
+ * that ends in a tag is left alone rather than risk joining across it.
+ * Runs again on resize, from the original text.
+ */
+(function () {
+  'use strict';
+
+  var ps = [].slice.call(document.querySelectorAll('.thallo-volume p, .thallo-volume li'));
+  if (!ps.length) return;
+
+  function lastLineShare(p) {
+    var range = document.createRange();
+    range.selectNodeContents(p);
+    var rects = [].slice.call(range.getClientRects());
+    if (rects.length < 2) return 1;
+    var lastTop = Math.max.apply(null, rects.map(function (r) { return r.top; }));
+    var lr = rects.filter(function (r) { return Math.abs(r.top - lastTop) < 2; });
+    var left = Math.min.apply(null, lr.map(function (r) { return r.left; }));
+    var right = Math.max.apply(null, lr.map(function (r) { return r.right; }));
+    var box = p.getBoundingClientRect();
+    return (right - left) / box.width;
+  }
+
+  function fix(p) {
+    var last = p.lastChild;
+    if (!last || last.nodeType !== 3) return;
+    if (last.thalloText === undefined) last.thalloText = last.nodeValue;
+    last.nodeValue = last.thalloText;
+
+    var text = last.nodeValue;
+    for (var i = 0; i < 6; i++) {
+      if (lastLineShare(p) >= 0.34) break;
+      /* The last ordinary space in the text becomes unbreakable. */
+      var at = text.lastIndexOf(' ');
+      if (at < 1) break;
+      text = text.slice(0, at) + ' ' + text.slice(at + 1);
+      last.nodeValue = text;
+    }
+  }
+
+  function run() { ps.forEach(fix); }
+  run();
+
+  var timer;
+  window.addEventListener('resize', function () {
+    clearTimeout(timer);
+    timer = setTimeout(run, 150);
   });
 })();
