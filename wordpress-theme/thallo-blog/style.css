@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.24.2
+Version:      1.24.3
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -4941,6 +4941,54 @@ a.thallo-card:focus-visible {
     padding-left: 0;
     border-left: 0;
   }
+}
+
+/* ── The stage ──
+   A photograph as the ground of exactly the table and the card beside it —
+   from where the table starts to where it ends, no further (Cami,
+   2026-09-21). The site's dark panel: the picture pinned behind, a scrim
+   so the cards keep an edge, the two cards white on it. The paragraphs
+   that follow go back on white. */
+.thallo-stage {
+  position: relative;
+  overflow: hidden;
+  margin: 1.75rem 0 2rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: 24px;
+  background: #171a10;
+}
+.thallo-stage__bg {
+  position: absolute;
+  inset: 0;
+  margin: 0 !important;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+.thallo-stage__bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.thallo-stage__bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(23, 26, 16, 0.45), rgba(23, 26, 16, 0.15));
+}
+.thallo-stage > .thallo-sec__grid {
+  position: relative;
+  margin-top: 0 !important;
+}
+.thallo-stage .thallo-rank {
+  margin: 0;
+}
+.thallo-stage .thallo-note {
+  background: #fff;
+  border: 0;
+  box-shadow: 0 6px 20px -8px rgba(23, 26, 16, 0.14);
+}
+.thallo-sec > .thallo-stage + p {
+  margin-top: 0;
 }
 
 /* ── Marks in rings ── the reference points with an arrow in a thin ring;
