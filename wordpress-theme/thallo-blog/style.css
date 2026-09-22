@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.26.1
+Version:      1.26.2
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -4895,10 +4895,20 @@ a.thallo-card:focus-visible {
 .thallo-volume__body .wp-block-post-content > .thallo-lede {
   display: none;
 }
+/* A fixed frame, not the column's height — stretched to the column it
+   grew with every line of text (Cami, 2026-09-21: "quedó muy grande"). As
+   wide as its column and 16:15 tall, the proportion the boardroom picture
+   had when it read right, hanging from the bottom of the text so it ends
+   on the button. The photograph is cropped to it from a little above
+   centre, so the desk and the plant both stay. */
 .thallo-volume__art {
-  aspect-ratio: auto;
-  min-height: 24rem;
-  height: 100%;
+  aspect-ratio: 16 / 15;
+  height: auto;
+  min-height: 0;
+  align-self: end;
+}
+.thallo-volume__art img {
+  object-position: 50% 45%;
 }
 /* The reference’s handwritten aside, in our italic, off the picture’s
    top-right corner. */
