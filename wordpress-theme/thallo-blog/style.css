@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.28.4
+Version:      1.28.5
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -3985,8 +3985,10 @@ a.thallo-card:focus-visible {
   gap: clamp(1.5rem, 4vw, 3rem);
   margin-top: 2rem;
 }
+/* A step lighter than the olive, so the bars and figures stand off the
+   white (Cami, 2026-09-22). */
 .thallo-surface {
-  --surface: var(--wp--preset--color--olive);
+  --surface: var(--wp--preset--color--olive-mid);
   --surface-soft: var(--wp--preset--color--hairline);
 }
 /* Google is the ink, not a grey: grey beside olive read as the same colour
@@ -4079,9 +4081,8 @@ a.thallo-card:focus-visible {
    section a reader should leave with (the question under the title, the
    closing note). Upright it was a third face; italic it is the same one. */
 .thallo-overlap {
-  margin-top: 3rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--wp--preset--color--ink);
+  margin-top: 2.5rem;
+  padding-top: 0;
   font-family: var(--wp--preset--font-family--serif);
   font-style: italic;
   font-size: var(--t-italic);
@@ -5537,15 +5538,7 @@ a.thallo-card:focus-visible {
 .thallo-surface__marks img + img {
   margin-left: -0.4rem;
 }
-/* And a swatch of the surface's colour on the label, the same as its bars. */
-.thallo-volume .thallo-surface__h::after {
-  content: '';
-  width: 1.5rem;
-  height: 4px;
-  margin-left: 0.25rem;
-  border-radius: 9999px;
-  background: var(--surface);
-}
+
 .thallo-volume .thallo-sec__main .thallo-catgrid > div {
   background: #fff;
 }
