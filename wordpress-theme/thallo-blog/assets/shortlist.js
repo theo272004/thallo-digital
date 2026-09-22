@@ -63,8 +63,9 @@
     return 1 - Math.pow(1 - t, 3);
   }
 
-  function count(el) {
-    /* Once per figure, whatever reaches it.
+  function count(el, again) {
+    /* Once per figure, whatever reaches it — unless asked again by a click
+       (the replay below).
      *
      * A figure can sit inside two observed elements at the same time — the
      * shortlists' rates are inside a ranking table that is watched in its own
@@ -72,10 +73,11 @@
      * this function. The second call reads the text the first one left behind,
      * which is "0%" at that moment, and dutifully counts from zero to zero.
      * The figure then stays at zero for good. */
-    if (el.dataset.counted) return;
+    if (el.dataset.counted && !again) return;
     el.dataset.counted = '1';
 
-    var text = el.textContent.trim();
+    var text = el.dataset.text || el.textContent.trim();
+    el.dataset.text = text;
     var m = text.match(/^([^0-9]*)(\d+(?:[.,]\d+)?)(.*)$/);
     if (!m) return;
 
@@ -158,6 +160,39 @@
      never waits for a scroll. */
   targets.forEach(function (el) {
     seen.observe(el);
+  });
+
+  /* ── Replay on click ─────────────────────────────────────────────────────
+     A click on any row or card with a bar runs its entrance again — the bar
+     from nothing, the figure from zero (Cami, 2026-09-22). One place for
+     every kind: a ranking row, a mix row, a figure by question type, a
+     reading's two stats. The bar is reset by dropping its transition,
+     collapsing it, forcing a frame, and letting it grow. */
+  function replay(scope) {
+    var fills = scope.querySelectorAll('.thallo-rate__fill, .thallo-mix__fill, .thallo-both__stat i');
+    var figs = scope.querySelectorAll('[data-count], .thallo-both__stat b');
+    var pseudo = scope.querySelectorAll('.thallo-cat__n');
+
+    fills.forEach(function (f) {
+      f.style.transition = 'none';
+      f.style.transform = 'scaleX(0)';
+    });
+    pseudo.forEach(function (n) { n.classList.add('is-replaying'); });
+    void scope.offsetWidth;
+    fills.forEach(function (f) {
+      f.style.transition = 'transform 0.9s cubic-bezier(0.22, 1, 0.36, 1)';
+      f.style.transform = '';
+    });
+    pseudo.forEach(function (n) {
+      requestAnimationFrame(function () { n.classList.remove('is-replaying'); });
+    });
+    figs.forEach(function (fig) { count(fig, true); });
+  }
+
+  root.addEventListener('click', function (event) {
+    if (event.target.closest('a, button')) return;
+    var hit = event.target.closest('.thallo-rank tbody tr, .thallo-mix li, .thallo-catgrid > div, .thallo-both');
+    if (hit) replay(hit);
   });
 })();
 

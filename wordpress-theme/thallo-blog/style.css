@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.29.7
+Version:      1.30.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -5737,4 +5737,18 @@ body.thallo-shortlist-volume .thallo-foot {
 }
 .thallo-volume .thallo-qcell:nth-child(n + 3) {
   padding-bottom: 0;
+}
+
+/* Replay on click (assets/shortlist.js): the figure-by-type bar is a
+   pseudo-element, so a class collapses it for one frame and the transition
+   grows it back. The rows and cards that replay say so with the pointer. */
+.thallo-reveal.is-in .thallo-cat__n.is-replaying::after {
+  transform: scaleX(0);
+  transition: none;
+}
+.thallo-rank tbody tr,
+.thallo-mix li,
+.thallo-catgrid > div,
+.thallo-both {
+  cursor: pointer;
 }
