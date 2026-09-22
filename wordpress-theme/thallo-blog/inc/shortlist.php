@@ -630,14 +630,46 @@ function thallo_shortlist_art() {
 		}
 	}
 
+	/* The note beside the picture is the reference's handwritten "key players
+	   + trends", in our serif italic; the card at its foot is its "Global
+	   analysis 2024 →", carrying the scope of the study. */
 	return sprintf(
-		'<figure class="thallo-volume__art"><img src="%1$s" alt="" decoding="async" /><span class="thallo-volume__chip"><span class="thallo-volume__chip-l">%2$s</span>%3$s</span></figure>',
+		'<figure class="thallo-volume__art"><img src="%1$s" alt="" decoding="async" />'
+		. '<span class="thallo-volume__note" aria-hidden="true">%2$s</span>'
+		. '<a class="thallo-volume__chip" href="#findings"><span class="thallo-volume__chip-i" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" /></svg></span>'
+		. '<span class="thallo-volume__chip-t"><span class="thallo-volume__chip-l">%3$s</span>%4$s</span>'
+		. '<span class="thallo-volume__chip-a" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span></a>'
+		. '</figure>',
 		esc_url( 'https://thallodigital.com/' . $file ),
+		esc_html__( 'which firms, and why', 'thallo-blog' ),
 		esc_html__( 'The study', 'thallo-blog' ),
 		esc_html__( '12 questions · 3 models · 108 responses', 'thallo-blog' )
 	);
 }
 add_shortcode( 'thallo_shortlist_art', 'thallo_shortlist_art' );
+
+/**
+ * The volume's opening paragraphs, for the head.
+ *
+ * Cami's reference opens with the introduction beside the photograph, under
+ * the title — not under the whole head. The paragraphs live in the content,
+ * where the writer put them (`thallo-lede`), and the template cannot reach
+ * into the content; so this lifts them out for the head, and the stylesheet
+ * hides them where they sit in the body. One source, shown once.
+ */
+function thallo_shortlist_lede() {
+	if ( ! thallo_shortlist_is_volume() ) {
+		return '';
+	}
+
+	$content = (string) get_post()->post_content;
+	if ( ! preg_match_all( '#<p class="thallo-lede[^"]*"[^>]*>.*?</p>#s', $content, $m ) ) {
+		return '';
+	}
+
+	return '<div class="thallo-volume__lede">' . implode( '', $m[0] ) . '</div>';
+}
+add_shortcode( 'thallo_shortlist_lede', 'thallo_shortlist_lede' );
 
 /**
  * The line at the foot of a volume that says what comes next.

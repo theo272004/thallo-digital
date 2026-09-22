@@ -43,6 +43,15 @@
 
 <!-- wp:post-excerpt {"className":"thallo-series__question"} /-->
 
+<!-- The opening paragraphs, lifted from the content — see
+     thallo_shortlist_lede() — and the way down to the first finding. The
+     reference has "Download full report" here; there is no PDF, and the
+     report is the page, so the button goes to it. -->
+<!-- wp:html -->
+[thallo_shortlist_lede]
+<a class="thallo-volume__go" href="#findings">Read the findings <svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" /></svg></a>
+<!-- /wp:html -->
+
 </div>
 <!-- /wp:group -->
 
@@ -65,29 +74,31 @@
      ranking tables inside it are allowed out to the wide measure by the
      stylesheet, because five columns of figures do not fit in 50rem and a
      table that scrolls sideways is a table nobody reads to the end. -->
-<!-- wp:group {"className":"thallo-volume__body","layout":{"type":"constrained","contentSize":"50rem","wideSize":"72rem"}} -->
+<!-- wp:group {"className":"thallo-volume__body","layout":{"type":"constrained","contentSize":"50rem","wideSize":"1440px"}} -->
 <div class="wp-block-group thallo-volume__body">
-<!-- wp:post-content {"align":"wide","layout":{"type":"constrained","contentSize":"50rem","wideSize":"72rem"}} /-->
+<!-- wp:post-content {"align":"wide","layout":{"type":"constrained","contentSize":"50rem","wideSize":"1440px"}} /-->
 </div>
 <!-- /wp:group -->
 
 <!-- ══ 3 · The invitation ═════════════════════════════════════════════════════
 
-     The site's closing photograph panel, as on the hub: the scan as the
-     first button, the audit as the second. It replaces the olive card and
-     the mailing list that used to follow it — with "Book an audit" on the
-     panel the list was a second ask on the same screen (Cami, 2026-09-21). -->
+     A light band, as the reference closes — an icon, "Ready for next
+     steps?", the heading in the serif, the line, and the olive button — not
+     the dark photograph panel the hub ends on: a study ends quietly. The
+     scan is the ask; the audit is the second door. -->
 <!-- wp:html -->
-<section class="thallo-panel thallo-panel--volume" data-reveal aria-labelledby="thallo-panel-h">
-  <img class="thallo-panel__img" src="https://thallodigital.com/results-bg.webp" alt="" decoding="async" loading="lazy" />
-  <div class="thallo-panel__scrim" aria-hidden="true"></div>
-  <div class="thallo-panel__say">
-    <h2 class="thallo-panel__h" id="thallo-panel-h">Run the questions on your own category.</h2>
-    <p class="thallo-panel__p">Write the questions your buyers ask and see how the models answer them today. Free, no account, under a minute.</p>
-    <div class="thallo-panel__go">
-      <a class="thallo-panel__btn thallo-panel__btn--solid" href="https://thallodigital.com/thallo-ai/scan/">Run my scan <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a>
-      <a class="thallo-panel__btn thallo-panel__btn--ghost" href="https://thallodigital.com/contact/">Book an audit <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a>
-    </div>
+<section class="thallo-end" data-reveal aria-labelledby="thallo-end-h">
+  <span class="thallo-end__mark" aria-hidden="true">
+    <img src="https://thallodigital.com/flower.webp" alt="" decoding="async" loading="lazy" />
+  </span>
+  <div class="thallo-end__say">
+    <p class="thallo-end__k">Ready for next steps?</p>
+    <h2 class="thallo-end__h" id="thallo-end-h">Run the questions on your own category.</h2>
+    <p class="thallo-end__p">Write the questions your buyers ask and see how the models answer them today. Free, no account, under a minute.</p>
+  </div>
+  <div class="thallo-end__go">
+    <a class="thallo-btn thallo-btn--solid" href="https://thallodigital.com/thallo-ai/scan/">Run my scan <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a>
+    <a class="thallo-btn thallo-btn--ghost" href="https://thallodigital.com/contact/">Book an audit</a>
   </div>
 </section>
 <!-- /wp:html -->
