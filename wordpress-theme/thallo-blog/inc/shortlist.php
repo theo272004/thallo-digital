@@ -843,6 +843,25 @@ function thallo_shortlist_list() {
 			: '<div class="thallo-cards__item"' . $attr . '><div class="thallo-card thallo-card--soon" aria-disabled="true">' . $body . '</div></div>';
 	}
 
+	/* Fewer than three volumes on the calendar and the row has holes. A card
+	   for each empty place, saying what it is — the next volume, in
+	   preparation — so the row reads as a series from the first day (Cami,
+	   2026-09-21). Numbered after the last real one. */
+	$count = count( $volumes );
+	for ( $n = $count + 1; $n <= 3; $n++ ) {
+		$number = thallo_shortlist_pad( $n );
+		$cards .= '<div class="thallo-cards__item" data-industry="">'
+			. '<div class="thallo-card thallo-card--soon thallo-card--next" aria-disabled="true">'
+			. '<span class="thallo-card__pills"><span class="thallo-tag thallo-tag--grey">' . esc_html__( 'Coming soon', 'thallo-blog' ) . '</span></span>'
+			/* translators: %s: two-digit volume number. */
+			. '<span class="thallo-card__h">' . esc_html( sprintf( __( 'Volume %s', 'thallo-blog' ), $number ) ) . '</span>'
+			. '<span class="thallo-card__soon">' . esc_html__( 'Category to be announced', 'thallo-blog' ) . '</span>'
+			. '<span class="thallo-card__p">' . esc_html__( 'The next study is being run. It goes up here the day it is published.', 'thallo-blog' ) . '</span>'
+			. '<span class="thallo-card__foot"><span class="thallo-card__date">' . esc_html__( 'In preparation', 'thallo-blog' ) . '</span>'
+			. '<span class="thallo-card__go thallo-card__go--soon">' . esc_html__( 'In preparation', 'thallo-blog' ) . '</span></span>'
+			. '</div></div>';
+	}
+
 	/* The filter: every option visible at a glance, "All volumes" first and
 	   pressed. One pill per industry that has a volume, in the order the
 	   volumes fall — so the count of pills stays honest about how much is
