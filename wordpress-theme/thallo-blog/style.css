@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.24.4
+Version:      1.24.5
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -4983,16 +4983,17 @@ a.thallo-card:focus-visible {
 .thallo-stage .thallo-sec__side {
   justify-content: center;
 }
-/* Glass, as the Engine's cards on /services/ — "What the Engine runs every
-   month": white at 8% with a white/15 edge and the photograph blurred
-   behind, white type. The table and the card become the same glass, so
-   the photograph reads through both. */
+/* The dark glass — the cards floating on the photograph panel of
+   /results/, the site's signature move: near-black at 72% with a white/8
+   edge, the photograph blurred behind, white type. The Engine's lighter
+   glass was tried first and the text sank into the picture (Cami,
+   2026-09-21). */
 .thallo-stage .thallo-rank,
 .thallo-stage .thallo-note {
   margin: 0;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(20, 20, 18, 0.72);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.28);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   color: #fff;
@@ -5000,9 +5001,14 @@ a.thallo-card:focus-visible {
 .thallo-stage .thallo-note {
   align-self: auto;
 }
-.thallo-stage .thallo-note::before {
-  border-color: rgba(255, 255, 255, 0.35);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='1.6'%3E%3Ccircle cx='9' cy='12' r='5'/%3E%3Ccircle cx='15' cy='12' r='5'/%3E%3C/svg%3E");
+/* The mark on the card is the isotype, white — the flower, not the two
+   rings, on the dark glass. Inverted from the dark-on-transparent file. */
+.thallo-volume .thallo-stage .thallo-note::before {
+  border: 0;
+  width: 2rem;
+  height: 2rem;
+  background: url("https://thallodigital.com/flower.webp") center / contain no-repeat;
+  filter: brightness(0) invert(1);
 }
 .thallo-stage .thallo-note h3 {
   color: #fff;
@@ -5030,8 +5036,13 @@ a.thallo-card:focus-visible {
 .thallo-stage .thallo-rank tbody tr:hover {
   background: rgba(255, 255, 255, 0.05);
 }
+/* The paragraphs under the stage take its width — the reading measure
+   left them on the left with the panel's width above them empty. */
 .thallo-sec > .thallo-stage + p {
   margin-top: 0;
+}
+.thallo-sec > .thallo-stage ~ p {
+  max-width: none;
 }
 
 /* ── Marks in rings ── the reference points with an arrow in a thin ring;
