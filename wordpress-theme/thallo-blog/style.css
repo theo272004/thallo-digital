@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.24.7
+Version:      1.24.8
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -4649,6 +4649,21 @@ a.thallo-card:focus-visible {
   margin-top: 1rem;
 }
 
+/* The sources, one column: the bars and the domains at the reading
+   measure, with nothing beside them (the quote card came out — Cami,
+   2026-09-21). */
+.thallo-sec > .thallo-mix,
+.thallo-sec > .thallo-domains {
+  max-width: 44rem;
+}
+.thallo-sec > .thallo-mix + p,
+.thallo-sec > .thallo-domains + p {
+  margin-top: 1.25rem;
+}
+.thallo-sec > p + .thallo-domains {
+  margin-top: 1rem;
+}
+
 /* The questions, two columns of two groups. */
 .thallo-qcol h4 {
   margin: 1.5rem 0 0.75rem;
@@ -4995,11 +5010,14 @@ a.thallo-card:focus-visible {
 .thallo-stage .thallo-rank,
 .thallo-stage .thallo-note {
   margin: 0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(20, 20, 18, 0.72);
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.28);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  /* Halfway between the Engine's 8% white and the results panel's 72%
+     black: the picture still reads through, the type still sits on
+     something (Cami, 2026-09-21, third try). */
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(20, 20, 18, 0.42);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.22);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
   color: #fff;
 }
 .thallo-stage .thallo-note {
