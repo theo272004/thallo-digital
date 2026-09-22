@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.27.3
+Version:      1.27.4
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -4817,6 +4817,61 @@ a.thallo-card:focus-visible {
 }
 .thallo-sec > p + .thallo-domains {
   margin-top: 1rem;
+}
+
+/* The questions: four groups in a two-by-two, divided by a cross — one
+   rule across, one rule down, meeting in the middle (Cami, 2026-09-22) —
+   rather than two rules that happen to sit at different heights. Each
+   cell pads away from the rules; the outer edges pad nothing. */
+.thallo-qgrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 1.5rem;
+}
+.thallo-qgrid > * {
+  margin-top: 0 !important;
+}
+.thallo-qcell {
+  padding: 1.75rem clamp(1.5rem, 3vw, 3rem);
+}
+.thallo-qcell:nth-child(odd) {
+  padding-left: 0;
+  border-right: 1px solid var(--wp--preset--color--hairline);
+}
+.thallo-qcell:nth-child(even) {
+  padding-right: 0;
+}
+.thallo-qcell:nth-child(-n + 2) {
+  padding-top: 0;
+  border-bottom: 1px solid var(--wp--preset--color--hairline);
+}
+.thallo-qcell:nth-child(n + 3) {
+  padding-bottom: 0;
+}
+.thallo-qcell h4 {
+  margin: 0 0 1rem;
+}
+.thallo-qcell .thallo-questions {
+  max-width: none;
+}
+.thallo-qcell .thallo-questions li {
+  margin-bottom: 0.85rem;
+}
+.thallo-qcell .thallo-questions li:last-child {
+  margin-bottom: 0;
+}
+@media (max-width: 781px) {
+  .thallo-qgrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .thallo-qcell {
+    padding: 1.5rem 0 !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--wp--preset--color--hairline) !important;
+  }
+  .thallo-qcell:last-child {
+    border-bottom: 0 !important;
+  }
 }
 
 /* The questions, two columns of two groups. */
