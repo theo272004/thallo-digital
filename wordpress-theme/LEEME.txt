@@ -1,4 +1,4 @@
-AI Shortlist — paquete para subir (tema 1.26.0)
+AI Shortlist — paquete para subir (tema 1.26.1)
 
 1. thallo-blog.zip
    wp-admin → Apariencia → Temas → Añadir nuevo → Subir tema → este zip

@@ -615,17 +615,21 @@ function thallo_shortlist_art() {
 		return '';
 	}
 
+	/* A picture that ships with the theme (assets/img/) is named by its file;
+	   one of the site's is a URL. Professional Services has its own — the
+	   desk under the window Cami chose for Volume 01 (2026-09-21) — and it
+	   travels in the theme zip, so nothing has to be deployed for it. */
 	$industry = strtolower( thallo_shortlist_industry() );
-	$file     = 'notebook-desk.webp';
+	$src      = 'https://thallodigital.com/notebook-desk.webp';
 	$map      = array(
-		'professional' => 'industry-professional-services-bg.webp',
-		'finan'        => 'industry-fintech-bg.webp',
-		'fintech'      => 'industry-fintech-bg.webp',
-		'health'       => 'industry-health-tech-bg.webp',
+		'professional' => get_theme_file_uri( 'assets/img/volume-professional-services.jpg' ),
+		'finan'        => 'https://thallodigital.com/industry-fintech-bg.webp',
+		'fintech'      => 'https://thallodigital.com/industry-fintech-bg.webp',
+		'health'       => 'https://thallodigital.com/industry-health-tech-bg.webp',
 	);
 	foreach ( $map as $word => $candidate ) {
 		if ( false !== strpos( $industry, $word ) ) {
-			$file = $candidate;
+			$src = $candidate;
 			break;
 		}
 	}
@@ -640,7 +644,7 @@ function thallo_shortlist_art() {
 		. '<span class="thallo-volume__chip-t"><span class="thallo-volume__chip-l">%3$s</span>%4$s</span>'
 		. '<span class="thallo-volume__chip-a" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span></a>'
 		. '</figure>',
-		esc_url( 'https://thallodigital.com/' . $file ),
+		esc_url( $src ),
 		esc_html__( 'which firms, and why', 'thallo-blog' ),
 		esc_html__( 'The study', 'thallo-blog' ),
 		esc_html__( '12 questions · 3 models · 108 responses', 'thallo-blog' )
