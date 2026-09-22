@@ -1,0 +1,13 @@
+AI Shortlist — paquete para subir (tema 1.26.0)
+
+1. thallo-blog.zip
+   wp-admin → Apariencia → Temas → Añadir nuevo → Subir tema → este zip
+   → "Reemplazar la actual por la subida".
+
+2. executive-search-firms-CONTENIDO.html
+   wp-admin → Páginas → Executive search firms → (⋮) Editor de código
+   → borrar todo → pegar el contenido de este archivo → Actualizar.
+   Hay que hacerlo cada vez que este archivo cambie: es la estructura del
+   estudio, no sólo el estilo.
+
+3. Ctrl+F5 en /blog/ai-shortlist/ y en el volumen.

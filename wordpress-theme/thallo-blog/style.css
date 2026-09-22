@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.25.2
+Version:      1.26.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -679,6 +679,12 @@ html {
 body > main,
 .wp-site-blocks > main {
   padding-top: 9rem;
+}
+/* The series pages open at 8rem — the site's pt-32, measured on /results/:
+   the title 128px from the top, where 9rem put it at 144. */
+body > main.thallo-shortlist,
+.wp-site-blocks > main.thallo-shortlist {
+  padding-top: 8rem;
 }
 
 /* Except on a post, where the photograph IS the top of the page: it runs
@@ -2591,9 +2597,19 @@ select:focus-visible,
    bloques se centran entre sí con `margin-inline: auto`. Sin eso, un
    `text-align: center` deja el texto centrado dentro de una caja que sigue
    pegada a la izquierda, que es peor que no centrar nada. */
+/* Measured against /results/ at 1440 (2026-09-21): the title 128px from
+   the top, 16px to the line under it, 40px from that line to the mark, the
+   mark 5rem at 80%, 40px under it, the section's hairline, and 64px to
+   the next block. The same numbers here, so the hub's head is the site's
+   head. */
 .thallo-mast--series {
-  margin-bottom: 2.25rem;
+  margin-bottom: 0;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid #f3f4f6;
   text-align: center;
+}
+.thallo-shortlist .thallo-mast--series + .thallo-run {
+  margin-top: 4rem;
 }
 /* The size /results/ opens at — text-4xl to text-5xl, 2.25 to 3rem — and its
    emphasis: the last word in olive, upright. It was the serif italic at
@@ -2629,9 +2645,9 @@ select:focus-visible,
    on /results/. At rest for a reader who asked their system for less motion. */
 .thallo-mast__flower {
   display: block;
-  width: 4rem;
-  height: 4rem;
-  margin: 1.75rem auto 0;
+  width: 5rem;
+  height: 5rem;
+  margin: 2.5rem auto 0;
   opacity: 0.8;
   cursor: grab;
   touch-action: pan-y;
@@ -2648,6 +2664,11 @@ select:focus-visible,
 .thallo-mast__flower img {
   user-select: none;
   -webkit-user-drag: none;
+}
+/* The reveal lands every masthead child at opacity 1; the mark stays at
+   the site's 80%. */
+.thallo-mast__flower.thallo-reveal.is-in {
+  opacity: 0.8;
 }
 .thallo-mast__flower img {
   display: block;
