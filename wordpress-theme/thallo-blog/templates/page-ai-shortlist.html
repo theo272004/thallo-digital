@@ -40,21 +40,21 @@
 
 <!-- wp:post-excerpt {"className":"thallo-series__question"} /-->
 
-<!-- wp:group {"className":"thallo-series__intro","layout":{"type":"default"}} -->
-<div class="wp-block-group thallo-series__intro">
-<!-- wp:post-content {"layout":{"type":"default"}} /-->
-</div>
-<!-- /wp:group -->
-
-<!-- The turning isotype under the masthead, as on /results/ — and, as
-     there, one you can grab and flick: assets/shortlist.js drives the turn
-     and takes the drag. The CSS turn underneath is for a page where the
-     script never runs. -->
+<!-- The turning isotype, between the question and the intro (Cami,
+     2026-09-22) — and, as on /results/, one you can grab and flick:
+     assets/shortlist.js drives the turn and takes the drag. The CSS turn
+     underneath is for a page where the script never runs. -->
 <!-- wp:html -->
 <span class="thallo-mast__flower" aria-hidden="true">
   <img src="https://thallodigital.com/flower.webp" alt="" decoding="async" />
 </span>
 <!-- /wp:html -->
+
+<!-- wp:group {"className":"thallo-series__intro","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-series__intro">
+<!-- wp:post-content {"layout":{"type":"default"}} /-->
+</div>
+<!-- /wp:group -->
 
 </div>
 <!-- /wp:group -->
@@ -159,6 +159,14 @@
      Published ones link; scheduled ones sit on the grey ground with their
      date. The list is the child pages of this one — see
      thallo_shortlist_list(). No heading over it: the cards say what they are. -->
+<!-- wp:html -->
+<div class="thallo-vols__head">
+  <p class="thallo-kicker">The volumes</p>
+  <h2 class="thallo-vols__h">One category at a time.</h2>
+  <p class="thallo-vols__p">A new study every three weeks. Dates are fixed; categories after the next one may change.</p>
+</div>
+<!-- /wp:html -->
+
 <!-- wp:shortcode -->
 [thallo_shortlist_volumes]
 <!-- /wp:shortcode -->

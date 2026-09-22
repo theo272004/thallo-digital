@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.30.3
+Version:      1.31.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -5839,4 +5839,66 @@ body.thallo-shortlist-volume .thallo-foot {
 }
 .thallo-mast--series {
   padding-bottom: 3rem;
+}
+
+/* The flower sits between the question and the intro now; the title gets
+   a step more room under it (Cami, 2026-09-22). */
+.thallo-mast--series .thallo-series__question {
+  margin-top: 2rem;
+}
+.thallo-mast--series .thallo-mast__flower {
+  margin: 2.5rem auto 0;
+}
+.thallo-mast--series .thallo-series__intro {
+  margin-top: 2.5rem;
+}
+
+/* The heading over the volumes: the section's label, a title at the
+   section size, its line — centred, as the head above it is. */
+.thallo-vols__head {
+  margin: var(--hub-gap) auto 2rem;
+  max-width: 56ch;
+  text-align: center;
+}
+.thallo-vols__head .thallo-kicker {
+  margin-bottom: 0.75rem;
+  font-size: var(--t-label);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-vols__h {
+  margin: 0 0 0.75rem;
+  font-size: var(--t-section);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--wp--preset--color--grey-900);
+}
+.thallo-vols__p {
+  margin: 0;
+  font-size: var(--t-body);
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--wp--preset--color--grey-500);
+  text-wrap: balance;
+}
+.thallo-vols__head + .thallo-cards {
+  margin-top: 0;
+}
+
+/* The pager's number discs fill and lift under the pointer — the filter
+   pills' own move (Cami, 2026-09-22). The arrows stay as they are. */
+.thallo-pager__n {
+  transition: color 0.2s, border-color 0.2s, background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+@media (hover: hover) {
+  .thallo-pager__n:not(.is-on):hover {
+    background: var(--wp--preset--color--olive);
+    border-color: var(--wp--preset--color--olive);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -12px rgba(57, 71, 29, 0.35);
+  }
 }
