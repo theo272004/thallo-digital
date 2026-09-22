@@ -16,9 +16,16 @@
 <!-- wp:group {"tagName":"main","className":"thallo-archive thallo-hub thallo-shortlist thallo-blog-home","layout":{"type":"constrained","contentSize":"1440px"}} -->
 <main class="wp-block-group thallo-archive thallo-hub thallo-shortlist thallo-blog-home">
 
-<!-- ══ 1 · The masthead ═══════════════════════════════════════════════════════ -->
-<!-- wp:group {"className":"thallo-mast thallo-mast--solo thallo-mast--series","layout":{"type":"default"}} -->
-<div class="wp-block-group thallo-mast thallo-mast--solo thallo-mast--series">
+<!-- ══ 1 · The masthead ═══════════════════════════════════════════════════════
+
+     Two columns, as a volume opens: the title, the line and the search on
+     the left; the photograph on the right, standing the height of the text
+     (Cami, 2026-09-22: "quiero la foto en el hero"). -->
+<!-- wp:group {"className":"thallo-mast thallo-blog-hero","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-mast thallo-blog-hero">
+
+<!-- wp:group {"className":"thallo-blog-hero__text","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-blog-hero__text">
 
 <!-- wp:heading {"level":1,"className":"thallo-mast__title thallo-mast__title--series"} -->
 <h1 class="wp-block-heading thallo-mast__title thallo-mast__title--series">Ideas that make your brand more visible to <span class="thallo-mast__accent">AI.</span></h1>
@@ -28,17 +35,20 @@
 <p class="thallo-series__question">Insights, strategies and research about AI visibility, brand authority, search and digital growth.</p>
 <!-- /wp:html -->
 
-<!-- wp:html -->
-<span class="thallo-mast__flower" aria-hidden="true">
-  <img src="https://thallodigital.com/flower.webp" alt="" decoding="async" />
-</span>
-<!-- /wp:html -->
-
-<!-- wp:group {"className":"thallo-find thallo-find--centre","layout":{"type":"default"}} -->
-<div class="wp-block-group thallo-find thallo-find--centre">
+<!-- wp:group {"className":"thallo-find thallo-find--hero","layout":{"type":"default"}} -->
+<div class="wp-block-group thallo-find thallo-find--hero">
 <!-- wp:search {"showLabel":false,"placeholder":"Search articles…","buttonText":"Search","buttonUseIcon":true,"className":"thallo-search thallo-search--big"} /-->
 </div>
 <!-- /wp:group -->
+
+</div>
+<!-- /wp:group -->
+
+<!-- wp:html -->
+<figure class="thallo-volume__art thallo-blog-hero__art">
+  <img src="https://thallodigital.com/blog-lead.webp" alt="" decoding="async" fetchpriority="high" />
+</figure>
+<!-- /wp:html -->
 
 </div>
 <!-- /wp:group -->

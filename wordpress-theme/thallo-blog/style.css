@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.32.0
+Version:      1.32.1
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -6039,4 +6039,80 @@ body.thallo-shortlist-volume .thallo-foot {
   line-height: 1.35;
   color: var(--wp--preset--color--grey-900);
   text-wrap: balance;
+}
+
+/* ── The blog's hero: text left, photograph right ────────────────────────
+   A volume's head, on the blog. The picture ends on the search's line;
+   the text is left-aligned inside its column. */
+.thallo-blog-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2rem clamp(2rem, 4vw, 4rem);
+  align-items: end;
+  margin-bottom: 0;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid #f3f4f6;
+  text-align: left;
+}
+.thallo-blog-hero > * {
+  margin-top: 0 !important;
+}
+.thallo-blog-hero .thallo-mast__title--series {
+  margin-inline: 0;
+  margin-top: 0;
+  max-width: 14ch;
+}
+.thallo-blog-home .thallo-blog-hero .thallo-series__question {
+  margin: 1.25rem 0 0;
+  max-width: 34ch;
+}
+.thallo-find--hero {
+  margin-top: 2rem;
+}
+.thallo-find--hero .thallo-search--big {
+  flex: 0 1 26rem;
+  max-width: 26rem;
+  width: 100%;
+}
+.thallo-blog-hero__art {
+  aspect-ratio: 16 / 11;
+  height: auto;
+  min-height: 0;
+  align-self: end;
+}
+@media (max-width: 1023.98px) {
+  .thallo-blog-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .thallo-blog-hero__art {
+    aspect-ratio: 16 / 9;
+  }
+}
+/* The text column stands the picture's height: the title on its top line,
+   the search on its bottom line, the line between them. */
+.thallo-blog-hero {
+  align-items: stretch;
+}
+.thallo-blog-hero__text {
+  display: flex;
+  flex-direction: column;
+}
+.thallo-blog-hero__text .thallo-find--hero {
+  margin-top: auto;
+  padding-top: 2rem;
+}
+.thallo-blog-hero .thallo-mast__title--series {
+  max-width: 16ch;
+}
+.thallo-blog-hero__art {
+  aspect-ratio: 16 / 10;
+}
+/* An article without a picture gets the house grey, not the olive — grey
+   for what is not the point (Cami, 2026-09-22). No mark on it. */
+.thallo-card__media--bare {
+  background: #f3f4f6;
+}
+.thallo-card__media--bare::before,
+.thallo-card__media--bare::after {
+  content: none;
 }
