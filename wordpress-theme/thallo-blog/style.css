@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.30.2
+Version:      1.30.3
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -5810,4 +5810,33 @@ body.thallo-shortlist-volume .thallo-foot {
 .thallo-volume h2,
 .thallo-volume h3 {
   text-wrap: balance;
+}
+
+/* ── The hub's masthead, balanced and with air ────────────────────────────
+   A centred line that breaks long-then-short reads as a mistake; `balance`
+   makes the two lines of the question and of the intro the same length.
+   And a step more room between the four pieces (Cami, 2026-09-22). */
+.thallo-mast--series .thallo-series__question .wp-block-post-excerpt__excerpt,
+.thallo-mast--series .thallo-series__question p,
+.thallo-mast--series .thallo-series__intro p {
+  text-wrap: balance;
+}
+.thallo-mast--series .thallo-series__question {
+  margin-top: 1.5rem;
+}
+.thallo-mast--series .thallo-series__intro {
+  margin-top: 2rem;
+}
+.thallo-mast--series .thallo-series__intro p {
+  margin-bottom: 1rem;
+  max-width: 92ch;
+}
+.thallo-mast--series .thallo-series__intro p:last-child {
+  margin-bottom: 0;
+}
+.thallo-mast--series .thallo-mast__flower {
+  margin-top: 3rem;
+}
+.thallo-mast--series {
+  padding-bottom: 3rem;
 }
