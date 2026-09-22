@@ -46,9 +46,10 @@
 </div>
 <!-- /wp:group -->
 
-<!-- The turning isotype under the masthead, as on /results/. A CSS turn
-     rather than the site's draggable one: the blog ships no script for it,
-     and the one thing the mark has to do here is be there. -->
+<!-- The turning isotype under the masthead, as on /results/ — and, as
+     there, one you can grab and flick: assets/shortlist.js drives the turn
+     and takes the drag. The CSS turn underneath is for a page where the
+     script never runs. -->
 <!-- wp:html -->
 <span class="thallo-mast__flower" aria-hidden="true">
   <img src="https://thallodigital.com/flower.webp" alt="" decoding="async" />
@@ -58,22 +59,22 @@
 </div>
 <!-- /wp:group -->
 
-<!-- ══ 2 · The tool, run on a category ══════════════════════════════════════
+<!-- ══ 2 · The method ═════════════════════════════════════════════════════════
 
-     What a volume is: the scan anybody can run on their own brand, pointed
-     at a whole category instead. So the block says how the tool works and
-     shows it working — Cami's ask (2026-09-21): the method as the tool, with
-     a visual of the tool.
+     How a volume is run, said in four steps and shown on a card.
 
-     Left, the four steps of the scan as the scan itself numbers them,
-     rewritten for the series, with the figures in them. Right, the scan's
-     own white card as it looks mid-run, on the site's photograph: one of
-     Volume 01's questions typing itself, the three models answering with the
-     firms they name, and the shortlist filling in underneath. Every figure on
-     the card is from Volume 01 — the tool does not invent numbers, and its
-     demo must not either. The motion is CSS, started by the same reveal that
-     lifts every block on this page; a reader who asked for less motion sees
-     the card finished.
+     Not the scan. The first cut of this block presented the method as the
+     site's scan tool run on a category, with the tool's own stepper across
+     the card; the studies are not run with the tool, and Cami does not want
+     a reader to think they are (2026-09-21). What stayed is the card she
+     liked — the shape of it, the distribution — now labelled as what it is:
+     one question of Volume 01 and what came back. Left, the four steps with
+     the figures in them. Right, the card: the question typing itself, the
+     three models — with their marks — answering with the firms they name,
+     and the shortlist filling in underneath. Every figure on the card is
+     from Volume 01. The motion is CSS, started by the same reveal that lifts
+     every block on this page; a reader who asked for less motion sees the
+     card finished.
 
      Static per season: when the method changes — a fourth model, a different
      number of runs — this block changes with it, and the colophon on every
@@ -84,9 +85,9 @@
   <div class="thallo-run__grid">
 
     <div class="thallo-run__say">
-      <p class="thallo-run__eyebrow">How a volume is made</p>
-      <h2 class="thallo-run__h" id="thallo-run-h">The same scan, run on a whole category.</h2>
-      <p class="thallo-run__p">Every volume is the scan you can run on your own brand, pointed at an industry instead: the questions its buyers ask, put to three models, and every firm they name, counted.</p>
+      <p class="thallo-run__eyebrow">The method</p>
+      <h2 class="thallo-run__h" id="thallo-run-h">How every volume is run.</h2>
+      <p class="thallo-run__p">The same questions, the same three models, the same clean sessions — so a volume in Finance can be read against one in Professional Services.</p>
 
       <ol class="thallo-steps">
         <li class="thallo-step">
@@ -107,30 +108,27 @@
         </li>
       </ol>
 
-      <a class="thallo-run__go" href="https://thallodigital.com/thallo-ai/scan/">Run it on your brand <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a>
     </div>
 
-    <div class="thallo-console" aria-label="The scan, mid-run, on Volume 01">
+    <div class="thallo-console" aria-label="One question of Volume 01, and what came back">
       <div class="thallo-console__top">
-        <ol class="thallo-console__steps" aria-hidden="true">
-          <li>Brand</li><li>Questions</li><li class="is-on">Scanning</li><li>Report</li>
-        </ol>
-        <span class="thallo-console__tag">Volume 01</span>
+        <span class="thallo-console__vol">Volume 01 <span>Executive search firms</span></span>
+        <span class="thallo-console__tag">Run 3 of 3</span>
       </div>
 
       <p class="thallo-console__q"><span class="thallo-console__ql">Question 10 of 12</span><span class="thallo-console__type">What are the best executive search firms in the US?</span></p>
 
       <ul class="thallo-console__models">
         <li class="thallo-console__model" style="--i: 0">
-          <span class="thallo-console__who">ChatGPT</span>
+          <span class="thallo-console__who"><img src="https://thallodigital.com/logos/chatgpt.svg" alt="" width="16" height="16" decoding="async" />ChatGPT</span>
           <span class="thallo-console__named"><span>Korn Ferry</span><span>Spencer Stuart</span><span>JM Search</span></span>
         </li>
         <li class="thallo-console__model" style="--i: 1">
-          <span class="thallo-console__who">Claude</span>
+          <span class="thallo-console__who"><img src="https://thallodigital.com/logos/claude.svg" alt="" width="16" height="16" decoding="async" />Claude</span>
           <span class="thallo-console__named"><span>Korn Ferry</span><span>Spencer Stuart</span><span>Heidrick &amp; Struggles</span></span>
         </li>
         <li class="thallo-console__model" style="--i: 2">
-          <span class="thallo-console__who">Gemini</span>
+          <span class="thallo-console__who"><img src="https://thallodigital.com/logos/gemini.svg" alt="" width="16" height="16" decoding="async" />Gemini</span>
           <span class="thallo-console__named"><span>Korn Ferry</span><span>Cowen Partners</span><span>Talentfoot</span></span>
         </li>
       </ul>
@@ -146,7 +144,7 @@
         </ol>
       </div>
 
-      <p class="thallo-console__foot"><span class="thallo-console__dot" aria-hidden="true"></span>Run 3 of 3 · 12 questions · 3 models · 108 responses</p>
+      <p class="thallo-console__foot">12 questions · 3 models · 3 runs · 108 responses</p>
     </div>
 
   </div>

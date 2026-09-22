@@ -198,3 +198,103 @@
     });
   });
 })();
+
+/**
+ * The turning isotype under the hub's masthead, but you can grab it and
+ * flick it — the same mark the site has on /results/, with the same physics.
+ *
+ * The rotation is a rAF loop: a drag pushes angular velocity into it and
+ * friction bleeds that back down to the idle drift, so a throw spins it
+ * fast, coasts, and settles into the slow turn it had before. The angle
+ * lives in a closure and is written straight to the transform. Touch is left
+ * alone: claiming the gesture would mean a finger that lands on the flower
+ * can no longer scroll the page. A reader who asked for less motion keeps
+ * the mark still — the CSS turn is off for them too — and this never runs.
+ */
+(function () {
+  'use strict';
+
+  var wrap = document.querySelector('.thallo-mast__flower');
+  var img = wrap && wrap.querySelector('img');
+  if (!wrap || !img) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var IDLE = 360 / 30;   /* deg/s at rest: one turn in thirty seconds */
+  var FRICTION = 1.1;    /* how fast a throw bleeds back to IDLE */
+  var MAX = 2200;        /* deg/s ceiling, so a hard flick stays legible */
+
+  var angle = 0;
+  var velocity = IDLE;
+  var last = 0;
+
+  var dragging = false;
+  var pointerId = -1;
+  var lastPointerAngle = 0;
+  var lastMoveAt = 0;
+
+  wrap.classList.add('is-driven');
+
+  function angleFrom(e) {
+    var r = wrap.getBoundingClientRect();
+    return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * (180 / Math.PI);
+  }
+
+  /* Shortest way round, so crossing the ±180 seam does not read as a jump. */
+  function shortest(d) {
+    return ((d + 540) % 360) - 180;
+  }
+
+  function frame(now) {
+    var dt = Math.min((now - last) / 1000, 0.05); /* a backgrounded tab must not bank up rotation */
+    last = now;
+
+    if (!dragging) {
+      velocity += (IDLE - velocity) * (1 - Math.exp(-FRICTION * dt));
+      angle += velocity * dt;
+      img.style.transform = 'rotate(' + angle + 'deg)';
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  wrap.addEventListener('pointerdown', function (e) {
+    if (e.pointerType === 'touch') return;
+    dragging = true;
+    pointerId = e.pointerId;
+    lastPointerAngle = angleFrom(e);
+    lastMoveAt = performance.now();
+    velocity = 0;
+    try { wrap.setPointerCapture(e.pointerId); } catch (err) { /* not capturable */ }
+    wrap.classList.add('is-held');
+    e.preventDefault();
+  });
+
+  wrap.addEventListener('pointermove', function (e) {
+    if (!dragging || e.pointerId !== pointerId) return;
+    var now = performance.now();
+    var current = angleFrom(e);
+    var delta = shortest(current - lastPointerAngle);
+    var dt = Math.max((now - lastMoveAt) / 1000, 1 / 240);
+
+    angle += delta;
+    velocity = velocity * 0.6 + (delta / dt) * 0.4; /* smoothed, or one jittery sample decides the throw */
+
+    lastPointerAngle = current;
+    lastMoveAt = now;
+    img.style.transform = 'rotate(' + angle + 'deg)';
+  });
+
+  function release(e) {
+    if (!dragging || e.pointerId !== pointerId) return;
+    dragging = false;
+    pointerId = -1;
+    wrap.classList.remove('is-held');
+    if (performance.now() - lastMoveAt > 120) velocity = IDLE; /* held still, then let go: no fling */
+    velocity = Math.max(-MAX, Math.min(MAX, velocity));
+  }
+  wrap.addEventListener('pointerup', release);
+  wrap.addEventListener('pointercancel', release);
+
+  last = performance.now();
+  requestAnimationFrame(frame);
+})();
