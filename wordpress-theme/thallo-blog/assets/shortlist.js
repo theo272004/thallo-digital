@@ -348,3 +348,49 @@
   last = performance.now();
   requestAnimationFrame(frame);
 })();
+
+/**
+ * The way down to the findings — "Read the findings", the card on the
+ * photograph — glides rather than jumps.
+ *
+ * The browser's own smooth scroll is a fixed, fairly quick ease; Cami
+ * found the jump "muy brusco" (2026-09-22). This drives the scroll itself
+ * over 1.1 seconds with the site's settle easing, stopping 5rem short of
+ * the block so the fixed bar does not cover its label. A reader who asked
+ * for less motion gets the plain jump.
+ */
+(function () {
+  'use strict';
+
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce) return;
+
+  var links = document.querySelectorAll('.thallo-volume__go[href^="#"], .thallo-volume__chip[href^="#"]');
+  if (!links.length) return;
+
+  function ease(t) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  [].forEach.call(links, function (a) {
+    a.addEventListener('click', function (event) {
+      var target = document.querySelector(a.getAttribute('href'));
+      if (!target) return;
+      event.preventDefault();
+
+      var from = window.scrollY;
+      var to = target.getBoundingClientRect().top + from - 80;
+      var start = null;
+      var duration = 1100;
+
+      function step(now) {
+        if (start === null) start = now;
+        var t = Math.min((now - start) / duration, 1);
+        window.scrollTo(0, from + (to - from) * ease(t));
+        if (t < 1) requestAnimationFrame(step);
+        else if (history.replaceState) history.replaceState(null, '', a.getAttribute('href'));
+      }
+      requestAnimationFrame(step);
+    });
+  });
+})();
