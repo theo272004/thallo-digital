@@ -634,6 +634,17 @@ function thallo_shortlist_art() {
 		}
 	}
 
+	/* The editor's own choice wins over the industry's: a Featured image
+	   set on the page (the box in the editor's sidebar) is the picture, so
+	   a volume can open on any photograph without touching the theme (Cami,
+	   2026-09-21: "¿cómo la cambio desde WordPress?"). */
+	if ( has_post_thumbnail() ) {
+		$chosen = get_the_post_thumbnail_url( null, 'large' );
+		if ( $chosen ) {
+			$src = $chosen;
+		}
+	}
+
 	/* The note beside the picture is the reference's handwritten "key players
 	   + trends", in our serif italic; the card at its foot is its "Global
 	   analysis 2024 →", carrying the scope of the study. */
