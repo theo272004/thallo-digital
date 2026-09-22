@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.27.2
+Version:      1.27.3
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -4336,7 +4336,7 @@ a.thallo-card:focus-visible {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(23, 26, 16, 0.55), rgba(23, 26, 16, 0.35));
+  background: linear-gradient(90deg, rgba(23, 26, 16, 0.55), rgba(23, 26, 16, 0.3));
 }
 .thallo-case > * {
   position: relative;
@@ -4369,11 +4369,6 @@ a.thallo-card:focus-visible {
 /* The glass halfway, as on the agreement stage. */
 .thallo-case__card {
   padding: 1.5rem 1.6rem 1.6rem;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 16px;
-  background: rgba(20, 20, 18, 0.42);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
 }
 .thallo-case__card h4 {
   margin: 0 0 0.75rem;
@@ -5193,13 +5188,19 @@ a.thallo-card:focus-visible {
    edge, the photograph blurred behind, white type. The Engine's lighter
    glass was tried first and the text sank into the picture (Cami,
    2026-09-21). */
+/* ── The one glass ─────────────────────────────────────────────────────────
+   Every card on a photograph in a volume — the agreement table and its
+   note, the case's two cards — is this and nothing else (Cami,
+   2026-09-22: "no quiero tener dos glass diferentes"). Halfway between
+   the Engine's 8% white and the results panel's 72% black: the picture
+   reads through, the type sits on something. One radius, one edge, one
+   blur, one shadow. */
 .thallo-stage .thallo-rank,
-.thallo-stage .thallo-note {
+.thallo-stage .thallo-note,
+.thallo-case__card {
   margin: 0;
-  /* Halfway between the Engine's 8% white and the results panel's 72%
-     black: the picture still reads through, the type still sits on
-     something (Cami, 2026-09-21, third try). */
   border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
   background: rgba(20, 20, 18, 0.42);
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.22);
   -webkit-backdrop-filter: blur(16px);
