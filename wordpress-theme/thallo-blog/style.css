@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.28.1
+Version:      1.28.2
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -5342,9 +5342,6 @@ a.thallo-card:focus-visible {
   border-left: 1px solid var(--wp--preset--color--hairline);
   align-self: stretch;
 }
-.thallo-sec__two .thallo-finding__l::after {
-  margin-inline: auto;
-}
 @media (max-width: 1023.98px) {
   .thallo-sec__two {
     grid-template-columns: minmax(0, 1fr);
@@ -5474,16 +5471,7 @@ a.thallo-card:focus-visible {
 
 /* ── Marks in rings ── the reference points with an arrow in a thin ring;
    the note card wears two rings. */
-.thallo-volume .thallo-finding__l::after {
-  content: '';
-  display: block;
-  width: 2rem;
-  height: 2rem;
-  margin-top: 1rem;
-  border: 1px solid var(--ring);
-  border-radius: 50%;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2339471D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center / 0.9rem no-repeat;
-}
+/* No arrow under the figure: it pointed at nothing (Cami, 2026-09-22). */
 .thallo-volume .thallo-note::before {
   content: '';
   display: block;
