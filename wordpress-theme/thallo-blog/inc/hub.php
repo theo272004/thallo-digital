@@ -465,10 +465,10 @@ add_shortcode( 'thallo_articles', 'thallo_blog_articles' );
 
 /** An <img> for a file that ships inside the theme: [thallo_theme_img file="assets/img/x.jpg"]. */
 function thallo_blog_theme_img( $atts ) {
-	$atts = shortcode_atts( array( 'file' => '', 'alt' => '' ), $atts );
+	$atts = shortcode_atts( array( 'file' => '', 'alt' => '', 'class' => '' ), $atts );
 	if ( '' === $atts['file'] ) {
 		return '';
 	}
-	return '<img src="' . esc_url( get_theme_file_uri( $atts['file'] ) ) . '" alt="' . esc_attr( $atts['alt'] ) . '" decoding="async" fetchpriority="high" />';
+	return '<img' . ( '' !== $atts['class'] ? ' class="' . esc_attr( $atts['class'] ) . '"' : '' ) . ' src="' . esc_url( get_theme_file_uri( $atts['file'] ) ) . '" alt="' . esc_attr( $atts['alt'] ) . '" decoding="async" />';
 }
 add_shortcode( 'thallo_theme_img', 'thallo_blog_theme_img' );

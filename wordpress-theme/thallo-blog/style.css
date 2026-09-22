@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.32.9
+Version:      1.33.0
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -6192,4 +6192,9 @@ body.thallo-shortlist-volume .thallo-foot {
 }
 .thallo-blog-hero__art img {
   object-position: 50% 62%;
+}
+/* The blog's panel on the stationery photograph: cropped a little above
+   its middle, where the notepad and the pen sit; the scrim as everywhere. */
+.thallo-blog-home .thallo-panel__img {
+  object-position: 50% 45%;
 }
