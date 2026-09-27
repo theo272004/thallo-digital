@@ -1261,9 +1261,11 @@ function thallo_shortlist_create_volume() {
 		array(
 			'post_type'    => 'page',
 			'post_status'  => 'auto-draft',
-			/* The title WordPress gives its own auto-drafts; the editor knows
-			   to show it as empty. */
-			'post_title'   => __( 'Auto Draft' ),
+			/* Empty, not WordPress's "Auto Draft": post-new.php blanks that
+			   title before the editor sees it, but this page is opened through
+			   post.php, which shows it as typed — and "Auto Draft" sat in the
+			   title field for whoever wrote the volume to delete. */
+			'post_title'   => '',
 			'post_parent'  => (int) $hub->ID,
 			'post_content' => $pattern ? $pattern['content'] : '',
 			'post_author'  => get_current_user_id(),
