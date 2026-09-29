@@ -3,6 +3,11 @@ name: Deploy Next.js site to Bluehost
 on:
   workflow_dispatch:
 
+# Read the code, nothing else. The job never writes to the repository, so the
+# token it is handed should not be able to either.
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -34,8 +39,10 @@ jobs:
       # a deploy would have published Thallo over another client's site. A
       # missing secret must stop the run, not fall back to a plausible guess.
       - name: Check the destination is configured
+        env:
+          SERVER_DIR: ${{ secrets.BLUEHOST_SERVER_DIR }}
         run: |
-          if [ -z "${{ secrets.BLUEHOST_SERVER_DIR }}" ]; then
+          if [ -z "$SERVER_DIR" ]; then
             echo "::error::BLUEHOST_SERVER_DIR is not set."
             echo "Set it in Settings → Secrets and variables → Actions."
             echo "It is the Document Root from Bluehost → Websites → Files & Access,"
@@ -44,11 +51,17 @@ jobs:
           fi
 
       - name: Deploy to Bluehost via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        # Pinned to the commit v4.3.5 pointed at, not the tag: this action is
+        # handed the FTP password, and a tag can be moved to other code.
+        uses: SamKirkland/FTP-Deploy-Action@8e83cea8672e3fbcbb9fdafff34debf6ae4c5f65 # v4.3.5
         with:
           server: ${{ secrets.BLUEHOST_FTP_SERVER }}
           username: ${{ secrets.BLUEHOST_FTP_USERNAME }}
           password: ${{ secrets.BLUEHOST_FTP_PASSWORD }}
+          # Explicit FTPS. The default is plain FTP, which sent this password
+          # across the internet unencrypted on every deploy. If a run ever fails
+          # at the connect step, that is the first thing to check.
+          protocol: ftps
           local-dir: ./out/
           server-dir: ${{ secrets.BLUEHOST_SERVER_DIR }}
           # WordPress lives in a subfolder of this same document root and is
