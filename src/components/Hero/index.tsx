@@ -165,7 +165,11 @@ export default function Hero() {
     >
       <BackgroundGrid />
 
-      <div className="flex-1 max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 w-full py-4 lg:py-8">
+      {/* The bottom padding is 120px heavier than the top on purpose: the copy
+          is centred in what is left of the screen, so the extra 120px lifts it
+          60px closer to the menu — "about a finger's width", Cami, 3 October.
+          At 1440×900 that took the gap under the menu from 197px to ~137px. */}
+      <div className="flex-1 max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 w-full py-4 lg:pt-8 lg:pb-[9.5rem]">
         {/* Left — copy */}
         <HeroText />
 

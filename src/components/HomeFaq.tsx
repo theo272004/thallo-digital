@@ -80,6 +80,28 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
       </>
     ),
   },
+  /* The two Cami added on 3 October. They sit straight after the price because
+     they are the questions the price raises: what the free thing is worth
+     next to the paid one, and whether the paid one is a gate. */
+  {
+    q: "What's the difference between the free scan and the audit?",
+    a: (
+      <>
+        The scan is a quick snapshot of what AI says about you right now. The audit is the full diagnosis: your mention
+        rate against competitors, the questions where you lose, whether AI can read your site, the sources you need to
+        be on, and a 90-day plan. The scan tells you something is happening; the audit tells you what to do about it.
+      </>
+    ),
+  },
+  {
+    q: 'Do I need the audit before ongoing work?',
+    a: (
+      <>
+        No. The audit, the Engine and standalone projects are independent. But most clients start with the audit
+        because it gives both sides a shared baseline before committing to ongoing work.
+      </>
+    ),
+  },
   {
     q: 'How do you measure it?',
     a: (

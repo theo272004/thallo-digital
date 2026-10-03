@@ -5,9 +5,13 @@ import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
 import TheProblem from '@/components/TheProblem';
+import ResearchCallout from '@/components/ResearchCallout';
 import PlaybookContrast from '@/components/PlaybookContrast';
 import HowItWorks from '@/components/HowItWorks';
 import ScannerStripe from '@/components/ScannerStripe';
+import AuditOffer from '@/components/AuditOffer';
+import PublicPricing from '@/components/PublicPricing';
+import FitCheck from '@/components/FitCheck';
 import HomeFaq from '@/components/HomeFaq';
 import Testimonials from '@/components/Testimonials';
 /* BlogSection — the testimonial carousel — is hidden further down this file
@@ -41,16 +45,25 @@ export default function Home() {
       <Navbar />
       <main className="flex-grow">
         <Hero />
+        {/* Who the buyer is and what they ask while researching. Straight
+            under the hero since Cami's pass of 3 October. */}
+        <TheProblem />
         {/* Who we are, and the one idea the whole page rests on. */}
         <About />
-        {/* What changed, and the three figures that show it. */}
-        <TheProblem />
+        {/* The proof that we measure what we sell: The AI Shortlist. */}
+        <ResearchCallout />
         {/* What the alternative is, and why it stopped working. */}
         <PlaybookContrast />
         {/* What we do instead — read as the answer to the two above it. */}
         <HowItWorks />
         {/* The cheapest possible next step, offered once. */}
         <ScannerStripe />
+        {/* The paid first step, with its price and its scope. */}
+        <AuditOffer />
+        {/* All three prices at once, so nobody has to ask. */}
+        <PublicPricing />
+        {/* Who this is for and who it is not, before the form. */}
+        <FitCheck />
         {/* The awkward questions, answered before the writing and the ask.
             They spent a week as the last thing on the page; they sit above the
             closing panel again at Cami's request, which is why the intro

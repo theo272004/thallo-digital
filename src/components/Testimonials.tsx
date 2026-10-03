@@ -275,7 +275,7 @@ export default function Testimonials() {
             href="https://thallodigital.com/blog/"
             className="group inline-flex items-center gap-1.5 rounded-full border border-[#39471D] bg-[#39471D] px-5 py-2.5 text-[13px] font-bold text-white transition-colors hover:border-[#55672E] hover:bg-[#55672E]"
           >
-            All notes
+            Read our blog
             <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
         </div>

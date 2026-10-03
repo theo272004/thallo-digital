@@ -71,8 +71,7 @@ export default function PlaybookContrast() {
             html='Most agencies are still selling <span class="italic text-[#39471D]">the 2019 playbook.</span>'
           />
           <p className="mx-auto mt-5 max-w-[58ch] text-base font-medium leading-relaxed text-gray-500">
-            It was built for a search engine that sent people to websites. That&rsquo;s not the one your buyers are
-            using anymore.
+            It was built for a search engine that sent people to websites. Your buyers ask AI for answers now.
           </p>
         </div>
 
@@ -164,6 +163,13 @@ export default function PlaybookContrast() {
         {/* The two panels stack on a phone, where "other agencies" and "Thallo
             Digital" become two lists one after the other rather than two columns
             to read across. The rows still pair up in order. */}
+
+        {/* The conclusion the comparison draws, set under both panels in the
+            heading's italic — Cami's mockup of 3 October. */}
+        <p className="mx-auto mt-12 max-w-[46ch] text-center font-sans text-xl italic leading-snug text-gray-900 sm:mt-14 sm:text-2xl">
+          Authority is the one asset that appreciates. Ads stop the day you stop paying. Rankings move with every
+          update. <span className="text-[#39471D]">Authority compounds.</span>
+        </p>
       </div>
     </section>
   );

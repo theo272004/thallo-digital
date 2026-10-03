@@ -23,16 +23,35 @@ const labelCls =
 
 type Status = 'idle' | 'sending' | 'sent' | 'mail' | 'error';
 
+/**
+ * The home page's version of the form, in Cami's words (3 October 2026).
+ *
+ * Fewer fields and a softer ask: no business name, the message optional, and
+ * the button asks for a conversation rather than sending a message. The chips
+ * speak plainly — "Ongoing support", "A project" — but the enquiry still has to
+ * arrive naming a plan /services/ prices, so each label is sent as the plan it
+ * stands for. A lead that says "A project" is a lead nobody can quote.
+ */
+export const CONVERSATION_PLANS = ['AI Visibility Audit', 'Ongoing support', 'A project', 'Not sure yet'];
+const CONVERSATION_PLAN_VALUE: Record<string, string> = {
+  'Ongoing support': 'The Authority Engine',
+  'A project': 'Standalone Projects',
+};
+
 export default function PlanEnquiryForm({
   plans,
   activePlans,
+  variant = 'enquiry',
 }: {
   plans: string[];
   /* Whatever the visitor has already put together elsewhere on the page (a
      base plan, plus any add-ons ticked in the builder), so the form opens
      with their selection already checked rather than empty. */
   activePlans?: string[];
+  /** `conversation` is the home page's shorter form; see CONVERSATION_PLANS. */
+  variant?: 'enquiry' | 'conversation';
 }) {
+  const conversation = variant === 'conversation';
   const formRef = useRef<HTMLFormElement>(null);
   const [status, setStatus] = useState<Status>('idle');
 
@@ -66,11 +85,13 @@ export default function PlanEnquiryForm({
 
     const payload = {
       name: String(data.get('name') ?? ''),
-      company: String(data.get('company') ?? ''),
+      /* The conversation form has no business field; the website is the
+         nearest thing to a company name the enquiry list can show. */
+      company: String(data.get('company') ?? data.get('website') ?? ''),
       email: String(data.get('email') ?? ''),
       website: String(data.get('website') ?? ''),
       message: String(data.get('message') ?? ''),
-      plans: selectedPlans,
+      plans: conversation ? selectedPlans.map((p) => CONVERSATION_PLAN_VALUE[p] ?? p) : selectedPlans,
       /* Required, so reaching here means it was given — recorded rather than
          assumed, since consent you cannot show is not much use later. */
       consent: data.get('consent') === 'on',
@@ -152,9 +173,25 @@ Website: ${payload.website}`
       className="rounded-2xl bg-white p-6 shadow-[0_24px_60px_-30px_rgba(23,26,16,0.6)]"
     >
       <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#55672E] mb-4">
-        Tell us where you stand
+        {conversation ? 'Start a conversation' : 'Tell us where you stand'}
       </p>
 
+      {conversation ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+          <div>
+            <label className={labelCls} htmlFor="pe-name">Name</label>
+            <input id="pe-name" name="name" type="text" required className={fieldCls} placeholder="Your name" />
+          </div>
+          <div>
+            <label className={labelCls} htmlFor="pe-email">Work email</label>
+            <input id="pe-email" name="email" type="email" required className={fieldCls} placeholder="you@company.com" />
+          </div>
+          <div className="sm:col-span-2">
+            <label className={labelCls} htmlFor="pe-website">Company website</label>
+            <input id="pe-website" name="website" type="text" required className={fieldCls} placeholder="company.com" />
+          </div>
+        </div>
+      ) : (
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
         <div>
           <label className={labelCls} htmlFor="pe-name">Name</label>
@@ -173,6 +210,7 @@ Website: ${payload.website}`
           <input id="pe-website" name="website" type="text" className={fieldCls} placeholder="company.com" />
         </div>
       </div>
+      )}
 
       {/* En el teléfono este campo no se muestra: la fila de chips se
           parte en varias líneas y alarga el formulario justo antes del
@@ -184,19 +222,22 @@ Website: ${payload.website}`
           plans={plans}
           selected={selectedPlans}
           onToggle={togglePlan}
+          label={conversation ? "I'm interested in (optional)" : undefined}
           labelClassName={labelCls}
         />
       </div>
 
       <div className="mb-4">
-        <label className={labelCls} htmlFor="pe-message">What are you trying to achieve?</label>
+        <label className={labelCls} htmlFor="pe-message">
+          {conversation ? 'What would you like to improve? (optional)' : 'What are you trying to achieve?'}
+        </label>
         <textarea
           id="pe-message"
           name="message"
           rows={3}
-          required
+          required={!conversation}
           className={fieldCls}
-          placeholder="Where you are today, and what winning would look like."
+          placeholder={conversation ? undefined : 'Where you are today, and what winning would look like.'}
         />
       </div>
 
@@ -222,8 +263,20 @@ Website: ${payload.website}`
         disabled={status === 'sending'}
         className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#39471D] border border-[#39471D] px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-[#55672E] hover:border-[#55672E] disabled:opacity-60"
       >
-        {status === 'sending' ? 'Sending…' : <>Send message <ArrowUpRight className="ml-0.5" /></>}
+        {status === 'sending' ? (
+          'Sending…'
+        ) : (
+          <>
+            {conversation ? 'Request a conversation' : 'Send message'} <ArrowUpRight className="ml-0.5" />
+          </>
+        )}
       </button>
+
+      {conversation && (
+        <p className="mt-3 text-center text-xs font-medium text-gray-500">
+          A conversation first. No purchase at this step.
+        </p>
+      )}
 
       {status === 'error' && (
         <p role="alert" className="mt-3 text-xs font-medium" style={{ color: '#8A2B12' }}>

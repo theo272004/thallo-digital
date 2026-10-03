@@ -19,18 +19,18 @@ export default function HeroText() {
         html={
           '<span class="block font-sans">Become the name</span>' +
           '<span class="block font-sans mt-2">your market</span>' +
-          /* No secondary face and no second weight: the heading's own type,
-             slanted. Italic is the whole of the emphasis — the line keeps the
-             h1's font-extrabold by inheritance, which is the point. */
-          '<span class="block mt-2 italic text-[#39471D]">can&rsquo;t stop citing.</span>'
+          /* Green and italic, and no longer extrabold — Cami's 3 October
+             trial. The colour and the slant carry the emphasis on their own;
+             the weight on top of both was shouting. `font-normal` overrides
+             the h1's extrabold for this line only. */
+          '<span class="block mt-2 italic font-normal text-[#39471D]">can&rsquo;t stop citing.</span>'
         }
       />
 
       {/* Lede */}
       <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[42ch] mb-10 2xl:mb-12">
-        In high-consideration industries, buyers decide who they trust long before they talk to anyone. We make sure
-        that when they research, <strong className="text-gray-900 font-bold">the name they find as the reference is
-        yours</strong>.
+        Thallo combines original research, expert content, technical SEO and distribution to get AI and Google to
+        recommend you.
       </p>
 
       {/* CTAs */}
@@ -60,6 +60,15 @@ export default function HeroText() {
           <span className="text-[11px] text-gray-500">▷</span>
         </a>
       </div>
+
+      {/* What the primary button costs, said before anyone has to wonder — and
+          the audit, for the reader who would rather skip the scan. */}
+      <p className="mt-5 text-[12.5px] font-medium leading-relaxed text-gray-400">
+        Free scan · no account · under a minute. Prefer to talk?{' '}
+        <a href={`${BASE}/contact/`} className="font-semibold text-gray-600 underline underline-offset-2 hover:text-[#39471D]">
+          Book the audit.
+        </a>
+      </p>
     </div>
   );
 }
