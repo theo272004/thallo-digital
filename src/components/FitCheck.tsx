@@ -1,4 +1,5 @@
 import React from 'react';
+import { SplitReveal } from '@/components/motion';
 import { BASE } from '@/lib/site';
 
 /**
@@ -30,16 +31,18 @@ export default function FitCheck() {
     <section className="border-b border-gray-100 bg-white py-16 2xl:py-24" id="fit">
       <div className="mx-auto max-w-[1440px] px-6" data-reveal>
         <div className="mb-10 max-w-3xl sm:mb-12">
-          <h2 className="font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
-            Are we <span className="italic text-[#39471D]">a fit?</span>
-          </h2>
+          <SplitReveal
+            as="h2"
+            className="font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl"
+            html='Are we <span class="italic text-[#39471D]">a fit?</span>'
+          />
           <p className="mt-5 text-base font-medium leading-relaxed text-gray-500">
             If you&rsquo;re still reading, check this before the form.
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-5">
-          <div className="rounded-[24px] border border-gray-200 bg-white p-7 sm:p-9">
+          <div className="rounded-[24px] border border-gray-200 bg-white p-7 sm:p-9 transition-transform duration-300 hover:-translate-y-1">
             <p className="mb-5 text-[12px] font-bold uppercase tracking-wider text-[#39471D]">This is for you if</p>
             <ul className="flex flex-col">
               {FOR_YOU.map((line) => (
@@ -61,7 +64,7 @@ export default function FitCheck() {
             </ul>
           </div>
 
-          <div className="rounded-[24px] border border-gray-200 bg-white p-7 sm:p-9">
+          <div className="rounded-[24px] border border-gray-200 bg-white p-7 sm:p-9 transition-transform duration-300 hover:-translate-y-1">
             {/* The one red on the site, and only on a label — muted enough to
                 read as "no" without reading as an error. */}
             <p className="mb-5 text-[12px] font-bold uppercase tracking-wider text-[#8A2B12]">Not for you if</p>

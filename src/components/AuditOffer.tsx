@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { scrollToEl } from '@/components/motion';
+import { scrollToEl, SplitReveal } from '@/components/motion';
 import { BASE } from '@/lib/site';
 
 /**
@@ -47,9 +47,11 @@ export default function AuditOffer() {
 
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:gap-16">
             <div>
-              <h2 className="font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl">
-                Start with <span className="italic text-[#CBD0AC]">clarity.</span>
-              </h2>
+              <SplitReveal
+                as="h2"
+                className="font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl"
+                html='Start with <span class="italic text-[#CBD0AC]">clarity.</span>'
+              />
               <p className="mt-6 max-w-[48ch] text-base font-medium leading-relaxed text-[#CBD0AC] sm:text-lg">
                 Your buyers ask AI who to hire before they ever talk to you. Right now, you have no idea what it tells
                 them. The audit fixes that.
@@ -76,8 +78,8 @@ export default function AuditOffer() {
               </ul>
             </div>
 
-            <div className="rounded-3xl bg-white p-8 text-center shadow-[0_30px_70px_-30px_rgba(23,26,16,0.6)] sm:p-10">
-              <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#55672E]">
+            <div className="rounded-3xl bg-white p-8 text-center shadow-[0_30px_70px_-30px_rgba(23,26,16,0.6)] transition-transform duration-300 hover:-translate-y-1 sm:p-10">
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#55672E]">
                 AI Visibility Audit
               </p>
               <p className="mt-5 font-sans text-6xl font-bold tracking-tight text-gray-900 tabular-nums">$1,200</p>
