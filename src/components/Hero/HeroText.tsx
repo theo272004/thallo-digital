@@ -46,7 +46,7 @@ export default function HeroText() {
           >
             <span>
               See how AI describes you{' '}
-              <span className="whitespace-nowrap font-medium text-white/60">· free</span>
+              <span className="whitespace-nowrap text-white/60">· free</span>
             </span>
             <ArrowUpRight className="text-[11px] group-hover:translate-x-0.5 transition-transform" />
           </a>
