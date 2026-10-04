@@ -19,11 +19,11 @@ export default function HeroText() {
         html={
           '<span class="block font-sans">Become the name</span>' +
           '<span class="block font-sans mt-2">your market</span>' +
-          /* Green and italic, and no longer extrabold — Cami's 3 October
-             trial. The colour and the slant carry the emphasis on their own;
-             the weight on top of both was shouting. `font-normal` overrides
-             the h1's extrabold for this line only. */
-          '<span class="block mt-2 italic font-normal text-[#39471D]">can&rsquo;t stop citing.</span>'
+          /* No secondary face and no second weight: the heading's own type,
+             slanted. Italic is the whole of the emphasis — the line keeps the
+             h1's font-extrabold by inheritance, which is the point. The
+             3 October `font-normal` trial was undone on 4 October. */
+          '<span class="block mt-2 italic text-[#39471D]">can&rsquo;t stop citing.</span>'
         }
       />
 
