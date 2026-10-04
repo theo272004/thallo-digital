@@ -79,7 +79,7 @@ export default function AuditOffer() {
             </div>
 
             <div className="rounded-3xl bg-white p-8 text-center shadow-[0_30px_70px_-30px_rgba(23,26,16,0.6)] transition-transform duration-300 hover:-translate-y-1 sm:p-10">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#55672E]">
+              <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#55672E]">
                 AI Visibility Audit
               </p>
               <p className="mt-5 font-sans text-6xl font-bold tracking-tight text-gray-900 tabular-nums">$1,200</p>

@@ -23,7 +23,7 @@ export default function PublicPricing() {
     <section className="border-b border-gray-100 bg-[#F7F8F9] py-16 2xl:py-24" id="pricing">
       <div className="mx-auto max-w-[1440px] px-6" data-reveal>
         <div className="rounded-[28px] border border-gray-200 bg-white px-6 py-12 text-center shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] sm:px-12 sm:py-14">
-          <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#55672E]">
+          <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#55672E]">
             No discovery-call pricing
           </p>
           <SplitReveal
