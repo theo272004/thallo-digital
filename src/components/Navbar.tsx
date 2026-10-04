@@ -121,7 +121,7 @@ export default function Navbar() {
             href={`${BASE}/thallo-ai/scan/`}
             className="px-4 py-2 border border-gray-200 rounded-full text-sm font-semibold text-gray-800 hover:border-gray-400 hover:bg-gray-50 transition-all"
           >
-            Try the scan <ArrowUpRight className="ml-0.5" />
+            Free scan <ArrowUpRight className="ml-0.5" />
           </a>
           <Magnetic>
             <a href={`${BASE}/contact/`} className="px-4 py-2 bg-[#39471D] border border-[#39471D] rounded-full text-sm font-semibold text-white hover:bg-[#55672E] hover:border-[#55672E] transition-all">
@@ -190,7 +190,7 @@ export default function Navbar() {
           })}
         </div>
         <div className="flex flex-col gap-4 mt-auto">
-          <a href={`${BASE}/thallo-ai/scan/`} onClick={() => setMobileMenuOpen(false)} className="w-full py-3.5 border border-gray-200 rounded-full text-center text-sm font-bold text-gray-800">Try the scan <ArrowUpRight className="ml-0.5" /></a>
+          <a href={`${BASE}/thallo-ai/scan/`} onClick={() => setMobileMenuOpen(false)} className="w-full py-3.5 border border-gray-200 rounded-full text-center text-sm font-bold text-gray-800">Free scan <ArrowUpRight className="ml-0.5" /></a>
           <a href={`${BASE}/contact/`} onClick={() => setMobileMenuOpen(false)} className="w-full py-3.5 bg-[#39471D] rounded-full text-center text-sm font-bold text-white">Book an audit <ArrowUpRight className="ml-0.5" /></a>
         </div>
       </div>
