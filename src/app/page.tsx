@@ -50,12 +50,13 @@ export default function Home() {
         <TheProblem />
         {/* Who we are, and the one idea the whole page rests on. */}
         <About />
-        {/* The proof that we measure what we sell: The AI Shortlist. */}
-        <ResearchCallout />
         {/* What the alternative is, and why it stopped working. */}
         <PlaybookContrast />
         {/* What we do instead — read as the answer to the two above it. */}
         <HowItWorks />
+        {/* The proof that we measure what we sell: The AI Shortlist. Moved
+            down to sit just before the scan at Cami's request, 4 October. */}
+        <ResearchCallout />
         {/* The cheapest possible next step, offered once. */}
         <ScannerStripe />
         {/* The paid first step, with its price and its scope. */}
