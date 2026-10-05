@@ -164,9 +164,10 @@ export default function PlaybookContrast() {
             Digital" become two lists one after the other rather than two columns
             to read across. The rows still pair up in order. */}
 
-        {/* The conclusion the comparison draws, set under both panels in the
-            heading's italic — Cami's mockup of 3 October. */}
-        <p className="mx-auto mt-12 max-w-[46ch] text-center font-sans text-xl italic leading-snug text-gray-900 sm:mt-14 sm:text-2xl">
+        {/* The conclusion the comparison draws, set under both panels. Upright
+            and semibold since 5 October: the thin italic it had read as a
+            typeface the site does not use. */}
+        <p className="mx-auto mt-12 max-w-[46ch] text-center font-sans text-xl font-semibold leading-snug tracking-tight text-gray-900 sm:mt-14 sm:text-2xl">
           Authority is the one asset that appreciates. Ads stop the day you stop paying. Rankings move with every
           update. <span className="text-[#39471D]">Authority compounds.</span>
         </p>

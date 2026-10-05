@@ -30,7 +30,7 @@ const SERVICES = [
     /* Amount and terms split rather than run together on one line. A figure
        reads as a price; a figure with its conditions welded onto it reads as a
        sentence, and the eye stops looking for the number. */
-    price: '$1,200',
+    price: '$1,000',
     terms: 'Fixed price, one-time. No lock-in. The roadmap is yours either way.',
     cta: 'Book an audit',
   },

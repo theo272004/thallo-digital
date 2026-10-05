@@ -20,7 +20,7 @@ export default function Services() {
          checking exactly that. The audit is a fixed price on that page — "no
          lock-in, the roadmap is yours either way" — so "From" was wrong twice
          over: wrong figure and wrong shape. */
-      price: '$1,200 · one-time · 2–3 weeks',
+      price: '$1,000 · one-time · 2–3 weeks',
       featured: false,
     },
     {

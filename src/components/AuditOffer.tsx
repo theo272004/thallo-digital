@@ -93,7 +93,7 @@ export default function AuditOffer() {
               <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#CBD0AC]">
                 AI Visibility Audit
               </p>
-              <p className="mt-5 font-sans text-6xl font-bold tracking-tight text-white tabular-nums">$1,200</p>
+              <p className="mt-5 font-sans text-6xl font-bold tracking-tight text-white tabular-nums">$1,000</p>
               <p className="mt-3 text-sm font-medium text-white/70">one time · yours to keep</p>
               <a
                 href="#cta"

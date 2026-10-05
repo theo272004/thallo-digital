@@ -38,8 +38,10 @@ import { ScrollTrigger } from '@/lib/gsap';
 
    ## Pictures
 
-   The covers stay the site's own photographs, one per slot. The posts'
-   featured images are the blog's wide banner, which crops to nothing at 16:9.
+   A published post shows its featured image — the same picture the blog
+   itself uses as that post's cover — so the card and the post always match.
+   Change the featured image in WordPress and the card follows. A planned note
+   has no post to take one from, so it keeps one of the site's photographs.
 
    ## Two things deliberately not taken from the reference
 
@@ -58,13 +60,14 @@ type Article = {
   /** Publication date. Only a published post has one. */
   date?: string;
   read?: string;
+  /** The post's featured image. Absent on a planned note. */
+  image?: string;
 };
 
 const SLOTS = 4;
 
-/* Photographs the site already holds, by slot. None of the four appears
-   anywhere else on the home page, so the section does not repeat a picture
-   the reader has just scrolled past. */
+/* Photographs the site already holds, by slot — the picture for a planned
+   note, which has no featured image of its own. */
 const IMAGES = ['blog-lead.webp', 'buyers-bg.webp', 'case-film-bg.webp', 'measured-bg.webp'];
 
 const FALLBACK: Article[] = [
@@ -75,6 +78,7 @@ const FALLBACK: Article[] = [
     title: 'How to Find, Choose, and Track the Questions Your Buyers Ask AI',
     desc:  'Useful prompt tracking starts with the questions that shape a buying decision. Learn how to find those questions inside your business, choose which ones are worth tracking, and build a consistent set that shows where your company appears in AI recommendations over time.',
     href:  'https://thallodigital.com/blog/prompt-tracking-buyer-questions/',
+    image: 'https://thallodigital.com/blog/wp-content/uploads/2026/08/bannercito-doc.jpg',
   },
   {
     badge: 'AI Visibility',
@@ -83,6 +87,7 @@ const FALLBACK: Article[] = [
     title: 'How to See What AI Tells Your Buyers About Your Competitors',
     desc:  'See which competitors AI recommends to your buyers, why they appear in those answers, and where your company can close the gap. AI competitor analysis helps you uncover the questions, sources, and positioning shaping AI recommendations.',
     href:  'https://thallodigital.com/blog/ai-competitor-analysis/',
+    image: 'https://thallodigital.com/blog/wp-content/uploads/2026/08/bannercito-doc.jpg',
   },
   {
     badge: 'Blog',
@@ -91,6 +96,7 @@ const FALLBACK: Article[] = [
     title: 'Ranking first and being named are not the same thing',
     desc:  'Search used to hand your buyer ten links and let them choose. Now it hands them an answer with three companies in it. Being one of those three is a different problem from ranking, and it has different fixes.',
     href:  'https://thallodigital.com/blog/ranking-first-and-being-named/',
+    image: 'https://thallodigital.com/blog/wp-content/uploads/2026/08/bannercito-doc.jpg',
   },
 ];
 
@@ -119,7 +125,10 @@ type WPPost = {
   title: { rendered: string };
   excerpt: { rendered: string };
   content: { rendered: string };
-  _embedded?: { 'wp:term'?: { taxonomy: string; name: string }[][] };
+  _embedded?: {
+    'wp:term'?: { taxonomy: string; name: string }[][];
+    'wp:featuredmedia'?: { source_url?: string }[];
+  };
 };
 
 /** WordPress hands back HTML with entities; the cards want plain text. */
@@ -141,6 +150,7 @@ function toArticle(p: WPPost): Article {
     href:  p.link,
     date:  new Date(p.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
     read:  `${Math.max(1, Math.ceil(words / 225))} min`,
+    image: p._embedded?.['wp:featuredmedia']?.[0]?.source_url,
   };
 }
 
@@ -150,7 +160,7 @@ function usePosts(): Article[] {
 
   useEffect(() => {
     const ctrl = new AbortController();
-    fetch(`${BLOG_URL}wp-json/wp/v2/posts?per_page=${SLOTS}&_embed=wp:term&_fields=date,link,title,excerpt,content,_links,_embedded`, {
+    fetch(`${BLOG_URL}wp-json/wp/v2/posts?per_page=${SLOTS}&_embed=wp:term,wp:featuredmedia&_fields=date,link,title,excerpt,content,_links,_embedded`, {
       signal: ctrl.signal,
     })
       .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
@@ -267,7 +277,7 @@ export default function Testimonials() {
               <img
                 loading="lazy"
                 decoding="async"
-                src={`${BASE}/${IMAGES[0]}`}
+                src={lead.image ?? `${BASE}/${IMAGES[0]}`}
                 alt=""
                 aria-hidden="true"
                 className="aspect-[16/9] w-full select-none object-cover"
@@ -331,7 +341,7 @@ export default function Testimonials() {
                   <img
                     loading="lazy"
                     decoding="async"
-                    src={`${BASE}/${IMAGES[i + 1]}`}
+                    src={a.image ?? `${BASE}/${IMAGES[i + 1]}`}
                     alt=""
                     aria-hidden="true"
                     className="h-[88px] w-[104px] select-none object-cover"

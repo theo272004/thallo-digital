@@ -715,7 +715,7 @@ export default function SeoLanding() {
                 ))}
               </ul>
               <div className="mt-auto pt-8"><div className="border-t border-gray-200/70 pt-6">
-                <span className="block text-base font-bold tracking-tight text-gray-900">$1,200</span>
+                <span className="block text-base font-bold tracking-tight text-gray-900">$1,000</span>
                 <span className="mt-1 block text-[13px] font-medium leading-snug text-gray-500">Fixed price, one-time.</span>
                 <a href="#enquiry" className="mt-5 block rounded-full border border-gray-200 px-5 py-3 text-center text-sm font-semibold text-gray-900 transition-colors hover:border-[#39471D] hover:text-[#39471D]">
                   Book an audit <ArrowUpRight className="ml-0.5" />
