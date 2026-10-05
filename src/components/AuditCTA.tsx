@@ -122,8 +122,10 @@ export default function AuditCTA({
               {steps && (
                 <ol className="mt-8 flex flex-col gap-3.5">
                   {steps.map((step, i) => (
-                    <li key={step} className="flex items-center gap-3.5 text-[15.5px] font-medium text-white">
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/40 text-[12px] font-semibold text-white/90">
+                    /* The number fills white under the cursor, the way the
+                       other hover states on the site answer (Cami, 5 October). */
+                    <li key={step} className="group flex cursor-default items-center gap-3.5 text-[15.5px] font-medium text-white">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/40 text-[12px] font-semibold text-white/90 transition-colors duration-300 group-hover:border-white group-hover:bg-white group-hover:text-[#171A10]">
                         {i + 1}
                       </span>
                       {step}

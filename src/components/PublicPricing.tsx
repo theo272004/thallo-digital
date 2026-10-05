@@ -1,6 +1,6 @@
 import React from 'react';
-import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import { SplitReveal } from '@/components/motion';
+import SpinFlower from '@/components/ui/SpinFlower';
 import { BASE } from '@/lib/site';
 
 /**
@@ -9,41 +9,33 @@ import { BASE } from '@/lib/site';
  *
  * Added at Cami's request on 3 October 2026. Each figure is one the site
  * already states elsewhere and has to stay in step with: the free tier in
- * ResearchAndScan ("under a minute"), the audit in Services.tsx and AuditOffer,
+ * ScannerStripe ("under a minute"), the audit in Services.tsx and AuditOffer,
  * the Engine's floor and term in Services.tsx, ServicesLanding.tsx and
  * HomeFaq.tsx. Grep for the old figure across the site when any of them moves.
  *
- * ## Bigger, with the same words
+ * No panel around it since 5 October: it sits between the audit card and the
+ * fit-check card, and a third big card in a row was one too many. The three
+ * prices are the only cards here — white, on the section's grey.
  *
- * On 5 October Cami found the three small price chips too slight and asked
- * for something different and longer — but the copy is fixed: no words beyond
- * the heading, the paragraph, the three names and their prices. So the
- * section grows by layout alone. Each tier is a tall card with its name at the
- * top and its figure set large at the foot, the price line split at its
- * " · " into the figure and the condition that goes with it.
- *
- * The Engine carries the olive border because it is the program; there is no
- * label saying so, since a label would be new copy.
+ * The spinning flower above the label is the one About carries, added at
+ * Cami's request on 5 October to give the section a mark of its own. A
+ * version with tall cards and oversized figures was tried the same day and
+ * dropped: it forced the three short lines to fill space they do not need.
  */
 const PRICES = [
-  { name: 'Free scan', lead: '', figure: '$0', unit: '', terms: 'under a minute', href: `${BASE}/thallo-ai/scan/` },
-  { name: 'AI Visibility Audit', lead: '', figure: '$1,000', unit: '', terms: 'one time', href: `${BASE}/services/` },
-  {
-    name: 'Authority Engine',
-    lead: 'from',
-    figure: '$2,500',
-    unit: '/mo',
-    terms: '3-month term',
-    href: `${BASE}/services/`,
-    featured: true,
-  },
+  { name: 'Free scan', price: '$0 · under a minute', href: `${BASE}/thallo-ai/scan/` },
+  { name: 'AI Visibility Audit', price: '$1,000 · one time', href: `${BASE}/services/` },
+  { name: 'Authority Engine', price: 'from $2,500/mo · 3-month term', href: `${BASE}/services/` },
 ];
 
 export default function PublicPricing() {
   return (
-    <section className="border-b border-gray-100 bg-[#F7F8F9] py-20 2xl:py-28" id="pricing">
-      <div className="mx-auto max-w-[1440px] px-6">
-        <div className="mx-auto max-w-2xl text-center" data-reveal>
+    <section className="border-b border-gray-100 bg-[#F7F8F9] py-16 2xl:py-24" id="pricing">
+      <div className="mx-auto max-w-[1440px] px-6" data-reveal>
+        <div className="text-center">
+          <div className="mb-6 flex justify-center">
+            <SpinFlower alt="" className="block h-14 w-14 opacity-80" />
+          </div>
           <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#55672E]">
             No discovery-call pricing
           </p>
@@ -55,47 +47,19 @@ export default function PublicPricing() {
           <p className="mx-auto mt-5 max-w-[56ch] text-base font-medium leading-relaxed text-gray-500">
             You shouldn&rsquo;t have to book a call to find out what something costs. Here are our prices, up front.
           </p>
-        </div>
 
-        <div className="mt-14 grid grid-cols-1 gap-5 lg:grid-cols-3">
-          {/* The reveal moves the outer box and the hover lift moves the card
-              inside it. On one element GSAP's inline transform would pin the
-              card in place and the lift would never show. */}
-          {PRICES.map((p) => (
-            <div key={p.name} data-reveal className="flex">
+          <div className="mx-auto mt-10 grid max-w-5xl grid-cols-1 gap-4 md:grid-cols-3">
+            {PRICES.map((p) => (
               <a
+                key={p.name}
                 href={p.href}
-                className={`lift group flex min-h-[300px] w-full flex-col justify-between rounded-[28px] border bg-white p-8 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-all duration-300 sm:p-10 lg:min-h-[340px] ${
-                  p.featured ? 'border-[#39471D]' : 'border-gray-200'
-                }`}
+                className="lift rounded-2xl border border-gray-200 bg-white px-6 py-7 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-all duration-300 hover:border-[#55672E]/40"
               >
-                <span className="flex items-start justify-between gap-4">
-                  <span className="text-2xl font-bold tracking-tight text-gray-900">{p.name}</span>
-                  <span
-                    aria-hidden="true"
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-colors duration-300 ${
-                      p.featured
-                        ? 'border-[#39471D] bg-[#39471D] text-white'
-                        : 'border-gray-200 text-[#39471D] group-hover:border-[#39471D]'
-                    }`}
-                  >
-                    <ArrowUpRight className="text-[12px]" />
-                  </span>
-                </span>
-
-                <span className="block border-t border-gray-200/70 pt-6">
-                  <span className="flex items-baseline gap-x-2 whitespace-nowrap">
-                    {p.lead && <span className="text-base font-semibold text-gray-500">{p.lead}</span>}
-                    <span className="font-sans text-5xl font-bold tracking-tight text-[#39471D] tabular-nums xl:text-6xl">
-                      {p.figure}
-                    </span>
-                    {p.unit && <span className="text-base font-semibold text-gray-500">{p.unit}</span>}
-                  </span>
-                  <span className="mt-3 block text-[15.5px] font-medium text-gray-500">{p.terms}</span>
-                </span>
+                <span className="block text-lg font-semibold tracking-tight text-gray-900">{p.name}</span>
+                <span className="mt-2 block text-[15px] font-bold text-[#39471D]">{p.price}</span>
               </a>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
