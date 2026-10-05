@@ -224,7 +224,11 @@ const CARD_LINK = 'group lift';
 /* A dark olive gradient over every cover — Cami, 5 October — so the
    pictures sit in the site's green whatever the blog uploads. Darkest at the
    foot, easing off towards the top, like the scrims on the dark panels. */
+/* Two layers, top one first: a near-black shadow rising from the
+   bottom-left corner only (Cami, 5 October: "más oscuras", from one corner),
+   over the olive tint. */
 const PHOTO_TINT =
+  'linear-gradient(to top right, rgba(10,11,7,.72) 0%, rgba(10,11,7,.35) 35%, rgba(10,11,7,0) 70%), ' +
   'linear-gradient(to top, rgba(23,26,16,.78) 0%, rgba(57,71,29,.45) 55%, rgba(57,71,29,.15) 100%)';
 
 /**
