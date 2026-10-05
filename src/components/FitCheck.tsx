@@ -21,7 +21,7 @@ import { BASE } from '@/lib/site';
  *
  * The two cards are yes against no (Cami chose it from three options, 5
  * October): "for you" is dark, on the greenish desk photograph blurred and
- * darkened; "not for you" is plain warm beige with grey type. The contrast
+ * darkened; "not for you" is plain white with grey type. The contrast
  * says which side is the one to be on without a word added.
  */
 const PHOTO = `${BASE}/engine-bg.webp`;
@@ -100,7 +100,7 @@ export default function FitCheck() {
             </ul>
           </div>
 
-          <div className="rounded-[24px] border border-[#E7E3D8] bg-[#F3F1EA] p-7 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] sm:p-9 transition-transform duration-300 hover:-translate-y-1">
+          <div className="rounded-[24px] border border-gray-200 bg-white p-7 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] sm:p-9 transition-transform duration-300 hover:-translate-y-1">
             {/* The one red on the site, and only on a label — muted enough to
                 read as "no" without reading as an error. */}
             <p className="mb-5 text-[12px] font-bold uppercase tracking-wider text-[#8A2B12]">Not for you if</p>
@@ -108,7 +108,7 @@ export default function FitCheck() {
               {NOT_FOR_YOU.map((line) => (
                 <li
                   key={line}
-                  className="flex items-start gap-3.5 border-b border-[#39471D]/15 py-4 text-[15px] font-medium leading-snug text-gray-600 last:border-0"
+                  className="flex items-start gap-3.5 border-b border-gray-200/70 py-4 text-[15px] font-medium leading-snug text-gray-600 last:border-0"
                 >
                   <span aria-hidden className="mt-[9px] block h-[1.5px] w-[12px] shrink-0 rounded-full bg-gray-400" />
                   {line}

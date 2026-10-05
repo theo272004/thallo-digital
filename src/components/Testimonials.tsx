@@ -218,8 +218,14 @@ function Meta({ a }: { a: Article }) {
    Only a card that goes somewhere gets `group` and `lift`. A card that lifts
    under the cursor is promising a click, and a planned note has none to give. */
 const CARD =
-  'relative flex overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]';
+  'flex rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]';
 const CARD_LINK = 'group lift';
+
+/* A dark olive gradient over every cover — Cami, 5 October — so the
+   pictures sit in the site's green whatever the blog uploads. Darkest at the
+   foot, easing off towards the top, like the scrims on the dark panels. */
+const PHOTO_TINT =
+  'linear-gradient(to top, rgba(23,26,16,.78) 0%, rgba(57,71,29,.45) 55%, rgba(57,71,29,.15) 100%)';
 
 /**
  * One slot. Always the same <a>, so React updates it in place when the posts
@@ -230,9 +236,6 @@ const CARD_LINK = 'group lift';
 function CardShell({ a, className, children }: { a: Article; className: string; children: React.ReactNode }) {
   return (
     <a href={a.href} data-reveal className={`${CARD} ${a.href ? CARD_LINK : ''} ${className}`}>
-      {/* The olive band across the top — Cami, 5 October: ties the cards
-          to the rest of the site's green. */}
-      <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1.5 bg-[#39471D]" />
       {children}
     </a>
   );
@@ -271,12 +274,12 @@ export default function Testimonials() {
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.05fr_1fr]">
 
           {/* ── Lead note ─────────────────────────────────────────────────── */}
-          <CardShell a={lead} className="flex-col p-3 pt-[18px]">
+          <CardShell a={lead} className="flex-col p-3">
             {/* The cover: its own block above the words, not a ground beneath
                 them. 16:9 rather than 16:10 — with three notes beside it now
                 instead of two, the taller crop pushed the lead's own text past
                 the bottom of the stack. */}
-            <span className="block overflow-hidden rounded-2xl bg-[#39471D]">
+            <span className="relative block overflow-hidden rounded-2xl bg-[#39471D]">
               <img
                 loading="lazy"
                 decoding="async"
@@ -285,6 +288,7 @@ export default function Testimonials() {
                 aria-hidden="true"
                 className="aspect-[16/9] w-full select-none object-cover"
               />
+              <span aria-hidden="true" className="absolute inset-0" style={{ background: PHOTO_TINT }} />
             </span>
 
             <span className="flex flex-1 flex-col p-4">
@@ -316,7 +320,7 @@ export default function Testimonials() {
             {/* Keyed by position, not title: a new post must refill a slot,
                 not replace it. */}
             {rest.map((a, i) => (
-              <CardShell key={i} a={a} className="flex-1 items-start gap-4 p-4 pt-[22px]">
+              <CardShell key={i} a={a} className="flex-1 items-start gap-4 p-4">
                 <span className="flex min-w-0 flex-1 flex-col">
                   <Meta a={a} />
 
@@ -340,7 +344,7 @@ export default function Testimonials() {
                 {/* Hidden on the narrowest screens: at full width the card is
                     already a column of text, and a thumbnail beside it leaves
                     the title three words to a line. */}
-                <span className="hidden shrink-0 overflow-hidden rounded-xl bg-[#39471D] sm:block">
+                <span className="relative hidden shrink-0 overflow-hidden rounded-xl bg-[#39471D] sm:block">
                   <img
                     loading="lazy"
                     decoding="async"
@@ -349,6 +353,7 @@ export default function Testimonials() {
                     aria-hidden="true"
                     className="h-[88px] w-[104px] select-none object-cover"
                   />
+                  <span aria-hidden="true" className="absolute inset-0" style={{ background: PHOTO_TINT }} />
                 </span>
               </CardShell>
             ))}
