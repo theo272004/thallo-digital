@@ -61,13 +61,17 @@ export default function TheProblem() {
 
         {/* ── Question cards — three equal columns, riding up over the
             bottom edge of the photograph (Cami, 5 October). `relative z-10`
-            keeps them above the image; the negative margin is the overlap. */}
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-5 -mt-10 md:-mt-14">
+            keeps them above the image; the negative top margin is the overlap,
+            and from md the negative side margins let the row stand a little
+            wider than the photograph on both sides. Kept to 16px at lg so a
+            1440px window, where the photo sits 24px from the edge, never
+            scrolls sideways. */}
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-5 -mt-14 md:-mt-24 md:-mx-3 lg:-mx-4">
           {QUESTIONS.map((item, i) => (
             <div
               key={item.q}
               /* `lift` is the site-wide hover: up 4px, olive border. */
-              className="lift transition-all duration-300 p-8 sm:p-10 bg-white border border-gray-200 rounded-3xl shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] flex flex-col"
+              className="lift transition-all duration-300 p-8 sm:p-11 bg-white border border-gray-200 rounded-3xl shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] flex flex-col"
             >
               <p className="text-[12px] font-bold tracking-wider text-[#8FA88A] mb-4 tabular-nums">
                 {String(i + 1).padStart(2, '0')}

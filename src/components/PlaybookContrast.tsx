@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { SplitReveal } from '@/components/motion';
+import { ScrollFill, SplitReveal } from '@/components/motion';
 import { BASE } from '@/lib/site';
 
 /**
@@ -166,11 +166,18 @@ export default function PlaybookContrast() {
 
         {/* The conclusion the comparison draws, set under both panels. Upright
             and semibold since 5 October: the thin italic it had read as a
-            typeface the site does not use. */}
-        <p className="mx-auto mt-12 max-w-[46ch] text-center font-sans text-xl font-semibold leading-snug tracking-tight text-gray-900 sm:mt-14 sm:text-2xl">
-          Authority is the one asset that appreciates. Ads stop the day you stop paying. Rankings move with every
-          update. <span className="text-[#39471D]">Authority compounds.</span>
-        </p>
+            typeface the site does not use. It fills in word by word with the
+            scroll (ScrollFill), ending on the olive. */}
+        <ScrollFill
+          className="mx-auto mt-12 max-w-[46ch] text-center font-sans text-xl font-semibold leading-snug tracking-tight sm:mt-14 sm:text-2xl"
+          parts={[
+            {
+              text: 'Authority is the one asset that appreciates. Ads stop the day you stop paying. Rankings move with every update. ',
+              color: '#111827',
+            },
+            { text: 'Authority compounds.', color: '#39471D' },
+          ]}
+        />
       </div>
     </section>
   );
