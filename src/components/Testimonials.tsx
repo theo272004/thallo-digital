@@ -16,9 +16,13 @@ import { ScrollTrigger } from '@/lib/gsap';
 
    They are the newest posts on the WordPress blog, read from its REST API in
    the browser, so a post published there shows up here without a deploy. The
-   newest leads. Until 4 October 2026 this list was written by hand — one real
-   post and three planned ones marked "Coming soon" — and it never followed
-   the blog.
+   newest leads. Until 4 October 2026 this list was written by hand and never
+   followed the blog.
+
+   The layout is always one lead and three beside it. While the blog has fewer
+   than four posts, the empty places are filled from PLANNED: notes that are
+   coming, shown as such — no link, no date, a "Coming soon" badge. Each one
+   gives way to a real post as soon as there is one to show.
 
    FALLBACK is what the page ships with and what it keeps if the API cannot be
    reached: the posts that were live when it was written, with the same fields
@@ -29,8 +33,8 @@ import { ScrollTrigger } from '@/lib/gsap';
    `useRevealBatch` collects every `[data-reveal]` once, when the page mounts.
    A card that mounted later would never be revealed and would sit there at
    opacity 0. So there are always four slots, keyed by position: the fetch
-   changes what is in them, never how many there are, and a slot with no post
-   is `display: none` rather than absent.
+   changes what is in them, never how many there are. A slot is always the
+   same <a>: a planned note simply has no href, which is not a link at all.
 
    ## Pictures
 
@@ -49,9 +53,11 @@ type Article = {
   badge: string;
   title: string;
   desc: string;
-  href: string;
-  date: string;
-  read: string;
+  /** The live URL. Absent means the note is planned, not published. */
+  href?: string;
+  /** Publication date. Only a published post has one. */
+  date?: string;
+  read?: string;
 };
 
 const SLOTS = 4;
@@ -85,6 +91,25 @@ const FALLBACK: Article[] = [
     title: 'Ranking first and being named are not the same thing',
     desc:  'Search used to hand your buyer ten links and let them choose. Now it hands them an answer with three companies in it. Being one of those three is a different problem from ranking, and it has different fixes.',
     href:  'https://thallodigital.com/blog/ranking-first-and-being-named/',
+  },
+];
+
+/* The notes that fill the layout while the blog has fewer than four posts. */
+const PLANNED: Article[] = [
+  {
+    badge: 'GEO',
+    title: 'What "share of answer" really measures',
+    desc:  'Rankings told you where you sat on a page nobody reads anymore. Share of answer tells you how often you are the recommendation.',
+  },
+  {
+    badge: 'Content',
+    title: "Original research beats AI's infinite content",
+    desc:  "The one asset machines can't fabricate: a number only you can produce.",
+  },
+  {
+    badge: 'Strategy',
+    title: "Why authority compounds and ads don't",
+    desc:  'Renting attention resets every month. Credibility you own does not.',
   },
 ];
 
@@ -148,15 +173,29 @@ function usePosts(): Article[] {
   return posts;
 }
 
-/** Category · date · read time — the line that makes a card read as a post. */
+/**
+ * Category · date · read time — the line that makes a card read as a post.
+ *
+ * A planned note has no date and no read time to state, so it says so instead
+ * of borrowing a plausible-looking one.
+ */
 function Meta({ a }: { a: Article }) {
   return (
     <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-bold uppercase tracking-[0.12em] text-gray-400">
       <span className="rounded-full bg-[#39471D]/10 px-2 py-0.5 text-[#39471D]">{a.badge}</span>
-      <span aria-hidden="true" className="text-gray-300">·</span>
-      <span>{a.date}</span>
-      <span aria-hidden="true" className="text-gray-300">·</span>
-      <span>{a.read} read</span>
+      {a.href ? (
+        <>
+          <span aria-hidden="true" className="text-gray-300">·</span>
+          <span>{a.date}</span>
+          <span aria-hidden="true" className="text-gray-300">·</span>
+          <span>{a.read} read</span>
+        </>
+      ) : (
+        <>
+          <span aria-hidden="true" className="text-gray-300">·</span>
+          <span className="text-gray-400">Coming soon</span>
+        </>
+      )}
     </span>
   );
 }
@@ -164,25 +203,23 @@ function Meta({ a }: { a: Article }) {
 /* The whole card lifts and settles on hover. It used to be the photograph that
    moved, zooming inside a fixed frame while the card stayed put — which read
    as the picture reacting rather than the link. The images hold still now and
-   the card is what answers to the cursor. */
+   the card is what answers to the cursor.
+
+   Only a card that goes somewhere gets `group` and `lift`. A card that lifts
+   under the cursor is promising a click, and a planned note has none to give. */
 const CARD =
   'flex rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]';
 const CARD_LINK = 'group lift';
 
 /**
- * One slot. Always the same anchor, so React updates it in place when the
- * posts arrive instead of mounting a new element the reveal never saw. An
- * empty slot is hidden, not removed — see "Why the slots are fixed".
+ * One slot. Always the same <a>, so React updates it in place when the posts
+ * arrive instead of mounting a new element the reveal never saw. A planned
+ * note has no href, and an <a> without one is not a link: no cursor, no focus,
+ * nothing to open — see "Why the slots are fixed".
  */
-function CardShell({ a, className, children }: { a?: Article; className: string; children: React.ReactNode }) {
+function CardShell({ a, className, children }: { a: Article; className: string; children: React.ReactNode }) {
   return (
-    <a
-      href={a?.href}
-      data-reveal
-      aria-hidden={a ? undefined : true}
-      style={a ? undefined : { display: 'none' }}
-      className={`${CARD} ${CARD_LINK} ${className}`}
-    >
+    <a href={a.href} data-reveal className={`${CARD} ${a.href ? CARD_LINK : ''} ${className}`}>
       {children}
     </a>
   );
@@ -190,7 +227,8 @@ function CardShell({ a, className, children }: { a?: Article; className: string;
 
 export default function Testimonials() {
   const posts = usePosts();
-  const slots = Array.from({ length: SLOTS }, (_, i) => posts[i]);
+  /* Real posts first, newest leading; planned notes fill what is left. */
+  const slots = Array.from({ length: SLOTS }, (_, i) => posts[i] ?? PLANNED[(i - posts.length) % PLANNED.length]);
   const [lead, ...rest] = slots;
 
   return (
@@ -237,22 +275,26 @@ export default function Testimonials() {
             </span>
 
             <span className="flex flex-1 flex-col p-4">
-              {lead && <Meta a={lead} />}
+              <Meta a={lead} />
 
               <span className="mt-3 text-xl font-bold leading-[1.2] tracking-tight text-gray-900 text-balance transition-colors duration-300 group-hover:text-[#39471D] sm:text-2xl">
-                {lead?.title}
+                {lead.title}
               </span>
 
               <span className="mt-2.5 max-w-[52ch] text-sm font-medium leading-relaxed text-gray-500 line-clamp-4">
-                {lead?.desc}
+                {lead.desc}
               </span>
 
               {/* mt-auto pins the footer down whatever the excerpt runs to, so
-                  this card and the stack beside it end level. */}
-              <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-[11px] font-bold text-[#39471D]">
-                Read the note
-                <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </span>
+                  this card and the stack beside it end level. There is nothing
+                  to pin on a planned note: "Read the note" is an instruction
+                  that would not work if followed. */}
+              {lead.href && (
+                <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-[11px] font-bold text-[#39471D]">
+                  Read the note
+                  <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </span>
+              )}
             </span>
           </CardShell>
 
@@ -263,20 +305,23 @@ export default function Testimonials() {
             {rest.map((a, i) => (
               <CardShell key={i} a={a} className="flex-1 items-start gap-4 p-4">
                 <span className="flex min-w-0 flex-1 flex-col">
-                  {a && <Meta a={a} />}
+                  <Meta a={a} />
 
                   <span className="mt-2.5 text-base font-bold leading-snug text-gray-900 text-balance transition-colors duration-300 group-hover:text-[#39471D]">
-                    {a?.title}
+                    {a.title}
                   </span>
 
-                  <span className="mt-1.5 text-[13px] font-medium leading-relaxed text-gray-500 line-clamp-2">
-                    {a?.desc}
+                  {/* Only an excerpt from the blog runs long enough to need the clamp. */}
+                  <span className={`mt-1.5 text-[13px] font-medium leading-relaxed text-gray-500 ${a.href ? 'line-clamp-2' : ''}`}>
+                    {a.desc}
                   </span>
 
-                  <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-[11px] font-bold text-[#39471D]">
-                    Read the note
-                    <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </span>
+                  {a.href && (
+                    <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-[11px] font-bold text-[#39471D]">
+                      Read the note
+                      <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </span>
+                  )}
                 </span>
 
                 {/* Hidden on the narrowest screens: at full width the card is
