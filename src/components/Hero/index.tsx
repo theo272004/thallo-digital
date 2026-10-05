@@ -55,7 +55,21 @@ export default function Hero() {
   // Pause the loop while the tab is hidden. Page visibility is an external
   // store, so read it as one — mirroring it into state meant a setState in an
   // effect body, and a cascading render on every mount.
-  const paused = useSyncExternalStore(subscribeVisibility, () => document.hidden, () => false);
+  const hidden = useSyncExternalStore(subscribeVisibility, () => document.hidden, () => false);
+  /* And while the hero is scrolled out of view. The loop re-renders and
+     re-measures the cards every few seconds; left running, it kept the whole
+     page re-laying-out under a reader who was three sections further down —
+     the occasional hitch while scrolling. Off screen it holds its phase and
+     picks up from there on the way back. */
+  const [offscreen, setOffscreen] = useState(false);
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([entry]) => setOffscreen(!entry.isIntersecting));
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  const paused = hidden || offscreen;
 
   // Self-scheduling state machine — each phase queues the next.
   useEffect(() => {

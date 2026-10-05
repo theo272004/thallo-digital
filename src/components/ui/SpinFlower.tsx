@@ -128,10 +128,25 @@ export default function SpinFlower({ className = '', secondsPerTurn = 30, alt = 
     wrap.addEventListener('pointerup', onUp);
     wrap.addEventListener('pointercancel', onUp);
 
-    last = performance.now();
-    raf = requestAnimationFrame(frame);
+    /* Only spin while on screen. The loop writes a transform every frame, so
+       left running it kept the page restyling sixty times a second for a
+       flower nobody could see — two of them on the home page. Paused off
+       screen it resumes where it was, with `last` reset so the gap is not
+       counted as one long frame. */
+    const start = () => {
+      if (raf) return;
+      last = performance.now();
+      raf = requestAnimationFrame(frame);
+    };
+    const stop = () => {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    };
+    const io = new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop()));
+    io.observe(wrap);
 
     return () => {
+      io.disconnect();
       cancelAnimationFrame(raf);
       wrap.removeEventListener('pointerdown', onDown);
       wrap.removeEventListener('pointermove', onMove);
