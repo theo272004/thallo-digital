@@ -218,7 +218,7 @@ function Meta({ a }: { a: Article }) {
    Only a card that goes somewhere gets `group` and `lift`. A card that lifts
    under the cursor is promising a click, and a planned note has none to give. */
 const CARD =
-  'flex rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]';
+  'relative flex overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]';
 const CARD_LINK = 'group lift';
 
 /**
@@ -230,6 +230,9 @@ const CARD_LINK = 'group lift';
 function CardShell({ a, className, children }: { a: Article; className: string; children: React.ReactNode }) {
   return (
     <a href={a.href} data-reveal className={`${CARD} ${a.href ? CARD_LINK : ''} ${className}`}>
+      {/* The olive band across the top — Cami, 5 October: ties the cards
+          to the rest of the site's green. */}
+      <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1.5 bg-[#39471D]" />
       {children}
     </a>
   );
@@ -268,7 +271,7 @@ export default function Testimonials() {
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.05fr_1fr]">
 
           {/* ── Lead note ─────────────────────────────────────────────────── */}
-          <CardShell a={lead} className="flex-col p-3">
+          <CardShell a={lead} className="flex-col p-3 pt-[18px]">
             {/* The cover: its own block above the words, not a ground beneath
                 them. 16:9 rather than 16:10 — with three notes beside it now
                 instead of two, the taller crop pushed the lead's own text past
@@ -313,7 +316,7 @@ export default function Testimonials() {
             {/* Keyed by position, not title: a new post must refill a slot,
                 not replace it. */}
             {rest.map((a, i) => (
-              <CardShell key={i} a={a} className="flex-1 items-start gap-4 p-4">
+              <CardShell key={i} a={a} className="flex-1 items-start gap-4 p-4 pt-[22px]">
                 <span className="flex min-w-0 flex-1 flex-col">
                   <Meta a={a} />
 
