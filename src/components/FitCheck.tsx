@@ -15,13 +15,13 @@ import { BASE } from '@/lib/site';
  * side is the position being argued against.
  *
  * On 5 October it took the same photograph treatment as "Start with clarity" —
- * the meeting room, blurred 6px and darkened with the house olive-black
+ * a photograph blurred 6px and darkened with the house olive-black
  * gradient. Later that day the big panel behind it went: the heading sits on
  * the page again, and each of the two cards carries its own piece of the
  * photograph — the left half behind "for you", the right half behind "not for
  * you" — so side by side they read as one picture cut in two.
  */
-const PHOTO = `${BASE}/industry-professional-services-bg.webp`;
+const PHOTO = `${BASE}/results-bg.webp`;
 
 /** One half of the photograph, softened and darkened, behind a card. */
 function PhotoGround({ position }: { position: string }) {
@@ -40,7 +40,11 @@ function PhotoGround({ position }: { position: string }) {
       <div
         aria-hidden
         className="absolute inset-0 -z-10"
-        style={{ background: 'linear-gradient(to bottom, rgba(23,26,16,.86) 0%, rgba(23,26,16,.7) 100%)' }}
+        /* Lighter than the audit panel's .86 → .7, at Cami's request on 5
+           October ("más claras"): the brighter results-bg photograph — the lit
+           wall and the stone flower — under a .45 → .32 veil, in place of
+           the near-black meeting room. White type still reads clearly. */
+        style={{ background: 'linear-gradient(to bottom, rgba(23,26,16,.45) 0%, rgba(23,26,16,.32) 100%)' }}
       />
     </>
   );
