@@ -119,7 +119,7 @@ export default function AuditCTA({
               {steps && (
                 <ol className="mt-8 flex flex-col gap-3.5">
                   {steps.map((step, i) => (
-                    <li key={step} className="flex items-center gap-3.5 text-[15px] font-medium text-white">
+                    <li key={step} className="flex items-center gap-3.5 text-base sm:text-lg font-medium text-white">
                       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/40 text-[12px] font-semibold text-white/90">
                         {i + 1}
                       </span>
@@ -150,7 +150,10 @@ export default function AuditCTA({
               )}
 
               {footnote && (
-                <p className="mt-8 max-w-[44ch] text-[15px] font-medium leading-relaxed text-[#CBD0AC]">{footnote}</p>
+                /* Same size as the copy and the steps above it: one size of body
+                   type in the panel, not three. Only the home passes steps and a
+                   footnote, so no other page changes. */
+                <p className="mt-8 max-w-[44ch] text-base sm:text-lg font-medium leading-relaxed text-[#CBD0AC]">{footnote}</p>
               )}
             </div>
 

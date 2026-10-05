@@ -59,12 +59,15 @@ export default function TheProblem() {
           </div>
         </div>
 
-        {/* ── Question cards — three equal columns below the image ─────── */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-8">
+        {/* ── Question cards — three equal columns, riding up over the
+            bottom edge of the photograph (Cami, 5 October). `relative z-10`
+            keeps them above the image; the negative margin is the overlap. */}
+        <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-5 -mt-10 md:-mt-14">
           {QUESTIONS.map((item, i) => (
             <div
               key={item.q}
-              className="p-8 sm:p-10 bg-white border border-gray-200 rounded-3xl shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] flex flex-col"
+              /* `lift` is the site-wide hover: up 4px, olive border. */
+              className="lift transition-all duration-300 p-8 sm:p-10 bg-white border border-gray-200 rounded-3xl shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] flex flex-col"
             >
               <p className="text-[12px] font-bold tracking-wider text-[#8FA88A] mb-4 tabular-nums">
                 {String(i + 1).padStart(2, '0')}

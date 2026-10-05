@@ -18,9 +18,13 @@ import { BASE } from '@/lib/site';
  * "Book the audit" scrolls to the form at the foot of the page rather than
  * leaving it: the line under the button promises a conversation, and that form
  * is where the conversation starts.
+ *
+ * On 5 October the solid olive panel became a photograph, blurred and darkened,
+ * with the price on a glass card — the treatment the Engine row on /services/
+ * uses. Cami did not like the flat green.
  */
 const ITEMS = [
-  "Your mention rate vs your competitors'",
+  'Your mention rate vs. your competitors',
   'What it says about you when it does',
   "The questions where they win and you don't",
   'Whether AI can read your site properly, and how to structure it so authority compounds',
@@ -32,17 +36,23 @@ export default function AuditOffer() {
   return (
     <section className="border-b border-gray-100 bg-white py-16 2xl:py-24" id="audit">
       <div className="mx-auto max-w-[1440px] px-6" data-reveal>
-        <div className="relative isolate overflow-hidden rounded-[28px] bg-[#39471D] px-8 py-12 sm:px-12 sm:py-14 lg:px-16 lg:py-16">
-          {/* The isotipo, tone on tone and half cropped, as on the featured
-              plan card in Services. */}
+        <div className="relative isolate overflow-hidden rounded-[28px] bg-[#171A10] px-8 py-12 sm:px-12 sm:py-14 lg:px-16 lg:py-16">
+          {/* The photograph, softened. scale-110 pushes the blur's faded
+              edge outside the rounded corners. */}
           <img
-            src={`${BASE}/isotipo.png`}
+            src={`${BASE}/engine-bg.webp`}
             alt=""
             aria-hidden="true"
             loading="lazy"
             decoding="async"
-            className="pointer-events-none absolute -right-24 -top-24 -z-10 h-[340px] w-[340px] select-none opacity-[0.07]"
-            style={{ filter: 'brightness(0) invert(1)' }}
+            className="pointer-events-none absolute inset-0 -z-20 h-full w-full scale-110 select-none object-cover"
+            style={{ filter: 'blur(6px)' }}
+          />
+          {/* Darkest on the left where the list is read. */}
+          <div
+            aria-hidden
+            className="absolute inset-0 -z-10"
+            style={{ background: 'linear-gradient(100deg, rgba(23,26,16,.88) 0%, rgba(23,26,16,.72) 55%, rgba(23,26,16,.55) 100%)' }}
           />
 
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:gap-16">
@@ -78,23 +88,24 @@ export default function AuditOffer() {
               </ul>
             </div>
 
-            <div className="rounded-3xl bg-white p-8 text-center shadow-[0_30px_70px_-30px_rgba(23,26,16,0.6)] transition-transform duration-300 hover:-translate-y-1 sm:p-10">
-              <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#55672E]">
+            {/* Glass, as on the Engine row in /services/. */}
+            <div className="rounded-3xl border border-white/15 bg-white/[0.08] p-8 text-center shadow-[0_30px_70px_-30px_rgba(0,0,0,0.6)] backdrop-blur-md transition-transform duration-300 hover:-translate-y-1 sm:p-10">
+              <p className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#CBD0AC]">
                 AI Visibility Audit
               </p>
-              <p className="mt-5 font-sans text-6xl font-bold tracking-tight text-gray-900 tabular-nums">$1,200</p>
-              <p className="mt-3 text-sm font-medium text-gray-500">one time · yours to keep</p>
+              <p className="mt-5 font-sans text-6xl font-bold tracking-tight text-white tabular-nums">$1,200</p>
+              <p className="mt-3 text-sm font-medium text-white/70">one time · yours to keep</p>
               <a
                 href="#cta"
                 onClick={(e) => {
                   e.preventDefault();
                   scrollToEl('#cta');
                 }}
-                className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-[#39471D] px-6 py-4 text-sm font-bold text-white transition-colors hover:bg-[#55672E]"
+                className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-white px-6 py-4 text-sm font-bold text-[#39471D] transition-colors hover:text-[#171A10]"
               >
                 Book the audit
               </a>
-              <p className="mt-4 text-xs font-medium text-gray-500">A conversation first. No purchase at this step.</p>
+              <p className="mt-4 text-xs font-medium text-white/60">A conversation first. No purchase at this step.</p>
             </div>
           </div>
         </div>

@@ -34,7 +34,7 @@ export default function CTASection() {
       footnote={
         <>
           Prefer to explore first?{' '}
-          <a href={`${BASE}/thallo-ai/scan/`} className="font-semibold text-white underline underline-offset-4 hover:text-[#DFFF3B]">
+          <a href={`${BASE}/thallo-ai/scan/`} className="font-semibold text-white underline underline-offset-4 hover:text-[#CBD0AC]">
             Check my visibility
           </a>{' '}
           · free scan, no account.
