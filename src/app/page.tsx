@@ -5,10 +5,9 @@ import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
 import TheProblem from '@/components/TheProblem';
-import ResearchCallout from '@/components/ResearchCallout';
+import ResearchAndScan from '@/components/ResearchAndScan';
 import PlaybookContrast from '@/components/PlaybookContrast';
 import HowItWorks from '@/components/HowItWorks';
-import ScannerStripe from '@/components/ScannerStripe';
 import AuditOffer from '@/components/AuditOffer';
 import PublicPricing from '@/components/PublicPricing';
 import FitCheck from '@/components/FitCheck';
@@ -54,11 +53,10 @@ export default function Home() {
         <PlaybookContrast />
         {/* What we do instead — read as the answer to the two above it. */}
         <HowItWorks />
-        {/* The proof that we measure what we sell: The AI Shortlist. Moved
-            down to sit just before the scan at Cami's request, 4 October. */}
-        <ResearchCallout />
-        {/* The cheapest possible next step, offered once. */}
-        <ScannerStripe />
+        {/* The proof that we measure what we sell (The AI Shortlist) beside the
+            same measurement run on your own brand (the free scan) — one section,
+            two cards, since Cami's pass of 5 October. */}
+        <ResearchAndScan />
         {/* The paid first step, with its price and its scope. */}
         <AuditOffer />
         {/* All three prices at once, so nobody has to ask. */}
