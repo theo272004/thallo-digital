@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ScrollFill, SplitReveal } from '@/components/motion';
+import { SplitReveal } from '@/components/motion';
 import { BASE } from '@/lib/site';
 
 /**
@@ -164,20 +164,10 @@ export default function PlaybookContrast() {
             Digital" become two lists one after the other rather than two columns
             to read across. The rows still pair up in order. */}
 
-        {/* The conclusion the comparison draws, set under both panels. Upright
-            and semibold since 5 October: the thin italic it had read as a
-            typeface the site does not use. It fills in word by word with the
-            scroll (ScrollFill), ending on the olive. */}
-        <ScrollFill
-          className="mx-auto mt-12 max-w-[46ch] text-center font-sans text-xl font-semibold leading-snug tracking-tight sm:mt-14 sm:text-2xl"
-          parts={[
-            {
-              text: 'Authority is the one asset that appreciates. Ads stop the day you stop paying. Rankings move with every update. ',
-              color: '#111827',
-            },
-            { text: 'Authority compounds.', color: '#39471D' },
-          ]}
-        />
+        {/* The closing line that stood here — "Authority is the one asset that
+            appreciates. … Authority compounds." — came off on 6 October at
+            Cami's request: the About section already says it, so the page was
+            saying it twice. */}
       </div>
     </section>
   );
