@@ -14,10 +14,11 @@ import { BASE, RESEARCH_URL } from '@/lib/site';
  * to the far right. Cami found them two identical bands with no purpose
  * between them and asked for them to be put together, one on each side.
  *
- * They are a natural pair: the left is the proof that we measure what we sell
- * (the AI Shortlist), the right is the same measurement run on your own brand.
+ * They are a natural pair: one is the proof that we measure what we sell (the
+ * AI Shortlist), the other is the same measurement run on your own brand.
  * The words and the buttons are the ones the two sections carried; only the
- * layout changed.
+ * layout changed. Since 6 October the scan is on the left and the research on
+ * the right, at Cami's request — on a phone the scan comes first.
  *
  * ## The two cards are the same height
  *
@@ -45,31 +46,6 @@ export default function ResearchAndScan() {
   return (
     <section className="border-b border-gray-100 bg-white py-14 2xl:py-20" id="research">
       <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-5 px-6 lg:grid-cols-2">
-        {/* ── Research ─────────────────────────────────────────────────── */}
-        <div data-reveal className="flex">
-          <div className={`${CARD} border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)]`}>
-            <p className="mb-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#55672E]">
-              Our research
-            </p>
-            <SplitReveal
-              as="h2"
-              className="font-sans text-3xl font-bold leading-[1.1] tracking-tight text-gray-900 sm:text-[34px]"
-              html='We measure this <span class="italic text-[#39471D]">in public.</span>'
-            />
-            <p className="mb-10 mt-4 max-w-[52ch] text-[15.5px] font-medium leading-relaxed text-gray-500">
-              The AI Shortlist is our open research series on which companies AI models recommend, industry by
-              industry. Full methodology, published results.
-            </p>
-            <a
-              href={RESEARCH_URL}
-              className="group mt-auto inline-flex items-center justify-center gap-2 self-start rounded-full border border-[#39471D] px-8 py-4 text-[13px] font-bold text-[#39471D] transition-colors hover:bg-[#39471D] hover:text-white"
-            >
-              See the research
-              <ArrowUpRight className="text-[11px] transition-transform group-hover:translate-x-0.5" />
-            </a>
-          </div>
-        </div>
-
         {/* ── Scan ─────────────────────────────────────────────────────── */}
         <div data-reveal className="flex">
           <div className={`${CARD} relative isolate overflow-hidden border-transparent bg-[#171A10]`}>
@@ -106,6 +82,31 @@ export default function ResearchAndScan() {
               className="group mt-auto inline-flex items-center justify-center gap-2 self-start rounded-full bg-white px-8 py-4 text-[13px] font-bold text-gray-900 transition-colors hover:text-[#39471D]"
             >
               Run my scan
+              <ArrowUpRight className="text-[11px] transition-transform group-hover:translate-x-0.5" />
+            </a>
+          </div>
+        </div>
+
+        {/* ── Research ─────────────────────────────────────────────────── */}
+        <div data-reveal className="flex">
+          <div className={`${CARD} border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)]`}>
+            <p className="mb-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-[#55672E]">
+              Our research
+            </p>
+            <SplitReveal
+              as="h2"
+              className="font-sans text-3xl font-bold leading-[1.1] tracking-tight text-gray-900 sm:text-[34px]"
+              html='We measure this <span class="italic text-[#39471D]">in public.</span>'
+            />
+            <p className="mb-10 mt-4 max-w-[52ch] text-[15.5px] font-medium leading-relaxed text-gray-500">
+              The AI Shortlist is our open research series on which companies AI models recommend, industry by
+              industry. Full methodology, published results.
+            </p>
+            <a
+              href={RESEARCH_URL}
+              className="group mt-auto inline-flex items-center justify-center gap-2 self-start rounded-full border border-[#39471D] px-8 py-4 text-[13px] font-bold text-[#39471D] transition-colors hover:bg-[#39471D] hover:text-white"
+            >
+              See the research
               <ArrowUpRight className="text-[11px] transition-transform group-hover:translate-x-0.5" />
             </a>
           </div>
