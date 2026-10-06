@@ -141,7 +141,7 @@ export default function HomeFaq() {
             </p>
           </div>
 
-          <FaqList items={FAQS} idPrefix="home-faq" />
+          <FaqList items={FAQS} idPrefix="home-faq" schema />
         </div>
       </div>
     </section>

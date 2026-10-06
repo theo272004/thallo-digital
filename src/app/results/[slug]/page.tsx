@@ -5,6 +5,9 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ResultsLanding from '@/components/ResultsLanding';
 import { LIVE_CASES, getCaseStudy } from '@/lib/cases';
+import JsonLd from '@/components/JsonLd';
+import { ORG_ID, pageGraph } from '@/lib/schema';
+import { lastModified } from '@/lib/lastmod';
 
 const SITE_URL = 'https://thallodigital.com';
 
@@ -79,9 +82,44 @@ export default async function CaseStudyPage({ params }: { params: Promise<Params
   if (!entry || getCaseStudy(slug)?.status !== 'live') notFound();
 
   const { Body } = entry;
+  const study = getCaseStudy(slug)!;
+  const url = `${SITE_URL}/results/${slug}/`;
+  // Dated the way the sitemap dates it — the last commit to touch the page.
+  const modified = lastModified('src/app/results/[slug]/page.tsx', 'src/components/ResultsLanding.tsx', 'src/lib/cases.ts');
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
+      {/* An Article, because a case study is an argument with figures in it,
+          and the figures are what an assistant will quote. The client is not
+          named here because the page does not name them. */}
+      <JsonLd
+        data={pageGraph({
+          path: `/results/${slug}/`,
+          name: entry.title,
+          description: entry.description,
+          crumbs: [
+            { name: 'Case Studies', path: '/results/' },
+            { name: study.headline, path: `/results/${slug}/` },
+          ],
+          extra: { mainEntity: { '@id': `${url}#article` } },
+          nodes: [
+            {
+              '@type': 'Article',
+              '@id': `${url}#article`,
+              headline: entry.title,
+              description: entry.description,
+              url,
+              inLanguage: 'en',
+              articleSection: 'Case study',
+              about: study.industry,
+              author: { '@id': ORG_ID },
+              publisher: { '@id': ORG_ID },
+              image: `${SITE_URL}/og.png`,
+              ...(modified && { dateModified: modified.toISOString() }),
+            },
+          ],
+        })}
+      />
       <Navbar />
       <main className="flex-grow">
         <Body />

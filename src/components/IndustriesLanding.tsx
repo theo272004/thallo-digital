@@ -3,7 +3,8 @@ import React from 'react';
 import SpinFlower from '@/components/ui/SpinFlower';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import AuditCTA from '@/components/AuditCTA';
-import { BASE } from '@/lib/site';
+import JsonLd from '@/components/JsonLd';
+import { BASE, SITE_URL } from '@/lib/site';
 
 const STATS = [
   {
@@ -96,9 +97,29 @@ const QUOTES = [
   },
 ];
 
+/**
+ * The sectors as an ItemList, read off `INDUSTRIES` so a sector added to the
+ * page is added here with it. The line under each is the page's own: the
+ * statistic and its source where there is one, the phrase where there is not.
+ */
+const INDUSTRIES_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  '@id': `${SITE_URL}/industries/#list`,
+  name: 'Industries Thallo Digital builds AI visibility for',
+  itemListElement: INDUSTRIES.map((ind, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: ind.name,
+    description:
+      ind.type === 'metric' ? `${ind.metric} ${ind.meaning} (${ind.src}). ${ind.line}` : ind.phrase,
+  })),
+};
+
 export default function IndustriesPage() {
   return (
     <>
+      <JsonLd data={INDUSTRIES_SCHEMA} />
       {/* Hero */}
       <section className="bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
@@ -108,7 +129,7 @@ export default function IndustriesPage() {
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mb-10">
             Where the decision is high-stakes, buyers research hard before they commit. We make you the name they are most likely to trust.
           </p>
-          <SpinFlower alt="Thallo" className="block w-20 h-20 opacity-80" />
+          <SpinFlower className="block w-20 h-20 opacity-80" />
         </div>
       </section>
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Instrument_Serif, Space_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/motion/SmoothScrollProvider";
+import { PLANS_ID } from "@/lib/schema";
 
 /**
  * Italic is loaded on purpose.
@@ -51,8 +52,15 @@ const SITE_URL = "https://thallodigital.com";
  * Thallo the carbon-credit company in the knowledge graph.
  */
 const SAME_AS: string[] = ['https://www.linkedin.com/company/thallo-digital/'];
+/* The sentence every machine repeats about us: the home page's meta
+   description, its Open Graph card, the Organization schema and the opening
+   line of /llms.txt all read it. So it says the three things an assistant
+   needs to describe Thallo correctly — what kind of company, for whom, and the
+   outcome — in the words the rest of the site uses: B2B, high-consideration,
+   and the five assistants the scan measures. The old line ("conversational LLM
+   search answers") named neither who we serve nor Gemini. */
 const DESCRIPTION =
-  "We make brands the default citation and recommendation in conversational LLM search answers — ChatGPT, Perplexity, Google AI and Claude.";
+  "The AI visibility agency for B2B companies in high-consideration industries. We make you the name ChatGPT, Claude, Gemini, Perplexity and Google AI recommend.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -126,12 +134,21 @@ export default function RootLayout({
               '@id': `${SITE_URL}/#organization`,
               name: 'Thallo Digital',
               alternateName: 'Thallo',
-              legalName: 'Thallo Digital',
+              legalName: 'Thallo Digital LLC',
               url: `${SITE_URL}/`,
               mainEntityOfPage: `${SITE_URL}/about/`,
               logo: `${SITE_URL}/logo.png`,
               image: `${SITE_URL}/og.png`,
               description: DESCRIPTION,
+              slogan: "Become the name your market can't stop citing.",
+              // Who the work is for, stated where an assistant answering "is
+              // Thallo right for a company like ours?" will look for it. The
+              // sectors are listed on /industries/, in its own ItemList.
+              audience: {
+                '@type': 'BusinessAudience',
+                audienceType: 'B2B companies in high-consideration industries',
+                url: `${SITE_URL}/industries/`,
+              },
               disambiguatingDescription:
                 'Thallo Digital is a marketing agency for AI visibility and generative engine optimization. It is unrelated to Thallo, the carbon-credit trading and climate-technology company.',
               knowsAbout: [
@@ -149,6 +166,10 @@ export default function RootLayout({
                 'Generative engine optimization',
                 'Brand authority building',
               ],
+              // The plans, prices included, described on /services/ beside
+              // the cards they are read from. Linked by @id so "what does
+              // Thallo sell, and for how much" resolves from the entity itself.
+              hasOfferCatalog: { '@id': PLANS_ID },
               contactPoint: {
                 '@type': 'ContactPoint',
                 contactType: 'sales',
