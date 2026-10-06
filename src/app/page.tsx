@@ -47,13 +47,13 @@ export default function Home() {
         {/* Who the buyer is and what they ask while researching. Straight
             under the hero since Cami's pass of 3 October. */}
         <TheProblem />
-        {/* The proof that we measure what we sell (The AI Shortlist) beside the
-            same measurement run on your own brand (the free scan) — one section,
-            two cards, since Cami's pass of 5 October. Moved up here on 6
-            October: it answers the buyer's questions just above it. */}
-        <ResearchAndScan />
         {/* Who we are, and the one idea the whole page rests on. */}
         <About />
+        {/* The proof that we measure what we sell (The AI Shortlist) beside the
+            same measurement run on your own brand (the free scan) — one section,
+            two cards, since Cami's pass of 5 October. Straight above the
+            playbook since 6 October, where Cami placed it. */}
+        <ResearchAndScan />
         {/* What the alternative is, and why it stopped working. */}
         <PlaybookContrast />
         {/* What we do instead — read as the answer to the two above it. */}
