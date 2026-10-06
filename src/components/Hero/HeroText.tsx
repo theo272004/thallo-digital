@@ -16,9 +16,12 @@ export default function HeroText() {
            longer headline — the ceiling comes down from 4.6rem to keep the
            column from running under the phone. */
         style={{ fontSize: 'clamp(2.2rem, 3.7vw, 4.1rem)', lineHeight: '1.12', letterSpacing: '-0.03em' }}
+        /* The spaces between the spans draw nothing — the spans are blocks —
+           but without them a crawler reading the raw HTML gets "Become the
+           nameyour marketcan't stop citing", and that is the line it quotes. */
         html={
-          '<span class="block font-sans">Become the name</span>' +
-          '<span class="block font-sans mt-2">your market</span>' +
+          '<span class="block font-sans">Become the name</span> ' +
+          '<span class="block font-sans mt-2">your market</span> ' +
           /* No secondary face and no second weight: the heading's own type,
              slanted. Italic is the whole of the emphasis — the line keeps the
              h1's font-extrabold by inheritance, which is the point. The

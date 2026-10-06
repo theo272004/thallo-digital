@@ -130,7 +130,7 @@ export default function CaseStudiesLanding() {
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mb-10">
             Hard categories, verified results. Filter by sector to see the work.
           </p>
-          <SpinFlower alt="Thallo" className="block w-20 h-20 opacity-80" />
+          <SpinFlower className="block w-20 h-20 opacity-80" />
         </div>
       </section>
 

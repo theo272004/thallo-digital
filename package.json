@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "node scripts/agent-files.mjs",
     "start": "next start",
     "lint": "eslint",
     "blog": "node scripts/blog.mjs",
@@ -29,6 +30,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "marked": "^18.0.9",
+    "node-html-parser": "^9.0.4",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

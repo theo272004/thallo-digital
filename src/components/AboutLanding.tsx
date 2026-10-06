@@ -108,7 +108,7 @@ export default function AboutLanding() {
             Search stopped sending buyers to websites. The playbook most agencies still sell was designed for a world
             that no longer exists. This is what we think replaced it.
           </p>
-          <SpinFlower alt="Thallo" className="block h-20 w-20 opacity-80" />
+          <SpinFlower className="block h-20 w-20 opacity-80" />
         </div>
       </section>
 

@@ -187,8 +187,13 @@ export default function Hero() {
         <HeroText />
 
         {/* Right — the phone types a query, its source cards fly out, then fly into a sliding tabbed browser */}
+        {/* data-md="skip": left out of the Markdown copy of the page that
+            scripts/agent-files.mjs writes for AI agents. Out of its frame, the
+            mock-up's text is a ChatGPT answer recommending us that ChatGPT never
+            gave — the one thing a model must not lift off this page as fact. */}
         <div
           ref={columnRef}
+          data-md="skip"
           className="hero-visual-column relative w-full max-w-[720px] h-[420px] lg:h-[min(460px,58vh)] 2xl:h-[min(540px,64vh)] mx-auto lg:self-end"
           style={{ perspective: '1400px' }}
         >

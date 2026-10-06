@@ -31,7 +31,7 @@ export default function About() {
         <div className="w-full min-w-0 max-w-3xl text-center relative">
           {/* Mobile: in normal flow above the label */}
           <div className="mb-6 flex justify-center xl:hidden">
-            <SpinFlower alt="Thallo" className="block w-20 h-20 opacity-80" />
+            <SpinFlower className="block w-20 h-20 opacity-80" />
           </div>
 
           {/* Desktop: out of flow above the text block, for the same reason the
@@ -42,7 +42,7 @@ export default function About() {
             className="hidden xl:block absolute left-1/2 -translate-x-1/2"
             style={{ bottom: '100%', marginBottom: '24px' }}
           >
-            <SpinFlower alt="Thallo" className="block w-20 h-20 opacity-80" />
+            <SpinFlower className="block w-20 h-20 opacity-80" />
           </div>
 
           <SplitReveal
