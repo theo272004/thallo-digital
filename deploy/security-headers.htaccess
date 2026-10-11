@@ -60,10 +60,12 @@
   # Todo lo que el sitio consume es del mismo origen: las fuentes las
   # self-hostea next/font, las imágenes están en /public, y el escáner de
   # visibilidad llama a /blog/wp-json/ — mismo dominio. Por eso connect-src
-  # es 'self' a secas. Si algún día se añade analítica o un embed, hay que
-  # añadir ese dominio aquí o el navegador lo bloquea en silencio.
+  # era 'self' a secas. Desde octubre de 2026 el sitio lleva GA4 (solo si el
+  # visitante acepta), así que googletagmanager.com y google-analytics.com
+  # están en script-src, connect-src e img-src. Sin ellos el navegador
+  # bloquea la etiqueta en silencio y Analytics se queda en cero.
   <If "%{REQUEST_URI} !~ m#^/blog/#">
-    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
   </If>
 
   # ── Fuga de información ────────────────────────────────────────────────────

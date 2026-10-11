@@ -3,8 +3,17 @@
  *
  * The claims below were checked against the implementation and must be kept
  * true if it changes:
- *   · no analytics, tag manager, pixel, tracking cookie or localStorage in the
- *     site — verified by grep across src/;
+ *   · Google Analytics 4 and nothing else — no tag manager, no advertising
+ *     pixel — with Google Signals and ad personalisation both switched off in
+ *     `src/components/Analytics.tsx`. Clause 4 describes that configuration, so
+ *     the two files change together;
+ *   · the tag is not loaded until the visitor accepts it. Nothing is requested
+ *     from googletagmanager.com and no cookie is set before that — the gate is
+ *     the `consent === 'granted'` test in Analytics.tsx, and `src/lib/consent.ts`
+ *     explains why it is a gate rather than Google's Consent Mode. The one
+ *     value the site keeps in localStorage is the answer itself;
+ *   · the WordPress blog at /blog/ carries no Analytics tag. If it ever gets
+ *     one, the last paragraph of clause 4 has to change with it;
  *   · the scanner stores a salted SHA-256 of the IP and never the address
  *     itself — Thallo_Vis_DB::ip_hash();
  *   · scan working data is deleted after `retention_days`, default 14 —
@@ -20,6 +29,7 @@ import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import LegalDoc, { Clause, P, List } from '@/components/LegalDoc';
+import ConsentChoice from '@/components/ConsentChoice';
 import { LEGAL } from '@/lib/legal';
 import { SITE_URL } from '@/lib/site';
 
@@ -42,6 +52,7 @@ export default function PrivacyPage() {
       <main className="flex-grow">
         <LegalDoc
           title="Privacy Policy"
+          updated="11 October 2026"
           summary="What we collect, why we collect it, who else sees it, how long we keep it, and how to make us delete it. Written to be read, not to be survived."
         >
           <Clause n={1} heading="Who is responsible for your data">
@@ -96,20 +107,52 @@ export default function PrivacyPage() {
 
           <Clause n={4} heading="Cookies and tracking">
             <P>
-              This website runs no analytics, no tag manager, no advertising pixel and no tracking cookie. We do not
-              build a profile of you, we do not follow you across other sites, and we do not sell or rent data to
-              anyone — ever.
+              This website uses Google Analytics 4, and nothing else. It is how we know which pages are read and which
+              are ignored. It sets cookies in your browser (named <code className="font-mono text-[0.9em]">_ga</code>{' '}
+              and <code className="font-mono text-[0.9em]">_ga_&hellip;</code>) that give your browser an identifier so
+              two visits can be recognised as the same one, and it records:
+            </P>
+            <List
+              items={[
+                'The pages you open, in what order, and how long you stay.',
+                'An approximate location — country, and usually city — worked out from your IP address. Google does not store the address itself.',
+                'Your device, browser and language, and the link or search that brought you here.',
+              ]}
+            />
+            <P>
+              Two of Google&rsquo;s settings are deliberately off: Google Signals and ad personalisation. That means the
+              data cannot be used to build advertising audiences, to follow you across other websites, or to match you to
+              a Google account. We run no tag manager and no advertising pixel, we do not sell or rent data to anyone,
+              and we never will.
             </P>
             <P>
-              Our blog runs on WordPress at the /blog/ path and may set functional cookies of its own — for example if
-              you leave a comment or log in. Those serve the blog&rsquo;s own operation and are not used for tracking.
+              None of it happens until you say so. On your first visit the site asks, and until you answer, no request
+              is made to Google and no cookie is set — the tag is not on the page at all. Decline and it never loads.
+              Nothing on this site stops working without it.
+            </P>
+            <P>
+              Your answer is kept in your own browser, in <code className="font-mono text-[0.9em]">localStorage</code>,
+              under <code className="font-mono text-[0.9em]">thallo:analytics-consent</code>. It is the only thing this
+              site stores there, it never reaches us, and it is what stops you being asked again on every page. You can
+              change it here, whenever you like:
+            </P>
+            <ConsentChoice />
+            <P>
+              Independently of any of this, Google publishes a browser add-on that opts you out of Analytics on every
+              site that uses it, at <a className="underline" href="https://tools.google.com/dlpage/gaoptout" rel="noopener noreferrer" target="_blank">tools.google.com/dlpage/gaoptout</a>,
+              and any browser setting or extension that blocks these cookies works too.
+            </P>
+            <P>
+              Our blog runs on WordPress at the /blog/ path. It does not use Google Analytics, and may set functional
+              cookies of its own — for example if you leave a comment or log in. Those serve the blog&rsquo;s own
+              operation and are not used for tracking.
             </P>
           </Clause>
 
           <Clause n={5} heading="Why we are allowed to use it">
             <List
               items={[
-                'Your authorisation — given when you submit a form or an email address to unlock a report. You can withdraw it at any time.',
+                'Your authorisation — given when you submit a form or an email address to unlock a report, and separately when you accept analytics in the banner. You can withdraw either at any time; the analytics one is the button in clause 4.',
                 'To perform a contract — running, supporting and invoicing an engagement you have with us.',
                 'Our legitimate interest in operating the site securely, including the abuse limits described in clause 3.',
                 'Legal obligations — accounting and tax records we are required to keep.',
