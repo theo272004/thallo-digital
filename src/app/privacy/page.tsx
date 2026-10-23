@@ -3,10 +3,16 @@
  *
  * The claims below were checked against the implementation and must be kept
  * true if it changes:
- *   · Google Analytics 4 and nothing else — no tag manager, no advertising
- *     pixel, no localStorage — with Google Signals and ad personalisation both
- *     switched off in `src/components/Analytics.tsx`. Clause 4 describes that
- *     configuration, so the two files change together;
+ *   · Google Analytics 4 and Microsoft Clarity and nothing else — no tag
+ *     manager, no advertising pixel — with Google Signals and ad
+ *     personalisation both switched off, and Clarity's ad storage denied, in
+ *     `src/components/Analytics.tsx`. Clause 4 describes that configuration, so
+ *     the two files change together;
+ *   · neither tag is loaded until the visitor accepts. Nothing is requested
+ *     from googletagmanager.com or clarity.ms and no cookie is set before that — the gate is
+ *     the `consent === 'granted'` test in Analytics.tsx, and `src/lib/consent.ts`
+ *     explains why it is a gate rather than Google's Consent Mode. The one
+ *     value the site keeps in localStorage is the answer itself;
  *   · the scanner stores a salted SHA-256 of the IP and never the address
  *     itself — Thallo_Vis_DB::ip_hash();
  *   · scan working data is deleted after `retention_days`, default 14 —
@@ -22,6 +28,7 @@ import type { Metadata } from 'next';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import LegalDoc, { Clause, P, List } from '@/components/LegalDoc';
+import ConsentChoice from '@/components/ConsentChoice';
 import { LEGAL } from '@/lib/legal';
 import { SITE_URL } from '@/lib/site';
 
@@ -98,8 +105,8 @@ export default function PrivacyPage() {
 
           <Clause n={4} heading="Cookies and tracking">
             <P>
-              This website uses Google Analytics 4, and nothing else. It is how we know which pages are read and which
-              are ignored. It sets cookies in your browser (named <code className="font-mono text-[0.9em]">_ga</code>{' '}
+              This website uses two analytics tools, Google Analytics 4 and Microsoft Clarity, and nothing else.
+              Google Analytics is how we know which pages are read and which are ignored. It sets cookies in your browser (named <code className="font-mono text-[0.9em]">_ga</code>{' '}
               and <code className="font-mono text-[0.9em]">_ga_&hellip;</code>) that give your browser an identifier so
               two visits can be recognised as the same one, and it records:
             </P>
@@ -117,10 +124,31 @@ export default function PrivacyPage() {
               and we never will.
             </P>
             <P>
-              You can stop it. Google publishes a browser add-on that opts you out of Analytics on every site that uses
-              it, at <a className="underline" href="https://tools.google.com/dlpage/gaoptout" rel="noopener noreferrer" target="_blank">tools.google.com/dlpage/gaoptout</a>,
-              and any browser setting or extension that blocks these cookies works too. Nothing on this site stops
-              working without them.
+              Microsoft Clarity shows us how pages are used: where people click, how far they scroll, and recordings of
+              sessions that replay those movements so we can see where a page confuses people. What you type into forms
+              is masked before it leaves your browser. It sets cookies named{' '}
+              <code className="font-mono text-[0.9em]">_clck</code> and{' '}
+              <code className="font-mono text-[0.9em]">_clsk</code> to tie the pages of one visit together, and Microsoft
+              processes the data under its own{' '}
+              <a className="underline" href="https://privacy.microsoft.com/privacystatement" rel="noopener noreferrer" target="_blank">privacy statement</a>.
+              We tell Clarity that advertising use is refused, so the data is not used for Microsoft&rsquo;s advertising.
+            </P>
+            <P>
+              None of it happens until you say so. On your first visit the site asks, and until you answer, no request
+              is made to Google or Microsoft and no cookie is set — neither tag is on the page at all. Decline and they never load.
+              Nothing on this site stops working without it.
+            </P>
+            <P>
+              Your answer is kept in your own browser, in <code className="font-mono text-[0.9em]">localStorage</code>,
+              under <code className="font-mono text-[0.9em]">thallo:analytics-consent</code>. It is the only thing this
+              site stores there, it never reaches us, and it is what stops you being asked again on every page. You can
+              change it here, whenever you like:
+            </P>
+            <ConsentChoice />
+            <P>
+              Independently of any of this, Google publishes a browser add-on that opts you out of Analytics on every
+              site that uses it, at <a className="underline" href="https://tools.google.com/dlpage/gaoptout" rel="noopener noreferrer" target="_blank">tools.google.com/dlpage/gaoptout</a>,
+              and any browser setting or extension that blocks these cookies works too.
             </P>
             <P>
               Our blog runs on WordPress at the /blog/ path. It reports to the same Analytics property, so reading an
@@ -133,7 +161,7 @@ export default function PrivacyPage() {
           <Clause n={5} heading="Why we are allowed to use it">
             <List
               items={[
-                'Your authorisation — given when you submit a form or an email address to unlock a report. You can withdraw it at any time.',
+                'Your authorisation — given when you submit a form or an email address to unlock a report, and separately when you accept analytics in the banner. You can withdraw either at any time; the analytics one is the button in clause 4.',
                 'To perform a contract — running, supporting and invoicing an engagement you have with us.',
                 'Our legitimate interest in operating the site securely, including the abuse limits described in clause 3.',
                 'Legal obligations — accounting and tax records we are required to keep.',

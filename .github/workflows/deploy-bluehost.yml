@@ -36,6 +36,10 @@ jobs:
           # Pages mirror builds the same commit, and a tag there would report
           # traffic from a review copy as if it were the live site.
           NEXT_PUBLIC_GA_ID: ${{ secrets.GA_MEASUREMENT_ID }}
+          # Microsoft Clarity project ID. Public — it is printed in every page's
+          # source — so it lives here rather than in a secret. Same rule as GA:
+          # only this workflow sets it.
+          NEXT_PUBLIC_CLARITY_ID: z2cjq37jfy
 
       # Fails the run before a single byte is uploaded if the destination has
       # not been set. The default that used to sit in `server-dir` was
