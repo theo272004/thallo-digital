@@ -3,43 +3,55 @@
  *
  * Stripe's account review looks for a real, identifiable business behind the
  * site: a legal name, a tax id, an address, a way to reach a human. Everything
- * here is printed on the three legal pages and nowhere else, so filling these
- * in is a single edit rather than a hunt through three documents.
+ * here is printed on the three legal pages and nowhere else, so a change is a
+ * single edit rather than a hunt through three documents.
  *
- * ── TO FILL IN ──────────────────────────────────────────────────────────────
- * The fields below marked `''` are the ones nobody has given me. They are
- * DELIBERATELY EMPTY rather than guessed: a made-up NIT or address on a legal
- * page is worse than an absent one — it is a false statement about a real
- * company, and Stripe verifies these against the registration documents.
+ * ── SOURCES ─────────────────────────────────────────────────────────────────
+ * Every value below is copied from a registration document, not typed from
+ * memory — Stripe verifies these against the filings:
+ *   · Articles of Organization, Wyoming Secretary of State, filed 17 July 2026,
+ *     Original ID 2026-002033685 — legal name, entity type, registered office.
+ *   · IRS Notice CP575G, 21 July 2026 — the EIN.
  *
- * Every consumer renders them conditionally, so the pages read cleanly while
- * they are blank and simply gain a line each once they are filled.
+ * The company is a US entity, so there is no NIT: the EIN is its tax id.
+ *
+ * The address is the registered agent's (Northwest Registered Agent Service
+ * Inc). The filing gives the same address as the company's mailing and
+ * principal office, so it is the correct one to print — it is not where anyone
+ * works. The sole member is named on the IRS notice and deliberately not
+ * printed: a legal page needs the entity, not the person behind it.
  */
 
 export const LEGAL = {
   /** The trading name. Real, in use, safe to print. */
   tradingName: 'Thallo Digital',
 
-  /** Razón social — the registered legal name. e.g. 'Thallo Digital S.A.S.' */
-  legalName: '',
+  /** The registered legal name, exactly as filed. */
+  legalName: 'Thallo Digital LLC',
 
-  /** NIT (Colombian tax id), with verification digit. e.g. '901.234.567-8' */
-  taxId: '',
+  /** What kind of entity it is, and where it was formed. */
+  entity: 'Wyoming limited liability company',
 
-  /** Registered address. e.g. 'Cra 43A # 1-50, Medellín, Antioquia, Colombia' */
-  address: '',
+  /** Wyoming Secretary of State filing number. */
+  stateFilingId: '2026-002033685',
+
+  /** US Employer Identification Number (EIN). */
+  taxId: '42-3956588',
+
+  /** Registered office. */
+  address: '30 N Gould St, Ste N, Sheridan, WY 82801, United States',
 
   /** Where legal and privacy requests are received. Real and monitored. */
   email: 'contact@thallodigital.com',
 
-  /** Optional. Printed only if present. e.g. '+57 300 000 0000' */
+  /** Optional. Printed only if present. */
   phone: '',
 
-  /** Country of incorporation — governs which data law the policies cite. */
-  country: 'Colombia',
+  /** The law the terms are governed by — the state the company was formed in. */
+  governingLaw: 'the State of Wyoming, United States',
 
   /** The date printed as "last updated" on all three documents. */
-  lastUpdated: '3 September 2026',
+  lastUpdated: '14 September 2026',
 } as const;
 
 /** True once the registration block is complete enough to print. */

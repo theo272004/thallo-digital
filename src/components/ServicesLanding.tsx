@@ -5,7 +5,9 @@ import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import SpinFlower from '@/components/ui/SpinFlower';
 import AuditCTA from '@/components/AuditCTA';
 import FaqList from '@/components/ui/FaqList';
-import { BASE } from '@/lib/site';
+import JsonLd from '@/components/JsonLd';
+import { BASE, SITE_URL } from '@/lib/site';
+import { ORG_ID, PLANS_ID } from '@/lib/schema';
 // EngagementSteps and Magnetic left with the hidden process strip and plan
 // builder — restore them there and here together.
 
@@ -142,6 +144,73 @@ const FAQS = [
   },
 ];
 
+// ─── Structured data ─────────────────────────────────────────────────────────
+
+/**
+ * The three plans as an OfferCatalog, read off `SERVICES` above.
+ *
+ * "How much does Thallo cost?" is one of the questions an assistant is most
+ * likely to be asked about us, and the answer it gives is only as good as what
+ * it can parse. A price in a card is a string between two divs; a price in an
+ * Offer is a number with a currency and a unit.
+ *
+ * The figures are parsed out of the `price` strings rather than typed a second
+ * time, so repricing a card reprices the markup with it — the audit has moved
+ * from $800 to $1,200 once already, and a stale number in a place nobody looks
+ * is the worst kind. "Priced by scope" has no figure and so gets no price:
+ * an Offer without one is honest, an Offer with a guess is not.
+ */
+function offerFor(s: (typeof SERVICES)[number]) {
+  const figure = s.price.match(/\$([\d,]+)/);
+  const amount = figure ? Number(figure[1].replace(/,/g, '')) : null;
+  const monthly = /month/i.test(s.price);
+  const from = /^from /i.test(s.price);
+
+  return {
+    '@type': 'Offer',
+    url: `${SITE_URL}/services/`,
+    description: s.terms,
+    seller: { '@id': ORG_ID },
+    ...(amount !== null && {
+      price: amount,
+      priceCurrency: 'USD',
+      priceSpecification: {
+        '@type': monthly ? 'UnitPriceSpecification' : 'PriceSpecification',
+        priceCurrency: 'USD',
+        ...(from ? { minPrice: amount } : { price: amount }),
+        ...(monthly && { unitCode: 'MON', unitText: 'month' }),
+      },
+    }),
+    itemOffered: {
+      '@type': 'Service',
+      '@id': `${SITE_URL}/services/#${s.tab.toLowerCase().replace(/\s+/g, '-')}`,
+      name: s.title,
+      description: s.desc,
+      serviceType: s.kicker,
+      provider: { '@id': ORG_ID },
+      areaServed: 'Worldwide',
+      // The card's bullets, as the list of what the buyer gets.
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: `${s.title} — what is included`,
+        itemListElement: s.deliverables.map((d) => ({
+          '@type': 'Offer',
+          itemOffered: { '@type': 'Service', name: d },
+        })),
+      },
+    },
+  };
+}
+
+const PLANS_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'OfferCatalog',
+  '@id': PLANS_ID,
+  name: 'Thallo Digital plans',
+  url: `${SITE_URL}/services/`,
+  itemListElement: SERVICES.map(offerFor),
+};
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function Check({ featured }: { featured: boolean }) {
@@ -241,6 +310,7 @@ export default function ServicesPage() {
 
   return (
     <>
+      <JsonLd data={PLANS_SCHEMA} />
 
       {/* ── Hero (centered) ───────────────────────────────────────────────── */}
       <section className="bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12 border-b border-gray-100">
@@ -253,7 +323,7 @@ export default function ServicesPage() {
             <strong className="text-gray-900 font-semibold">Pick one, or combine them.</strong> None of them requires
             the others.
           </p>
-          <SpinFlower alt="Thallo" className="block w-20 h-20 opacity-80" />
+          <SpinFlower className="block w-20 h-20 opacity-80" />
         </div>
       </section>
 
@@ -656,7 +726,7 @@ export default function ServicesPage() {
               </p>
             </div>
 
-            <FaqList items={FAQS} idPrefix="plans-faq" />
+            <FaqList items={FAQS} idPrefix="plans-faq" schema />
           </div>
         </div>
       </section>

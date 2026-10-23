@@ -276,14 +276,37 @@ class Thallo_Vis_Tech {
 		);
 	}
 
+	/**
+	 * Fetch one URL on the target site.
+	 *
+	 * `wp_safe_remote_get`, not `wp_remote_get`. The difference is the whole
+	 * security of this class: the host being fetched is typed into a public
+	 * form by an anonymous visitor, and `wp_remote_get` will fetch anything it
+	 * is handed. The domain check in the REST layer requires a dot and rejects
+	 * `localhost` — but `127.0.0.1`, `10.0.0.5` and `169.254.169.254` are all
+	 * dots and digits and sail straight through it, and a public hostname is
+	 * free to resolve to any of them. That is a server-side request forgery:
+	 * the scanner becomes a proxy for reaching whatever else is on this host or
+	 * in this network, and the report hands the response back to the person who
+	 * asked for it.
+	 *
+	 * The safe variant runs the URL through `wp_http_validate_url()` — http and
+	 * https only, standard ports only, and no address in a private or reserved
+	 * range — and, with `reject_unsafe_urls`, re-checks every hop of the
+	 * redirect chain rather than only the address that was typed.
+	 */
 	private static function fetch( $url, $timeout = 12 ) {
-		$response = wp_remote_get(
+		$response = wp_safe_remote_get(
 			$url,
 			array(
-				'timeout'     => $timeout,
-				'redirection' => 3,
-				'user-agent'  => self::UA,
-				'headers'     => array( 'Accept' => 'text/html,application/xhtml+xml,text/plain,*/*' ),
+				'timeout'           => $timeout,
+				'redirection'       => 3,
+				/* Redirects are where an SSRF check gets bypassed: the typed
+				   host is public, answers 302, and points at 127.0.0.1. This
+				   validates each hop, not just the first. */
+				'reject_unsafe_urls' => true,
+				'user-agent'        => self::UA,
+				'headers'           => array( 'Accept' => 'text/html,application/xhtml+xml,text/plain,*/*' ),
 			)
 		);
 

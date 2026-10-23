@@ -79,9 +79,32 @@ up your FAQ" on a report about model answers.
 Fixing only the first would have meant telling a failed fetch apart from a
 missing file. The second is why that fix was not worth making.
 `Thallo_Vis_Tech` still exists and is no longer called; `phase2_steps()` no
-longer queues `technical`; `finish_phase2()` ships an empty `signals` array,
-which every consumer already reads as "did not run", so the email's technical
-table and the report's panel disappear on their own. The plan is now built from
+longer queues `technical`; `finish_phase2()` ships an empty `signals` array.
+
+**The front end did not, in fact, disappear on its own.** This document said it
+would — that every consumer reads an empty `signals` array as "did not run" —
+and the email's table does. The report's did not, and neither did four other
+places, because none of them was guarded by anything: they mapped over the empty
+array and rendered the frame around it. What a visitor got was a "Website &
+technical signals" panel with a subtitle promising a check against their own
+domain, a `0 / 0` chip and no rows; a "Your site · 0 of 0" figure standing next
+to two real percentages; and, in the progress list, a sixth step that was drawn
+at first paint and never reached a state because the server was never going to
+send one. `SCAN_STEPS` in `types.ts` has to be the steps the server actually
+queues — a first paint is not corrected by the first tick.
+
+It survived as long as it did because `demo.ts` went on inventing eight
+technical signals of its own. Preview mode therefore drew a full scorecard, and
+the only way to see the empty panels was a scan against the live API. Sample
+data whose shape differs from the live shape is worse than none: it is the
+version every walkthrough is recorded against. The demo now ships `signals: []`
+like the backend, grades on the readings alone rather than averaging in
+`techScore`, and builds its plan from the sources.
+
+Three surfaces of copy went with it, all of them promising work that no longer
+happens: the "what you get" list on the method page, the list of what unlocks
+on the results screen (two of its five rows were the crawl), and the hint under
+the website field on the setup form. The plan is now built from
 the entity rows, the sources and the gap between the two readings — see
 `Thallo_Vis_Analysis::actions()`, which for that reason is assembled *after*
 those are attached rather than in the same statement that creates `phase2`.
@@ -400,11 +423,29 @@ address, and an IP on its own punishes an office. `GET /quota` reports what is
 left — and mints the session cookie, which is why it is a call the setup screen
 makes on load rather than something folded into `POST /scan`.
 
+**For a long time it made no such call, and the browser counter was dead.**
+This paragraph described the design and the front end never implemented it:
+nothing anywhere called `/quota`, so the cookie was never minted,
+`session_hash()` returned an empty string on every scan, every row was stored
+against no browser at all, and `count_for_session()` — which returns 0 for an
+empty session — answered 0 for ever. Three of the four counters were doing the
+work of four. It was never a hole in the bill, because the address, network and
+site-wide layers all still bound and the site-wide one is the one protecting the
+money; it was the layer that makes the offer legible — "Scan 2 of 3" — that was
+absent. `ScanSetup` now calls it on mount, and the call fails soft: an allowance
+that cannot be read must not stop somebody trying, because `/scan` checks again
+and is the layer that actually binds.
+
 **And it is asked about before it is spent.** `/quota` also takes a POST
 carrying an address and a website, and answers exactly what `/scan` would. The
-setup screen asks it as soon as a plausible work address is typed, so the
-refusal lands under the field rather than after the button. It used to land
-after the button, and the button was also the thing that threw the form away —
+setup screen asks it as soon as a plausible work address is typed — debounced,
+because the answer is only interesting for a complete address — so the refusal
+lands under the field rather than after the button. The button is now shut in
+the same conditions `runScan` checks, so a keyboard submit cannot get past it
+either; it used to open on the questions alone, which meant a missing address,
+an unticked consent box and a spent allowance were all things you discovered by
+pressing it. It used to land after the button, and the button was also the thing
+that threw the form away —
 a visitor filled in two screens, watched a scan appear to start, and was
 returned to a blank step 1 with a sentence at the top about an address that was
 no longer on screen. The address rides in the body rather than the query string
@@ -509,17 +550,27 @@ itself under the nearest wrong option, and phase 2 then searched Google for
 *that*. The backend never required the list — `industry_label()` returns an
 unrecognised label untouched, and only the listed ones carry translations.
 
-**What is printed in this field is a targeting decision, not a copy one.** It is
-the widest part of the funnel: whatever the placeholder says is what most people
-type. It read *"pizzerias, legal tech, wedding photography"* against a service
-that starts at $2,500 a month — two of those three were never going to buy, and
-their scans cost exactly what a qualified one costs. The suggestions are now the
-five industries Thallo actually sells to, in the order the site lists them
-(fintech, health tech, legal tech, specialized software, professional services)
-plus two adjacent categories that come up often enough to be worth offering. The
-retired labels keep their translations: the field has always taken free text,
-and somebody who types "e-commerce" should still get a question in their own
-language rather than an English label dropped into a Spanish sentence.
+**The suggestion list and the placeholder are two different decisions, and they
+are deliberately not aligned.** The list under the field is the five industries
+Thallo actually sells to, in the order the site lists them (fintech, health
+tech, legal tech, specialized software, professional services) plus two adjacent
+categories that come up often enough to be worth offering. The retired labels
+keep their translations: the field has always taken free text, and somebody who
+types "e-commerce" should still get a question in their own language rather than
+an English label dropped into a Spanish sentence.
+
+The placeholder still reads *"pizzerias, legal tech, wedding photography"*, and
+it stays that way on purpose. An earlier version of this document argued it
+should be retargeted to the five industries, on the grounds that whatever the
+placeholder says is what most people type and two of those three examples were
+never going to buy a $2,500-a-month engagement. That argument was overruled, and
+the reason is better: **we do not know what category a visitor is in, and the
+placeholder is the one thing on the form that tells them the field will accept
+their own words.** Three examples drawn from three unrelated trades say "type
+whatever you are" in a way that a list of five B2B categories cannot — that
+reads as a menu, which is the exact failure the closed dropdown was removed to
+fix. Qualifying the lead is the job of the work-email rule and the suggestion
+list, not of a grey example the visitor is meant to type over.
 
 It stays **required** even though the visitor writes their own prompts, because
 phase 2 has no other source for what to look for: `serp_query()` builds the AI
@@ -539,28 +590,34 @@ The list is optional at the REST layer on purpose — a cached front-end bundle
 predating the editor sends nothing, and the right answer for it is the generated
 set, not a rejected scan.
 
-**The rows arrive filled, not empty.** Three suggested questions, one per
-archetype, built from the category and the country and shown in the market's own
-language: *category and geography*, *the buyer's problem*, *alternatives to the
-leader*. The visitor edits from there, and a button restores them.
+**The rows arrive empty, and the visitor writes all three.** This is the
+intended behaviour, not a gap.
 
-An empty field was costing an attempt at a time. A free scan is three questions
-and there are three free scans, so a badly-written question is not a smaller
-measurement — it is a third of the allowance spent on nothing, and the visitor
-cannot tell until the report comes back thin. The failures were consistent
-enough to name: questions with the brand's own name in them, questions with no
-category in them at all, and questions about a different market from the one
-selected. All three return a confident answer, which is what makes them
-expensive.
+An earlier version of this document described the opposite — three suggested
+questions per archetype, prefilled from the category and the country, with a
+button to restore them — and named `SUGGESTION_TEMPLATES` and `Market.inCountry`
+in `markets.ts` as where the machinery lived. **Neither identifier exists.** The
+feature was written up and never built, and the write-up then read as a
+description of the running tool for long enough that it was believed. Anything
+in this file that cannot be pointed at in the source is worse than an omission,
+because this document is what somebody inheriting the tool reads instead of the
+code.
 
-They are deliberately **not** the first three of the generated set — those are
-three phrasings of one angle, which measures a phrasing. `SUGGESTION_TEMPLATES`
-in `markets.ts` holds them, and `Market.inCountry` carries the country as a
-prepositional phrase (`in the United States`, `en México`, `no Brasil`) because
-composing that at runtime is the bug: Portuguese takes "no Brasil", not "em
-Brasil", and a preposition that reads as machine translation is the first thing
-that makes a visitor distrust the questions and write three of their own from
-scratch.
+The behaviour it argued for was also rejected on its merits. Prefilled rows are
+a suggestion the visitor has to disagree with, and the whole point of step 2 is
+that the questions are theirs: a scan is a measurement of the questions that
+visitor chose, and prompts they did not write are a measurement of ours. The
+guidance stays where it belongs — the line above the rows says to leave the
+brand name out and to ask what a buyer would type, with an example built from
+the category they just entered.
+
+What that argument got right is the cost, and it is worth keeping in view: a
+free scan is three questions and there are three free scans, so a badly-written
+question is not a smaller measurement, it is a third of the allowance spent on
+nothing. The failure modes are consistent — the brand's own name in the
+question, no category in it at all, or a question about a different market from
+the one selected — and all three come back with a confident answer, which is
+what makes them expensive.
 
 **The form is not thrown away when a scan is refused.** `ScanFlow` unmounts the
 setup card the moment a scan starts, so every field lived only as long as the
@@ -732,20 +789,91 @@ than a one-off check.
 
 ---
 
-## 11. File map
+## 11. Accounts — the visitor who comes back
+
+**There is no sign-up screen and no password, and both of those are the
+feature.** A visitor who runs a scan has already handed over the only
+identifier this tool has ever wanted. Asking them to fill in a second form to
+keep work they have just watched happen would be friction bought with nothing,
+so running a scan *is* registration: `POST /scan` looks the address up in
+`wp_thallo_accounts`, creates the row if it is new, mints a random secret and
+sets it as an httpOnly cookie.
+
+**httpOnly is the whole security model, so nothing may read the token.** Not
+`localStorage`, not a JavaScript variable, not the response body. A token in
+`localStorage` is readable by every script the page ever loads, and somebody's
+entire shelf of reports would be one third-party tag away from being copied.
+The front end never sees it: `src/lib/scan/account.ts` sends `credentials:
+'include'` and is told who it is. What is stored server-side is a SHA-256 of
+the secret and `wp_salt('nonce')` — the same treatment the allowance cookie
+gets, for the same reason: the table leaking must not let anybody sign in.
+
+**No endpoint takes an address or an account id.** There is no
+`getScansFor(email)` and there must never be one. An endpoint answering "whose
+reports would you like" hands a shelf to anybody who can guess an address, and a
+company address is the least secret thing about a company. Authorisation is the
+cookie and only the cookie; `current_account()` is the single door.
+
+`GET /account` returns who this browser is and a list of its scans — names and
+dates, deliberately not the reports, because each scan's `state` is every answer
+from every model and selecting fifty of them to draw a list of rows would be the
+slowest query in the plugin. `GET /account/scan/{id}` fetches one, and answers
+**404 rather than 403** when it belongs to somebody else: to anyone entitled to
+the report the two are the same fact, and telling them apart turns the route
+into a way of asking which scan ids exist. `POST /account/forget` deletes the
+token row and clears the cookie.
+
+**An account changes what is kept.** `prune()` now deletes only rows with
+`account_id = 0`. A visitor told their reports are saved and shown an empty
+shelf a fortnight later is worse served than one who was never offered an
+account, so anonymous working data still ages out on schedule and an account's
+does not. The cost is database size, and at this volume that is nothing — a scan
+is one row of JSON and the ceiling on how many can exist is the site-wide daily
+limit that protects the bill. `claim_scans_for_account()` also back-fills, so
+somebody who has been using the tool for weeks does not arrive at an empty
+shelf; it can only reach what the prune has not taken yet, which is the honest
+limit and the reason the exemption is worth having from the first run rather
+than from the first sign-in.
+
+**The allowance is untouched.** An account remembers scans, it does not buy
+them: three is still three, the four counters are unchanged, and
+`attach_account()` is called *after* `check_limits()` so a scan about to be
+refused leaves no row and no cookie behind.
+
+**What it does not do yet, and why not.** The cookie is one browser. Clear it,
+or open the tool on a phone, and the shelf is empty — the account and its
+reports are still there, and the next scan from the same address finds them
+again, but there is no way to say "it is me" from a device that has never run a
+scan. That is what a magic link is for, and **a magic link is an email, and
+outbound email is open item 2 in section 6.** Building the recovery path on a
+mailer that does not deliver would produce a sign-in screen that never signs
+anybody in, which is a worse product than the honest limitation. Fix the SMTP
+first; the account rows, the token table and `account_for_email()` are already
+the shape a magic link needs, so that work is a route and a mail template rather
+than a migration.
+
+**The schema changed, so `THALLO_VIS_VERSION` moved to 1.11.0.** Two new tables
+and a new column and index on `wp_thallo_scans`; without the bump `dbDelta`
+does not re-run and every account call fails against tables that are not there.
+
+## 12. File map
 
 ```
 src/lib/scan/types.ts        The contract. Every shape the UI renders, plus
                              MAX_QUESTIONS, the industry suggestions and the
                              free-mailbox list the setup screen checks against.
-src/lib/scan/markets.ts      The markets, the 15 questions in each language, and
-                             the three suggested questions per archetype.
+src/lib/scan/markets.ts      The markets and the 15 questions in each language.
+                             (No suggestion templates — step 2 starts empty.)
 src/lib/scan/questions.ts    The narrow view of markets.ts the site consumes.
 src/lib/scan/engine.ts       Start, tick, unlock. Falls back to demo.ts.
+src/lib/scan/account.ts      The returning visitor: the shelf, one saved
+                             report, and signing out. No token ever touches it.
 src/lib/scan/demo.ts         Sample data, used only when no API is configured.
 src/lib/site.ts              The basePath prefix for hand-written paths.
 src/components/scan/         ScanFlow → Setup → Progress → Results → FullReport.
   TrendChart.tsx             Share of voice over time, and its empty state.
+  SavedReports.tsx           The shelf, under the setup form. Renders nothing
+                             at all for a visitor without an account.
 
 wordpress-plugin/thallo-visibility/
   thallo-visibility.php      Bootstrap, cron registration.
@@ -762,7 +890,7 @@ wordpress-plugin/thallo-visibility/
                              the direct "what is this company" question.
     class-thallo-monitors.php   Scheduled re-scans: the sweep and the cron chain.
     class-thallo-http.php    Parallel requests, with a sequential fallback.
-    class-thallo-db.php      Four tables, and the pruning.
+    class-thallo-db.php      Six tables, the accounts, and the pruning.
     class-thallo-settings.php  Defaults and validation.
     class-thallo-leads.php   Storage, notification, the report email, CSV.
     class-thallo-admin.php   The three admin screens.

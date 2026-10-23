@@ -24,7 +24,16 @@
      shadow once you have scrolled past 20px, it slides out of the way when you
      scroll down and comes back when you scroll up, and below the desktop
      breakpoint it collapses into a full-screen drawer. Without the drawer the
-     blog's navbar was a logo alone on a phone, which is not the same navbar. -->
+     blog's navbar was a logo alone on a phone, which is not the same navbar.
+
+     Every address here is typed out except the series, which is
+     [thallo_shortlist_hub_url] — the one link on this site with two addresses.
+     WordPress lives in /blog/, so the hub answers at /blog/ai-shortlist/
+     always, and at /ai-shortlist/ while the rewrite in
+     deploy/ai-shortlist.htaccess is in the root .htaccess. The shortcode reads
+     that file and prints whichever one is true today, so the tab never has to
+     be edited again; the navbar on the Next side cannot, and names the address
+     by hand in src/lib/site.ts. Both must say the same thing. -->
 <!-- wp:html -->
 <nav class="thallo-nav" aria-label="Main" data-thallo-nav>
   <div class="thallo-nav__bar">
@@ -36,7 +45,7 @@
       <a href="https://thallodigital.com/services/">Our Plans</a>
       <a href="https://thallodigital.com/industries/">Industries</a>
       <a href="https://thallodigital.com/results/">Case Studies</a>
-      <a href="https://thallodigital.com/blog/ai-shortlist/" data-thallo-nav-research>AI Shortlist Series</a>
+      <a href="[thallo_shortlist_hub_url]" data-thallo-nav-research>AI Shortlist Series</a>
       <a href="https://thallodigital.com/blog/" data-thallo-nav-blog>Blog</a>
     </div>
 
@@ -67,7 +76,7 @@
     <a href="https://thallodigital.com/services/">Our Plans</a>
     <a href="https://thallodigital.com/industries/">Industries</a>
     <a href="https://thallodigital.com/results/">Case Studies</a>
-    <a href="https://thallodigital.com/blog/ai-shortlist/" data-thallo-nav-research>AI Shortlist Series</a>
+    <a href="[thallo_shortlist_hub_url]" data-thallo-nav-research>AI Shortlist Series</a>
     <a href="https://thallodigital.com/blog/" data-thallo-nav-blog>Blog</a>
   </div>
 

@@ -22,6 +22,20 @@
       "autoPort": true
     },
     {
+      "name": "thallo-video-worktree",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "../thallo-digital-video",
+        "run",
+        "dev",
+        "--",
+        "-p",
+        "3200"
+      ],
+      "port": 3200
+    },
+    {
       "name": "blog",
       "runtimeExecutable": "powershell",
       "runtimeArgs": [

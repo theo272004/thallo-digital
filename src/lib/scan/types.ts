@@ -327,14 +327,21 @@ export interface ScanInput {
 export const MAX_QUESTIONS = 3;
 
 /** The shape of the steps before the server has said anything about them.
-    Used only for the very first paint of the progress screen. */
+    Used only for the very first paint of the progress screen.
+
+    This list has to be the steps the server actually queues. It carried a sixth
+    row — `technical`, "Website & technical signals" — for some time after
+    `phase2_steps()` stopped queueing it, and a first paint is not corrected by
+    the first tick: the row was drawn, the server never sent a state for it, and
+    it sat at "queued" for the length of a scan that was never going to run it.
+    A progress list is a promise about what is being done, and the one step a
+    visitor watched never finish was one this tool no longer does at all. */
 export const SCAN_STEPS: readonly Omit<StepStatus, 'state'>[] = [
   { id: 'chatgpt', label: 'ChatGPT', phase: 1 },
   { id: 'claude', label: 'Claude', phase: 1 },
   { id: 'gemini', label: 'Gemini', phase: 1 },
   { id: 'perplexity', label: 'Perplexity', phase: 2 },
   { id: 'ai-overview', label: 'Google AI Overview', phase: 2 },
-  { id: 'technical', label: 'Website & technical signals', phase: 2 },
 ];
 
 /**

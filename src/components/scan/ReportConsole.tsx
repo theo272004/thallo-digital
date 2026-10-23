@@ -6,7 +6,7 @@ import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import AnswerLists from './AnswerLists';
 import AuditTrail from './AuditTrail';
 import TrendChart from './TrendChart';
-import { DownloadReport, Diagnosis, Indicator, Rivals, SignalRow } from './FullReport';
+import { DownloadReport, Diagnosis, Indicator, Rivals } from './FullReport';
 import { BTN_PRIMARY, BTN_SECONDARY, Head, Micro, Panel, ProviderMark, Stat, Tint, Verdict } from './ui';
 import {
   MEMORY_PROVIDERS,
@@ -110,8 +110,6 @@ export default function ReportConsole({ phase1, phase2 }: { phase1: ScanPhase1; 
      rather than draw a zero. */
   const grounded = phase2.grounded && phase2.grounded.totalAnswers > 0 ? phase2.grounded : null;
   const history = phase2.history ?? [];
-  const scoredSignals = phase2.signals.filter((s) => s.weight > 0);
-  const maxTech = scoredSignals.reduce((sum, s) => sum + s.weight, 0);
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[14.5rem_minmax(0,1fr)] lg:gap-8">
@@ -121,7 +119,7 @@ export default function ReportConsole({ phase1, phase2 }: { phase1: ScanPhase1; 
         <ConsoleHeader phase1={phase1} />
 
         <Pane active={section === 'summary'} id="summary">
-          <Summary phase1={phase1} phase2={phase2} grounded={grounded} maxTech={maxTech} onGo={go} />
+          <Summary phase1={phase1} phase2={phase2} grounded={grounded} onGo={go} />
         </Pane>
 
         <Pane active={section === 'answers'} id="answers">
@@ -176,7 +174,7 @@ export default function ReportConsole({ phase1, phase2 }: { phase1: ScanPhase1; 
                 badge={<ListChecks size={18} />}
                 level="section"
                 title="What to do first"
-                sub="Ordered by what the scan found, heaviest unmet signal first — not by a fixed script."
+                sub="Ordered by what the scan found — a name resolving to somebody else first, then the sources the models read without you in them."
               />
               <div className="mt-6 flex flex-col gap-2.5">
                 {phase2.actions.map((a, i) => (
@@ -185,20 +183,13 @@ export default function ReportConsole({ phase1, phase2 }: { phase1: ScanPhase1; 
               </div>
             </Panel>
 
-            <Panel>
-              <Head
-                badge={<Gauge size={18} />}
-                level="section"
-                title="Website & technical signals"
-                sub={`Checked against ${phase1.domain}. Every action above is the remedy for a row here.`}
-                chip={`${phase2.techScore} / ${maxTech}`}
-              />
-              <div className="mt-6">
-                {phase2.signals.map((s) => (
-                  <SignalRow key={s.id} signal={s} />
-                ))}
-              </div>
-            </Panel>
+            {/* A "Website & technical signals" panel stood here, and the
+                sentence above used to promise it: every action was the remedy
+                for a row in it. The crawl behind it was dropped, so the panel
+                rendered a heading, a 0 / 0 chip and an empty body under a plan
+                that pointed at it. Both are gone together — the copy and the
+                thing it referred to, because leaving either one is how a
+                report ends up describing a section it does not have. */}
           </div>
         </Pane>
 
@@ -339,13 +330,11 @@ function Summary({
   phase1,
   phase2,
   grounded,
-  maxTech,
   onGo,
 }: {
   phase1: ScanPhase1;
   phase2: ScanPhase2;
   grounded: ScanPhase1 | null;
-  maxTech: number;
   onGo: (id: SectionId) => void;
 }) {
   const answered = phase1.providers.filter((p) => !p.error).length;
@@ -431,12 +420,10 @@ function Summary({
               </button>
             </div>
 
-            <div className="grid grid-cols-1 divide-y divide-gray-100 border-y border-gray-100 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
-              <Stat
-                value={`${phase2.techScore}`}
-                label={`Your site · ${phase2.techScore} of ${maxTech}`}
-                note="Whether the crawlers can read you at all"
-              />
+            {/* One stat, not two. Its twin read the technical crawl and, with
+                that crawl gone, printed "Your site · 0 of 0" beside measured
+                figures — the absence of a reading dressed as a bad score. */}
+            <div className="grid grid-cols-1 border-y border-gray-100">
               <Stat
                 value={phase2.serpScore < 0 ? '—' : String(phase2.serpScore)}
                 label="Live retrieval / 100"

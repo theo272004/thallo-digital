@@ -15,7 +15,12 @@ export default function Services() {
         'Technical readiness review',
         'Prioritized roadmap',
       ],
-      price: 'From $800 · one-time · 2–3 weeks',
+      /* The three prices on this card set have to be the same three Our Plans
+         states, because a reader who clicks through from here to there is
+         checking exactly that. The audit is a fixed price on that page — "no
+         lock-in, the roadmap is yours either way" — so "From" was wrong twice
+         over: wrong figure and wrong shape. */
+      price: '$1,200 · one-time · 2–3 weeks',
       featured: false,
     },
     {
@@ -29,7 +34,10 @@ export default function Services() {
         'Distribution where buyers research',
         'Monthly outcome reporting',
       ],
-      price: 'From $2,500 / month · 6-month term',
+      /* Three months. Our Plans says three, the FAQ below says three, and
+         this card said six — the one place on the site that asked for a
+         commitment twice the size of the one we actually sell. */
+      price: 'From $2,500 / month · 3-month initial term',
       featured: true,
     },
     {
@@ -43,7 +51,11 @@ export default function Services() {
         'Interactive tools & calculators',
         'Industry reports',
       ],
-      price: 'From $600 · priced by scope',
+      /* No floor. Our Plans quotes these per project and names no number,
+         and $600 for a proprietary data study or an industry report is not a
+         number we would honour — a price on the home page that the plans page
+         will not stand behind is worse than no price. */
+      price: 'Priced by scope',
       featured: false,
     },
   ];

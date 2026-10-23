@@ -35,7 +35,7 @@ import { SITE_URL } from '@/lib/site';
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description:
-    'What personal data Thallo Digital collects, why, who it is shared with, how long it is kept, and the rights you hold over it under Colombian Law 1581 of 2012.',
+    'What personal data Thallo Digital collects, why, who it is shared with, how long it is kept, and the rights you hold over it, including under Colombia’s Law 1581 of 2012.',
   alternates: { canonical: `${SITE_URL}/privacy/` },
   openGraph: {
     title: 'Privacy Policy · Thallo Digital',
@@ -55,7 +55,8 @@ export default function PrivacyPage() {
         >
           <Clause n={1} heading="Who is responsible for your data">
             <P>
-              {LEGAL.tradingName} is the data controller (<em>responsable del tratamiento</em>) for the personal data
+              {LEGAL.legalName}, trading as {LEGAL.tradingName}, is the data controller (<em>responsable del
+              tratamiento</em>) for the personal data
               described here. Our details are at the foot of this page, and privacy requests reach a person at{' '}
               <a href={`mailto:${LEGAL.email}`} className="font-semibold text-[#39471D] underline underline-offset-2">
                 {LEGAL.email}
@@ -63,8 +64,10 @@ export default function PrivacyPage() {
               .
             </P>
             <P>
-              This policy is issued under Law 1581 of 2012 and Decree 1377 of 2013 of the Republic of {LEGAL.country},
-              which govern the protection of personal data (<em>habeas data</em>).
+              We are a company registered in the United States with clients in more than one country, so more than one
+              data protection law can apply to the same data. We hold ourselves to Colombia&rsquo;s Law 1581 of 2012 and
+              Decree 1377 of 2013 (<em>habeas data</em>), and the rights in clause 8 are open to anyone whose data we
+              hold, wherever they live. Where the law of your own country gives you more, you have that too.
             </P>
           </Clause>
 
@@ -196,8 +199,9 @@ export default function PrivacyPage() {
               ]}
             />
             <P>
-              Some of these providers operate outside {LEGAL.country}, so using this site involves an international
-              transfer of data to countries whose rules may differ. We only use providers that commit contractually to
+              Most of these providers are based in the United States and some process data in other countries, so
+              depending on where you are, using this site can involve an international transfer of data to countries
+              whose rules differ from your own. We only use providers that commit contractually to
               protecting the data to a standard comparable with Law 1581.
             </P>
           </Clause>
@@ -214,7 +218,7 @@ export default function PrivacyPage() {
           </Clause>
 
           <Clause n={8} heading="Your rights">
-            <P>Under Law 1581 of 2012, at any time and free of charge, you may:</P>
+            <P>Wherever you live, at any time and free of charge, you may:</P>
             <List
               items={[
                 'Know what personal data of yours we hold, and where it came from.',
@@ -222,7 +226,7 @@ export default function PrivacyPage() {
                 'Delete it, where there is no legal obligation for us to keep it.',
                 'Withdraw the authorisation you gave us, which we act on unless the law requires otherwise.',
                 'Ask for proof of the authorisation you gave.',
-                'Complain to the Superintendencia de Industria y Comercio (SIC) if you believe we have not respected these rights.',
+                'Complain if you believe we have not respected these rights — in Colombia to the Superintendencia de Industria y Comercio (SIC), elsewhere to the data protection authority where you live.',
               ]}
             />
             <P>
@@ -230,7 +234,7 @@ export default function PrivacyPage() {
               <a href={`mailto:${LEGAL.email}`} className="font-semibold text-[#39471D] underline underline-offset-2">
                 {LEGAL.email}
               </a>{' '}
-              and we will answer within the periods the law sets: 10 business days for a query, 15 business days for a
+              and we will answer within the periods Law 1581 sets: 10 business days for a query, 15 business days for a
               complaint, extendable once where we tell you why. We may ask you to confirm your identity first, so that
               nobody else can act on your data.
             </P>
@@ -240,7 +244,7 @@ export default function PrivacyPage() {
             <P>
               Data is transmitted over encrypted connections and access to it is limited to the people who need it. API
               keys and secrets are held on the server and are never exposed to the browser. No system is perfectly
-              secure, but if a breach affects your personal data we will notify you and the SIC as the law requires.
+              secure, but if a breach affects your personal data we will notify you, and any authority the law requires us to tell, including the SIC.
             </P>
           </Clause>
 

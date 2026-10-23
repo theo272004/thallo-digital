@@ -201,8 +201,17 @@ export default function ThalloAIPage() {
                 the question &ldquo;does the industry talk about you enough that a model learned your name?&rdquo; It
                 moves slowly and it is the harder one to fake.
               </p>
+              {/* Neither figure survived contact with the tool.
+                  "45 answers" was the old fixed bank of fifteen questions, and
+                  the free scan has accepted three for a long time — the exact
+                  mismatch the note on the rail above warns about, left standing
+                  two hundred lines below it. "The free half" went the same way:
+                  there is no free half any more, because every question is now
+                  put to the models twice and the searching pass is billed on
+                  its first call, so the address is collected before anything
+                  runs rather than in the middle. */}
               <p className="mt-6 border-t border-gray-100 pt-5 text-[13px] font-semibold text-gray-900">
-                45 answers · this is the free half
+                Your three questions &middot; nine answers, one per model
               </p>
             </Card>
 
@@ -215,7 +224,7 @@ export default function ThalloAIPage() {
                 quarter.
               </p>
               <p className="mt-6 border-t border-gray-100 pt-5 text-[13px] font-semibold text-gray-900">
-                Unlocked with an email · costs us money to run
+                The same three questions, asked again with the web open
               </p>
             </Card>
           </div>
@@ -320,7 +329,7 @@ export default function ThalloAIPage() {
               {[
                 'The competitors recommended in your place, ranked',
                 'Perplexity and Google AI Overview presence',
-                'The full technical scorecard against your domain',
+                'Every source the searching models opened, and who each one names',
                 'A prioritised plan, ordered by what the scan found',
               ].map((x) => (
                 <li key={x} className="flex items-start gap-3">

@@ -35,10 +35,11 @@
  * page nobody opens.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, Building2, Globe2, Link2, LockKeyhole, Plus, Sparkles, X } from 'lucide-react';
 import { BTN_PRIMARY, BTN_SECONDARY, FIELD, Head, Notice, Panel, Tint } from './ui';
 import { Combo, Select } from './Dropdown';
+import { checkQuota, fetchQuota, type Quota } from '@/lib/scan/engine';
 import ConsentCheck from '@/components/ui/ConsentCheck';
 import { buildQuestions } from '@/lib/scan/questions';
 import { DEFAULT_MARKET, MARKETS, marketById } from '@/lib/scan/markets';
@@ -94,6 +95,48 @@ export default function ScanSetup({
   const [email, setEmail] = useState('');
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState('');
+
+  /* The allowance, as the server sees it.
+     Read on mount and again whenever the address settles — see the two effects
+     below. Null means "not asked yet, or could not be reached", which is not
+     the same as "none left" and must never draw a refusal. */
+  const [quota, setQuota] = useState<Quota | null>(null);
+
+  /* On load, and this is the only place the session cookie is ever minted.
+     Without this call `session_hash()` is empty on every scan, every row is
+     stored against no browser, and the per-browser counter silently counts
+     nothing — three of the four limit layers doing the work of four. */
+  useEffect(() => {
+    let live = true;
+    fetchQuota().then((q) => {
+      if (live && q) setQuota(q);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
+
+  /* And again once the address stops changing.
+     Debounced, because this fires on a keystroke and the answer is only
+     interesting for a complete address. The refusal then lands under the field
+     that caused it, while the visitor is still looking at it — rather than
+     after the button, which is also the control that throws the form away. */
+  useEffect(() => {
+    const typed = email.trim();
+    if (!isEmail(typed)) return;
+
+    const t = setTimeout(() => {
+      checkQuota(typed, cleanDomain(domain)).then((q) => {
+        if (q) setQuota(q);
+      });
+    }, 500);
+
+    return () => clearTimeout(t);
+  }, [email, domain]);
+
+  /* Only ever true when the server has actually said so. `exempt` is the office
+     machine recording walkthroughs and is never refused. */
+  const spent = !!quota && !quota.exempt && quota.remaining <= 0;
 
   const selectedMarket = marketById(market);
   const country = selectedMarket.country;
@@ -230,7 +273,7 @@ export default function ScanSetup({
                   <Link2 size={17} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input type="text" value={domain} onChange={(e) => setDomain(e.target.value)} placeholder="yourcompany.com" autoComplete="url" className={`${FIELD} pl-11`} />
                 </span>
-                <span className="text-[11px] font-medium text-gray-400">We&apos;ll analyze your site and content signals</span>
+                <span className="text-[11px] font-medium text-gray-400">We match answers against this domain, and check which sources point to it</span>
               </label>
 
               {/* Free text with the catalogue as suggestions, not a closed
@@ -296,7 +339,17 @@ export default function ScanSetup({
                 <LockKeyhole size={14} className="mt-0.5 shrink-0 text-[#39471D]" />
                 <span className="text-[12px] font-medium leading-relaxed text-gray-500">
                   <strong className="font-bold text-gray-700">No credit card required</strong>
-                  <br />Free scan · Results in under a minute
+                  {/* Which scan this is, once the server has said.
+                      `limit - remaining + 1` is the one the visitor is about to
+                      run, not the number left — "Scan 3 of 3" is a fact about
+                      their afternoon, while "1 remaining" reads as a meter
+                      running down and is the same sentence in a worse mood.
+                      Silent until the allowance is known, and silent for the
+                      exempt machine, which has no count to be on. */}
+                  <br />
+                  {quota && !quota.exempt && quota.remaining > 0
+                    ? `Scan ${quota.limit - quota.remaining + 1} of ${quota.limit} · Results in under a minute`
+                    : 'Free scan · Results in under a minute'}
                 </span>
               </span>
 
@@ -469,6 +522,19 @@ export default function ScanSetup({
                    column is narrower than the cap anyway. */
                 className={`${FIELD} sm:max-w-[340px] xl:max-w-none`}
               />
+              {/* The refusal, under the field that caused it.
+                  The server's own sentence, printed verbatim: it is written as
+                  an invitation to book an audit rather than as an error,
+                  because somebody reaching for a fourth scan is the most
+                  interested visitor of the week. It also never names which of
+                  the four counters bound — told the address is the limit, the
+                  obvious next move is a second address. */}
+              {spent && quota?.reason && (
+                <p className="mt-3.5 max-w-[54ch] text-[12px] font-semibold leading-relaxed text-[#E7ECD9]">
+                  {quota.reason}
+                </p>
+              )}
+
               <div className="mt-3.5">
                 <ConsentCheck id="scan-setup-consent" checked={consent} onChange={setConsent} onDark />
               </div>
@@ -489,7 +555,20 @@ export default function ScanSetup({
           <button type="button" onClick={() => setStep(1)} className={BTN_SECONDARY}>
             <ArrowLeft size={16} /> Back
           </button>
-          <button type="button" onClick={runScan} disabled={!filled.length} className={BTN_PRIMARY}>
+          {/* Shut until the run would actually be accepted.
+              It used to open on the questions alone, so a missing address, an
+              unticked consent box and a spent allowance were all things you
+              found out by pressing it — and pressing it is also what unmounts
+              this card. The same conditions `runScan` checks are the ones that
+              draw the button, so a keyboard submit cannot get past it either;
+              what each of them says when it is unmet is printed beside the
+              field that owns it, never here as well. */}
+          <button
+            type="button"
+            onClick={runScan}
+            disabled={!filled.length || !isEmail(email) || !consent || spent}
+            className={BTN_PRIMARY}
+          >
             Run scan <ArrowRight size={17} />
           </button>
         </div>

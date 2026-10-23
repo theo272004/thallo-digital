@@ -18,6 +18,17 @@
  *
  * A **monitor** is a standing instruction to re-run a scan on a schedule. It
  * outlives every scan it creates.
+ *
+ * An **account** is a returning visitor. It holds nothing a scan did not
+ * already collect — the address was always stored on the scan row — and exists
+ * so that somebody who ran a scan can come back and find it. Its token table
+ * is separate because one person is several browsers over time, and revoking
+ * one of them must not sign the others out.
+ *
+ * An account also changes the scan's lifetime: a scan belonging to one is
+ * exempt from the fortnightly prune. A visitor told their reports are saved and
+ * then shown an empty shelf two weeks later would be worse served than one who
+ * was never offered an account at all. See `prune()`.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -44,6 +55,16 @@ class Thallo_Vis_DB {
 	public static function monitors_table() {
 		global $wpdb;
 		return $wpdb->prefix . 'thallo_monitors';
+	}
+
+	public static function accounts_table() {
+		global $wpdb;
+		return $wpdb->prefix . 'thallo_accounts';
+	}
+
+	public static function account_tokens_table() {
+		global $wpdb;
+		return $wpdb->prefix . 'thallo_account_tokens';
 	}
 
 	public static function enquiries_table() {
@@ -77,6 +98,7 @@ class Thallo_Vis_DB {
 			ip_hash CHAR(64) NOT NULL DEFAULT '',
 			session_hash CHAR(64) NOT NULL DEFAULT '',
 			email VARCHAR(190) NOT NULL DEFAULT '',
+			account_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
 			state LONGTEXT NOT NULL,
 			created_at DATETIME NOT NULL,
 			updated_at DATETIME NOT NULL,
@@ -85,6 +107,7 @@ class Thallo_Vis_DB {
 			KEY ip_hash (ip_hash),
 			KEY session_hash (session_hash),
 			KEY email_created (email, created_at),
+			KEY account_created (account_id, created_at),
 			KEY domain_created (domain, created_at),
 			KEY created_at (created_at)
 		) $charset;";
@@ -201,11 +224,54 @@ class Thallo_Vis_DB {
 			KEY created_at (created_at)
 		) $charset;";
 
+		/*
+		 * A returning visitor, keyed on the address they already gave.
+		 *
+		 * The address is the key because it is the only identifier this tool
+		 * has ever collected, and it is already on every scan row. Nothing new
+		 * is asked for: an account is a way back to work that was done, not a
+		 * second thing to fill in. There is no password column and there will
+		 * not be one — see the token table below.
+		 */
+		$accounts     = self::accounts_table();
+		$sql_accounts = "CREATE TABLE $accounts (
+			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+			email VARCHAR(190) NOT NULL,
+			created_at DATETIME NOT NULL,
+			last_seen_at DATETIME NOT NULL,
+			PRIMARY KEY  (id),
+			UNIQUE KEY email (email)
+		) $charset;";
+
+		/*
+		 * One row per browser that has been signed in.
+		 *
+		 * Separate from the account because one person is several browsers over
+		 * a year, and signing out of a shared machine must not sign them out of
+		 * their own. `token_hash` is a SHA-256 of the secret in the cookie plus
+		 * the site salt, exactly as `session_hash()` treats the allowance
+		 * cookie: the secret itself is never stored, so this table leaking does
+		 * not let anybody sign in as anyone.
+		 */
+		$tokens     = self::account_tokens_table();
+		$sql_tokens = "CREATE TABLE $tokens (
+			id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+			account_id BIGINT UNSIGNED NOT NULL,
+			token_hash CHAR(64) NOT NULL,
+			created_at DATETIME NOT NULL,
+			last_used_at DATETIME NOT NULL,
+			PRIMARY KEY  (id),
+			UNIQUE KEY token_hash (token_hash),
+			KEY account_id (account_id)
+		) $charset;";
+
 		dbDelta( $sql_scans );
 		dbDelta( $sql_leads );
 		dbDelta( $sql_history );
 		dbDelta( $sql_monitors );
 		dbDelta( $sql_enquiry );
+		dbDelta( $sql_accounts );
+		dbDelta( $sql_tokens );
 
 		update_option( 'thallo_visibility_db_version', THALLO_VIS_VERSION );
 	}
@@ -257,7 +323,7 @@ class Thallo_Vis_DB {
 	 *                        Clearing cookies then reset the counter to zero.
 	 * @param string $session The browser session this scan belongs to, hashed.
 	 */
-	public static function create( $scan_id, $brand, $domain, $industry, array $state, $email = '', $session = '' ) {
+	public static function create( $scan_id, $brand, $domain, $industry, array $state, $email = '', $session = '', $account_id = 0 ) {
 		global $wpdb;
 		$now = current_time( 'mysql', true );
 
@@ -272,6 +338,7 @@ class Thallo_Vis_DB {
 				'ip_hash'      => self::ip_hash(),
 				'session_hash' => $session,
 				'email'        => $email,
+				'account_id'   => (int) $account_id,
 				'state'        => wp_json_encode( $state ),
 				'created_at'   => $now,
 				'updated_at'   => $now,
@@ -279,6 +346,190 @@ class Thallo_Vis_DB {
 		);
 
 		return (bool) $wpdb->insert_id;
+	}
+
+	// -----------------------------------------------------------------------
+	// Accounts
+	//
+	// There is no password anywhere in this section and no registration step.
+	// A visitor who runs a scan has already given the only identifier the tool
+	// wants; an account is that address, remembered, plus a secret in their
+	// browser proving they are the one who typed it. What it buys them is the
+	// ability to close the tab.
+	// -----------------------------------------------------------------------
+
+	/**
+	 * The account for an address, created if this is the first time.
+	 *
+	 * Addresses are lowercased on the way in, because two spellings of one
+	 * mailbox would otherwise be two shelves each holding half the visitor's
+	 * reports. The unique index is what makes the race safe: two scans
+	 * submitted at once both try to insert, one loses, and the loser reads the
+	 * winner's row rather than failing.
+	 */
+	public static function account_for_email( $email ) {
+		global $wpdb;
+
+		$email = strtolower( trim( (string) $email ) );
+		if ( '' === $email || ! is_email( $email ) ) {
+			return 0;
+		}
+
+		$table = self::accounts_table();
+		$now   = current_time( 'mysql', true );
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is not user input.
+		$id = (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $table WHERE email = %s", $email ) );
+
+		if ( $id > 0 ) {
+			$wpdb->update( $table, array( 'last_seen_at' => $now ), array( 'id' => $id ) );
+			return $id;
+		}
+
+		$wpdb->insert(
+			$table,
+			array(
+				'email'        => $email,
+				'created_at'   => $now,
+				'last_seen_at' => $now,
+			)
+		);
+
+		if ( $wpdb->insert_id ) {
+			return (int) $wpdb->insert_id;
+		}
+
+		/* Lost the race against a concurrent insert. The row exists now. */
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is not user input.
+		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT id FROM $table WHERE email = %s", $email ) );
+	}
+
+	/** Stores a browser's token against an account. The hash arrives salted. */
+	public static function add_account_token( $account_id, $hash ) {
+		global $wpdb;
+		$now = current_time( 'mysql', true );
+
+		$wpdb->insert(
+			self::account_tokens_table(),
+			array(
+				'account_id'   => (int) $account_id,
+				'token_hash'   => $hash,
+				'created_at'   => $now,
+				'last_used_at' => $now,
+			)
+		);
+
+		return (bool) $wpdb->insert_id;
+	}
+
+	/**
+	 * The account a token belongs to, or null.
+	 *
+	 * Touches `last_used_at` so an abandoned browser is distinguishable from a
+	 * live one later, when there is a reason to expire them. Nothing expires
+	 * today: a token that stopped working after thirty days would sign people
+	 * out of the only copy of their reports, and there is no second way in yet.
+	 */
+	public static function account_for_token( $hash ) {
+		global $wpdb;
+
+		if ( ! preg_match( '/^[a-f0-9]{64}$/', (string) $hash ) ) {
+			return null;
+		}
+
+		$tokens   = self::account_tokens_table();
+		$accounts = self::accounts_table();
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table names are not user input.
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT a.id AS account_id, a.email AS email FROM $tokens t INNER JOIN $accounts a ON a.id = t.account_id WHERE t.token_hash = %s",
+				$hash
+			),
+			ARRAY_A
+		);
+
+		if ( ! $row ) {
+			return null;
+		}
+
+		$now = current_time( 'mysql', true );
+		$wpdb->update( $tokens, array( 'last_used_at' => $now ), array( 'token_hash' => $hash ) );
+		$wpdb->update( $accounts, array( 'last_seen_at' => $now ), array( 'id' => (int) $row['account_id'] ) );
+
+		return array(
+			'id'    => (int) $row['account_id'],
+			'email' => $row['email'],
+		);
+	}
+
+	/** Signs one browser out. The account and its scans are untouched. */
+	public static function revoke_account_token( $hash ) {
+		global $wpdb;
+		return (bool) $wpdb->delete( self::account_tokens_table(), array( 'token_hash' => $hash ) );
+	}
+
+	/**
+	 * Attaches every scan already run from this address to the account.
+	 *
+	 * Called when an account is first created, so somebody who has been using
+	 * the tool for weeks does not arrive at an empty shelf. It can only reach
+	 * scans the prune has not taken yet, which is the honest limit and the
+	 * reason the exemption in `prune()` is worth having from the first run
+	 * rather than from the first sign-in.
+	 */
+	public static function claim_scans_for_account( $account_id, $email ) {
+		global $wpdb;
+		$table = self::scans_table();
+
+		return (int) $wpdb->query(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is not user input.
+				"UPDATE $table SET account_id = %d WHERE email = %s AND account_id = 0",
+				(int) $account_id,
+				strtolower( trim( (string) $email ) )
+			)
+		);
+	}
+
+	/**
+	 * The shelf: one row per scan this account has run, newest first.
+	 *
+	 * Deliberately not the reports themselves. The list is read on every visit
+	 * to the account screen and each scan's state is a large blob of answers;
+	 * selecting them all to render a list of dates and grades would be the
+	 * slowest query in the plugin. A report is fetched one at a time, by id.
+	 */
+	public static function scans_for_account( $account_id, $limit = 50 ) {
+		global $wpdb;
+		$table = self::scans_table();
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is not user input.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT scan_id, brand, domain, industry, status, created_at FROM $table WHERE account_id = %d ORDER BY created_at DESC LIMIT %d",
+				(int) $account_id,
+				max( 1, (int) $limit )
+			),
+			ARRAY_A
+		);
+
+		return is_array( $rows ) ? $rows : array();
+	}
+
+	/** One scan, only if it belongs to this account. */
+	public static function scan_for_account( $scan_id, $account_id ) {
+		global $wpdb;
+		$table = self::scans_table();
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is not user input.
+		$owner = (int) $wpdb->get_var( $wpdb->prepare( "SELECT account_id FROM $table WHERE scan_id = %s", $scan_id ) );
+
+		if ( $owner < 1 || (int) $account_id !== $owner ) {
+			return null;
+		}
+
+		return self::get( $scan_id );
 	}
 
 	public static function get( $scan_id ) {
@@ -566,7 +817,20 @@ class Thallo_Vis_DB {
 		$days  = max( 1, (int) Thallo_Vis_Settings::get( 'retention_days', 14 ) );
 		$since = gmdate( 'Y-m-d H:i:s', time() - ( $days * DAY_IN_SECONDS ) );
 
+		/*
+		 * `account_id = 0` is the whole condition that matters here.
+		 *
+		 * Working data is pruned because nobody reads a fortnight-old scan
+		 * twice — which stopped being true the moment a visitor could sign in
+		 * and see a shelf of their own reports. A saved report that deletes
+		 * itself is a worse promise than no saving at all, so a scan attached
+		 * to an account is kept, and only anonymous working data ages out.
+		 *
+		 * The cost is database size, and at this volume it is nothing: a scan
+		 * is one row of JSON, and the ceiling on how many can exist is the
+		 * site-wide daily limit protecting the bill.
+		 */
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table name is not user input.
-		$wpdb->query( $wpdb->prepare( "DELETE FROM $table WHERE created_at < %s", $since ) );
+		$wpdb->query( $wpdb->prepare( "DELETE FROM $table WHERE created_at < %s AND account_id = 0", $since ) );
 	}
 }

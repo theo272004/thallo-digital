@@ -6,7 +6,7 @@ import AnswerLists from './AnswerLists';
 import AuditTrail from './AuditTrail';
 import ScoreRing from './ScoreRing';
 import TrendChart from './TrendChart';
-import { Compass, Download, FileText, Gauge, ListChecks, MessagesSquare, TrendingUp, Trophy } from 'lucide-react';
+import { Compass, Download, FileText, ListChecks, MessagesSquare, TrendingUp, Trophy } from 'lucide-react';
 import { BTN_PRIMARY, BTN_SECONDARY, Head, Meter, Micro, Panel, ProviderMark, Reveal, Stat, Tint, Verdict, type Tone } from './ui';
 import {
   PROVIDER_LABEL,
@@ -14,7 +14,6 @@ import {
   type ScanPhase1,
   type ScanPhase2,
   type RetrievalResult,
-  type TechSignal,
 } from '@/lib/scan/types';
 import { BASE } from '@/lib/site';
 
@@ -65,8 +64,6 @@ const RETRIEVAL_LABEL: Record<RetrievalResult['status'], string> = {
  * on the panels a value is drawn dark green on a grey track.
  */
 export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; phase2: ScanPhase2 }) {
-  const scoredSignals = phase2.signals.filter((s) => s.weight > 0);
-  const maxTech = scoredSignals.reduce((sum, s) => sum + s.weight, 0);
 
   /* The searching reading, or nothing. `totalAnswers` rather than mere
      presence: a `grounded` object that came back with no answers in it is a
@@ -204,16 +201,17 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
               <p className="mt-2.5 text-[14px] font-medium leading-relaxed text-white">{phase2.keyInsight}</p>
             </Tint>
 
-            {/* The two supporting scores. Deliberately smaller than the pair
-                on the left: they are evidence for AI visibility, not
-                indicators of their own — whether a crawler can read the site,
-                and whether a searching engine can surface it right now. */}
-            <div className="grid grid-cols-1 divide-y divide-gray-100 border-y border-gray-100 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
-              <Stat
-                value={`${phase2.techScore}`}
-                label={`Your site · ${phase2.techScore} of ${maxTech}`}
-                note="Whether the crawlers can read you at all"
-              />
+            {/* The supporting score. Deliberately smaller than the pair on the
+                left: it is evidence for AI visibility rather than an indicator
+                of its own — whether a searching engine can surface you now.
+
+                It had a twin, "Your site · n of n", reading the technical
+                crawl. That crawl is gone, so the twin drew itself from an empty
+                signal list and printed a confident "0 of 0" beside real
+                figures. A zero out of zero is not a low score, it is the
+                absence of a measurement, and it sat in the one row of this
+                report whose whole job is to be evidence. */}
+            <div className="grid grid-cols-1 border-y border-gray-100">
               <Stat
                 value={phase2.serpScore < 0 ? '—' : String(phase2.serpScore)}
                 label="Live retrieval / 100"
@@ -280,35 +278,27 @@ export default function FullReport({ phase1, phase2 }: { phase1: ScanPhase1; pha
       </Panel>
       </Reveal>
 
-      {/* ── What was checked, and what to do about it ─────────────────────
-          The site's signals and the plan that comes out of them, in one row:
-          every action below is the remedy for a row on the left, and reading
-          them apart was reading a diagnosis on one screen and its prescription
-          on the next. */}
+      {/* ── What to do about it ───────────────────────────────────────────
+          This was a two-column row: the site's technical signals on the left,
+          the plan on the right, each the diagnosis for the other. The crawl
+          behind the left-hand panel was dropped — a technical audit of a
+          website is a different product from a report on what the models say —
+          and the panel was left rendering against an empty array: a heading, a
+          "Checked against yourdomain.com" subtitle, a 0 / 0 chip and then
+          nothing at all, next to a full panel of real findings.
+
+          So the plan stands on its own and takes the width. Its rows no longer
+          come from technical signals either; `Thallo_Vis_Analysis::actions()`
+          builds them from the entity verdicts, the sources the models opened
+          and the gap between the two readings. */}
       <Reveal>
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-        <Panel>
-          <Head
-            badge={<Gauge size={18} />}
-            level="section"
-            title="Website & technical signals"
-            sub={`Checked against ${phase1.domain}. Every point in the score above traces to a row here.`}
-            chip={`${phase2.techScore} / ${maxTech}`}
-          />
-
-          <div className="mt-6">
-            {phase2.signals.map((s) => (
-              <SignalRow key={s.id} signal={s} />
-            ))}
-          </div>
-        </Panel>
-
+      <div className="grid grid-cols-1 gap-5">
         <Panel>
           <Head
             badge={<ListChecks size={18} />}
             level="section"
             title="What to do first"
-            sub="Ordered by what the scan found, heaviest unmet signal first — not by a fixed script."
+            sub="Ordered by what the scan found — a name resolving to somebody else first, then the sources the models read without you in them."
           />
 
           <div className="mt-6 flex flex-col gap-2.5">
@@ -1019,46 +1009,6 @@ export function Diagnosis({ memory, grounded }: { memory: ScanPhase1; grounded: 
           </ul>
         </div>
       </div>
-    </div>
-  );
-}
-
-export function SignalRow({ signal }: { signal: TechSignal }) {
-  const icon =
-    signal.status === 'pass' ? (
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#39471D]">
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3.5" strokeLinecap="round">
-          <path d="M20 6 9 17l-5-5" />
-        </svg>
-      </span>
-    ) : signal.status === 'warn' ? (
-      /* Mid-olive with a white mark, not pale green with a dark one. The three
-         states have to read as a ladder, and a #E7ECD9 disc sat lighter than
-         the grey "fail" ring below it — so a partial pass looked like the
-         weakest of the three. */
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#55672E]">
-        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round">
-          <path d="M12 8v5m0 3.5v.5" />
-        </svg>
-      </span>
-    ) : (
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-gray-200">
-        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="3.5" strokeLinecap="round">
-          <path d="M18 6 6 18M6 6l12 12" />
-        </svg>
-      </span>
-    );
-
-  return (
-    <div className="flex items-start gap-3 border-b border-gray-100 py-3 last:border-0">
-      {icon}
-      <span className="min-w-0 flex-1">
-        <span className="block text-[13px] font-semibold text-gray-900">{signal.label}</span>
-        {signal.note && <span className="mt-1 block text-[11.5px] font-medium leading-relaxed text-gray-500">{signal.note}</span>}
-      </span>
-      <Micro className={`shrink-0 tabular-nums ${signal.weight === 0 ? 'text-gray-300' : 'text-gray-500'}`}>
-        {signal.weight === 0 ? 'not scored' : `${signal.earned} / ${signal.weight}`}
-      </Micro>
     </div>
   );
 }

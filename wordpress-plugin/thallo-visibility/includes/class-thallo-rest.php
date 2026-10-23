@@ -33,6 +33,22 @@ class Thallo_Vis_REST {
 	const SESSION_COOKIE = 'thallo_scan_sid';
 
 	/**
+	 * The cookie that carries a returning visitor's account.
+	 *
+	 * Deliberately not the same cookie as the allowance. They answer different
+	 * questions — "how many scans has this browser had" versus "whose reports
+	 * are these" — and they have opposite failure modes: clearing the allowance
+	 * cookie costs us a few cents, while clearing this one costs a visitor
+	 * their shelf. One cookie doing both would mean that signing out, which
+	 * ought to be free, silently handed out a fresh allowance.
+	 *
+	 * httpOnly, like the other one, so no script on the page can read it. The
+	 * front end never sees the token: it calls the account endpoints with
+	 * credentials and is told who it is.
+	 */
+	const ACCOUNT_COOKIE = 'thallo_acct';
+
+	/**
 	 * Mailbox providers that are not a company.
 	 *
 	 * The site ships the same list in `FREE_EMAIL_DOMAINS` so the refusal can
@@ -193,6 +209,47 @@ class Thallo_Vis_REST {
 			)
 		);
 
+		/*
+		 * The account endpoints.
+		 *
+		 * `permission_callback` is `__return_true` on all three, which looks
+		 * wrong on routes that return somebody's private reports and is not:
+		 * the visitor is not a WordPress user and never will be, so there is no
+		 * capability to check. Authorisation is the cookie, resolved by
+		 * `current_account()`, and every callback below returns an empty shelf
+		 * rather than data when it comes back null. Nothing here accepts an
+		 * account id or an address from the request.
+		 */
+		register_rest_route(
+			self::NS,
+			'/account',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( __CLASS__, 'account' ),
+				'permission_callback' => '__return_true',
+			)
+		);
+
+		register_rest_route(
+			self::NS,
+			'/account/scan/(?P<id>[a-f0-9]{32})',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( __CLASS__, 'account_scan' ),
+				'permission_callback' => '__return_true',
+			)
+		);
+
+		register_rest_route(
+			self::NS,
+			'/account/forget',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( __CLASS__, 'account_forget' ),
+				'permission_callback' => '__return_true',
+			)
+		);
+
 		register_rest_route(
 			self::NS,
 			'/status',
@@ -234,6 +291,14 @@ class Thallo_Vis_REST {
 					header( 'Access-Control-Allow-Origin: ' . esc_url_raw( $origin ) );
 					header( 'Access-Control-Allow-Methods: POST, GET, OPTIONS' );
 					header( 'Access-Control-Allow-Headers: Content-Type' );
+					/* Accounts are a cookie, and a cross-origin request does not
+					   carry one without this — nor would the browser accept the
+					   response if the origin above were a wildcard, which is the
+					   other reason it is echoed rather than starred. Without it
+					   the allowed-origins setting silently signs everybody out:
+					   the scan still runs, the shelf is always empty, and
+					   nothing anywhere reports an error. */
+					header( 'Access-Control-Allow-Credentials: true' );
 					header( 'Vary: Origin', false );
 				}
 
@@ -254,6 +319,18 @@ class Thallo_Vis_REST {
 
 		if ( ! preg_match( '/^[a-z0-9-]+(\.[a-z0-9-]+)+$/', $domain ) ) {
 			return new WP_Error( 'bad_domain', __( 'Enter a valid website, for example yourcompany.com', 'thallo-visibility' ), array( 'status' => 400 ) );
+		}
+
+		/* A name, not an address. The pattern above is dots and characters, and
+		   `127.0.0.1` is dots and characters — it passed, and the tech check
+		   would then have fetched it from this server. `wp_safe_remote_get` in
+		   Thallo_Vis_Tech refuses private and reserved ranges as well, so this
+		   is the second of two locks rather than the only one; it is here so the
+		   visitor is told the input is wrong instead of collecting a report full
+		   of failed checks. A literal address is never the answer to "what is
+		   your website" in any case. */
+		if ( filter_var( $domain, FILTER_VALIDATE_IP ) ) {
+			return new WP_Error( 'bad_domain', __( 'Enter a website name, for example yourcompany.com', 'thallo-visibility' ), array( 'status' => 400 ) );
 		}
 
 		if ( '' === $industry || mb_strlen( $industry ) > 120 ) {
@@ -342,9 +419,125 @@ class Thallo_Vis_REST {
 			return $limited;
 		}
 
-		$session = Thallo_Vis_Runner::start( $brand, $domain, $industry, $market, 'visitor', $prompts, $email, self::session_hash() );
+		/* After the limits, never before. Attaching an account writes rows and
+		   sets a cookie, and a scan that is about to be refused should leave
+		   nothing behind. The allowance is unchanged by any of this: an account
+		   remembers scans, it does not buy them. */
+		$account_id = self::attach_account( $email );
+
+		$session = Thallo_Vis_Runner::start( $brand, $domain, $industry, $market, 'visitor', $prompts, $email, self::session_hash(), $account_id );
 
 		return is_wp_error( $session ) ? $session : rest_ensure_response( self::with_quota( $session ) );
+	}
+
+	/**
+	 * Who this browser is, and what it has run.
+	 *
+	 * Always 200, never 401. A visitor with no account is not an error — it is
+	 * the ordinary state of somebody who has not run a scan yet — and a 401
+	 * here would put a red line in the console of every first-time visit and
+	 * teach whoever debugs it next to ignore them.
+	 */
+	public static function account( WP_REST_Request $request ) {
+		unset( $request );
+
+		$account = self::current_account();
+
+		if ( ! $account ) {
+			return rest_ensure_response(
+				array(
+					'signedIn' => false,
+					'scans'    => array(),
+				)
+			);
+		}
+
+		$rows  = Thallo_Vis_DB::scans_for_account( $account['id'] );
+		$scans = array();
+
+		foreach ( $rows as $row ) {
+			$scans[] = array(
+				'scanId'    => $row['scan_id'],
+				'brand'     => $row['brand'],
+				'domain'    => $row['domain'],
+				'industry'  => $row['industry'],
+				'status'    => $row['status'],
+				'scannedAt' => $row['created_at'],
+			);
+		}
+
+		return rest_ensure_response(
+			array(
+				'signedIn' => true,
+				'email'    => $account['email'],
+				'scans'    => $scans,
+			)
+		);
+	}
+
+	/**
+	 * One saved report.
+	 *
+	 * 404 rather than 403 when the scan belongs to somebody else, because the
+	 * two answers are the same fact to anybody entitled to it and telling them
+	 * apart turns this route into a way of asking whether a given scan id
+	 * exists.
+	 */
+	public static function account_scan( WP_REST_Request $request ) {
+		$account = self::current_account();
+
+		if ( ! $account ) {
+			return new WP_Error( 'not_found', __( 'That report is not available.', 'thallo-visibility' ), array( 'status' => 404 ) );
+		}
+
+		$row = Thallo_Vis_DB::scan_for_account( (string) $request->get_param( 'id' ), $account['id'] );
+
+		if ( ! $row || empty( $row['state'] ) ) {
+			return new WP_Error( 'not_found', __( 'That report is not available.', 'thallo-visibility' ), array( 'status' => 404 ) );
+		}
+
+		return rest_ensure_response( Thallo_Vis_Runner::session( $row['state'], $row['status'] ) );
+	}
+
+	/**
+	 * Signs this browser out.
+	 *
+	 * Deletes the token row and clears the cookie. It does not delete the
+	 * account, the scans or the lead: this is "not on this machine", not
+	 * "forget me" — the lead is a record of a real exchange and the reports are
+	 * the visitor's own. A request to erase the data is a different thing and
+	 * arrives by mail, under the privacy policy the consent box links to.
+	 */
+	public static function account_forget( WP_REST_Request $request ) {
+		unset( $request );
+
+		$hash = self::account_hash();
+
+		if ( '' !== $hash ) {
+			Thallo_Vis_DB::revoke_account_token( $hash );
+		}
+
+		if ( ! headers_sent() ) {
+			setcookie(
+				self::ACCOUNT_COOKIE,
+				'',
+				array(
+					'expires'  => time() - 3600,
+					'path'     => '/',
+					'secure'   => is_ssl(),
+					'httponly' => true,
+					'samesite' => 'Lax',
+				)
+			);
+			unset( $_COOKIE[ self::ACCOUNT_COOKIE ] );
+		}
+
+		return rest_ensure_response(
+			array(
+				'signedIn' => false,
+				'scans'    => array(),
+			)
+		);
 	}
 
 	public static function tick( WP_REST_Request $request ) {
@@ -531,6 +724,91 @@ class Thallo_Vis_REST {
 		}
 
 		return '' === $raw ? '' : hash( 'sha256', $raw . wp_salt( 'nonce' ) );
+	}
+
+	/**
+	 * The secret in the account cookie, salted, or ''.
+	 *
+	 * Same treatment as `session_hash()`: what reaches the database is a
+	 * SHA-256 of the cookie value and the site salt, so the token table cannot
+	 * be used to sign in as anybody even if it is read.
+	 */
+	private static function account_hash() {
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated -- validated by the pattern below.
+		$raw = isset( $_COOKIE[ self::ACCOUNT_COOKIE ] ) ? (string) $_COOKIE[ self::ACCOUNT_COOKIE ] : '';
+		$raw = preg_match( '/^[a-f0-9]{32}$/', $raw ) ? $raw : '';
+
+		return '' === $raw ? '' : hash( 'sha256', $raw . wp_salt( 'nonce' ) );
+	}
+
+	/**
+	 * The account this request belongs to, or null.
+	 *
+	 * The only way in. Every account endpoint starts here, and none of them
+	 * takes an account id or an address as a parameter — an endpoint that
+	 * accepted "whose reports would you like" would hand anybody else's shelf
+	 * to whoever typed the right address, and the address is the least secret
+	 * thing about a company.
+	 */
+	private static function current_account() {
+		$hash = self::account_hash();
+
+		return '' === $hash ? null : Thallo_Vis_DB::account_for_token( $hash );
+	}
+
+	/**
+	 * Signs this browser into the account for `$email`, minting a token.
+	 *
+	 * Called from `/scan`, which is the one moment a visitor has both given an
+	 * address and done something worth keeping. There is no sign-up screen
+	 * because there is nothing left to ask: making them fill in a second form
+	 * to save work they have already done is friction in exchange for nothing.
+	 *
+	 * A browser already carrying a valid token is left alone, including when
+	 * the address differs — a second address from the same machine is a
+	 * colleague or a typo, and neither is a reason to move the shelf.
+	 */
+	private static function attach_account( $email ) {
+		if ( '' === $email ) {
+			return 0;
+		}
+
+		$existing = self::current_account();
+		if ( $existing ) {
+			return $existing['id'];
+		}
+
+		$account_id = Thallo_Vis_DB::account_for_email( $email );
+		if ( $account_id < 1 ) {
+			return 0;
+		}
+
+		/* Everything this address ran before the account existed, so a returning
+		   visitor does not arrive at an empty shelf. */
+		Thallo_Vis_DB::claim_scans_for_account( $account_id, $email );
+
+		if ( headers_sent() ) {
+			return $account_id;
+		}
+
+		$raw = bin2hex( random_bytes( 16 ) );
+		Thallo_Vis_DB::add_account_token( $account_id, hash( 'sha256', $raw . wp_salt( 'nonce' ) ) );
+
+		setcookie(
+			self::ACCOUNT_COOKIE,
+			$raw,
+			array(
+				'expires'  => time() + YEAR_IN_SECONDS,
+				'path'     => '/',
+				'secure'   => is_ssl(),
+				'httponly' => true,
+				'samesite' => 'Lax',
+			)
+		);
+
+		$_COOKIE[ self::ACCOUNT_COOKIE ] = $raw;
+
+		return $account_id;
 	}
 
 	/** True when the address is on a company domain rather than a mailbox provider. */

@@ -10,10 +10,8 @@ import HowItWorks from '@/components/HowItWorks';
 import ScannerStripe from '@/components/ScannerStripe';
 import HomeFaq from '@/components/HomeFaq';
 import Testimonials from '@/components/Testimonials';
-/* BlogSection — the testimonial carousel — is hidden further down this file
-   rather than removed. Its import is commented out with it, because an unused
-   import is a lint error and would block the build.
-import BlogSection from '@/components/BlogSection'; */
+/* BlogSection — the testimonial carousel, despite the file name. */
+import BlogSection from '@/components/BlogSection';
 import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
 import { useRevealBatch } from '@/components/motion';
@@ -28,8 +26,10 @@ import { useRevealBatch } from '@/components/motion';
  * Four sections came off it to get there. The results dashboard and the
  * industries panel were both saying, at length, things the sections around
  * them now say once; the video was a stop in the middle of an argument that
- * reads better without one; and the testimonial carousel is commented out
- * below rather than deleted. The industries themselves did not go anywhere —
+ * reads better without one. The testimonial carousel came off with them, on 8
+ * August 2026, because its six quotes were invented; it is back above the
+ * scanner strip now that three real clients have said something we can print.
+ * The industries themselves did not go anywhere —
  * they are the ticker under About, which is where the copy puts them, and
  * `/industries/` still holds the long version.
  */
@@ -49,6 +49,11 @@ export default function Home() {
         <PlaybookContrast />
         {/* What we do instead — read as the answer to the two above it. */}
         <HowItWorks />
+        {/* Somebody other than us saying it worked, placed where the reader has
+            just been told what we do and has not yet been asked for anything.
+            It came off the page in August because the six quotes on it were
+            invented; it goes back on now that the three on it are real. */}
+        <BlogSection />
         {/* The cheapest possible next step, offered once. */}
         <ScannerStripe />
         {/* The awkward questions, answered before the writing and the ask.
@@ -61,27 +66,6 @@ export default function Home() {
         {/* Closes the argument: with the form on its own route now, this is the
             home's hand-off to /contact/. */}
         <CTASection />
-
-        {/*
-          ── HIDDEN, NOT DELETED ─────────────────────────────────────────────
-          <BlogSection /> — the testimonial carousel, headed "Teams that became
-          the answer", despite the file name. Taken off the home on 8 August
-          2026 at Cami's request.
-
-          Nothing else references it, so it ships nowhere while this line is
-          commented out. The component itself is untouched in
-          src/components/BlogSection.tsx and its content is intact; putting it
-          back is uncommenting the line below and restoring the import at the
-          top of this file.
-
-          Worth a decision rather than a drift: a home page with no third-party
-          proof on it is a deliberate choice, not an oversight, and if it stays
-          off then the quotes should probably find a home somewhere else rather
-          than sitting in a component nobody renders.
-
-          <BlogSection />
-          ────────────────────────────────────────────────────────────────────
-        */}
 
       </main>
       <Footer />

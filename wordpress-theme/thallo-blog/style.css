@@ -4,7 +4,7 @@ Theme URI:    https://thallodigital.com/
 Description:  Puts the blog in Thallo's own type and colour. A child of Twenty Twenty-Five, so WordPress keeps handling the parts a blog needs — templates, comments, feeds, updates — and this only changes how it looks. Ships post patterns you can insert from the editor.
 Author:       Thallo Digital
 Template:     twentytwentyfive
-Version:      1.18.0
+Version:      1.26.4
 Requires at least: 6.5
 Tested up to: 6.7
 Requires PHP: 7.4
@@ -680,6 +680,12 @@ body > main,
 .wp-site-blocks > main {
   padding-top: 9rem;
 }
+/* The series pages open at 8rem — the site's pt-32, measured on /results/:
+   the title 128px from the top, where 9rem put it at 144. */
+body > main.thallo-shortlist,
+.wp-site-blocks > main.thallo-shortlist {
+  padding-top: 8rem;
+}
 
 /* Except on a post, where the photograph IS the top of the page: it runs
    full-bleed from under the bar, and any padding above it would show as a
@@ -863,25 +869,17 @@ body.single .wp-site-blocks > main {
   display: block;
   margin-bottom: 3.25rem;
 }
-/* The rule before the eyebrow is drawn rather than typed: a pipe character
-   sits on the baseline and reads as punctuation. */
+/* No rule before the eyebrow, drawn or typed. It carried a 2px olive tick
+   for a while; Cami's rule (2026-09-20) is that the tick never goes, on any
+   page — the label is the label, and the small capitals already set it apart. */
 .thallo-mast__eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  display: block;
   margin: 0 0 1.1rem;
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--wp--preset--color--grey-500);
-}
-.thallo-mast__eyebrow::before {
-  content: '';
-  width: 2px;
-  height: 0.85rem;
-  background: var(--wp--preset--color--olive);
-  border-radius: 2px;
 }
 .thallo-mast__eyebrow a {
   color: inherit;
@@ -1940,9 +1938,16 @@ a.thallo-topic:hover {
   gap: 1.5rem;
   margin-top: var(--hub-gap);
   padding: 2rem 2.25rem;
-  border: 1px solid var(--wp--preset--color--hairline);
+  border: 1px solid var(--wp--preset--color--olive);
   border-radius: 24px;
-  background: var(--hub-ivory);
+  /* The dark olive, white letters: of the two surfaces the series keeps (Cami,
+     2026-09-20 — grey for what informs, olive for what matters) this is the
+     card that asks the reader to do something, so it takes the dark one. It
+     sat on the ivory before, which read to her as the pale green it was not.
+     The disc and the button swap to white on it so the card has one ground
+     and two lights, rather than olive on olive. */
+  background: var(--wp--preset--color--olive);
+  color: #fff;
 }
 .thallo-close__mark {
   display: flex;
@@ -1952,16 +1957,15 @@ a.thallo-topic:hover {
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;
-  background: var(--wp--preset--color--olive);
+  background: #fff;
   overflow: hidden;
 }
 .thallo-close__mark img {
   width: 1.9rem;
   height: 1.9rem;
   object-fit: contain;
-  /* The isotype is dark on transparent; on the olive disc it has to be the
-     other way round, and inverting it is cheaper than shipping a second file. */
-  filter: brightness(0) invert(1);
+  /* The isotype is dark on transparent, which on the white disc is the right
+     way round already. */
 }
 .thallo-close__say {
   flex: 1 1 22rem;
@@ -1973,19 +1977,28 @@ a.thallo-topic:hover {
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.025em;
-  color: var(--wp--preset--color--olive-ink, #171a10);
+  color: #fff;
 }
 .thallo-close__p {
   margin: 0.6rem 0 0;
   max-width: 48ch;
   font-size: 0.88rem;
   line-height: 1.6;
-  color: var(--wp--preset--color--grey-500);
+  color: rgba(255, 255, 255, 0.78);
 }
 .thallo-close__go {
   flex-shrink: 0;
   gap: 0.35rem;
   padding: 0.85rem 1.6rem;
+}
+.thallo-close .thallo-btn--solid {
+  background: #fff;
+  border-color: #fff;
+  color: var(--wp--preset--color--olive);
+}
+.thallo-close .thallo-btn--solid:hover {
+  background: #f3f4f6;
+  border-color: #f3f4f6;
 }
 .thallo-hub .thallo-sub {
   margin-top: 1.5rem;
@@ -2522,6 +2535,23 @@ select:focus-visible,
   --hub-ivory: #fbfbf8;
   --hub-gap: 5rem;
   --cream: #f3e6c1; /* the figure colour on the site's dark panels */
+
+  /* The type scale — five sizes, and every heading and paragraph on the hub
+     and in a volume takes one of them. There were eleven (Cami, 2026-09-21:
+     "una melcocha de tamaños"). The page title; the section heading, which
+     is also the heading of the two dark panels; the card heading, for
+     anything at h3 — a volume card, a note, a firm's reading, the case, the
+     aside; the body; and the label, small capitals. The one line in the
+     serif italic — the question, a quote, the overlap — has its own size,
+     because it is a different voice, not a different rank. */
+  --t-page: clamp(2.25rem, 4vw, 3rem);      /* /results/: text-4xl, sm:text-5xl */
+  --t-section: clamp(1.75rem, 2.8vw, 2.25rem);
+  --t-cta: clamp(2.25rem, 4.5vw, 3.75rem);  /* /results/ closing panel: text-4xl, sm:text-6xl */
+  --t-card: 1.5rem;                          /* /results/ card headline: text-2xl */
+  --t-body: 1rem;                            /* text-base */
+  --t-small: 0.875rem;                       /* text-sm */
+  --t-label: 0.6875rem;                      /* 11px */
+  --t-italic: 1.35rem;
 }
 
 /* ── The entrance ──────────────────────────────────────────────────────────
@@ -2567,189 +2597,554 @@ select:focus-visible,
    bloques se centran entre sí con `margin-inline: auto`. Sin eso, un
    `text-align: center` deja el texto centrado dentro de una caja que sigue
    pegada a la izquierda, que es peor que no centrar nada. */
+/* Measured against /results/ at 1440 (2026-09-21): the title 128px from
+   the top, 16px to the line under it, 40px from that line to the mark, the
+   mark 5rem at 80%, 40px under it, the section's hairline, and 64px to
+   the next block. The same numbers here, so the hub's head is the site's
+   head. */
 .thallo-mast--series {
-  margin-bottom: 3.25rem;
+  margin-bottom: 0;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid #f3f4f6;
   text-align: center;
 }
+.thallo-shortlist .thallo-mast--series + .thallo-run {
+  margin-top: 4rem;
+}
+/* The size /results/ opens at — text-4xl to text-5xl, 2.25 to 3rem — and its
+   emphasis: the last word in olive, upright. It was the serif italic at
+   4.6rem; Cami (2026-09-21): the title was huge, and the italic is not the
+   title's — it is the question's, underneath. */
 .thallo-mast__title--series {
-  max-width: 14ch;
+  max-width: 16ch;
   margin-inline: auto;
-  font-size: clamp(2.8rem, 6vw, 4.6rem);
+  font-size: var(--t-page);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+.thallo-mast__accent {
+  color: var(--wp--preset--color--olive);
 }
 .thallo-series__question {
-  margin: 1.5rem 0 0;
+  margin: 1rem 0 0;
 }
+/* Wider than a column of prose on purpose — 56ch puts the question on two
+   lines and the intro on three, so the panel and the studies start a
+   hundred pixels sooner (Cami, 2026-09-21). The sides were empty. */
 .thallo-series__question .wp-block-post-excerpt__excerpt,
 .thallo-series__question p {
   margin: 0 auto;
-  max-width: 34ch;
+  max-width: 56ch;
   font-family: var(--wp--preset--font-family--serif);
   font-style: italic;
-  font-size: clamp(1.35rem, 2.3vw, 1.75rem);
+  font-size: var(--t-italic);
   line-height: 1.35;
   color: var(--wp--preset--color--grey-900);
 }
-.thallo-series__intro {
-  margin-top: 1.75rem;
+/* The mark under the masthead, turning once every thirty seconds as it does
+   on /results/. At rest for a reader who asked their system for less motion. */
+.thallo-mast__flower {
+  display: block;
+  width: 5rem;
+  height: 5rem;
+  margin: 2.5rem auto 0;
+  opacity: 0.8;
+  cursor: grab;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
 }
+.thallo-mast__flower.is-held {
+  cursor: grabbing;
+}
+/* Once the script has the turn, the keyframe lets go — an animation would
+   override the transform the script writes every frame. */
+.thallo-mast__flower.is-driven img {
+  animation: none;
+}
+.thallo-mast__flower img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+/* The reveal lands every masthead child at opacity 1; the mark stays at
+   the site's 80%. */
+.thallo-mast__flower.thallo-reveal.is-in {
+  opacity: 0.8;
+}
+.thallo-mast__flower img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: thallo-turn 30s linear infinite;
+}
+@keyframes thallo-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .thallo-mast__flower img {
+    animation: none;
+  }
+}
+.thallo-series__intro {
+  margin-top: 1.25rem;
+}
+/* 100ch: two lines at 1280 and up, without running the width of the
+   page — 118 did, and read as a banner (Cami, 2026-09-21). */
 .thallo-series__intro p {
-  max-width: 62ch;
-  margin: 0 auto 0.9rem;
-  font-size: 1rem;
-  line-height: 1.65;
+  max-width: 100ch;
+  margin: 0 auto 0.6rem;
+  font-size: var(--t-body);
+  font-weight: 500;
+  line-height: 1.6;
   color: var(--wp--preset--color--grey-500);
 }
 .thallo-series__intro p:last-child {
   margin-bottom: 0;
 }
 
-/* ── The method ────────────────────────────────────────────────────────────
-   The site's photograph panel: rounded, the picture pinned to its bottom
-   edge, a scrim down the left so the heading clears AA on the lit part of the
-   wall, and the four figures in dark glass cards that lift on hover. Nothing
-   here is new to a reader who has seen /results/. */
-.thallo-method {
+/* ── The tool, run on a category ───────────────────────────────────────────
+   The site's photograph panel — rounded, the picture pinned to its bottom
+   edge, a scrim down the left so the type clears AA on the lit part of the
+   wall — split in two: the four steps of the scan on the left, in the
+   numbered rings the scan itself uses for "1 Your brand · 2 Your questions
+   · 3 Scanning · 4 Report", and the scan's white card on the right, mid-run,
+   as it sits on the photograph at /thallo-ai/scan/. */
+.thallo-run {
   position: relative;
   overflow: hidden;
   border-radius: 28px;
-  padding: clamp(2.25rem, 4vw, 3.5rem) clamp(1.5rem, 4vw, 4rem);
+  padding: clamp(1.75rem, 3vw, 2.5rem) clamp(1.5rem, 3.5vw, 3rem);
   background: #171a10 url('https://thallodigital.com/measured-bg.webp') center 100% / cover no-repeat;
   color: #fff;
 }
-.thallo-method__scrim {
+.thallo-run__scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(23, 26, 16, 0.6), rgba(23, 26, 16, 0.22) 55%, transparent);
+  background: linear-gradient(90deg, rgba(23, 26, 16, 0.72), rgba(23, 26, 16, 0.35) 55%, rgba(23, 26, 16, 0.15));
 }
-.thallo-method__say {
+.thallo-run__grid {
   position: relative;
-  max-width: 34rem;
-  margin-bottom: 2.25rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 29rem);
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: center;
 }
-.thallo-method__h {
+.thallo-run__eyebrow {
   margin: 0 0 0.75rem;
-  font-size: clamp(1.75rem, 3vw, 2.4rem);
+  font-size: var(--t-label);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--olive-soft);
+}
+.thallo-run__h {
+  margin: 0 0 0.75rem;
+  max-width: 18ch;
+  font-size: var(--t-section);
   font-weight: 700;
   line-height: 1.05;
   letter-spacing: -0.03em;
   color: #fff;
 }
-.thallo-method__p {
+.thallo-run__p {
   margin: 0;
   max-width: 48ch;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.85);
+  font-size: var(--t-body);
+  line-height: 1.55;
+  color: var(--wp--preset--color--olive-soft);
 }
-.thallo-method__grid {
-  position: relative;
+
+/* The steps: the scan's own stepper, stood on end. A ring with the number,
+   a rule from one ring to the next, the label and its line. */
+.thallo-steps {
+  list-style: none;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem 1.5rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
 }
-.thallo-method__card {
-  border-radius: 24px;
-  padding: 1.75rem;
-  background: rgba(20, 20, 18, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.28);
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+.thallo-step {
+  display: grid;
+  grid-template-columns: 1.75rem minmax(0, 1fr);
+  gap: 0 0.75rem;
 }
-@media (hover: hover) {
-  .thallo-method__card:hover {
-    transform: translateY(-6px) scale(1.02);
-  }
-}
-.thallo-method__n {
-  margin: 0 0 0.85rem;
-  font-size: 2.6rem;
+.thallo-step__n {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  font-size: 0.72rem;
   font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
-  color: var(--cream);
+  color: #fff;
+  background: rgba(23, 26, 16, 0.5);
 }
-.thallo-method__l {
-  margin: 0 0 0.4rem;
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0;
-  text-transform: none;
+.thallo-step__say {
+  padding-top: 0.15rem;
+  font-size: var(--t-small);
+  line-height: 1.45;
+  color: var(--wp--preset--color--olive-soft);
+}
+.thallo-step__say strong {
+  display: block;
+  margin-bottom: 0.1rem;
+  font-size: var(--t-body);
+  font-weight: 700;
   color: #fff;
 }
-.thallo-method__c {
-  margin: 0;
-  font-size: 0.85rem;
-  line-height: 1.55;
-  color: rgba(255, 255, 255, 0.82);
+/* ── The card ────────────────────────────────────────────────────────────
+   White, 24px corners, the site's card shadow — the shape the site gives a
+   card on a photograph. What is on it is one question of Volume 01 and what
+   came back: the figures are the study's, not a demonstration's, and nothing
+   on it says "scan". */
+.thallo-console {
+  position: relative;
+  padding: 1.15rem 1.35rem 1.1rem;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.5);
+  color: var(--wp--preset--color--grey-900);
 }
-@media (max-width: 1100px) {
-  .thallo-method__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+.thallo-console__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--wp--preset--color--hairline);
+}
+.thallo-console__vol {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--grey-900);
+}
+.thallo-console__vol span {
+  margin-left: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: #9ca3af;
+}
+.thallo-console__tag {
+  flex-shrink: 0;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  background: rgba(57, 71, 29, 0.1);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--olive);
+}
+
+/* The question types itself: a monospaced line whose width steps from nothing
+   to its length, with a caret that blinks until it is done. Sized in ch
+   because that is the unit a typed line has. */
+.thallo-console__q {
+  margin: 0.8rem 0 0;
+}
+.thallo-console__ql {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+.thallo-console__type {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--wp--preset--color--grey-900);
+}
+
+.thallo-console__models {
+  list-style: none;
+  margin: 0.7rem 0 0;
+  padding: 0;
+}
+.thallo-console__model {
+  display: grid;
+  grid-template-columns: 5.6rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.4rem 0;
+  border-top: 1px solid var(--wp--preset--color--hairline);
+}
+.thallo-console__who {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--wp--preset--color--grey-900);
+}
+.thallo-console__who img {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+.thallo-console__named {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.thallo-console__named span {
+  padding: 0.2rem 0.55rem;
+  border-radius: 9999px;
+  background: #f3f4f6;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--wp--preset--color--grey-900);
+  white-space: nowrap;
+}
+.thallo-console__named span:first-child {
+  background: rgba(57, 71, 29, 0.1);
+  color: var(--wp--preset--color--olive);
+}
+
+.thallo-console__list {
+  margin-top: 0.6rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--wp--preset--color--ink);
+}
+.thallo-console__ll {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 0.5rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--olive);
+}
+.thallo-console__ll span {
+  font-family: var(--wp--preset--font-family--mono);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: #9ca3af;
+}
+.thallo-console__rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.thallo-console__rows li {
+  display: grid;
+  grid-template-columns: 9.5rem minmax(0, 1fr) 2.6rem;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.3rem 0;
+  font-size: 0.78rem;
+}
+.thallo-console__rows li > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.thallo-console__rows b {
+  text-align: right;
+  font-weight: 700;
+  color: var(--wp--preset--color--olive);
+  font-variant-numeric: tabular-nums;
+}
+.thallo-console__bar {
+  display: block;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--wp--preset--color--hairline);
+  overflow: hidden;
+}
+.thallo-console__bar i {
+  display: block;
+  height: 100%;
+  width: calc(var(--pct, 0) * 1%);
+  border-radius: 9999px;
+  background: var(--wp--preset--color--olive);
+  transform-origin: left center;
+}
+.thallo-console__foot {
+  margin: 0.7rem 0 0;
+  font-family: var(--wp--preset--font-family--mono);
+  font-size: 0.68rem;
+  color: #9ca3af;
+}
+
+/* ── Its motion ──────────────────────────────────────────────────────────
+   Started by the reveal that lifts the panel (`.is-in`, from
+   assets/shortlist.js), so it plays once, when the reader reaches it, in
+   the order the scan itself works: the question is typed, then the models
+   answer one after another, then the bars fill. Everything ships finished
+   in the markup; only the class starts it, and without the script — or with
+   less motion asked for — the card is simply at rest, complete. */
+.thallo-reveal .thallo-console__type {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: clip;
+  max-width: 0;
+  border-right: 2px solid var(--wp--preset--color--olive);
+}
+.thallo-reveal.is-in .thallo-console__type {
+  animation: thallo-type 1.6s steps(50, end) 0.3s forwards, thallo-caret 0.7s step-end 6 2.2s;
+}
+@keyframes thallo-type {
+  from { max-width: 0; }
+  to { max-width: 100%; }
+}
+@keyframes thallo-caret {
+  50% { border-color: transparent; }
+  to { border-color: transparent; }
+}
+.thallo-reveal .thallo-console__model {
+  opacity: 0;
+  transform: translateY(6px);
+}
+.thallo-reveal.is-in .thallo-console__model {
+  animation: thallo-in 0.5s ease-out forwards;
+  animation-delay: calc(2s + var(--i, 0) * 0.35s);
+}
+@keyframes thallo-in {
+  to { opacity: 1; transform: none; }
+}
+.thallo-reveal .thallo-console__bar i {
+  transform: scaleX(0);
+}
+.thallo-reveal.is-in .thallo-console__bar i {
+  transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(3.2s + var(--i, 0) * 0.12s);
+  transform: scaleX(1);
+}
+.thallo-reveal .thallo-console__rows b {
+  opacity: 0;
+}
+.thallo-reveal.is-in .thallo-console__rows b {
+  transition: opacity 0.4s;
+  transition-delay: calc(3.6s + var(--i, 0) * 0.12s);
+  opacity: 1;
+}
+@media (max-width: 1023.98px) {
+  .thallo-run__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .thallo-run__h {
+    max-width: none;
   }
 }
 @media (max-width: 560px) {
-  .thallo-method__grid {
+  .thallo-run {
+    padding: 1.75rem 1.25rem;
+  }
+  .thallo-steps {
     grid-template-columns: minmax(0, 1fr);
   }
-  .thallo-method__card {
-    padding: 1.4rem;
+  .thallo-console {
+    padding: 1.2rem 1.1rem 1.1rem;
+  }
+  /* No typing on a phone: the line wraps there, and a wrapping line cannot
+     be typed with a width. It arrives whole. */
+  .thallo-reveal .thallo-console__type,
+  .thallo-reveal.is-in .thallo-console__type {
+    max-width: none;
+    white-space: normal;
+    border-right: 0;
+    animation: none;
+  }
+  .thallo-console__rows li {
+    grid-template-columns: 6.5rem minmax(0, 1fr) 2.6rem;
   }
 }
 
 /* ── The volumes ───────────────────────────────────────────────────────────
-   One row each, on hairlines: the number in the serif at the left, the
-   category and its teaser in the middle, the date and the button at the
-   right. A published volume is a link the whole width of the row and lifts
-   on hover, the way every card on the site does; a scheduled one is the
-   same row in grey with "Coming soon" said on it — never implied by the
-   grey alone. */
-.thallo-rule__note {
-  margin: 0 0 0 auto;
-  max-width: 46ch;
-  text-align: right;
-  font-size: 0.82rem;
-  line-height: 1.5;
-  color: var(--wp--preset--color--grey-500);
-}
-.thallo-vols {
-  display: block;
-}
-.thallo-vol {
-  display: grid;
-  grid-template-columns: 5rem minmax(0, 1fr) auto;
-  gap: 1.5rem 2rem;
-  align-items: start;
-  padding: 1.9rem 0;
-  border-top: 1px solid var(--wp--preset--color--hairline);
-  color: inherit;
-  text-decoration: none;
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.thallo-vols {
+   The cards, as /results/ lists its cases — the same shell, the same parts
+   in the same order: the pills, the headline, one figure in olive with its
+   line, the blurb, and the date against the button. Three across, the way
+   the case studies sit; two on a tablet, one on a phone.
+
+   A published volume is a link the whole card and lifts on hover like every
+   card on the site. A scheduled one is a plain box on the grey ground with
+   "Coming soon" said on it and a ghost button that is not a link — never a
+   card that looks clickable and is not. Same edge and shadow as a published
+   one: the ground and the pill carry the difference, not a flatter card. */
+/* 3rem, not the section gap: the panel and the row of studies are one
+   thought — the method, then what it produced — and 5rem read as two
+   (Cami, 2026-09-21). */
+/* The rule under the row — the hairline every section of the site ends on —
+   before the photograph panel. */
+.thallo-cards {
+  margin-top: 2.25rem;
+  padding-bottom: 3rem;
   border-bottom: 1px solid var(--wp--preset--color--hairline);
 }
-.thallo-vols__item {
-  display: block;
+.thallo-cards__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
 }
-.thallo-vol__num {
-  font-family: var(--wp--preset--font-family--serif);
-  font-size: 2.75rem;
-  line-height: 0.9;
-  letter-spacing: -0.02em;
-  color: var(--wp--preset--color--olive);
-  font-variant-numeric: tabular-nums;
-}
-.thallo-vol__say {
-  display: block;
+/* Each card sits in a wrapper of its own, because the shortcode block runs
+   its output through wpautop and an <a> standing free in a grid comes back
+   with a stray <p> beside it — a seventh, empty grid cell. */
+.thallo-cards__item {
+  display: flex;
   min-width: 0;
 }
-.thallo-vol__pills {
+/* The box is a flex row of one, so the card fills the row's height by being
+   stretched rather than by a percentage — `height: 100%` inside a grid item
+   is settled before the row is, and the cards overflowed their rows. */
+.thallo-card {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 0.9rem;
+  flex: 1 1 auto;
+  flex-direction: column;
+  /* Border-box, or the stretch is measured on the content and the 2rem of
+     padding lands outside the row — the cards overflowed into the row below
+     by exactly that much. The theme does not set it globally. */
+  box-sizing: border-box;
+  min-width: 0;
+  /* One height for every card, on every page of the row: 24rem holds the
+     fullest card (a published volume with its figure and line) and the
+     empty ones stand at the same height instead of shrinking when the
+     pager turns (Cami, 2026-09-21). */
+  min-height: 24rem;
+  padding: 2rem;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 6px 20px -8px rgba(23, 26, 16, 0.14);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s, box-shadow 0.3s;
 }
+.thallo-card--soon {
+  background: rgba(249, 250, 251, 0.6);
+}
+@media (hover: hover) {
+  a.thallo-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--wp--preset--color--olive);
+    box-shadow: 0 24px 60px -30px rgba(57, 71, 29, 0.25);
+  }
+  a.thallo-card:hover .thallo-card__go {
+    background: var(--wp--preset--color--olive-mid);
+  }
+}
+a.thallo-card:focus-visible {
+  outline: 2px solid var(--wp--preset--color--olive);
+  outline-offset: 4px;
+}
+/* The pills — the same two the volumes wear on "In the answers" and "On the
+   page", so a reader who has seen one knows the other. */
 .thallo-tag {
   display: inline-flex;
   align-items: center;
@@ -2769,133 +3164,354 @@ select:focus-visible,
   color: #9ca3af;
   background: #f3f4f6;
 }
-.thallo-vol__title {
+.thallo-card__pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.thallo-card__h {
   display: block;
-  font-size: clamp(1.4rem, 2.4vw, 1.9rem);
+  margin-top: 1.25rem;
+  font-size: var(--t-card);
   font-weight: 700;
   line-height: 1.1;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
   color: var(--wp--preset--color--grey-900);
-  transition: color 0.2s;
 }
-.thallo-vol__sr {
+.thallo-card__sr {
   position: absolute;
   width: 1px;
   height: 1px;
   overflow: hidden;
   clip: rect(0 0 0 0);
-  clip-path: inset(50%);
   white-space: nowrap;
 }
-.thallo-vol__teaser {
+/* The figure is the object on a live card: 2.1rem, olive, the site's own
+   number style. It is the finding the volume opens with, read from the study
+   — see thallo_shortlist_finding(). */
+.thallo-card__stat {
   display: block;
-  margin-top: 0.6rem;
-  max-width: 56ch;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: var(--wp--preset--color--grey-500);
-}
-.thallo-vol__meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 1rem;
-  padding-top: 0.35rem;
-  text-align: right;
-}
-.thallo-vol__meta time {
-  font-size: 0.7rem;
+  margin-top: 0.75rem;
+  font-size: 2.1rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  white-space: nowrap;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--wp--preset--color--olive);
+  font-variant-numeric: tabular-nums;
+}
+.thallo-card__label {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: var(--t-small);
+  font-weight: 600;
+  line-height: 1.375;
+  color: var(--wp--preset--color--olive);
+}
+/* On an upcoming card there is no figure, so this line stays small and grey:
+   set at 2rem in olive it would read as a result whatever the words said. */
+.thallo-card__soon {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: var(--t-small);
+  font-weight: 500;
+  color: #9ca3af;
+}
+.thallo-card__p {
+  display: block;
+  margin-top: 1rem;
+  font-size: var(--t-small);
+  font-weight: 500;
+  line-height: 1.625;
   color: var(--wp--preset--color--grey-500);
 }
-.thallo-vol__go {
+.thallo-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
+}
+.thallo-card__date {
+  font-size: var(--t-label);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+.thallo-card__go {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
   border-radius: 9999px;
-  padding: 0.55rem 1.1rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  white-space: nowrap;
   background: var(--wp--preset--color--olive);
+  font-size: 0.875rem;
+  font-weight: 600;
   color: #fff;
+  white-space: nowrap;
   transition: background-color 0.2s;
 }
-.thallo-vol__go--soon {
-  background: transparent;
+.thallo-card__go--soon {
   border: 1px solid var(--wp--preset--color--hairline);
+  background: none;
   color: #9ca3af;
 }
-@media (hover: hover) {
-  a.thallo-vol:hover {
-    transform: translateY(-3px);
-  }
-  a.thallo-vol:hover .thallo-vol__title {
-    color: var(--wp--preset--color--olive);
-  }
-  a.thallo-vol:hover .thallo-vol__go {
-    background: var(--wp--preset--color--olive-mid);
-  }
-}
-a.thallo-vol:focus-visible {
-  outline: 2px solid var(--wp--preset--color--olive);
-  outline-offset: 6px;
-  border-radius: 4px;
-}
-.thallo-vol--soon .thallo-vol__num {
-  color: #d1d5db;
-}
-.thallo-vol--soon .thallo-vol__title {
+.thallo-card--soon .thallo-card__h {
   color: #9ca3af;
 }
-.thallo-vol--soon .thallo-vol__teaser,
-.thallo-vol--soon .thallo-vol__meta time {
+.thallo-card--soon .thallo-card__p {
   color: #9ca3af;
 }
-.thallo-vols__empty {
-  margin: 0;
+.thallo-cards__empty {
+  margin: var(--hub-gap) 0 0;
   padding: 2rem 0;
   border-top: 1px solid var(--wp--preset--color--hairline);
   border-bottom: 1px solid var(--wp--preset--color--hairline);
   max-width: 56ch;
   color: var(--wp--preset--color--grey-500);
 }
-@media (max-width: 760px) {
-  .thallo-rule--tight {
-    flex-wrap: wrap;
+
+/* The filter, above the list it governs: pills rather than a select, so
+   every option is visible at a glance. The pressed one is olive; the rest
+   are white on a hairline and lift a little on hover, as on /results/. */
+.thallo-filter {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.625rem;
+  margin-bottom: 1.25rem;
+}
+.thallo-filter__pill {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 9999px;
+  background: #fff;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--wp--preset--color--grey-500);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.thallo-filter__pill:hover {
+  color: var(--wp--preset--color--olive);
+  border-color: var(--wp--preset--color--olive);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px -12px rgba(57, 71, 29, 0.35);
+}
+.thallo-filter__pill.is-on {
+  background: var(--wp--preset--color--olive);
+  border-color: var(--wp--preset--color--olive);
+  color: #fff;
+  transform: none;
+  box-shadow: none;
+}
+.thallo-filter__pill:focus-visible {
+  outline: 2px solid var(--wp--preset--color--olive);
+  outline-offset: 3px;
+}
+.thallo-cards__item.is-off {
+  display: none;
+}
+
+/* The pager under the row: an arrow, the page numbers, an arrow — round
+   buttons in the filter's own language, the current page in olive, the
+   arrows dimmed when there is nowhere to go. Drawn by the script from what
+   is on the page; the nav is empty without it, and takes no room. */
+.thallo-pager {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.75rem;
+}
+.thallo-pager:empty {
+  display: none;
+}
+.thallo-pager__n,
+.thallo-pager__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 50%;
+  background: #fff;
+  font: inherit;
+  font-size: var(--t-small);
+  font-weight: 600;
+  color: var(--wp--preset--color--grey-500);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+}
+.thallo-pager__n:hover,
+.thallo-pager__arrow:hover:not([disabled]) {
+  color: var(--wp--preset--color--olive);
+  border-color: var(--wp--preset--color--olive);
+}
+.thallo-pager__n.is-on {
+  background: var(--wp--preset--color--olive);
+  border-color: var(--wp--preset--color--olive);
+  color: #fff;
+}
+.thallo-pager__arrow[disabled] {
+  color: #d1d5db;
+  cursor: default;
+}
+.thallo-pager__n:focus-visible,
+.thallo-pager__arrow:focus-visible {
+  outline: 2px solid var(--wp--preset--color--olive);
+  outline-offset: 3px;
+}
+@media (max-width: 1023.98px) {
+  .thallo-cards__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .thallo-rule__note {
-    flex-basis: 100%;
-    margin: 0.4rem 0 0;
-    max-width: none;
-    text-align: left;
+}
+@media (max-width: 639.98px) {
+  .thallo-cards__grid {
+    grid-template-columns: minmax(0, 1fr);
   }
-  .thallo-vol {
-    grid-template-columns: 3.25rem minmax(0, 1fr);
-    gap: 1rem 1.1rem;
-    padding: 1.5rem 0;
-  }
-  .thallo-vol__num {
-    font-size: 2rem;
-  }
-  .thallo-vol__meta {
-    grid-column: 2;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.75rem 1rem;
-    align-items: center;
-    justify-content: space-between;
-    padding-top: 0;
-    text-align: left;
+  .thallo-card {
+    padding: 1.6rem;
   }
 }
 
-/* The list and the invitation sit at the section rhythm on both pages. */
+/* ── The closing panel ─────────────────────────────────────────────────────
+   The photograph panel every page of the site ends on — /results/ says
+   "Start with the evidence." on it — with the scan as the first button and
+   the audit as the second. The scrim holds the white type down over the lit
+   wood on the side the copy sits on. The buttons are the panel's own: white
+   solid, and a white ghost; not the theme's olive ones, which would vanish
+   into the photograph. */
+.thallo-panel {
+  position: relative;
+  overflow: hidden;
+  margin-top: 3rem;
+  padding: clamp(2.5rem, 5vw, 3.5rem) clamp(2rem, 5vw, 4rem);
+  border-radius: 28px;
+  background: #171a10;
+  color: #fff;
+}
+.thallo-panel__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+}
+.thallo-panel__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(23, 26, 16, 0.55), rgba(23, 26, 16, 0.2) 50%, transparent);
+}
+/* The text on the left, the two buttons on the right at the text's middle
+   — where the site's panel keeps its form (Cami, 2026-09-21). Under 1024
+   the buttons drop below the text. */
+.thallo-panel__say {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 0 clamp(2rem, 5vw, 5rem);
+}
+.thallo-panel__say > .thallo-panel__h,
+.thallo-panel__say > .thallo-panel__p {
+  grid-column: 1;
+}
+.thallo-panel__h {
+  margin: 0 0 2rem;
+  max-width: 18ch;
+  font-size: var(--t-cta);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: #fff;
+}
+.thallo-panel__p {
+  margin: 0;
+  max-width: 44ch;
+  font-size: clamp(1rem, 1.4vw, 1.125rem);
+  font-weight: 500;
+  line-height: 1.625;
+  color: var(--wp--preset--color--olive-soft);
+}
+.thallo-panel__go {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+  margin-top: 0;
+  min-width: 13rem;
+}
+.thallo-panel__go .thallo-panel__btn {
+  justify-content: center;
+}
+@media (max-width: 1023.98px) {
+  .thallo-panel__say {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .thallo-panel__go {
+    grid-column: 1;
+    grid-row: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+    min-width: 0;
+  }
+}
+.thallo-panel__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.875rem 1.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s, background-color 0.2s;
+}
+.thallo-panel__btn--solid {
+  background: #fff;
+  color: var(--wp--preset--color--olive);
+}
+.thallo-panel__btn--solid:hover {
+  color: var(--wp--preset--color--ink);
+}
+.thallo-panel__btn--ghost {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+.thallo-panel__btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+@media (max-width: 639.98px) {
+  .thallo-panel__btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* The list sits at the section rhythm on the hub, where it follows the
+   volumes. In a volume it follows the invitation — two cards, one after the
+   other — and a card's distance from a card is 1.5rem, the hub's own number
+   for the same pair; 5rem between them read as two sections (Cami,
+   2026-09-20). */
 .thallo-shortlist .thallo-sub--series {
   margin-top: var(--hub-gap);
+}
+.thallo-volume .thallo-close--volume + .thallo-sub--series {
+  margin-top: 1.5rem;
 }
 .thallo-shortlist .thallo-sub--series + .thallo-close {
   margin-top: 1.5rem;
@@ -2908,19 +3524,111 @@ a.thallo-vol:focus-visible {
 /* ── A volume ──────────────────────────────────────────────────────────────
    A document: it opens at the reading measure, left-aligned, and the study
    follows in one column. Only the two ranking tables are allowed out to the
-   wide measure — five columns of figures do not fit in 52rem. */
+   wide measure — five columns of figures do not fit in the reading column.
+
+   The measure is 50rem — a step wider than the blog's 44, because Cami read
+   Volume 01 and asked for a little more room at the sides (not the full
+   width). One variable, so the template's contentSize and every max-width in
+   the study say the same number. */
+.thallo-volume {
+  --volume-measure: 50rem;
+  /* The wide measure: 80rem. The site’s 1440 left the text of a section
+     in the left third with nothing beside it; 72rem boxed the page. */
+  --volume-wide: 80rem;
+}
+/* Both measures are centred boxes with left-aligned text, so the head, the
+   study and the wide tables all hang from the same two verticals — the study
+   is a constrained block and centres itself; without `margin-inline: auto`
+   the head sat flush left while the paragraphs under it did not, and the two
+   read as misaligned even though each was "left". */
+/* The wide measure is the site's container — 1440px, or 90vw between 1024
+   and 1700 — the width /results/ lays its cards across. It was 72rem, and
+   on a wide screen the study sat in a box with a hand's width of nothing
+   either side and read as left-aligned (Cami, 2026-09-21). The reading
+   column stays 50rem, centred inside it. */
+.thallo-volume > .thallo-volume__back,
 .thallo-volume > .thallo-volume__head,
-.thallo-volume > .thallo-next {
-  max-width: 44rem;
-}
 .thallo-volume > .thallo-close,
-.thallo-volume > .thallo-sub {
-  max-width: 72rem;
+.thallo-volume > .thallo-sub,
+.thallo-volume > .thallo-panel,
+.thallo-volume > .thallo-end,
+.thallo-volume > .thallo-next,
+.thallo-volume > .thallo-volume__body {
+  max-width: min(var(--volume-wide), 90vw);
+  margin-inline: auto;
 }
+/* The study's wide track is capped at 90vw between 1024 and 1700 by the
+   archive rule at the foot of this file; these three have to stop at the same
+   line or they hang 6px past the tables above them. */
+
+/* The question is centred on the hub, where the masthead is a cover. In a
+   volume the head is left-aligned, so the same `margin: auto` left the
+   question floating a hand's width in from the title's edge — the two lines
+   have to start on the same vertical. */
+.thallo-volume__head .thallo-series__question .wp-block-post-excerpt__excerpt,
+.thallo-volume__head .thallo-series__question p {
+  margin-inline: 0;
+  max-width: 38ch;
+}
+/* Two columns, ending on the same line: the title and the question on the
+   left, the photograph on the right — the way every study in Cami’s
+   reference opens (2026-09-21). `align-items: end` is what makes the two
+   columns finish together; without it the picture floats to the top of a
+   taller text column. */
 .thallo-volume__head {
-  padding-bottom: 2.75rem;
-  margin-bottom: 3rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 34rem);
+  gap: 2rem 3.5rem;
+  align-items: end;
+  padding-bottom: 2.5rem;
+  margin-bottom: 2.5rem;
   border-bottom: 1px solid var(--wp--preset--color--hairline);
+}
+.thallo-volume__art {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 4 / 3;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #171a10;
+}
+.thallo-volume__art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* The chip in the corner: the scope of the study, said once, where the eye
+   lands first. White on the photograph, with the site’s card shadow. */
+.thallo-volume__chip {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.45);
+  font-size: 0.74rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--wp--preset--color--grey-900);
+}
+.thallo-volume__chip-l {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+@media (max-width: 1023.98px) {
+  .thallo-volume__head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .thallo-volume__art {
+    aspect-ratio: 16 / 9;
+  }
 }
 .thallo-volume__back {
   margin: 0 0 2rem;
@@ -2940,7 +3648,7 @@ a.thallo-vol:focus-visible {
 }
 .thallo-volume__title {
   max-width: 16ch;
-  font-size: clamp(2.5rem, 5.2vw, 3.8rem);
+  font-size: var(--t-page);
 }
 
 /* The rhythm of the study: a hairline and a full section's worth of air
@@ -2969,28 +3677,51 @@ a.thallo-vol:focus-visible {
   margin-top: 2rem;
   margin-bottom: 0.75rem;
 }
+/* The study is a grid of one reading column, centred, with a wide track on
+   either side: every block starts on the column's left edge, and the two
+   tables marked wide take all three tracks. WordPress's constrained layout
+   would instead centre each block on its own — so a 56ch lede sat a hand's
+   width in from a 50rem paragraph and the page read as misaligned even
+   though every block was "left". Its auto margins come with !important, hence
+   the !important here: this is the one place the theme has to shout over the
+   core stylesheet, and only at the two inline margins. */
+.thallo-volume__body .wp-block-post-content {
+  display: grid;
+  grid-template-columns: [wide-start] 1fr [content-start] minmax(0, var(--volume-measure)) [content-end] 1fr [wide-end];
+}
+.thallo-volume__body .wp-block-post-content > * {
+  grid-column: content;
+  min-width: 0;
+  margin-inline: 0 !important;
+}
+.thallo-volume__body .wp-block-post-content > .alignwide {
+  grid-column: wide;
+}
 .thallo-volume__body .wp-block-post-content > p,
 .thallo-volume__body .wp-block-post-content > .thallo-finding__p {
-  max-width: 44rem;
+  max-width: var(--volume-measure);
 }
 .thallo-volume__body .wp-block-post-content > :is(h2, h3, h4) + p {
   margin-top: 0;
 }
 
 /* ── The finding ───────────────────────────────────────────────────────────
-   One number, as large as the page allows, and two sentences. Set in Inter
-   rather than the serif because that is how every figure on the site is set
-   — the serif is for words, and this is a measurement. */
+   One number, as large as the page allows, and two sentences. In the serif,
+   because that is the face the site keeps for its large figures — The Shift's
+   45% and 69%, the hub's 12 · 3 · 3 · 108, the split by question type below.
+   It opened in Inter; the one large figure on the page not in the serif was
+   the odd one out. */
 .thallo-finding {
   padding-bottom: 2.5rem;
   /* No rule of its own: the h2 that follows draws it. */
 }
 .thallo-finding__stat {
   margin: 0 0 1.25rem !important;
+  font-family: var(--wp--preset--font-family--serif);
   font-size: clamp(4.25rem, 10vw, 7.5rem);
-  font-weight: 700;
+  font-weight: 400;
   line-height: 0.9;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
 .thallo-finding__p {
@@ -3095,7 +3826,7 @@ a.thallo-vol:focus-visible {
   flex: 1 1 auto;
   height: 6px;
   border-radius: 9999px;
-  background: var(--wp--preset--color--olive-tint);
+  background: var(--wp--preset--color--hairline);
   overflow: hidden;
 }
 .thallo-rate__fill {
@@ -3128,7 +3859,7 @@ a.thallo-vol:focus-visible {
 .thallo-rank figcaption {
   padding: 0.85rem 1.75rem 0.95rem;
   border-top: 1px solid var(--wp--preset--color--hairline);
-  background: var(--wp--preset--color--paper);
+  background: #f9fafb;
 }
 @media (max-width: 720px) {
   .thallo-rank__pos,
@@ -3251,7 +3982,7 @@ a.thallo-vol:focus-visible {
 }
 .thallo-surface {
   --surface: var(--wp--preset--color--olive);
-  --surface-soft: var(--wp--preset--color--olive-tint);
+  --surface-soft: var(--wp--preset--color--hairline);
 }
 .thallo-surface--google {
   --surface: #6b7280;
@@ -3310,8 +4041,8 @@ a.thallo-vol:focus-visible {
   color: var(--wp--preset--color--grey-500);
 }
 .thallo-surface .thallo-rank__firm {
-  font-family: var(--wp--preset--font-family--serif);
-  font-size: 1.12rem;
+  font-size: 1rem;
+  font-weight: 600;
   line-height: 1.25;
   color: var(--wp--preset--color--grey-900);
 }
@@ -3335,13 +4066,17 @@ a.thallo-vol:focus-visible {
   display: none;
 }
 
-/* The line under the two columns, where the comparison is actually made. */
+/* The line under the two columns, where the comparison is actually made — in
+   the serif italic, the register the site keeps for the one sentence of a
+   section a reader should leave with (the question under the title, the
+   closing note). Upright it was a third face; italic it is the same one. */
 .thallo-overlap {
   margin-top: 1.75rem;
   padding-top: 1.25rem;
   border-top: 1px solid var(--wp--preset--color--ink);
   font-family: var(--wp--preset--font-family--serif);
-  font-size: 1.2rem;
+  font-style: italic;
+  font-size: var(--t-italic);
   line-height: 1.45;
   color: var(--wp--preset--color--grey-900);
 }
@@ -3362,33 +4097,45 @@ a.thallo-vol:focus-visible {
 
    It is a plain table block, like every other table in a volume. `thallo-models`
    keeps it out of `thallo_shortlist_rank_table()`, which would otherwise draw a
-   bar in any column headed with a word like "rate". */
+   bar in any column headed with a word like "rate".
+
+   The header row is olive with white letters and the note under the table is
+   on plain grey — the two surfaces Cami keeps for the series (2026-09-20): the
+   pale green is gone, and what is not important sits on grey, what is sits on
+   the dark olive. The 1.5rem at the sides is the panel's own: the first cut of
+   this table zeroed it and "Firm" touched the border. */
 .thallo-models table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
 }
+.thallo-models thead {
+  background: var(--wp--preset--color--olive);
+}
 .thallo-models th {
-  padding: 0 0.6rem 0.65rem 0;
-  border-bottom: 1px solid var(--wp--preset--color--ink);
+  padding: 0.9rem 1.5rem;
+  border-bottom: 0;
   font-family: var(--wp--preset--font-family--sans);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   text-align: left;
-  color: var(--wp--preset--color--grey-500);
+  color: #fff;
+  background: var(--wp--preset--color--olive);
 }
 .thallo-models td {
-  padding: 0.8rem 0.6rem 0.8rem 0;
+  padding: 0.95rem 1.5rem;
   border-bottom: 1px solid var(--wp--preset--color--hairline);
   font-variant-numeric: tabular-nums;
   color: var(--wp--preset--color--grey-900);
 }
 .thallo-models td:first-child {
-  font-family: var(--wp--preset--font-family--serif);
-  font-size: 1.08rem;
+  font-weight: 600;
   font-variant-numeric: normal;
+}
+.thallo-models tbody tr:last-child td {
+  border-bottom: 0;
 }
 .thallo-models th:not(:first-child),
 .thallo-models td:not(:first-child) {
@@ -3396,7 +4143,9 @@ a.thallo-vol:focus-visible {
 }
 .thallo-models figcaption {
   margin: 0;
-  padding-top: 0.75rem;
+  padding: 0.85rem 1.5rem 0.95rem;
+  border-top: 1px solid var(--wp--preset--color--hairline);
+  background: #f9fafb;
   font-family: var(--wp--preset--font-family--mono);
   font-size: 0.74rem;
   color: var(--wp--preset--color--grey-500);
@@ -3416,9 +4165,9 @@ a.thallo-vol:focus-visible {
 }
 .thallo-both h3 {
   margin: 0 0 0.6rem;
-  font-family: var(--wp--preset--font-family--serif);
-  font-size: 1.3rem;
-  font-weight: 400;
+  font-size: var(--t-card);
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 .thallo-both p {
   margin: 0 0 0.6rem;
@@ -3440,7 +4189,7 @@ a.thallo-vol:focus-visible {
   margin: 1.75rem 0 0.75rem;
 }
 .thallo-catgrid > div {
-  border-top: 2px solid var(--wp--preset--color--olive-soft);
+  border-top: 2px solid var(--wp--preset--color--olive);
   padding-top: 0.7rem;
 }
 .thallo-catgrid .thallo-cat__n {
@@ -3489,7 +4238,7 @@ a.thallo-vol:focus-visible {
   position: relative;
   height: 8px;
   border-radius: 9999px;
-  background: var(--wp--preset--color--olive-tint);
+  background: var(--wp--preset--color--hairline);
   overflow: hidden;
 }
 .thallo-mix .thallo-mix__fill {
@@ -3560,20 +4309,27 @@ a.thallo-vol:focus-visible {
 
 /* ══ The case ═══════════════════════════════════════════════════════════════
 
-   One firm, read at length. On the tint rather than on white, so it reads as a
-   held-up example and not as another section, and with the caveat fenced off at
-   the bottom — the paragraph that says what this is not a claim about. */
+   One firm, read at length. On the dark olive with white letters — the
+   site's contrast card — so it reads as the held-up example and not as another
+   section, with the caveat fenced off at the bottom: the paragraph that says
+   what this is not a claim about. It was on the pale tint; the tint is gone
+   from the series (see the per-model table), and of the two surfaces left this
+   is the one that matters, so it takes the dark one. Every colour inside is
+   white at some opacity: 100 for what is read, 72 for what is said around it,
+   and the labels in olive-soft, the palette's light green on its dark one. */
 .thallo-case {
   margin-top: 1.75rem;
   padding: clamp(1.5rem, 3vw, 2.5rem);
   border-radius: 18px;
-  background: var(--wp--preset--color--olive-tint);
+  background: var(--wp--preset--color--olive);
+  color: #fff;
 }
 .thallo-case h3 {
   margin: 0 0 0.75rem;
-  font-family: var(--wp--preset--font-family--serif);
-  font-size: 1.45rem;
-  font-weight: 400;
+  font-size: var(--t-card);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #fff;
 }
 .thallo-case h4 {
   margin: 1.4rem 0 0.5rem;
@@ -3581,7 +4337,11 @@ a.thallo-vol:focus-visible {
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--wp--preset--color--olive);
+  color: var(--wp--preset--color--olive-soft);
+}
+.thallo-case p,
+.thallo-case li {
+  color: rgba(255, 255, 255, 0.86);
 }
 .thallo-case ul {
   margin: 0;
@@ -3593,10 +4353,10 @@ a.thallo-vol:focus-visible {
 .thallo-case .thallo-case__caveat {
   margin: 1.5rem 0 0;
   padding-top: 1.1rem;
-  border-top: 1px solid rgba(57, 71, 29, 0.18);
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
   font-size: 0.9rem;
   line-height: 1.6;
-  color: var(--wp--preset--color--grey-500);
+  color: rgba(255, 255, 255, 0.72);
 }
 
 /* ══ The aside ══════════════════════════════════════════════════════════════
@@ -3615,17 +4375,17 @@ a.thallo-vol:focus-visible {
 }
 .thallo-aside__eyebrow {
   margin: 0 0 0.5rem;
-  font-family: var(--wp--preset--font-family--mono);
   font-size: 0.68rem;
-  letter-spacing: 0.1em;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--wp--preset--color--grey-500);
 }
 .thallo-aside h3 {
   margin: 0 0 0.6rem;
-  font-family: var(--wp--preset--font-family--serif);
-  font-size: 1.25rem;
-  font-weight: 400;
+  font-size: var(--t-card);
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 .thallo-aside p {
   margin: 0 0 0.6rem;
@@ -3639,7 +4399,14 @@ a.thallo-vol:focus-visible {
 /* ══ The lede ═══════════════════════════════════════════════════════════════
    The two paragraphs that open a volume, a step up from body copy and a step
    down from the question in the masthead. */
+/* On the wide track, like the head above it and the sections under it:
+   the reading column would leave it a hand's width in from both. */
+.thallo-volume__body .wp-block-post-content > .thallo-colophon {
+  grid-column: wide;
+  max-width: none;
+}
 .thallo-volume__body .wp-block-post-content > .thallo-lede {
+  grid-column: wide;
   font-size: 1.15rem;
   line-height: 1.6;
   color: var(--wp--preset--color--grey-500);
@@ -3653,10 +4420,10 @@ a.thallo-vol:focus-visible {
   margin-top: 2.25rem;
   padding-top: 1.5rem;
   border-top: 1px solid var(--wp--preset--color--hairline);
-  max-width: 44rem;
+  max-width: var(--volume-measure);
   font-family: var(--wp--preset--font-family--serif);
   font-style: italic;
-  font-size: 1.35rem;
+  font-size: var(--t-italic);
   line-height: 1.4;
   color: var(--wp--preset--color--grey-900);
 }
@@ -3665,7 +4432,7 @@ a.thallo-vol:focus-visible {
 .thallo-questions {
   margin: 0;
   padding-left: 2.25em;
-  max-width: 44rem;
+  max-width: var(--volume-measure);
 }
 .thallo-questions li {
   margin: 0 0 0.6rem;
@@ -3679,7 +4446,10 @@ a.thallo-vol:focus-visible {
 }
 
 /* ── The colophon ──────────────────────────────────────────────────────────
-   On paper, so it reads as the note at the end and not as another section.
+   On plain grey — it informs, it does not argue — so it reads as the note at
+   the end and not as another section. It was on paper, the site's ivory,
+   which Cami read as a pale green next to the white; grey is the surface the
+   series keeps for what is not the point.
    The two-column table is the method — a definition list the editor can
    write into — and the paragraph under it is the honesty clause every volume
    carries. */
@@ -3688,7 +4458,7 @@ a.thallo-vol:focus-visible {
   padding: 1.75rem 2rem 1.9rem;
   border: 1px solid var(--wp--preset--color--hairline);
   border-radius: 20px;
-  background: var(--wp--preset--color--paper);
+  background: #f9fafb;
 }
 .thallo-colophon > h4 {
   margin: 0 0 0.75rem;
@@ -3733,10 +4503,711 @@ a.thallo-vol:focus-visible {
   }
 }
 
+/* ══ The study, in sections ═══════════════════════════════════════════════
+
+   Cami’s reference (2026-09-21) reads as a run of sections, each with a
+   small label over its heading, its text, and its material laid out in two
+   columns with a photograph or a card at the side, on alternating grey
+   bands. The content file writes each section as a `thallo-sec` group at
+   the wide measure — see content/ai-shortlist/*.html — and these rules give
+   the groups their shape. Nothing here reaches into a volume written the
+   old way: a plain h2 with paragraphs under it still gets the rules above. */
+.thallo-sec {
+  margin-top: 3.5rem;
+}
+.thallo-sec--band {
+  padding: clamp(1.75rem, 3vw, 2.75rem) clamp(1.5rem, 3vw, 3rem);
+  border-radius: 28px;
+  background: #f9fafb;
+}
+.thallo-kicker {
+  margin: 0 0 0.6rem;
+  font-size: var(--t-label);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-sec > h2 {
+  margin: 0 0 0.75rem;
+  max-width: 24ch;
+  font-size: var(--t-section);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.thallo-sec > p {
+  max-width: 60ch;
+  margin: 0 0 1.5rem;
+}
+.thallo-sec > p:last-child {
+  margin-bottom: 0;
+}
+
+/* The grids: main and side; three across for the finding; a pair. */
+.thallo-sec__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 21rem);
+  gap: 2rem 3rem;
+  align-items: start;
+}
+.thallo-sec__three {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr) minmax(0, 17rem);
+  gap: 2rem 2.5rem;
+  align-items: center;
+}
+/* Stretch, not start: the two cards of a pair stand the same height
+   whatever they hold (Cami, 2026-09-21). */
+.thallo-sec__pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem 2.5rem;
+  align-items: stretch;
+}
+/* WordPress gives every block after another its block gap as a top margin,
+   grid or not — so the second column of a pair started 1.5rem under the
+   first. The grids own the spacing between their cells. */
+.thallo-sec__grid > *,
+.thallo-sec__three > *,
+.thallo-sec__pair > * {
+  margin-top: 0 !important;
+}
+.thallo-sec__main > p,
+.thallo-sec__say > p {
+  max-width: none;
+}
+.thallo-sec__main > :first-child,
+.thallo-sec__say > :first-child {
+  margin-top: 0;
+}
+
+/* The finding, in its column: the h2 at the left already carries the
+   sentence, so the figure is smaller than it was alone on the page, and the
+   line under it says what it counts. */
+.thallo-sec .thallo-finding {
+  padding-bottom: 0;
+}
+.thallo-sec .thallo-finding__stat {
+  margin: 0 0 0.6rem !important;
+  font-size: clamp(3.25rem, 5.5vw, 4.75rem);
+}
+.thallo-finding__l {
+  margin: 0;
+  max-width: 24ch;
+  font-size: var(--t-small);
+  line-height: 1.5;
+  color: var(--wp--preset--color--grey-500);
+}
+/* !important against the block's own has-large-font-size, which core sets
+   with one — the finding reads at the body size like every other paragraph. */
+.thallo-sec .thallo-finding__p {
+  font-size: var(--t-body) !important;
+}
+
+/* The photograph at the side: the site’s own pictures, in a rounded
+   frame, taller than wide so it stands beside a column of text. */
+.thallo-photo {
+  margin: 0;
+  aspect-ratio: 4 / 5;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #171a10;
+}
+.thallo-sec__three .thallo-photo {
+  aspect-ratio: 1;
+}
+.thallo-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The note card and the quote card. Grey on white, white on the band. */
+.thallo-note,
+.thallo-quote {
+  padding: 1.6rem 1.75rem;
+  border-radius: 20px;
+  background: #f3f4f6;
+}
+.thallo-sec--band .thallo-note,
+.thallo-sec--band .thallo-quote {
+  background: #fff;
+  border: 1px solid var(--wp--preset--color--hairline);
+}
+.thallo-note h3 {
+  margin: 0 0 0.6rem;
+  font-size: var(--t-card);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--wp--preset--color--grey-900);
+}
+.thallo-note p {
+  margin: 0;
+  font-size: var(--t-small);
+  line-height: 1.6;
+  line-height: 1.6;
+  color: var(--wp--preset--color--grey-500);
+}
+/* The one line to leave the section with: the serif italic, as the
+   question under the title. */
+.thallo-quote p {
+  margin: 0;
+  font-family: var(--wp--preset--font-family--serif);
+  font-style: italic;
+  font-size: var(--t-italic);
+  line-height: 1.4;
+  color: var(--wp--preset--color--grey-900);
+}
+
+/* The two readings side by side, each in its own frame. */
+.thallo-sec__pair .thallo-both,
+.thallo-sec__pair .thallo-both:first-of-type {
+  padding: 1.5rem 1.6rem;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 20px;
+}
+
+/* The four figures as cards, two by two, beside the photograph. */
+.thallo-sec__main .thallo-catgrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0.25rem 0 0.75rem;
+}
+.thallo-sec__main .thallo-catgrid > div {
+  padding: 1.25rem 1.35rem;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-top: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 16px;
+  background: #fff;
+}
+.thallo-sec .thallo-cutoff {
+  margin-bottom: 1.25rem;
+}
+
+/* The bars and the domains in the band: on white cards there, so they
+   keep an edge against the grey. */
+.thallo-sec--band .thallo-mix,
+.thallo-sec--band .thallo-domains {
+  margin-top: 0;
+  padding: 0.25rem 1.5rem;
+  border: 1px solid var(--wp--preset--color--hairline);
+  border-radius: 16px;
+  background: #fff;
+}
+.thallo-sec--band .thallo-mix li:last-child,
+.thallo-sec--band .thallo-domains li:last-child {
+  border-bottom: 0;
+}
+.thallo-sec__main .thallo-mix + p,
+.thallo-sec__main .thallo-domains + p {
+  margin-top: 1.25rem;
+}
+.thallo-sec__main p + .thallo-domains {
+  margin-top: 1rem;
+}
+
+/* Edge to edge. The text of a section runs the section's width — the bars,
+   the domains, the case's lines, the aside — instead of stopping at a
+   reading measure with the right half of the page empty (Cami,
+   2026-09-21). The theme's 68ch cap on paragraphs is lifted inside a
+   section for the same reason. Only the finding's two columns keep a
+   measure, because there the figure fills the other half. */
+.thallo-sec p,
+.thallo-sec ul,
+.thallo-sec ol,
+.thallo-sec > .thallo-mix,
+.thallo-sec > .thallo-domains,
+.thallo-volume .thallo-sec > p,
+.thallo-volume .thallo-case .thallo-case__caveat,
+.thallo-volume .thallo-colophon__honesty {
+  max-width: none;
+}
+.thallo-volume .thallo-sec > h2 {
+  max-width: 32ch;
+}
+.thallo-sec__two .thallo-sec__say > p {
+  max-width: 58ch;
+}
+.thallo-sec > .thallo-mix + p,
+.thallo-sec > .thallo-domains + p {
+  margin-top: 1.25rem;
+}
+.thallo-sec > p + .thallo-domains {
+  margin-top: 1rem;
+}
+
+/* The questions, two columns of two groups. */
+.thallo-qcol h4 {
+  margin: 1.5rem 0 0.75rem;
+}
+.thallo-qcol > h4:first-child {
+  margin-top: 0;
+}
+.thallo-qcol .thallo-questions {
+  max-width: none;
+}
+
+/* The case and the aside stay as they are, only closer to their heading. */
+.thallo-sec .thallo-case {
+  margin-top: 0.5rem;
+}
+.thallo-sec .thallo-aside {
+  margin: 1.5rem 0 0;
+}
+.thallo-sec .thallo-overlap {
+  max-width: 60ch;
+}
+
+@media (max-width: 1023.98px) {
+  .thallo-sec__grid,
+  .thallo-sec__three,
+  .thallo-sec__pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .thallo-sec__three .thallo-photo,
+  .thallo-photo {
+    aspect-ratio: 16 / 9;
+  }
+  .thallo-sec__grid .thallo-sec__side {
+    order: -1;
+  }
+  .thallo-sec__grid .thallo-sec__side .thallo-photo {
+    display: none;
+  }
+}
+@media (max-width: 639.98px) {
+  .thallo-sec--band {
+    padding: 1.5rem 1.25rem;
+  }
+  /* Four columns of figures do not fit 327px; the panel scrolls sideways
+     rather than cutting the Gemini column off behind its rounded edge. */
+  .thallo-models {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .thallo-models table {
+    min-width: 26rem;
+  }
+  .thallo-models th,
+  .thallo-models td {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* ══ The study, in the site’s own hand ═════════════════════════════════
+
+   The structure is the reference’s; the type, the colours and the pieces
+   are Thallo’s — Inter at the scale every page of the site uses, the
+   house grey for the bands, the site’s buttons and marks. Cami
+   (2026-09-21, third look): "como todas las demás páginas de Thallo, pero
+   siguiendo la estructura". A pass in the serif was tried and rejected. */
+.thallo-volume {
+  --band: #f7f8f9;   /* the house tint, the grey every tinted section of the site carries */
+  --ring: rgba(23, 26, 16, 0.18);
+}
+.thallo-volume .thallo-sec {
+  margin-top: 4rem;
+}
+.thallo-volume .thallo-sec--band {
+  background: var(--band);
+  padding: clamp(2rem, 3.5vw, 3rem) clamp(1.75rem, 3.5vw, 3.25rem);
+}
+.thallo-volume .thallo-note,
+.thallo-volume .thallo-quote {
+  background: var(--band);
+}
+.thallo-volume .thallo-sec--band .thallo-note,
+.thallo-volume .thallo-sec--band .thallo-quote {
+  background: #fff;
+  border: 1px solid var(--wp--preset--color--hairline);
+}
+.thallo-volume .thallo-sec > .thallo-overlap {
+  font-size: var(--t-italic);
+}
+/* The measure of the text under a heading: wide enough not to leave half
+   the column empty, narrow enough to read. One number everywhere. */
+.thallo-volume .thallo-sec > h2 {
+  max-width: 32ch;
+}
+
+/* ── The head, as the reference opens ──
+   Two equal columns: the text on the left, the photograph on the right
+   standing exactly the height of the text — the kicker’s top line is the
+   picture’s top edge, the button’s bottom is its bottom edge. The way
+   back sits above the grid so it does not push the picture up past the
+   title. */
+.thallo-volume__head {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem clamp(2rem, 4vw, 4rem);
+  align-items: stretch;
+}
+.thallo-volume > .thallo-volume__back {
+  margin-bottom: 1.5rem;
+}
+.thallo-volume__text {
+  display: flex;
+  flex-direction: column;
+}
+.thallo-volume__text .thallo-volume__title {
+  max-width: 14ch;
+}
+.thallo-volume__text .thallo-series__question .wp-block-post-excerpt__excerpt,
+.thallo-volume__text .thallo-series__question p {
+  max-width: 44ch;
+}
+.thallo-volume__lede {
+  margin-top: 1.5rem;
+}
+.thallo-volume__lede p {
+  max-width: 64ch;
+  margin: 0 0 0.9rem;
+  font-size: var(--t-body);
+  line-height: 1.65;
+  color: var(--wp--preset--color--grey-500);
+}
+.thallo-volume__go {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: auto;
+  padding: 0.8rem 1.4rem;
+  border-radius: 9999px;
+  background: var(--wp--preset--color--olive);
+  font-size: var(--t-small);
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+.thallo-volume__lede + .thallo-volume__go {
+  margin-top: 1.75rem;
+}
+.thallo-volume__go:hover {
+  background: var(--wp--preset--color--olive-mid);
+}
+/* The lede stays in the content, where the writer put it, and shows once. */
+.thallo-volume__body .wp-block-post-content > .thallo-lede {
+  display: none;
+}
+/* A fixed frame, not the column's height — stretched to the column it
+   grew with every line of text (Cami, 2026-09-21: "quedó muy grande"). As
+   wide as its column and 16:15 tall, the proportion the boardroom picture
+   had when it read right, hanging from the bottom of the text so it ends
+   on the button. The photograph is cropped to it from a little above
+   centre, so the desk and the plant both stay. */
+.thallo-volume__art {
+  aspect-ratio: 16 / 15;
+  height: auto;
+  min-height: 0;
+  align-self: end;
+}
+.thallo-volume__art img {
+  object-position: 50% 45%;
+}
+/* The reference’s handwritten aside, in our italic, off the picture’s
+   top-right corner. */
+.thallo-volume__note {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.92);
+  font-family: var(--wp--preset--font-family--serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--wp--preset--color--grey-900);
+}
+/* The card at the picture’s foot: an icon in a ring, two lines, an arrow. */
+.thallo-volume__chip {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  padding: 0.7rem 0.9rem 0.7rem 0.7rem;
+  border-radius: 16px;
+  text-decoration: none;
+  color: var(--wp--preset--color--grey-900);
+  transition: transform 0.2s;
+}
+.thallo-volume__chip:hover {
+  transform: translateY(-2px);
+}
+.thallo-volume__chip-i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border: 1px solid var(--ring);
+  border-radius: 50%;
+  color: var(--wp--preset--color--olive);
+}
+.thallo-volume__chip-t {
+  font-size: var(--t-small);
+  font-weight: 600;
+}
+.thallo-volume__chip-a {
+  display: inline-flex;
+  margin-left: 0.25rem;
+  color: var(--wp--preset--color--grey-500);
+}
+
+/* ── The grids line up ──
+   A photograph at the side stands the full height of what it sits beside;
+   a card at the side hangs from the top. The three-across finding starts
+   every column on the same line. */
+.thallo-sec__grid,
+.thallo-sec__three {
+  align-items: stretch;
+}
+.thallo-sec__grid .thallo-sec__side .thallo-note,
+.thallo-sec__grid .thallo-sec__side .thallo-quote {
+  align-self: start;
+}
+.thallo-sec__side {
+  display: flex;
+  flex-direction: column;
+}
+.thallo-sec__side .thallo-photo {
+  flex: 1 1 auto;
+  aspect-ratio: auto;
+  min-height: 16rem;
+}
+.thallo-sec__three .thallo-photo {
+  aspect-ratio: auto;
+  min-height: 14rem;
+}
+.thallo-sec__three .thallo-sec__say,
+.thallo-sec__three .thallo-finding {
+  align-self: start;
+}
+/* The figure column keeps the rule the reference draws between the text
+   and the number. */
+.thallo-sec__three .thallo-finding {
+  padding-left: 2.5rem;
+  border-left: 1px solid var(--wp--preset--color--hairline);
+}
+
+/* ── The finding, two columns ──
+   As the reference sets it: the label, the heading and the text on the
+   left; the figure on the right, past a rule, its top on the heading's
+   line. No photograph — the number is the picture. */
+.thallo-sec__two {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 2rem clamp(2.5rem, 5vw, 5rem);
+  align-items: start;
+}
+.thallo-sec__two > * {
+  margin-top: 0 !important;
+}
+.thallo-sec__two .thallo-sec__say > h2 {
+  margin: 0 0 1rem;
+  max-width: 22ch;
+  font-size: var(--t-section);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+.thallo-sec__two .thallo-sec__say > p {
+  max-width: 58ch;
+}
+.thallo-sec__two .thallo-finding__l {
+  max-width: 30ch;
+}
+/* The figure sits at the vertical centre of the text beside it; the rule
+   still runs the column's full height (Cami, 2026-09-21). */
+.thallo-sec__two .thallo-finding {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: clamp(2rem, 4vw, 3.5rem);
+  border-left: 1px solid var(--wp--preset--color--hairline);
+  align-self: stretch;
+}
+@media (max-width: 1023.98px) {
+  .thallo-sec__two {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .thallo-sec__two .thallo-finding {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+/* ── The stage ──
+   A photograph as the ground of exactly the table and the card beside it —
+   from where the table starts to where it ends, no further (Cami,
+   2026-09-21). The site's dark panel: the picture pinned behind, a scrim
+   so the cards keep an edge, the two cards white on it. The paragraphs
+   that follow go back on white. */
+.thallo-stage {
+  position: relative;
+  overflow: hidden;
+  margin: 1.75rem 0 2rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: 24px;
+  background: #171a10;
+}
+.thallo-stage__bg {
+  position: absolute;
+  inset: 0;
+  margin: 0 !important;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+.thallo-stage__bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.thallo-stage__bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(23, 26, 16, 0.55), rgba(23, 26, 16, 0.3));
+}
+.thallo-stage > .thallo-sec__grid {
+  position: relative;
+  margin-top: 0 !important;
+  align-items: center;
+}
+.thallo-stage .thallo-sec__side {
+  justify-content: center;
+}
+/* The dark glass — the cards floating on the photograph panel of
+   /results/, the site's signature move: near-black at 72% with a white/8
+   edge, the photograph blurred behind, white type. The Engine's lighter
+   glass was tried first and the text sank into the picture (Cami,
+   2026-09-21). */
+.thallo-stage .thallo-rank,
+.thallo-stage .thallo-note {
+  margin: 0;
+  /* Halfway between the Engine's 8% white and the results panel's 72%
+     black: the picture still reads through, the type still sits on
+     something (Cami, 2026-09-21, third try). */
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(20, 20, 18, 0.42);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.22);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  color: #fff;
+}
+.thallo-stage .thallo-note {
+  align-self: auto;
+}
+/* The mark on the card is the isotype, white — the flower, not the two
+   rings, on the dark glass. Inverted from the dark-on-transparent file. */
+.thallo-volume .thallo-stage .thallo-note::before {
+  border: 0;
+  width: 2rem;
+  height: 2rem;
+  background: url("https://thallodigital.com/flower.webp") center / contain no-repeat;
+  filter: brightness(0) invert(1);
+}
+.thallo-stage .thallo-note h3 {
+  color: #fff;
+}
+.thallo-stage .thallo-note p {
+  color: rgba(255, 255, 255, 0.7);
+}
+.thallo-stage .thallo-models thead,
+.thallo-stage .thallo-models th {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.thallo-stage .thallo-models td {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+.thallo-stage .thallo-models td:first-child {
+  color: #fff;
+}
+.thallo-stage .thallo-models figcaption {
+  border-top-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.6);
+}
+.thallo-stage .thallo-rank tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+/* The paragraphs under the stage take its width — the reading measure
+   left them on the left with the panel's width above them empty. */
+.thallo-sec > .thallo-stage + p {
+  margin-top: 0;
+}
+.thallo-sec > .thallo-stage ~ p {
+  max-width: none;
+}
+
+/* ── Marks in rings ── the reference points with an arrow in a thin ring;
+   the note card wears two rings. */
+.thallo-volume .thallo-finding__l::after {
+  content: '';
+  display: block;
+  width: 2rem;
+  height: 2rem;
+  margin-top: 1rem;
+  border: 1px solid var(--ring);
+  border-radius: 50%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2339471D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center / 0.9rem no-repeat;
+}
+.thallo-volume .thallo-note::before {
+  content: '';
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-bottom: 1.1rem;
+  border: 1px solid var(--ring);
+  border-radius: 50%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2339471D' stroke-width='1.6'%3E%3Ccircle cx='9' cy='12' r='5'/%3E%3Ccircle cx='15' cy='12' r='5'/%3E%3C/svg%3E") center / 1.2rem no-repeat;
+}
+
+/* ── The photograph strip ── */
+.thallo-photo--strip {
+  aspect-ratio: 16 / 5;
+  margin-top: 2rem;
+  border-radius: 20px;
+}
+@media (max-width: 1023.98px) {
+  .thallo-photo--strip {
+    aspect-ratio: 16 / 7;
+  }
+  .thallo-sec__side .thallo-photo,
+  .thallo-sec__three .thallo-photo {
+    aspect-ratio: 16 / 9;
+    min-height: 0;
+  }
+  .thallo-sec__three .thallo-finding {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+.thallo-volume .thallo-surface__h {
+  font-size: var(--t-small);
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--wp--preset--color--grey-900);
+}
+.thallo-volume .thallo-sec__main .thallo-catgrid > div {
+  background: #fff;
+}
+
 /* ── What comes next ─────────────────────────────────────────────────────── */
 .thallo-next {
-  margin-top: 2.5rem;
-  padding-top: 1.75rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
   border-top: 1px solid var(--wp--preset--color--hairline);
 }
 .thallo-next p {
@@ -3748,8 +5219,18 @@ a.thallo-vol:focus-visible {
 .thallo-next a {
   color: var(--wp--preset--color--olive);
 }
-.thallo-volume .thallo-close--volume {
+.thallo-volume .thallo-close--volume,
+.thallo-volume .thallo-panel--volume {
   margin-top: 3.5rem;
+}
+/* The floor of a volume, as on the hub: the "next volume" line is the last
+   thing on the page and the footer used to sit 138px under it — the main's
+   padding and the footer's margin stacked. One ordinary section distance. */
+body.thallo-shortlist-volume .thallo-volume.thallo-archive {
+  padding-bottom: 2.5rem;
+}
+body.thallo-shortlist-volume .thallo-foot {
+  margin-top: 0;
 }
 
 /* Al final del archivo a propósito: la regla que fija el ancho de la barra

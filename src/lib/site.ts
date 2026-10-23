@@ -49,21 +49,22 @@ export const BLOG_URL = `${SITE_URL}/blog/`;
  * The AI Shortlist — the hub, and every volume under it. WordPress again, and
  * absolute for the same reason BLOG_URL is.
  *
- * ## Why this says /blog/ when the series is meant to live at the root
+ * ## Why this says /ai-shortlist/ when WordPress is installed in /blog/
  *
  * It has two addresses. WordPress is installed in /blog/, so the hub answers
  * at /blog/ai-shortlist/ always. It *also* answers at /ai-shortlist/ — the
- * address Camila asked for, beside /services/ and /results/ — but only once
- * the rewrite in `deploy/ai-shortlist.htaccess` is pasted into the root
- * .htaccess by hand. That has not happened yet.
+ * address Camila asked for, beside /services/ and /results/ — because the
+ * rewrite in `deploy/ai-shortlist.htaccess` is now in the root .htaccess
+ * (pasted by hand, 2026-09-22).
  *
- * The theme handles this on its own: it reads the .htaccess, and every link it
- * prints — the breadcrumb, the hub's list, the canonical, the sitemap — moves
- * to the root the moment the rule is there. This constant cannot, because it
- * is baked into a static build that never sees that file.
+ * The theme handles its own links: it reads the .htaccess, and everything it
+ * prints — the breadcrumb, the hub's list, the canonical, the sitemap — moved
+ * to the root the moment the rule went in. This constant cannot, because it is
+ * baked into a static build that never sees that file; it is the one place on
+ * this side that names the series, so it is edited by hand to match.
  *
- * So it points at the address that works today. When the rule goes in, change
- * the line below to `${SITE_URL}/ai-shortlist/` and rebuild — one edit, and it
- * is the only place on this side that names the series.
+ * If the rule is ever taken out, both addresses still render — the theme keeps
+ * WordPress from redirecting one to the other — but put this back to
+ * `${SITE_URL}/blog/ai-shortlist/` and rebuild, or the navbar 404s.
  */
-export const RESEARCH_URL = `${SITE_URL}/blog/ai-shortlist/`;
+export const RESEARCH_URL = `${SITE_URL}/ai-shortlist/`;

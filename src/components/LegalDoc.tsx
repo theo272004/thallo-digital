@@ -77,9 +77,10 @@ export function List({ items }: { items: React.ReactNode[] }) {
 /**
  * Who you are contracting with.
  *
- * The registered name, tax id and address print only once they exist in
- * `lib/legal.ts` — an empty line is preferable to an invented one, and the
- * trading name plus a monitored inbox is a complete contact route on its own.
+ * Every registration line is copied from the filings into `lib/legal.ts` and
+ * prints only while it has a value there — an empty line is preferable to an
+ * invented one, and the trading name plus a monitored inbox is a complete
+ * contact route on its own.
  */
 function Identity() {
   const rows: Array<[string, React.ReactNode]> = [
@@ -87,8 +88,10 @@ function Identity() {
   ];
 
   if (LEGAL.legalName) rows.unshift(['Registered name', LEGAL.legalName]);
-  if (LEGAL.taxId) rows.push(['NIT', LEGAL.taxId]);
-  if (LEGAL.address) rows.push(['Registered address', LEGAL.address]);
+  if (LEGAL.entity) rows.push(['Entity', LEGAL.entity]);
+  if (LEGAL.stateFilingId) rows.push(['Wyoming filing ID', LEGAL.stateFilingId]);
+  if (LEGAL.taxId) rows.push(['EIN', LEGAL.taxId]);
+  if (LEGAL.address) rows.push(['Registered office', LEGAL.address]);
   rows.push([
     'Email',
     <a key="e" href={`mailto:${LEGAL.email}`} className="underline underline-offset-2 hover:text-[#39471D]">

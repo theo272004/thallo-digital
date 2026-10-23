@@ -153,8 +153,8 @@ export default function RefundPolicyPage() {
               proposal sets different refund terms, the proposal prevails.
             </P>
             <P>
-              Nothing here removes any right you have under the consumer protection law of {LEGAL.country} where it
-              applies to you.
+              Nothing here removes any right you have under the consumer protection law of the country you live in,
+              where it applies to you.
             </P>
           </Clause>
         </LegalDoc>

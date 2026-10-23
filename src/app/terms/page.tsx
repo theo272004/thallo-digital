@@ -29,9 +29,10 @@ export default function TermsPage() {
         >
           <Clause n={1} heading="These terms">
             <P>
-              These terms are an agreement between you (the &ldquo;Client&rdquo;) and {LEGAL.tradingName} (&ldquo;Thallo&rdquo;,
-              &ldquo;we&rdquo;, &ldquo;us&rdquo;), whose details are set out at the foot of this page. They apply to every
-              engagement we accept and to your use of this website and the free visibility scan.
+              These terms are an agreement between you (the &ldquo;Client&rdquo;) and {LEGAL.legalName}, a {LEGAL.entity}{' '}
+              trading as {LEGAL.tradingName}{' '}(&ldquo;Thallo&rdquo;, &ldquo;we&rdquo;, &ldquo;us&rdquo;), whose details
+              are set out at the foot of this page. They apply to every engagement we accept and to your use of this
+              website and the free visibility scan.
             </P>
             <P>
               Where we sign a separate proposal, statement of work or service agreement with you, that document governs
@@ -88,7 +89,7 @@ export default function TermsPage() {
                 'One-time engagements (audits and projects) are invoiced in advance unless the proposal sets out a different schedule.',
                 'Monthly programmes are invoiced monthly in advance. The first invoice is due before work begins.',
                 'Invoices are payable within the period stated on the invoice. We may suspend work on any account that is overdue, having given you notice first.',
-                'Prices are exclusive of VAT (IVA) and any other applicable taxes, withholdings or bank charges, which are added where the law requires it.',
+                'Prices are exclusive of sales tax, VAT and any other applicable taxes, withholdings or bank charges, which are added where the law requires it.',
                 'Card payments are processed by our payment provider, Stripe. We do not receive or store your full card details; they are handled by the provider under its own terms and security standards.',
               ]}
             />
@@ -199,7 +200,8 @@ export default function TermsPage() {
                 Privacy Policy
               </a>
               . Where we process personal data on your behalf as part of an engagement, we do so on your documented
-              instructions and in line with Colombian Law 1581 of 2012 and its implementing decrees.
+              instructions and in line with the data protection law that applies to it, including Colombia&rsquo;s Law 1581
+              of 2012 and its implementing decrees where they apply.
             </P>
           </Clause>
 
@@ -213,8 +215,9 @@ export default function TermsPage() {
 
           <Clause n={14} heading="Governing law">
             <P>
-              These terms are governed by the laws of the Republic of {LEGAL.country}. Any dispute that cannot be
-              resolved between us in good faith will be submitted to the competent courts of {LEGAL.country}.
+              These terms are governed by the laws of {LEGAL.governingLaw}, without regard to its conflict-of-laws
+              rules. Any dispute that cannot be resolved between us in good faith will be submitted to the competent
+              courts of that state.
             </P>
             <P>
               Questions about these terms can be sent to{' '}

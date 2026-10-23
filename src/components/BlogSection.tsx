@@ -3,42 +3,37 @@
 import React from 'react';
 import { SplitReveal } from '@/components/motion';
 
+/* Real clients, real words. These six used to be invented — six plausible
+   names with plausible titles at plausible companies, which is a fabricated
+   endorsement on the page that asks for trust. What is here now is what three
+   clients actually said, quoted as they wrote it. Nothing is added: no company
+   names, because they were not given, and a role with an invented employer
+   beside it is the same lie the invented names were.
+
+   Three, not six. The carousel repeats the list to fill the track, so a
+   shorter list scrolls the same — it just says it honestly. When a fourth
+   review comes in, add it here and nothing else changes. */
 const REVIEWS = [
   {
-    quote: 'Within a quarter, we were the name coming up in ChatGPT for our category. Sales stopped having to explain who we were.',
-    name: 'Dana Mercer',
-    role: 'VP Marketing, Ledgerly',
-    initials: 'DM',
+    quote:
+      "We went with Thallo for an audit and to be honest we weren't really sure what to expect because there are so many AI generated audits out there now that have no professional input, but that wasn't the case here. The recommendations were excellent and we definitely want to keep working with them.",
+    name: 'Andres S',
+    role: 'General Manager',
+    initials: 'AS',
   },
   {
-    quote: "They didn't just publish more. They made the accurate version of our story the one the market and the AI actually find.",
-    name: 'Raj Kapoor',
-    role: 'Founder, Vireo Health',
-    initials: 'RK',
+    quote:
+      'I like that they have a clear process for bringing SEO, content, and brand positioning together, so nothing feels disconnected like it has with other agencies we’ve worked with. They’re also very communicative, easy to work with, and they deliver on what they say.',
+    name: 'Oscar S',
+    role: 'Head of Marketing',
+    initials: 'OS',
   },
   {
-    quote: 'The audit alone paid for itself. We finally saw exactly where we were invisible and why competitors were winning.',
-    name: 'Elena Castro',
-    role: 'CEO, Calderon & Co',
-    initials: 'EC',
-  },
-  {
-    quote: "Authority that compounds is real. Every month our content works harder, and it's not something a competitor can copy overnight.",
-    name: 'Tom Nguyen',
-    role: 'Head of Growth, Northwind',
-    initials: 'TN',
-  },
-  {
-    quote: 'We went from invisible to cited across three AI platforms in two months. The methodology is unlike anything we had tried before.',
-    name: 'Priya Okafor',
-    role: 'CMO, Meridian SaaS',
-    initials: 'PO',
-  },
-  {
-    quote: 'Our buyers kept referencing content that cited us. Thallo turned our expertise into the thing everyone in the room already knows.',
-    name: 'James Wu',
-    role: 'Co-Founder, Arcline Medical',
-    initials: 'JW',
+    quote:
+      'We used to publish content without much of a strategy. Sometimes it worked, sometimes it didn’t. Once we decided to take organic growth more seriously and started working with Thallo, things became much more consistent. We’ve seen steady growth and we’re getting organic leads through the site. We’ve been really happy with the results.',
+    name: 'John B',
+    role: 'Co-Founder',
+    initials: 'JB',
   },
 ];
 
@@ -46,10 +41,28 @@ const REVIEWS = [
 // Cards are phase-shifted evenly so they form a continuous wave.
 const FLOAT_S    = 5;    // seconds per up→down→up cycle
 const FLOAT_PX   = 14;   // amplitude in px
-const N          = REVIEWS.length; // 6 — even, so the seam of the duplicate track stays in phase
+const N          = REVIEWS.length;
+
+/* The track is the list repeated, and the scroll loops by sliding it exactly
+   half its width — so the half has to be wider than the widest screen, or the
+   loop runs out of cards and leaves a gap on the right before it snaps back.
+   With six reviews two copies were enough by accident; with three they are
+   not. This counts the copies instead of assuming them: `HALF` cards per half
+   at 320px each (300 wide, 20 of gap) clears a 2560px display, and the number
+   corrects itself if the list grows again. */
+const CARD_PITCH = 320;
+const HALF       = Math.max(2, Math.ceil(2600 / (N * CARD_PITCH)));
+
+/* Speed, not duration. A fixed 44s was a duration for one particular track
+   width; now that the width is computed, the same number would mean the cards
+   drift past faster every time the list changes length. 44px a second is what
+   44s over the old track worked out to, and it is what the section is tuned
+   to read at. */
+const SCROLL_S   = Math.round((N * HALF * CARD_PITCH) / 44);
 
 export default function BlogSection() {
-  const track = [...REVIEWS, ...REVIEWS];
+  const half  = Array.from({ length: HALF }, () => REVIEWS).flat();
+  const track = [...half, ...half];
 
   return (
     <section className="bg-white py-20 2xl:py-24 border-b border-gray-100 overflow-hidden" id="reviews">
@@ -63,7 +76,7 @@ export default function BlogSection() {
           50%       { transform: translateY(${FLOAT_PX}px); }
         }
         .review-track {
-          animation: review-scroll 44s linear infinite;
+          animation: review-scroll ${SCROLL_S}s linear infinite;
           will-change: transform;
         }
       `}</style>
@@ -92,13 +105,22 @@ export default function BlogSection() {
         />
 
         {/* Scrolling track — py-5 gives room for the float amplitude */}
-        <div className="review-track flex gap-5 py-5 w-max items-center">
+        {/* items-stretch, not items-center: these quotes are real and so they
+            are different lengths, and a row of cards each ending wherever its
+            own text does reads as a layout accident. Equal height, text top,
+            attribution pinned to the bottom. */}
+        <div className="review-track flex gap-5 py-5 w-max items-stretch">
           {track.map((r, i) => {
             // Distribute phase evenly across N cards; negative delay = pre-run the animation
             const delay = -((i % N) * FLOAT_S / N).toFixed(3);
             return (
               <div
                 key={i}
+                /* Only the first copy of each quote is read out. The rest
+                   exist so the loop never shows a gap; to a screen reader, or
+                   to an agent reading the accessibility tree, they are the same
+                   three testimonials said again and again. */
+                aria-hidden={i >= N || undefined}
                 className="w-[300px] flex-shrink-0 bg-white border border-gray-200 rounded-3xl p-8 flex flex-col gap-5 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)]"
                 style={{
                   animation: `card-float ${FLOAT_S}s ease-in-out infinite`,
@@ -121,7 +143,7 @@ export default function BlogSection() {
 
                 {/* Author */}
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-[#39471D]/10 flex items-center justify-center flex-shrink-0">
+                  <div aria-hidden className="w-8 h-8 rounded-full bg-[#39471D]/10 flex items-center justify-center flex-shrink-0">
                     <span className="text-[11px] font-bold text-[#39471D]">{r.initials}</span>
                   </div>
                   <div>

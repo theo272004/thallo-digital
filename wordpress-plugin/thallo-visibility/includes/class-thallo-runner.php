@@ -56,7 +56,7 @@ class Thallo_Vis_Runner {
 	 *                        against it. Empty for a scheduled re-run, which
 	 *                        has no browser and no allowance.
 	 */
-	public static function start( $brand, $domain, $industry, $market = Thallo_Vis_Questions::DEFAULT_MARKET, $source = 'visitor', array $prompts = array(), $email = '', $session = '' ) {
+	public static function start( $brand, $domain, $industry, $market = Thallo_Vis_Questions::DEFAULT_MARKET, $source = 'visitor', array $prompts = array(), $email = '', $session = '', $account_id = 0 ) {
 		$count = (int) Thallo_Vis_Settings::get( 'questions', 15 );
 
 		/* Written by the visitor when the setup screen sent them; the generated
@@ -147,7 +147,7 @@ class Thallo_Vis_Runner {
 		   unlock. They are what the free allowance is counted against, and a
 		   scan that was abandoned halfway used to leave a row with neither on it
 		   — so it cost us three model calls and counted against nobody. */
-		if ( ! Thallo_Vis_DB::create( $scan_id, $brand, $domain, $industry, $state, $email, $session ) ) {
+		if ( ! Thallo_Vis_DB::create( $scan_id, $brand, $domain, $industry, $state, $email, $session, $account_id ) ) {
 			return new WP_Error( 'scan_not_created', __( 'The scan could not be started. Please try again.', 'thallo-visibility' ), array( 'status' => 500 ) );
 		}
 

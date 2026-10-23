@@ -30,6 +30,10 @@ const SOURCES = {
     'src/components/ScannerStripe.tsx',
     'src/components/HomeFaq.tsx',
     'src/components/Testimonials.tsx',
+    // The review carousel, despite the file name. Back on the home page since
+    // the quotes on it became real ones, and missing from this list while it
+    // was off — so a change to the testimonials would not have moved the date.
+    'src/components/BlogSection.tsx',
     'src/components/CTASection.tsx',
   ],
   about: ['src/app/about/page.tsx', 'src/components/AboutLanding.tsx', 'src/lib/team.ts'],

@@ -119,38 +119,27 @@ export function demoPhase1(input: ScanInput): ScanPhase1 {
 }
 
 /**
- * Each failed signal maps to the action that fixes it. Titles are written as
- * instructions — a signal label describes the healthy state, which reads
- * backwards once it is the thing that failed. The plugin holds the same table;
- * this copy only ever renders behind the demo banner.
+ * The plan's copy, for sample runs.
+ *
+ * It was keyed on technical signals — one remedy per failed check, robots.txt
+ * through FAQ schema — and every one of those keys is now unreachable: the
+ * technical crawl is gone and `signals` is empty, so nothing ever looked them
+ * up. What is left is the three the live plan actually produces, keyed by what
+ * the scan found rather than by which check failed.
+ *
+ * The plugin's `Thallo_Vis_Analysis::remedies()` is the authoritative copy;
+ * this one only ever renders behind the demo banner.
  */
 const REMEDY: Record<string, { title: string; detail: string }> = {
-  'ai-crawlers': {
-    title: 'Unblock the AI crawlers in robots.txt',
+  sources: {
+    title: 'Get named on the websites the models read for this category',
     detail:
-      'Your robots.txt is blocking the crawlers these models use to read the web. Nothing else on this list matters until it is unblocked.',
-  },
-  schema: {
-    title: 'Add Organization schema markup',
-    detail:
-      'Structured data lets models resolve who you are, what you sell and where, instead of inferring it from prose.',
-  },
-  about: {
-    title: 'Put named, credentialed humans on the About page',
-    detail: 'Anonymous companies are hard for a model to vouch for. Real names with real credentials are the fix.',
-  },
-  blog: {
-    title: 'Publish on the questions buyers actually ask',
-    detail: 'A site with nothing recent gives retrieval nothing current to pull, however good the older pages are.',
-  },
-  faq: {
-    title: 'Mark up your FAQ with structured data',
-    detail: 'Marked-up answers can be lifted into a response directly rather than paraphrased away or skipped.',
+      'The models opened a handful of pages before answering and you were not on any of them. This is the shortest route between the two figures at the top of the report.',
   },
   citations: {
     title: 'Earn citations on third-party authority sites',
     detail:
-      'Get named in the roundups and category listicles these models retrieve. This is the highest-leverage signal on the list.',
+      'Get named in the roundups and category listicles these models retrieve. This is the highest-leverage signal there is.',
   },
   default: {
     title: 'Deepen category coverage',
@@ -275,39 +264,30 @@ export function demoPhase2(phase1: ScanPhase1): ScanPhase2 {
     }))
     .sort((a, b) => b.mentions - a.mentions);
 
-  const checks: Omit<TechSignal, 'earned'>[] = [
-    {
-      id: 'ai-crawlers',
-      label: 'AI crawlers allowed in robots.txt',
-      status: rand() > 0.4 ? 'pass' : 'fail',
-      weight: 25,
-      note: 'GPTBot, ClaudeBot, PerplexityBot, Google-Extended',
-    },
-    { id: 'https', label: 'HTTPS enabled', status: 'pass', weight: 5 },
-    { id: 'schema', label: 'Organization schema markup', status: rand() > 0.5 ? 'pass' : 'fail', weight: 15 },
-    { id: 'about', label: 'About page with named people', status: rand() > 0.5 ? 'pass' : 'warn', weight: 10 },
-    { id: 'blog', label: 'Content published in the last 6 months', status: rand() > 0.45 ? 'pass' : 'fail', weight: 10 },
-    { id: 'faq', label: 'Structured FAQ schema', status: rand() > 0.6 ? 'pass' : 'fail', weight: 10 },
-    { id: 'citations', label: 'Cited on third-party authority sites', status: rand() > 0.55 ? 'pass' : 'fail', weight: 25 },
-    {
-      id: 'llms-txt',
-      label: 'llms.txt file',
-      status: 'warn',
-      weight: 0,
-      note: 'Not scored. No major AI system is known to read it, so its absence costs nothing.',
-    },
-  ];
+  /* No technical signals, because the scan no longer runs a technical check.
+     The crawl that graded robots.txt, schema, freshness and citations was
+     dropped — a technical audit of a website is a different product from a
+     report on what the models say — and the live backend ships `signals` as an
+     empty array. This sample data went on inventing eight of them, which is
+     the reason the empty panels in the report went unnoticed for so long:
+     preview mode drew a full technical scorecard, and only a scan against the
+     real API showed the section rendering as a 0 / 0 chip over nothing.
 
-  const signals: TechSignal[] = checks.map((s) => ({
-    ...s,
-    earned: s.status === 'pass' ? s.weight : s.status === 'warn' ? Math.round(s.weight / 2) : 0,
-  }));
+     Sample data whose shape differs from the live shape is worse than no
+     sample data. It is the version every walkthrough is recorded against. */
+  const signals: TechSignal[] = [];
+  const techScore = 0;
 
-  const techScore = signals.reduce((sum, s) => sum + s.earned, 0);
-  /* −1 renders as a dash. Nothing was retrieved, so there is no reading to
-     give — and the grade below averages only the parts that were measured. */
+  /* -1 renders as a dash. Nothing was retrieved, so there is no reading to
+     give - and the grade below is taken from what was measured. */
   const serpScore = -1;
-  const combined = Math.round((phase1.sovPct + techScore) / 2);
+
+  /* The memory reading alone. It used to be averaged with `techScore`, which
+     handed a demo brand half its grade for a website check that no longer
+     happens; with the check gone that average would have quietly halved every
+     sample grade instead. The backend grades on the readings, and so does
+     this. */
+  const combined = phase1.sovPct;
 
   /* A sample series, so the trend chart can be shown before any brand has a
      real second run. It is invented in exactly the way every other number on
@@ -327,10 +307,15 @@ export function demoPhase2(phase1: ScanPhase1): ScanPhase2 {
     };
   });
 
-  const gaps = [...signals].filter((s) => s.weight > 0 && s.status !== 'pass').sort((a, b) => b.weight - a.weight);
-  const remedyFor = (i: number) => (gaps[i] ? REMEDY[gaps[i].id] ?? REMEDY.default : null);
   const named = phase1.providers.filter((p) => p.mentions > 0);
   const absent = phase1.providers.filter((p) => p.mentions === 0);
+
+  /* Built once, because the plan is now derived from it rather than from a
+     technical checklist — the same order `Thallo_Vis_Analysis::actions()`
+     works in: the sources the models actually opened, then the gap between
+     the two readings, then the entity. */
+  const sources = demoSources(phase1);
+  const missing = sources.filter((h) => !h.own && !h.brand).map((h) => h.host);
 
   return {
     history,
@@ -355,7 +340,7 @@ export function demoPhase2(phase1: ScanPhase1): ScanPhase2 {
     techScore,
     serpScore,
     grounded: demoGrounded(phase1),
-    sources: demoSources(phase1),
+    sources,
     grade: gradeFor(combined),
     keyInsight:
       absent.length === 0
@@ -363,19 +348,30 @@ export function demoPhase2(phase1: ScanPhase1): ScanPhase2 {
         : named.length === 0
           ? `No model tested named ${phase1.brand} in any of the ${phase1.totalAnswers} answers. The brand is not an established entity in this category — that is a content and citation problem, not a website problem.`
           : `${phase1.brand} is recognised by some models but absent from others. Uneven coverage usually means citations exist but are concentrated in too few sources.`,
+    /* These used to be remedies for failed technical checks — add Organization
+       schema, mark up your FAQ — which was the wrong prescription on a report
+       about what the models say, and is now impossible anyway: the checks are
+       gone. They are built from the sources instead, which is both what the
+       live backend does and the more useful answer, because it names actual
+       websites rather than a category of work. */
     actions: [
-      { ...(remedyFor(0) ?? REMEDY.default), impact: 4, priority: 'high' },
-      {
-        ...(remedyFor(1) ?? (gaps[0]?.id === 'citations' ? REMEDY.default : REMEDY.citations)),
-        impact: 4,
-        priority: 'high',
-      },
+      missing.length > 0
+        ? {
+            ...REMEDY.sources,
+            detail: `These are the pages the models opened before answering, and you are not on any of them: ${missing
+              .slice(0, 4)
+              .join(', ')}. The models cannot recommend what the sources they read do not mention.`,
+            impact: 4 as const,
+            priority: 'high' as const,
+          }
+        : { ...REMEDY.citations, impact: 4 as const, priority: 'high' as const },
+      { ...REMEDY.default, impact: 4 as const, priority: 'high' as const },
       {
         title: 'Make the entity unambiguous',
         detail:
           'Consistent name, description and category across your site, Wikidata, LinkedIn and industry directories.',
-        impact: 3,
-        priority: 'medium',
+        impact: 3 as const,
+        priority: 'medium' as const,
       },
     ],
   };

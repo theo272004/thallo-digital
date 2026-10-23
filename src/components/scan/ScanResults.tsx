@@ -9,11 +9,17 @@ import { BTN_PRIMARY, FIELD, Head, Meter, Micro, Notice, Panel, ProviderMark, Sp
 import { marketLabel } from '@/lib/scan/markets';
 import { PROVIDER_LABEL, type ProviderResult, type ScanPhase1 } from '@/lib/scan/types';
 
+/* What the second half of the run actually delivers.
+   Two of these promised a technical crawl - whether AI crawlers could reach
+   the site, and its authority and schema signals. That crawl was dropped, and
+   a list of what is coming that names two things which are not is the worst
+   place in the whole flow to be wrong: it is read while the visitor decides
+   whether to hand over an address. */
 const LOCKED = [
   'Which competitors are recommended instead of you',
   'Perplexity and Google AI Overview presence',
-  'Whether AI crawlers can reach your site',
-  'Authority, schema and citation signals',
+  'The sources the searching models opened, and who they name',
+  'What each model says your company is - and whether it means you',
   'A prioritised action plan',
 ];
 

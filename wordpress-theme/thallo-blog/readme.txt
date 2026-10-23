@@ -87,10 +87,18 @@ by where the pages sit.
   decides the columns: "#", "Firm", a heading containing "rate" gets the
   bar, "position" or "Google rank" is the right-aligned figure, anything
   else is a note that drops out on a phone.
+* **The opening photograph** is chosen by the **Industry** box: Professional
+  Services gets the desk that ships with the theme, Finance and Health the
+  pictures from their industry pages, anything else the notebook on the desk.
+  A volume with no industry gets that last one — so if a volume opens on the
+  wrong picture, the industry is what is missing. To use any other photograph,
+  set it as the page's **Featured image**; it wins over the industry's.
 * **The address.** On the production host WordPress is at /blog/, so the
-  series answers at /blog/ai-shortlist/ until the rule in
-  `deploy/ai-shortlist.htaccess` is pasted into the root .htaccess. The
-  theme notices the rule and moves its links to the root on its own.
+  series answers at /blog/ai-shortlist/ always, and at /ai-shortlist/ since
+  the rule in `deploy/ai-shortlist.htaccess` was pasted into the root
+  .htaccess (2026-09-22). The theme reads that file: its links, the canonical
+  and the navbar's AI Shortlist tab follow whichever address is true, and go
+  back under /blog/ by themselves if the rule is ever removed.
 
 == How it is styled ==
 

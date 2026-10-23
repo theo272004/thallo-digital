@@ -108,7 +108,7 @@ export default function IndustriesPage() {
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mb-10">
             Where the decision is high-stakes, buyers research hard before they commit. We make you the name they are most likely to trust.
           </p>
-          <SpinFlower alt="Thallo" className="block w-20 h-20 opacity-80" />
+          <SpinFlower className="block w-20 h-20 opacity-80" />
         </div>
       </section>
 

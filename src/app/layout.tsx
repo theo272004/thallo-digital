@@ -3,6 +3,7 @@ import { Inter, Instrument_Serif, Space_Mono } from "next/font/google";
 import "./globals.css";
 import SmoothScrollProvider from "@/components/motion/SmoothScrollProvider";
 import Analytics from "@/components/Analytics";
+import { PLANS_ID } from "@/lib/schema";
 
 /**
  * Italic is loaded on purpose.
@@ -127,7 +128,7 @@ export default function RootLayout({
               '@id': `${SITE_URL}/#organization`,
               name: 'Thallo Digital',
               alternateName: 'Thallo',
-              legalName: 'Thallo Digital',
+              legalName: 'Thallo Digital LLC',
               url: `${SITE_URL}/`,
               mainEntityOfPage: `${SITE_URL}/about/`,
               logo: `${SITE_URL}/logo.png`,
@@ -150,6 +151,10 @@ export default function RootLayout({
                 'Generative engine optimization',
                 'Brand authority building',
               ],
+              // The plans, prices included, described on /services/ beside
+              // the cards they are read from. Linked by @id so "what does
+              // Thallo sell, and for how much" resolves from the entity itself.
+              hasOfferCatalog: { '@id': PLANS_ID },
               contactPoint: {
                 '@type': 'ContactPoint',
                 contactType: 'sales',

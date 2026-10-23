@@ -56,11 +56,11 @@ export const metadata: Metadata = {
 const FAQ = [
   [
     'How do you measure AI visibility?',
-    'We put fifteen buying questions to ChatGPT, Claude and Gemini — forty-five answers in total — and count how many name your brand and at what rank. Your brand is never mentioned in the questions, so no answer is led. Every question and every result is shown alongside the score.',
+    'You write the buying questions — three on a free scan — and we put each one to ChatGPT, Claude and Gemini twice: once with the web shut, once with it open. We count how many answers name your brand and at what rank. Your brand is never a word in the question, so no answer is led, and every question and every result is shown alongside the score.',
   ],
   [
     'Is the AI visibility scan free?',
-    'The first half is free and needs no account: your share of voice across the three models, your average rank, and the full audit trail. The second half — the competitors recommended instead of you, live retrieval, and the technical scorecard — is unlocked with an email address.',
+    'Yes, three of them. There is no account to create and no card: you give a work address so the report can be sent, and the whole scan runs in one go — both readings, the competitors recommended instead of you, live retrieval, the sources the models opened, and the full audit trail.',
   ],
   [
     'Which AI platforms do you check?',

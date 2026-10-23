@@ -39,6 +39,87 @@ const API_BASE = (process.env.NEXT_PUBLIC_SCAN_API ?? '').replace(/\/$/, '');
 
 export const IS_LIVE = API_BASE.length > 0;
 
+/** An absolute endpoint on the configured API root. Shared with `account.ts`,
+    so that the two clients cannot disagree about where the backend is. */
+export const apiUrl = (path: string) => `${API_BASE}${path}`;
+
+/**
+ * What is left of the free allowance.
+ *
+ * `remaining` is the tightest of four counters — browser, address, network and
+ * the site-wide ceiling — and `limitedBy` names which one bound only when it
+ * has run out. `reason` is the server's own sentence and is printed verbatim:
+ * it is written as an invitation to book an audit rather than as an error,
+ * because somebody reaching for a fourth scan is the most interested visitor of
+ * the week.
+ */
+export interface Quota {
+  remaining: number;
+  limit: number;
+  exempt?: boolean;
+  limitedBy?: string;
+  reason?: string;
+}
+
+/**
+ * The allowance, and the cookie that counts it.
+ *
+ * **This call is why the per-browser counter works at all.** The session cookie
+ * is minted in exactly one place — a `GET /quota` — because a cookie can only
+ * be set before output and a request the page makes on load is a clean place to
+ * do it. Nothing called it for some time, so `session_hash()` was empty on
+ * every scan, every row was stored against no browser, and `count_for_session`
+ * returned 0 forever. The layer was not lenient, it was absent: three of the
+ * four counters were doing the work of four.
+ *
+ * It fails soft. A visitor whose allowance cannot be read should still be able
+ * to try — the server checks again on `/scan` and is the one that binds, so the
+ * worst case is a refusal arriving a step later than it might have.
+ */
+export async function fetchQuota(): Promise<Quota | null> {
+  if (!IS_LIVE) return null;
+
+  try {
+    const res = await fetch(apiUrl('/quota'), { credentials: 'include' });
+    if (!res.ok) return null;
+
+    return (await res.json()) as Quota;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * The same answer, for an address and a website the visitor has just typed.
+ *
+ * A POST with a body rather than a query string, because an address in a URL is
+ * an address in the access log of every hop between here and there, and this
+ * one is a lead.
+ *
+ * Asking before the button is pressed is the whole point. The refusal used to
+ * arrive after it, and the button was also the thing that threw the form away:
+ * somebody filled in two screens, watched a scan appear to start, and was
+ * returned to a blank step 1 with a sentence about an address no longer on
+ * screen.
+ */
+export async function checkQuota(email: string, domain: string): Promise<Quota | null> {
+  if (!IS_LIVE) return null;
+
+  try {
+    const res = await fetch(apiUrl('/quota'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, domain }),
+      credentials: 'include',
+    });
+    if (!res.ok) return null;
+
+    return (await res.json()) as Quota;
+  } catch {
+    return null;
+  }
+}
+
 /** How long we keep ticking before giving up on a stuck job. */
 const MAX_TICKS = 40;
 /** Breathing room between ticks so a slow provider does not get hammered. */
@@ -66,6 +147,13 @@ async function post<T>(path: string, body: unknown): Promise<T> {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
+      /* `include`, not the default `same-origin`, because starting a scan is
+         where the account cookie is set. Same-origin is the intended
+         deployment and the default would be enough there — but the settings
+         screen offers allowed origins for the split-host case, and on that
+         path the browser would drop the Set-Cookie without a word. The scan
+         would still run and the shelf would always be empty. */
+      credentials: 'include',
     });
   } catch {
     throw new ScanError('We could not reach the scanner. Check your connection and try again.', 'network');

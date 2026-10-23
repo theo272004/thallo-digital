@@ -6,6 +6,7 @@ import ScanSetup from './ScanSetup';
 import ScanProgress from './ScanProgress';
 import ScanResults from './ScanResults';
 import ReportConsole from './ReportConsole';
+import SavedReports from './SavedReports';
 import { GROUND, Micro, Stepper, Tag } from './ui';
 import { IS_LIVE, initialSession, startScan, unlockScan } from '@/lib/scan/engine';
 import { marketLabel } from '@/lib/scan/markets';
@@ -45,6 +46,17 @@ export default function ScanFlow() {
       if (sectionRef.current) scrollToEl(sectionRef.current, 0);
     });
   }, []);
+
+  /* A saved report is opened by putting it in the same state a fresh run ends
+     in, so `ReportConsole` cannot tell the two apart and there is no second
+     read-only rendering of a report to keep in step with the first. */
+  const openSaved = useCallback(
+    (saved: ScanSession) => {
+      setSession(saved);
+      goto('report');
+    },
+    [goto]
+  );
 
   const start = async (input: ScanInput) => {
     setError('');
@@ -312,6 +324,11 @@ export default function ScanFlow() {
 
                 <ScanSetup key="setup" onStart={start} onStepChange={changeStep} />
               </div>
+
+              {/* Only on the first step. On step 2 the visitor is mid-way
+                  through writing three questions, and a list of finished
+                  reports underneath that is an invitation to abandon them. */}
+              {hero && <SavedReports onOpen={openSaved} />}
             </>
           )}
 
@@ -329,7 +346,28 @@ export default function ScanFlow() {
           )}
 
           {stage === 'report' && session.phase1 && session.phase2 && (
-            <ReportConsole phase1={session.phase1} phase2={session.phase2} />
+            <>
+              <ReportConsole phase1={session.phase1} phase2={session.phase2} />
+
+              {/* That the report is kept is worth one sentence, here.
+                  Saving happens on its own — running a scan is the whole of
+                  registration — which means that without this line the feature
+                  is invisible until somebody happens to come back and find it,
+                  and a visitor who does not know a thing is saved will keep the
+                  tab open or screenshot the page. It is deliberately not a
+                  banner: nothing is being asked of them.
+
+                  Not shown on a sample run, where nothing is stored, and not
+                  when there is no backend to store it in. Claiming to have
+                  saved something that was never written is the one version of
+                  this sentence that would damage the report around it. */}
+              {IS_LIVE && !session.demo && (
+                <p className="mt-5 text-center text-[12px] font-medium leading-relaxed text-gray-500">
+                  This report is saved. Open the scanner from this browser and it will be waiting under the form — no
+                  password, nothing to sign up for.
+                </p>
+              )}
+            </>
           )}
         </div>
 

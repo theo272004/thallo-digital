@@ -49,6 +49,13 @@ export default function Footer() {
                 page about the free thing. The demo is hidden now and this is
                 the scan itself. */}
             <a href={`${BASE}/thallo-ai/scan/`} className="hover:text-[#39471D]">Visibility Tool</a>
+            {/* /thallo-ai/method/ was in the sitemap and reachable from nowhere
+                — no link on any page led to it. An orphan is the one shape of
+                page a crawler treats as unimportant however good it is, and
+                this one is the argument for why the scan's number means
+                anything, which is exactly the page we want quoted. One link in
+                the footer is all it needed. */}
+            <a href={`${BASE}/thallo-ai/method/`} className="hover:text-[#39471D]">How the scan works</a>
           </div>
         </div>
 
@@ -100,7 +107,7 @@ export default function Footer() {
           the name itself is a link — "Developed by" is not part of the target,
           so the click area is the studio and nothing else. */}
       <div className="max-w-[1440px] mx-auto px-6 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-medium tracking-wider text-gray-400">
-        <span>© 2026 Thallo Digital. All rights reserved.</span>
+        <span>© 2026 Thallo Digital LLC. All rights reserved.</span>
         <span className="order-3">
           Developed by{' '}
           <a

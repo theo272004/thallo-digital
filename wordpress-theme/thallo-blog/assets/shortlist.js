@@ -160,3 +160,191 @@
     seen.observe(el);
   });
 })();
+
+/**
+ * The hub's filter and its pager — the pills over the cards, the
+ * "‹ 1 2 ›" under them.
+ *
+ * Its own closure, outside the motion above, because a reader who asked for
+ * less motion still gets to filter. The cards are all in the markup; what
+ * this does is decide which three show. A click on a pill narrows the set
+ * to one industry and goes back to page one; a click on a number, or an
+ * arrow, moves within the set. The pager is redrawn from the set each time,
+ * so with three cards it reads "‹ 1 ›" with both arrows off, and with six
+ * "‹ 1 2 ›". Nothing is fetched and nothing is re-rendered: without this
+ * script every card shows and the pager is an empty nav.
+ */
+(function () {
+  'use strict';
+
+  var wrap = document.querySelector('.thallo-cards');
+  if (!wrap) return;
+
+  var filter = wrap.querySelector('.thallo-filter');
+  var pager = wrap.querySelector('.thallo-pager');
+  var pills = filter ? [].slice.call(filter.querySelectorAll('.thallo-filter__pill')) : [];
+  var cards = [].slice.call(wrap.querySelectorAll('.thallo-cards__grid .thallo-cards__item'));
+  var perPage = pager ? parseInt(pager.getAttribute('data-per-page'), 10) || 3 : 3;
+
+  var want = '';
+  var page = 1;
+
+  var ARROW_L = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6" /></svg>';
+  var ARROW_R = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>';
+
+  function set() {
+    return cards.filter(function (card) {
+      var mine = card.getAttribute('data-industry') || '';
+      return want === '' || mine === want;
+    });
+  }
+
+  function draw() {
+    var shown = set();
+    var pages = Math.max(1, Math.ceil(shown.length / perPage));
+    if (page > pages) page = pages;
+
+    cards.forEach(function (card) {
+      var i = shown.indexOf(card);
+      var on = i !== -1 && Math.floor(i / perPage) === page - 1;
+      card.classList.toggle('is-off', !on);
+    });
+
+    if (!pager) return;
+    var html = '<button type="button" class="thallo-pager__arrow" data-go="prev" aria-label="Previous"' + (page === 1 ? ' disabled' : '') + '>' + ARROW_L + '</button>';
+    for (var n = 1; n <= pages; n++) {
+      html += '<button type="button" class="thallo-pager__n' + (n === page ? ' is-on' : '') + '" data-go="' + n + '"' + (n === page ? ' aria-current="page"' : '') + '>' + n + '</button>';
+    }
+    html += '<button type="button" class="thallo-pager__arrow" data-go="next" aria-label="Next"' + (page === pages ? ' disabled' : '') + '>' + ARROW_R + '</button>';
+    pager.innerHTML = html;
+  }
+
+  if (filter) {
+    filter.addEventListener('click', function (event) {
+      var pill = event.target.closest('.thallo-filter__pill');
+      if (!pill) return;
+      want = pill.getAttribute('data-industry') || '';
+      page = 1;
+      pills.forEach(function (p) {
+        var on = p === pill;
+        p.classList.toggle('is-on', on);
+        p.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      draw();
+    });
+  }
+
+  if (pager) {
+    pager.addEventListener('click', function (event) {
+      var b = event.target.closest('[data-go]');
+      if (!b || b.disabled) return;
+      var go = b.getAttribute('data-go');
+      if (go === 'prev') page -= 1;
+      else if (go === 'next') page += 1;
+      else page = parseInt(go, 10) || 1;
+      draw();
+    });
+  }
+
+  draw();
+})();
+
+/**
+ * The turning isotype under the hub's masthead, but you can grab it and
+ * flick it — the same mark the site has on /results/, with the same physics.
+ *
+ * The rotation is a rAF loop: a drag pushes angular velocity into it and
+ * friction bleeds that back down to the idle drift, so a throw spins it
+ * fast, coasts, and settles into the slow turn it had before. The angle
+ * lives in a closure and is written straight to the transform. Touch is left
+ * alone: claiming the gesture would mean a finger that lands on the flower
+ * can no longer scroll the page. A reader who asked for less motion keeps
+ * the mark still — the CSS turn is off for them too — and this never runs.
+ */
+(function () {
+  'use strict';
+
+  var wrap = document.querySelector('.thallo-mast__flower');
+  var img = wrap && wrap.querySelector('img');
+  if (!wrap || !img) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var IDLE = 360 / 30;   /* deg/s at rest: one turn in thirty seconds */
+  var FRICTION = 1.1;    /* how fast a throw bleeds back to IDLE */
+  var MAX = 2200;        /* deg/s ceiling, so a hard flick stays legible */
+
+  var angle = 0;
+  var velocity = IDLE;
+  var last = 0;
+
+  var dragging = false;
+  var pointerId = -1;
+  var lastPointerAngle = 0;
+  var lastMoveAt = 0;
+
+  wrap.classList.add('is-driven');
+
+  function angleFrom(e) {
+    var r = wrap.getBoundingClientRect();
+    return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * (180 / Math.PI);
+  }
+
+  /* Shortest way round, so crossing the ±180 seam does not read as a jump. */
+  function shortest(d) {
+    return ((d + 540) % 360) - 180;
+  }
+
+  function frame(now) {
+    var dt = Math.min((now - last) / 1000, 0.05); /* a backgrounded tab must not bank up rotation */
+    last = now;
+
+    if (!dragging) {
+      velocity += (IDLE - velocity) * (1 - Math.exp(-FRICTION * dt));
+      angle += velocity * dt;
+      img.style.transform = 'rotate(' + angle + 'deg)';
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  wrap.addEventListener('pointerdown', function (e) {
+    if (e.pointerType === 'touch') return;
+    dragging = true;
+    pointerId = e.pointerId;
+    lastPointerAngle = angleFrom(e);
+    lastMoveAt = performance.now();
+    velocity = 0;
+    try { wrap.setPointerCapture(e.pointerId); } catch (err) { /* not capturable */ }
+    wrap.classList.add('is-held');
+    e.preventDefault();
+  });
+
+  wrap.addEventListener('pointermove', function (e) {
+    if (!dragging || e.pointerId !== pointerId) return;
+    var now = performance.now();
+    var current = angleFrom(e);
+    var delta = shortest(current - lastPointerAngle);
+    var dt = Math.max((now - lastMoveAt) / 1000, 1 / 240);
+
+    angle += delta;
+    velocity = velocity * 0.6 + (delta / dt) * 0.4; /* smoothed, or one jittery sample decides the throw */
+
+    lastPointerAngle = current;
+    lastMoveAt = now;
+    img.style.transform = 'rotate(' + angle + 'deg)';
+  });
+
+  function release(e) {
+    if (!dragging || e.pointerId !== pointerId) return;
+    dragging = false;
+    pointerId = -1;
+    wrap.classList.remove('is-held');
+    if (performance.now() - lastMoveAt > 120) velocity = IDLE; /* held still, then let go: no fling */
+    velocity = Math.max(-MAX, Math.min(MAX, velocity));
+  }
+  wrap.addEventListener('pointerup', release);
+  wrap.addEventListener('pointercancel', release);
+
+  last = performance.now();
+  requestAnimationFrame(frame);
+})();
