@@ -51,12 +51,11 @@ export default function CookieBanner({ onChoice }: { onChoice: (value: Consent) 
          reads as chrome and gets ignored. A card reads as something asked.
 
          The fixed box is the card's own size, not a transparent strip across
-         the window with the card centred inside it. That strip was its own
-         compositor layer as wide as the screen, with its top edge on a
-         fractional pixel, and when the hero buttons under it repainted on
-         hover Chrome drew that edge as a 1px green line from one side of the
-         window to the other. inset-x + mx-auto + max-w centres it without a
-         transform, so nothing else moves. */
+         the window with the card centred inside it, so whatever this box
+         draws stays on the card. The strip once drew its focus ring — see
+         `[tabindex='-1']:focus-visible` in globals.css — as an olive line
+         across the whole hero. inset-x + mx-auto + max-w centres it without a
+         transform. */
       className="fixed inset-x-4 bottom-4 z-[60] mx-auto max-w-[560px] outline-none sm:inset-x-6 sm:bottom-6"
     >
       <div className="flex flex-col gap-4 rounded-3xl border border-gray-200 bg-white p-6 shadow-[0_12px_40px_-12px_rgba(23,26,16,0.28)]">
