@@ -27,7 +27,11 @@ const SOURCES = {
     'src/components/TheProblem.tsx',
     'src/components/PlaybookContrast.tsx',
     'src/components/HowItWorks.tsx',
-    'src/components/ScannerStripe.tsx',
+    // The four sections "Cami's eleven" added to the home page.
+    'src/components/ResearchAndScan.tsx',
+    'src/components/AuditOffer.tsx',
+    'src/components/PublicPricing.tsx',
+    'src/components/FitCheck.tsx',
     'src/components/HomeFaq.tsx',
     'src/components/Testimonials.tsx',
     'src/components/CTASection.tsx',

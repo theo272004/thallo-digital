@@ -4,3 +4,4 @@ export { Reveal } from './Reveal';
 export { SplitReveal } from './SplitReveal';
 export { Counter } from './Counter';
 export { Magnetic } from './Magnetic';
+export { ScrollFill } from './ScrollFill';

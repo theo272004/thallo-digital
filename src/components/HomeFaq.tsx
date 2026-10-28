@@ -65,18 +65,40 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
          one-time setup" with no amount attached — which is the most expensive
          sentence on the page, because it lands at the exact moment someone is
          deciding whether to enquire and leaves them to imagine the number. The
-         setup is the AI Visibility Audit, and Our Plans has priced it at $800
-         from the day that page shipped; there was never a figure being
-         withheld, only one that had not been carried across. Keep the two
-         pages in step — if the audit is repriced, this line moves with it. */
+         setup is the AI Visibility Audit, and Our Plans prices it at $1,000;
+         there was never a figure being withheld, only one that had not been
+         carried across. Keep the two pages in step — if the audit is repriced,
+         this line and the card in Services.tsx move with it. */
       <>
         Plans start at $2,500 a month, on a three-month initial term, and scale with the size of the operation.
-        Before that there&rsquo;s a one-time AI Visibility Audit from $800 — the baseline and the strategy, and
+        Before that there&rsquo;s a one-time AI Visibility Audit at $1,000 — the baseline and the strategy, and
         yours to keep whether or not you carry on. Full breakdown on{' '}
         <a href={`${BASE}/services/`} className="font-semibold text-[#39471D] underline underline-offset-2">
           Our Plans
         </a>
         .
+      </>
+    ),
+  },
+  /* The two Cami added on 3 October. They sit straight after the price because
+     they are the questions the price raises: what the free thing is worth
+     next to the paid one, and whether the paid one is a gate. */
+  {
+    q: "What's the difference between the free scan and the audit?",
+    a: (
+      <>
+        The scan is a quick snapshot of what AI says about you right now. The audit is the full diagnosis: your mention
+        rate against competitors, the questions where you lose, whether AI can read your site, the sources you need to
+        be on, and a 90-day plan. The scan tells you something is happening; the audit tells you what to do about it.
+      </>
+    ),
+  },
+  {
+    q: 'Do I need the audit before ongoing work?',
+    a: (
+      <>
+        No. The audit, the Engine and standalone projects are independent. But most clients start with the audit
+        because it gives both sides a shared baseline before committing to ongoing work.
       </>
     ),
   },
@@ -119,7 +141,7 @@ export default function HomeFaq() {
             </p>
           </div>
 
-          <FaqList items={FAQS} idPrefix="home-faq" />
+          <FaqList items={FAQS} idPrefix="home-faq" schema />
         </div>
       </div>
     </section>

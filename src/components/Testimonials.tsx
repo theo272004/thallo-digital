@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
-import { BASE } from '@/lib/site';
+import { BASE, BLOG_URL } from '@/lib/site';
+import { ScrollTrigger } from '@/lib/gsap';
 
 /* Despite the file name, this is the resources library — the review carousel
    lives in BlogSection.tsx.
@@ -8,29 +9,39 @@ import { BASE } from '@/lib/site';
    ## The shape
 
    A magazine masthead: a centred label and heading, a lead piece with its
-   cover above the words, and three notes indexed beside it, each with a
+   cover above the words, and up to three notes indexed beside it, each with a
    thumbnail of its own.
 
-   ## The lead is the only published post
+   ## The notes come from the blog
 
-   Only the first of these four exists. It is the post published on the
-   WordPress blog on 8 August, and its link, date and excerpt are the ones the
-   REST API returns. Its read time is counted from the Markdown in
-   `content/blog/` at 225 words a minute rather than guessed at.
+   They are the newest posts on the WordPress blog, read from its REST API in
+   the browser, so a post published there shows up here without a deploy. The
+   newest leads. Until 4 October 2026 this list was written by hand and never
+   followed the blog.
 
-   It leads because it is the newest — a list of notes ordered by date with the
-   newest not first is a broken list — and because a lead card that goes
-   nowhere is the weakest thing a section like this can have.
+   The layout is always one lead and three beside it. While the blog has fewer
+   than four posts, the empty places are filled from PLANNED: notes that are
+   coming, shown as such — no link, no date, a "Coming soon" badge. Each one
+   gives way to a real post as soon as there is one to show.
 
-   The other three are planned, not published, and the markup says so: a card
-   without an `href` is not an anchor at all, carries a "Coming soon" badge in
-   place of its date, and drops the "Read the note" line. They used to be
-   `<a href="#">` with the click swallowed, which is a broken link dressed as a
-   working one — the reader clicks, nothing happens, and the section that is
-   meant to prove we publish proves the opposite.
+   FALLBACK is what the page ships with and what it keeps if the API cannot be
+   reached: the posts that were live when it was written, with the same fields
+   the API gives. It is never shown as anything but real posts.
 
-   When one of them is published, give it a `href` and a real `date` and it
-   becomes a live card with no other change.
+   ## Why the slots are fixed
+
+   `useRevealBatch` collects every `[data-reveal]` once, when the page mounts.
+   A card that mounted later would never be revealed and would sit there at
+   opacity 0. So there are always four slots, keyed by position: the fetch
+   changes what is in them, never how many there are. A slot is always the
+   same <a>: a planned note simply has no href, which is not a link at all.
+
+   ## Pictures
+
+   A published post shows its featured image — the same picture the blog
+   itself uses as that post's cover — so the card and the post always match.
+   Change the featured image in WordPress and the card follows. A planned note
+   has no post to take one from, so it keeps one of the site's photographs.
 
    ## Two things deliberately not taken from the reference
 
@@ -44,61 +55,139 @@ type Article = {
   badge: string;
   title: string;
   desc: string;
-  image: string;
-  /** The live URL. Absent means the post is not published yet. */
+  /** The live URL. Absent means the note is planned, not published. */
   href?: string;
   /** Publication date. Only a published post has one. */
   date?: string;
-  /** Counted from the Markdown, so only a written post has one. */
   read?: string;
+  /** The post's featured image. Absent on a planned note. */
+  image?: string;
 };
 
-const ARTICLES: Article[] = [
+const SLOTS = 4;
+
+/* Photographs the site already holds, by slot — the picture for a planned
+   note, which has no featured image of its own. */
+const IMAGES = ['blog-lead.webp', 'buyers-bg.webp', 'case-film-bg.webp', 'measured-bg.webp'];
+
+const FALLBACK: Article[] = [
   {
-    badge: 'GEO',
+    badge: 'AI Visibility',
+    date:  'October 2026',
+    read:  '7 min',
+    title: 'How to Find, Choose, and Track the Questions Your Buyers Ask AI',
+    desc:  'Useful prompt tracking starts with the questions that shape a buying decision. Learn how to find those questions inside your business, choose which ones are worth tracking, and build a consistent set that shows where your company appears in AI recommendations over time.',
+    href:  'https://thallodigital.com/blog/prompt-tracking-buyer-questions/',
+    image: 'https://thallodigital.com/blog/wp-content/uploads/2026/08/bannercito-doc.jpg',
+  },
+  {
+    badge: 'AI Visibility',
+    date:  'October 2026',
+    read:  '8 min',
+    title: 'How to See What AI Tells Your Buyers About Your Competitors',
+    desc:  'See which competitors AI recommends to your buyers, why they appear in those answers, and where your company can close the gap. AI competitor analysis helps you uncover the questions, sources, and positioning shaping AI recommendations.',
+    href:  'https://thallodigital.com/blog/ai-competitor-analysis/',
+    image: 'https://thallodigital.com/blog/wp-content/uploads/2026/08/bannercito-doc.jpg',
+  },
+  {
+    badge: 'Blog',
     date:  'August 2026',
     read:  '4 min',
     title: 'Ranking first and being named are not the same thing',
     desc:  'Search used to hand your buyer ten links and let them choose. Now it hands them an answer with three companies in it. Being one of those three is a different problem from ranking, and it has different fixes.',
-    /* Photographs the site already holds. None of the four appears anywhere
-       else on the home page, so the section does not repeat a picture the
-       reader has just scrolled past. */
-    image: 'blog-lead.webp',
-    /* The permalink, not a guess at one. WordPress on this install is set to
-       post-name permalinks — /blog/<slug>/ — and this line carried the dated
-       shape, /blog/2026/08/08/<slug>/, which is WordPress's other default and
-       has never existed here. The one published note on the home page led to a
-       404, which is the worst link on the site to get wrong: it is the proof
-       that there is anything to read. Checked against the live URL, which
-       answers 200, while the dated one answers 404. */
     href:  'https://thallodigital.com/blog/ranking-first-and-being-named/',
+    image: 'https://thallodigital.com/blog/wp-content/uploads/2026/08/bannercito-doc.jpg',
   },
+];
+
+/* The notes that fill the layout while the blog has fewer than four posts. */
+const PLANNED: Article[] = [
   {
     badge: 'GEO',
     title: 'What "share of answer" really measures',
     desc:  'Rankings told you where you sat on a page nobody reads anymore. Share of answer tells you how often you are the recommendation.',
-    image: 'buyers-bg.webp',
   },
   {
     badge: 'Content',
     title: "Original research beats AI's infinite content",
     desc:  "The one asset machines can't fabricate: a number only you can produce.",
-    image: 'case-film-bg.webp',
   },
   {
     badge: 'Strategy',
     title: "Why authority compounds and ads don't",
     desc:  'Renting attention resets every month. Credibility you own does not.',
-    image: 'measured-bg.webp',
   },
 ];
+
+type WPPost = {
+  date: string;
+  link: string;
+  title: { rendered: string };
+  excerpt: { rendered: string };
+  content: { rendered: string };
+  _embedded?: {
+    'wp:term'?: { taxonomy: string; name: string }[][];
+    'wp:featuredmedia'?: { source_url?: string }[];
+  };
+};
+
+/** WordPress hands back HTML with entities; the cards want plain text. */
+function text(html: string): string {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return (doc.body.textContent ?? '').replace(/\s+/g, ' ').trim();
+}
+
+function toArticle(p: WPPost): Article {
+  const category = (p._embedded?.['wp:term'] ?? [])
+    .flat()
+    .find((t) => t.taxonomy === 'category' && t.name !== 'Uncategorized');
+  /* Read time at 225 words a minute, the rate the hand-written cards used. */
+  const words = text(p.content.rendered).split(' ').filter(Boolean).length;
+  return {
+    badge: category ? text(category.name) : 'Blog',
+    title: text(p.title.rendered),
+    desc:  text(p.excerpt.rendered).replace(/\s*(\[(…|&hellip;|\.\.\.)\]|…)$/, '').trim(),
+    href:  p.link,
+    date:  new Date(p.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+    read:  `${Math.max(1, Math.ceil(words / 225))} min`,
+    image: p._embedded?.['wp:featuredmedia']?.[0]?.source_url,
+  };
+}
+
+/** The newest posts on the blog, or FALLBACK until (and unless) they arrive. */
+function usePosts(): Article[] {
+  const [posts, setPosts] = useState<Article[]>(FALLBACK);
+
+  useEffect(() => {
+    const ctrl = new AbortController();
+    fetch(`${BLOG_URL}wp-json/wp/v2/posts?per_page=${SLOTS}&_embed=wp:term,wp:featuredmedia&_fields=date,link,title,excerpt,content,_links,_embedded`, {
+      signal: ctrl.signal,
+    })
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((data: WPPost[]) => {
+        if (Array.isArray(data) && data.length) setPosts(data.map(toArticle));
+      })
+      .catch(() => {
+        /* Offline, blocked or down: the fallback stays, which is real posts. */
+      });
+    return () => ctrl.abort();
+  }, []);
+
+  /* A slot that appeared or vanished moves everything under it; the reveal
+     triggers further down need their positions measured again. */
+  useEffect(() => {
+    const id = requestAnimationFrame(() => ScrollTrigger.refresh());
+    return () => cancelAnimationFrame(id);
+  }, [posts]);
+
+  return posts;
+}
 
 /**
  * Category · date · read time — the line that makes a card read as a post.
  *
- * An unpublished note has no date and no read time to state, so it says so
- * instead of borrowing a plausible-looking one. A date on a post that does not
- * exist is the same lie as a link that goes nowhere, told more quietly.
+ * A planned note has no date and no read time to state, so it says so instead
+ * of borrowing a plausible-looking one.
  */
 function Meta({ a }: { a: Article }) {
   return (
@@ -127,39 +216,40 @@ function Meta({ a }: { a: Article }) {
    the card is what answers to the cursor.
 
    Only a card that goes somewhere gets `group` and `lift`. A card that lifts
-   under the cursor is promising a click, and an unpublished note has none to
-   give — the hover state is how a reader finds out whether a thing is a link
-   before they spend a click on it. */
+   under the cursor is promising a click, and a planned note has none to give. */
 const CARD =
   'flex rounded-3xl border border-gray-200 bg-white shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-[transform,box-shadow,border-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]';
 const CARD_LINK = 'group lift';
 
+/* A dark olive gradient over every cover — Cami, 5 October — so the
+   pictures sit in the site's green whatever the blog uploads. Darkest at the
+   foot, easing off towards the top, like the scrims on the dark panels. */
+/* Two layers, top one first: a near-black shadow rising from the
+   bottom-left corner only (Cami, 5 October: "más oscuras", from one corner),
+   over the olive tint. */
+const PHOTO_TINT =
+  'linear-gradient(to top right, rgba(10,11,7,.72) 0%, rgba(10,11,7,.35) 35%, rgba(10,11,7,0) 70%), ' +
+  'linear-gradient(to top, rgba(23,26,16,.78) 0%, rgba(57,71,29,.45) 55%, rgba(57,71,29,.15) 100%)';
+
 /**
- * A card is an anchor when the post exists and a plain box when it does not.
- *
- * The three unpublished notes used to be `<a href="#">` with the click
- * swallowed in JS: a link by every signal a browser gives — cursor, focus
- * ring, status bar, "open in new tab" — that did nothing when clicked. This
- * renders them as what they are, so nothing offers a click there in the first
- * place.
+ * One slot. Always the same <a>, so React updates it in place when the posts
+ * arrive instead of mounting a new element the reveal never saw. A planned
+ * note has no href, and an <a> without one is not a link: no cursor, no focus,
+ * nothing to open — see "Why the slots are fixed".
  */
 function CardShell({ a, className, children }: { a: Article; className: string; children: React.ReactNode }) {
-  if (!a.href) {
-    return (
-      <div data-reveal className={`${CARD} ${className}`}>
-        {children}
-      </div>
-    );
-  }
   return (
-    <a href={a.href} data-reveal className={`${CARD} ${CARD_LINK} ${className}`}>
+    <a href={a.href} data-reveal className={`${CARD} ${a.href ? CARD_LINK : ''} ${className}`}>
       {children}
     </a>
   );
 }
 
 export default function Testimonials() {
-  const [lead, ...rest] = ARTICLES;
+  const posts = usePosts();
+  /* Real posts first, newest leading; planned notes fill what is left. */
+  const slots = Array.from({ length: SLOTS }, (_, i) => posts[i] ?? PLANNED[(i - posts.length) % PLANNED.length]);
+  const [lead, ...rest] = slots;
 
   return (
     /* id="blog" is the target the navbar and footer have always pointed at. */
@@ -193,15 +283,16 @@ export default function Testimonials() {
                 them. 16:9 rather than 16:10 — with three notes beside it now
                 instead of two, the taller crop pushed the lead's own text past
                 the bottom of the stack. */}
-            <span className="block overflow-hidden rounded-2xl bg-[#39471D]">
+            <span className="relative block overflow-hidden rounded-2xl bg-[#39471D]">
               <img
                 loading="lazy"
                 decoding="async"
-                src={`${BASE}/${lead.image}`}
+                src={lead.image ?? `${BASE}/${IMAGES[0]}`}
                 alt=""
                 aria-hidden="true"
                 className="aspect-[16/9] w-full select-none object-cover"
               />
+              <span aria-hidden="true" className="absolute inset-0" style={{ background: PHOTO_TINT }} />
             </span>
 
             <span className="flex flex-1 flex-col p-4">
@@ -211,14 +302,14 @@ export default function Testimonials() {
                 {lead.title}
               </span>
 
-              <span className="mt-2.5 max-w-[52ch] text-sm font-medium leading-relaxed text-gray-500">
+              <span className="mt-2.5 max-w-[52ch] text-sm font-medium leading-relaxed text-gray-500 line-clamp-4">
                 {lead.desc}
               </span>
 
               {/* mt-auto pins the footer down whatever the excerpt runs to, so
                   this card and the stack beside it end level. There is nothing
-                  to pin on an unpublished note: "Read the note" is an
-                  instruction that would not work if followed. */}
+                  to pin on a planned note: "Read the note" is an instruction
+                  that would not work if followed. */}
               {lead.href && (
                 <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-[11px] font-bold text-[#39471D]">
                   Read the note
@@ -230,8 +321,10 @@ export default function Testimonials() {
 
           {/* ── The rest, as an index ─────────────────────────────────────── */}
           <div className="flex flex-col gap-4">
-            {rest.map((a) => (
-              <CardShell key={a.title} a={a} className="flex-1 items-start gap-4 p-4">
+            {/* Keyed by position, not title: a new post must refill a slot,
+                not replace it. */}
+            {rest.map((a, i) => (
+              <CardShell key={i} a={a} className="flex-1 items-start gap-4 p-4">
                 <span className="flex min-w-0 flex-1 flex-col">
                   <Meta a={a} />
 
@@ -239,7 +332,8 @@ export default function Testimonials() {
                     {a.title}
                   </span>
 
-                  <span className="mt-1.5 text-[13px] font-medium leading-relaxed text-gray-500">
+                  {/* Only an excerpt from the blog runs long enough to need the clamp. */}
+                  <span className={`mt-1.5 text-[13px] font-medium leading-relaxed text-gray-500 ${a.href ? 'line-clamp-2' : ''}`}>
                     {a.desc}
                   </span>
 
@@ -254,15 +348,16 @@ export default function Testimonials() {
                 {/* Hidden on the narrowest screens: at full width the card is
                     already a column of text, and a thumbnail beside it leaves
                     the title three words to a line. */}
-                <span className="hidden shrink-0 overflow-hidden rounded-xl bg-[#39471D] sm:block">
+                <span className="relative hidden shrink-0 overflow-hidden rounded-xl bg-[#39471D] sm:block">
                   <img
                     loading="lazy"
                     decoding="async"
-                    src={`${BASE}/${a.image}`}
+                    src={a.image ?? `${BASE}/${IMAGES[i + 1]}`}
                     alt=""
                     aria-hidden="true"
                     className="h-[88px] w-[104px] select-none object-cover"
                   />
+                  <span aria-hidden="true" className="absolute inset-0" style={{ background: PHOTO_TINT }} />
                 </span>
               </CardShell>
             ))}
@@ -275,7 +370,7 @@ export default function Testimonials() {
             href="https://thallodigital.com/blog/"
             className="group inline-flex items-center gap-1.5 rounded-full border border-[#39471D] bg-[#39471D] px-5 py-2.5 text-[13px] font-bold text-white transition-colors hover:border-[#55672E] hover:bg-[#55672E]"
           >
-            All notes
+            Read our blog
             <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </a>
         </div>

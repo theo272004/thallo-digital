@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, type ElementType, type ReactNode, type CSSProperties } from 'react';
-import { gsap, useGSAP, EASE, DUR, STAGGER, prefersReducedMotion } from '@/lib/gsap';
+import { gsap, useGSAP, EASE, DUR, STAGGER, prefersReducedMotion, whenPassed } from '@/lib/gsap';
 
 type Props = {
   as?: ElementType;
@@ -29,7 +29,7 @@ export function Reveal({ as: Tag = 'div', stagger = false, y = 28, delay = 0, cl
         gsap.set(targets, { autoAlpha: 1, y: 0 });
         return;
       }
-      gsap.fromTo(
+      const tween = gsap.fromTo(
         targets,
         { autoAlpha: 0, y },
         {
@@ -42,6 +42,8 @@ export function Reveal({ as: Tag = 'div', stagger = false, y = 28, delay = 0, cl
           scrollTrigger: { trigger: el, start: 'top 85%', once: true },
         }
       );
+      // Shown even when a jump skipped the trigger.
+      return whenPassed(el, () => tween.play());
     },
     { scope: ref }
   );

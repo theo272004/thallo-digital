@@ -13,11 +13,14 @@ import { BASE } from '@/lib/site';
 export default function LegalDoc({
   title,
   summary,
+  updated = LEGAL.lastUpdated,
   children,
 }: {
   title: string;
   /** One sentence in plain language, before the clauses start. */
   summary: string;
+  /** When one document changes on its own, it says so without re-dating the other two. */
+  updated?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -31,7 +34,7 @@ export default function LegalDoc({
         <p className="mb-8 text-base font-medium leading-relaxed text-gray-500">{summary}</p>
 
         <p className="mb-12 border-y border-gray-100 py-4 text-[11px] font-bold uppercase tracking-[0.16em] text-gray-400">
-          Last updated · {LEGAL.lastUpdated}
+          Last updated · {updated}
         </p>
 
         <div className="flex flex-col gap-10">{children}</div>

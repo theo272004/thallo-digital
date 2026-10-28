@@ -36,8 +36,21 @@ export function useRevealBatch(dep?: unknown) {
           }),
       });
 
+      // A jump past an item skips its batch (see `whenPassed`). When the
+      // scroll comes to rest, anything still hidden that is no longer below
+      // the fold is shown — quickly, since the reader is already there.
+      const sweep = () => {
+        const missed = items.filter(
+          (el) => el.style.visibility === 'hidden' && el.getBoundingClientRect().top < window.innerHeight
+        );
+        if (missed.length) gsap.to(missed, { autoAlpha: 1, y: 0, duration: 0.4, ease: EASE.out, overwrite: true });
+      };
+      ScrollTrigger.addEventListener('scrollEnd', sweep);
+
       // Recalculate after fonts settle.
       document.fonts?.ready.then(() => ScrollTrigger.refresh());
+
+      return () => ScrollTrigger.removeEventListener('scrollEnd', sweep);
     },
     { dependencies: [dep], revertOnUpdate: true }
   );

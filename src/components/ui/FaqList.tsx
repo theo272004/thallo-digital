@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import JsonLd from '@/components/JsonLd';
+import { nodeText } from '@/lib/schema';
 
 /**
  * The accordion, once, for both sets of questions on the site.
@@ -39,15 +41,38 @@ export default function FaqList({
   idPrefix,
   /** Which row starts open. `null` for none. */
   initial = 0,
+  /**
+   * Also state the list as FAQPage structured data.
+   *
+   * Opt-in, because schema.org wants one FAQPage per page and a page could in
+   * principle carry two lists. The questions and answers are read from `items`
+   * — the same objects the accordion draws — so the markup can never quote an
+   * answer the page no longer gives.
+   */
+  schema = false,
 }: {
   items: readonly FaqItem[];
   idPrefix: string;
   initial?: number | null;
+  schema?: boolean;
 }) {
   const [open, setOpen] = useState<number | null>(initial);
 
   return (
     <div className="border-t border-gray-200">
+      {schema && (
+        <JsonLd
+          data={{
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: items.map((faq) => ({
+              '@type': 'Question',
+              name: faq.q,
+              acceptedAnswer: { '@type': 'Answer', text: nodeText(faq.a) },
+            })),
+          }}
+        />
+      )}
       {items.map((faq, i) => {
         const isOpen = open === i;
         return (

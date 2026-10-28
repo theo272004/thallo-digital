@@ -231,12 +231,14 @@ export default function HowItWorks() {
             <SplitReveal
               as="h2"
               className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
-              /* Inter, italic and light, as in the hero — see HeroText. */
-              html='The <span class="italic whitespace-nowrap text-[#39471D]">Authority Engine.</span>'
+              /* Cami's copy of 3 October. The engine is named in the paragraph
+                 now; the heading says what it is made of. */
+              html='Good research. Useful content. <span class="italic text-[#39471D]">A connected operation.</span>'
             />
             <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch] mx-auto lg:mx-0">
-              Four phases, run as one operation. It starts by measuring where you stand,
-              and ends with you being the source that gets named.
+              Our Authority Engine brings research, content, technical SEO and distribution into one ongoing service.
+              We run the work from diagnosis through publishing and promotion, then track what changes in your
+              visibility.
             </p>
           </div>
 
@@ -266,8 +268,7 @@ export default function HowItWorks() {
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Diagnose</h3>
                 <p className="text-[15px] text-gray-500 leading-relaxed">
-                  We scan how the models describe you today, which questions your category already owns, and where your
-                  competitors are being named instead of you.
+                  Measure where you appear, what the models say, and who wins the questions that matter.
                 </p>
                 {/* What the phase hands over. Named deliverables rather than
                     adjectives — a phase you cannot point at the output of is a
@@ -297,8 +298,7 @@ export default function HowItWorks() {
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Build the work</h3>
                 <p className="text-[15px] text-gray-500 leading-relaxed">
-                  Original research and expert content built on your own data. The kind of thing a machine
-                  can&rsquo;t produce, because it requires knowing something nobody else knows.
+                  Produce original evidence nobody else could run: studies, data, definitive guides.
                 </p>
                 <div className="flex flex-wrap gap-1.5 mt-3.5 justify-center lg:justify-start">
                   <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Data studies</span>
@@ -320,8 +320,7 @@ export default function HowItWorks() {
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Make it readable</h3>
                 <p className="text-[15px] text-gray-500 leading-relaxed">
-                  A site that search engines and AI models can parse, understand, and cite. Structured around the
-                  questions your buyers actually type, not the keywords a tool suggested.
+                  Make your site readable for AI and built so authority compounds over time.
                 </p>
                 <div className="flex flex-wrap gap-1.5 mt-3.5 justify-center lg:justify-start">
                   <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Technical SEO</span>
@@ -342,8 +341,7 @@ export default function HowItWorks() {
               <div>
                 <h3 className="text-base font-bold text-gray-900 mb-2">Carry it out</h3>
                 <p className="text-[15px] text-gray-500 leading-relaxed">
-                  Publishing isn&rsquo;t reaching. We take the work to where opinions get formed, which is also where
-                  the models go looking for sources.
+                  Place the work where buyers and models find it: press, podcasts, the 20 sites that count.
                 </p>
                 <div className="flex flex-wrap gap-1.5 mt-3.5 justify-center lg:justify-start">
                   <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">LinkedIn</span>

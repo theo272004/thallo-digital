@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, type ElementType, type CSSProperties } from 'react';
-import { gsap, useGSAP, SplitText, EASE, prefersReducedMotion } from '@/lib/gsap';
+import { gsap, useGSAP, SplitText, EASE, prefersReducedMotion, whenPassed } from '@/lib/gsap';
 
 type Props = {
   as?: ElementType;
@@ -27,6 +27,10 @@ export function SplitReveal({ as: Tag = 'h2', html, scroll = true, fade = true, 
       const el = ref.current!;
       if (prefersReducedMotion()) return; // stays visible
 
+      // autoSplit re-splits on resize and font load and builds a new tween
+      // each time; the jump fallback below plays whichever one is current.
+      let entrance: gsap.core.Tween | undefined;
+
       SplitText.create(el, {
         type: 'lines',
         mask: 'lines',
@@ -41,7 +45,7 @@ export function SplitReveal({ as: Tag = 'h2', html, scroll = true, fade = true, 
           (self as unknown as { masks?: HTMLElement[] }).masks?.forEach((m) => {
             m.style.overflowClipMargin = '0.22em';
           });
-          return gsap.from(self.lines, {
+          entrance = gsap.from(self.lines, {
             yPercent: 110,
             ...(fade ? { opacity: 0 } : {}),
             duration: 1,
@@ -55,8 +59,13 @@ export function SplitReveal({ as: Tag = 'h2', html, scroll = true, fade = true, 
             // descenders render fully — across every heading on the page.
             onComplete: () => self.revert(),
           });
+          return entrance;
         },
       });
+
+      // A heading a jump skipped would otherwise sit below its own mask —
+      // there, but invisible. See `whenPassed`.
+      if (scroll) return whenPassed(el, () => entrance?.play());
     },
     { scope: ref }
   );

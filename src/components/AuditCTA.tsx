@@ -45,6 +45,15 @@ type Props = {
   activePlans?: string[];
   /** For photographs whose left side is lit, where white type needs holding down. */
   scrim?: boolean;
+  /** Small label over the heading. */
+  eyebrow?: string;
+  /** Numbered steps under the copy — what happens after the form is sent. */
+  steps?: string[];
+  /** A line under everything else on the left; replaces nothing. */
+  footnote?: React.ReactNode;
+  /** The two navigating buttons. Off where the copy already offers the way out. */
+  actions?: boolean;
+  formVariant?: 'enquiry' | 'conversation';
 };
 
 export default function AuditCTA({
@@ -56,6 +65,11 @@ export default function AuditCTA({
   plans = ENQUIRY_PLANS,
   activePlans,
   scrim = false,
+  eyebrow,
+  steps,
+  footnote,
+  actions = true,
+  formVariant = 'enquiry',
 }: Props) {
   return (
     <section className="bg-white py-20 2xl:py-24 border-b border-gray-100" id={id}>
@@ -87,18 +101,40 @@ export default function AuditCTA({
               wrapped to a third line carrying a single word. */}
           <div className="relative z-[2] grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)] lg:gap-14">
             <div>
+              {eyebrow && (
+                <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#CBD0AC]">{eyebrow}</p>
+              )}
               {headingSlot ?? (
                 <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-8 font-sans">
                   {heading}
                 </h2>
               )}
-              <p className="text-[#CBD0AC] font-medium text-base sm:text-lg leading-relaxed max-w-[44ch]">
+              {/* The FAQ answers' type (FaqList): 15.5px, medium, relaxed. The
+                  panel's body copy, its steps and its footnote all share it —
+                  Cami, 5 October: one size, the one the answers use. */}
+              <p className="text-[#CBD0AC] font-medium text-[15.5px] leading-relaxed max-w-[44ch]">
                 {copy}
               </p>
 
               {/* These two navigate; the form beside them submits. Keeping them
                   here is what lets the form's own button say "Send message"
                   rather than borrowing this one's label. */}
+              {steps && (
+                <ol className="mt-8 flex flex-col gap-3.5">
+                  {steps.map((step, i) => (
+                    /* The number fills white under the cursor, the way the
+                       other hover states on the site answer (Cami, 5 October). */
+                    <li key={step} className="group flex cursor-default items-center gap-3.5 text-[15.5px] font-medium text-white">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/40 text-[12px] font-semibold text-white/90 transition-colors duration-300 group-hover:border-white group-hover:bg-white group-hover:text-[#171A10]">
+                        {i + 1}
+                      </span>
+                      {step}
+                    </li>
+                  ))}
+                </ol>
+              )}
+
+              {actions && (
               <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:items-center">
                 <a
                   href={`${BASE}/contact/`}
@@ -116,9 +152,14 @@ export default function AuditCTA({
                   Check my visibility <ArrowUpRight className="ml-0.5" />
                 </a>
               </div>
+              )}
+
+              {footnote && (
+                <p className="mt-8 max-w-[44ch] text-[15.5px] font-medium leading-relaxed text-[#CBD0AC]">{footnote}</p>
+              )}
             </div>
 
-            <PlanEnquiryForm plans={plans} activePlans={activePlans} />
+            <PlanEnquiryForm plans={plans} activePlans={activePlans} variant={formVariant} />
           </div>
         </div>
       </div>

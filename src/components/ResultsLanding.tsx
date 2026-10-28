@@ -143,7 +143,7 @@ export default function ResultsLanding() {
             category where every statement has to be accurate, the incumbents are large, and the
             audience is sceptical by default. Authority was the only way in.
           </p>
-          <SpinFlower alt="Thallo" className="block w-20 h-20 opacity-80" />
+          <SpinFlower className="block w-20 h-20 opacity-80" />
         </div>
       </section>
 

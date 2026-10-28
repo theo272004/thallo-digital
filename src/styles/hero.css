@@ -103,10 +103,16 @@
   }
 }
 
+/* `--phone-raise` starts the phone that much higher — Cami, 5 October: "más
+   arriba todo", with the device a little larger so the lift reads as size
+   rather than as a box floating up. The crop starts higher by the same amount
+   and is that much taller, so its foot — the fold — does not move: the phone
+   still ends exactly where the screen does. Desktop only. */
 .phone-crop-container {
   position: relative;
   width: 100%;
-  height: calc(100% + 90px + var(--hero-lift, 0px));
+  margin-top: calc(-1 * var(--phone-raise, 0px));
+  height: calc(100% + 90px + var(--hero-lift, 0px) + var(--phone-raise, 0px));
   align-self: flex-start;
   overflow: hidden;
   display: flex;
@@ -129,14 +135,17 @@
 /* Laptop: keep the phone narrower so it doesn't dominate the hero or crowd
    the ticker below; only full desktops get the widest device. */
 @media (min-width: 1024px) {
+  .hero-visual-column {
+    --phone-raise: 48px;
+  }
   .phone-mockup-frame {
-    max-width: 384px;
+    max-width: 408px; /* was 384 */
   }
 }
 
 @media (min-width: 1536px) {
   .phone-mockup-frame {
-    max-width: 452px;
+    max-width: 480px; /* was 452 */
   }
 }
 

@@ -3,7 +3,8 @@ import React from 'react';
 import SpinFlower from '@/components/ui/SpinFlower';
 import ArrowUpRight from '@/components/ui/ArrowUpRight';
 import AuditCTA from '@/components/AuditCTA';
-import { BASE } from '@/lib/site';
+import JsonLd from '@/components/JsonLd';
+import { BASE, SITE_URL } from '@/lib/site';
 
 const STATS = [
   {
@@ -77,28 +78,48 @@ const INDUSTRIES: Industry[] = [
    carries the sector's initials — there is no name to put there. */
 const QUOTES = [
   {
-    text: 'In our category, being the name AI recommends changed everything about how fast deals moved.',
-    role: 'VP Marketing',
-    sector: 'Fintech',
-    initials: 'FT',
+    text: "We went with Thallo for an audit and to be honest we weren’t really sure what to expect because there are so many AI generated audits out there now that have no professional input, but that wasn’t the case here. The recommendations were excellent and we definitely want to keep working with them.",
+    name: "Andres S",
+    role: "General manager",
+    initials: "AS",
   },
   {
-    text: 'They understood our regulatory world. The content was credible enough to be cited, not just published.',
-    role: 'Founder',
-    sector: 'Health tech',
-    initials: 'HT',
+    text: "I like that they have a clear process for bringing SEO, content, and brand positioning together, so nothing feels disconnected like it has with other agencies we’ve worked with. They’re also very communicative, easy to work with, and they deliver on what they say.",
+    name: "Oscar S",
+    role: "Head of Marketing",
+    initials: "OS",
   },
   {
-    text: 'Referrals used to be our whole pipeline. Now buyers find us first, already trusting us.',
-    role: 'Partner',
-    sector: 'Professional services',
-    initials: 'PS',
+    text: "We used to publish content without much of a strategy. Sometimes it worked, sometimes it didn’t. Once we decided to take organic growth more seriously and started working with Thallo, things became much more consistent. We’ve seen steady growth and we’re getting organic leads through the site. We’ve been really happy with the results.",
+    name: "John B",
+    role: "Co-founder",
+    initials: "JB",
   },
 ];
+
+/**
+ * The sectors as an ItemList, read off `INDUSTRIES` so a sector added to the
+ * page is added here with it. The line under each is the page's own: the
+ * statistic and its source where there is one, the phrase where there is not.
+ */
+const INDUSTRIES_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  '@id': `${SITE_URL}/industries/#list`,
+  name: 'Industries Thallo Digital builds AI visibility for',
+  itemListElement: INDUSTRIES.map((ind, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: ind.name,
+    description:
+      ind.type === 'metric' ? `${ind.metric} ${ind.meaning} (${ind.src}). ${ind.line}` : ind.phrase,
+  })),
+};
 
 export default function IndustriesPage() {
   return (
     <>
+      <JsonLd data={INDUSTRIES_SCHEMA} />
       {/* Hero */}
       <section className="bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
@@ -108,7 +129,7 @@ export default function IndustriesPage() {
           <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[52ch] mb-10">
             Where the decision is high-stakes, buyers research hard before they commit. We make you the name they are most likely to trust.
           </p>
-          <SpinFlower alt="Thallo" className="block w-20 h-20 opacity-80" />
+          <SpinFlower className="block w-20 h-20 opacity-80" />
         </div>
       </section>
 
@@ -314,13 +335,13 @@ export default function IndustriesPage() {
               In their <span className="italic text-[#39471D]">own words.</span>
             </h2>
             <p className="mx-auto mt-3 max-w-[46ch] text-[15px] font-medium leading-relaxed text-gray-500">
-              Three sectors, three engagements, on what changed once the models started naming them.
+              Three engagements, in the words of the people who ran them.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {QUOTES.map((q, i) => (
               <div
-                key={q.sector}
+                key={q.name}
                 /* Middle card runs half a cycle behind the outer two, so it
                    rises while they fall and vice versa. A NEGATIVE delay of
                    half the duration starts it already mid-cycle — a positive
@@ -348,8 +369,8 @@ export default function IndustriesPage() {
                     <span className="text-[11px] font-bold text-[#39471D]">{q.initials}</span>
                   </div>
                   <div>
-                    <p className="text-[12px] font-bold text-gray-900 leading-none">{q.role}</p>
-                    <p className="text-[11px] text-gray-400 font-medium mt-0.5">{q.sector}</p>
+                    <p className="text-[12px] font-bold text-gray-900 leading-none">{q.name}</p>
+                    <p className="text-[11px] text-gray-400 font-medium mt-0.5">{q.role}</p>
                   </div>
                 </div>
               </div>

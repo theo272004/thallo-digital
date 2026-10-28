@@ -71,8 +71,7 @@ export default function PlaybookContrast() {
             html='Most agencies are still selling <span class="italic text-[#39471D]">the 2019 playbook.</span>'
           />
           <p className="mx-auto mt-5 max-w-[58ch] text-base font-medium leading-relaxed text-gray-500">
-            It was built for a search engine that sent people to websites. That&rsquo;s not the one your buyers are
-            using anymore.
+            It was built for a search engine that sent people to websites. Your buyers ask AI for answers now.
           </p>
         </div>
 
@@ -164,6 +163,11 @@ export default function PlaybookContrast() {
         {/* The two panels stack on a phone, where "other agencies" and "Thallo
             Digital" become two lists one after the other rather than two columns
             to read across. The rows still pair up in order. */}
+
+        {/* The closing line that stood here — "Authority is the one asset that
+            appreciates. … Authority compounds." — came off on 6 October at
+            Cami's request: the About section already says it, so the page was
+            saying it twice. */}
       </div>
     </section>
   );

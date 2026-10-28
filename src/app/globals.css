@@ -265,6 +265,17 @@ body {
   outline-offset: 3px;
 }
 
+/* Except on something focused from script rather than by the reader: the
+   cookie banner takes focus when it appears so a keyboard visitor meets the
+   question, and that counts as :focus-visible. It is a container, not a
+   control, so the ring only said "something is selected" about nothing. Its
+   `outline-none` could not stop it, for the same unlayered reason as above —
+   and while the banner was a strip as wide as the window, the top edge of its
+   ring was a 2px olive line straight across the hero. */
+[tabindex='-1']:focus-visible {
+  outline: none;
+}
+
 /* A field is the exception, because it already draws its own edge. Focus
    belongs on that edge — not on a second rectangle floating 3px outside it,
    which is a box around a box and reads heavy-handed on a form this quiet. So:
