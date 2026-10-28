@@ -199,7 +199,7 @@ export default function RootLayout({
           }}
         />
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
-        {/* Renders nothing unless NEXT_PUBLIC_GA_ID was set at build time. */}
+        {/* Renders nothing unless NEXT_PUBLIC_GA_ID or NEXT_PUBLIC_CLARITY_ID was set at build time. */}
         <Analytics />
       </body>
     </html>
