@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { GA_ID } from '@/components/Analytics';
+import { HAS_ANALYTICS } from '@/components/Analytics';
 import { CONSENT_EVENT, readConsent, writeConsent, type Consent } from '@/lib/consent';
 
 /**
@@ -34,7 +34,7 @@ export default function ConsentChoice() {
     };
   }, []);
 
-  if (!GA_ID || undefined === consent) return null;
+  if (!HAS_ANALYTICS || undefined === consent) return null;
 
   const BUTTON =
     'shrink-0 rounded-full border border-gray-200 px-5 py-2.5 text-[13px] font-bold text-gray-900 transition-colors hover:border-[#39471D] hover:text-[#39471D]';
