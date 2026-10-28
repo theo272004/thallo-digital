@@ -45,9 +45,36 @@ con los textos exactos que pidió Camila.
    en **Industry** el sector ("Professional Services", "Finance").
 2. En el editor, botón + → Patrones → **Thallo · AI Shortlist volume**. Es
    la forma entera del estudio en el orden que todos los volúmenes respetan:
-   hallazgo, tabla, tres sorpresas, fuentes, patrones, comparación con
-   Google, preguntas, colofón. Se escribe encima de los corchetes; no se
-   reordena.
+   entradilla, hallazgo, **las dos listas enfrentadas** (lo que nombra la IA
+   contra lo que rankea Google), **la tabla por modelo**, las firmas que
+   aparecen en las dos, **el reparto por tipo de pregunta**, de qué están
+   hechos los resultados y qué dominios se citan, el caso, el aparte de lo
+   observado pero no medido, las preguntas y el colofón. Se escribe encima de
+   los corchetes; no se reordena.
+
+   Las dos listas enfrentadas son **dos tablas normales** dentro de un bloque
+   de columnas: se editan como cualquier otra. La de la derecha lleva
+   `thallo-surface--google`, y eso es lo único que pasa sus barras de verde
+   oliva a gris. La tabla por modelo lleva `thallo-models` y no dibuja barras
+   a propósito — tres barras por fila es un gráfico disfrazado de tabla, y esa
+   tabla existe para comparar tres cifras a ojo.
+
+   Tres bloques van como HTML dentro del editor y no como tabla: el reparto
+   por tipo de pregunta, la lista de de qué están hechos los resultados y la
+   de dominios citados. Se editan, pero con más cuidado que una celda.
+   **La forma nueva (desde el 21-09-2026) es por secciones.** Cami pidió
+   que un estudio se lea como su referencia: cada apartado es un grupo
+   `thallo-sec` a lo ancho, con una etiqueta pequeña encima (`thallo-kicker`:
+   "The finding", "Ranking overview", "Agreement"…), el titular, el texto y
+   el material a dos columnas — `thallo-sec__grid` con `__main` y `__side`,
+   donde el lado es una foto (`thallo-photo`, de las del sitio), una nota
+   (`thallo-note`) o una cita (`thallo-quote`) — sobre bandas grises
+   alternas (`thallo-sec--band`). **La referencia de esa forma es
+   `content/ai-shortlist/executive-search-firms.html`**: para un volumen
+   nuevo, copiar ese archivo y escribir encima, no el patrón (que todavía
+   tiene la forma de una sola columna). El hero lo pone la plantilla: la foto
+   de la derecha la elige el tema por la industria (`thallo_shortlist_art()`).
+
 3. Las tablas de ranking son bloques de tabla normales. La tasa de mención se
    escribe como porcentaje — `78%` — y el tema dibuja la barra en la página.
    La fila de cabecera decide las columnas: `#`, `Firm`, una cabecera con
@@ -66,20 +93,38 @@ calendario, nunca se escribe.
 
 ## La dirección
 
-En producción WordPress está en `/blog/`, así que la serie contesta en
-`thallodigital.com/blog/ai-shortlist/` hasta que se pegue la regla de
-[`deploy/ai-shortlist.htaccess`](../deploy/ai-shortlist.htaccess) en el
-`.htaccess` de la raíz (instrucciones dentro del archivo). El tema mira si
-esa regla existe: mientras no esté, todos sus enlaces siguen bajo `/blog/`;
-en cuanto esté, los pasa a `thallodigital.com/ai-shortlist/` solo, sin volver
-a subir nada.
+En producción WordPress está en `/blog/`, así que la serie contesta siempre
+en `thallodigital.com/blog/ai-shortlist/`. La regla de
+[`deploy/ai-shortlist.htaccess`](../deploy/ai-shortlist.htaccess) **ya está
+pegada** en el `.htaccess` de la raíz, así que contesta también en
+`thallodigital.com/ai-shortlist/` — la dirección buena, la que se enseña.
+
+El tema mira si esa regla existe: mientras no esté, todos sus enlaces siguen
+bajo `/blog/`; en cuanto esté, los pasa a la raíz solo. Eso vale para lo que
+imprime WordPress (el breadcrumb, la lista del hub, el canonical, el sitemap)
+y, desde 1.36.1, también para el botón "AI Shortlist Series" de la barra, que
+está escrito a mano en `parts/header.html` y se quedaba bajo `/blog/`
+(`thallo_shortlist_nav_link()`).
+
+El sitio estático nombra la serie en un solo sitio, `RESEARCH_URL` en
+[`src/lib/site.ts`](../src/lib/site.ts). Ese no lee el `.htaccess`: si algún
+día se quita la regla, hay que devolverlo a `/blog/ai-shortlist/` a mano.
 
 ## Local
 
-`preview_start` con la entrada **`blog`** del `.claude/launch.json` de la
-carpeta madre sirve el WordPress local en <http://127.0.0.1:8080/>.
-`blog-local/seed-shortlist.php` crea el hub, un volumen publicado con el
-patrón y cinco programados — el estado de la serie en el lanzamiento.
+`preview_start` con la entrada **`blog`** del `.claude/launch.json` de este
+repositorio arranca `C:\Users\NICOLAS\Desktop\thallo-local-wp\start.ps1` y sirve
+el WordPress local en <http://localhost:8081/>. El hub responde en
+`http://localhost:8081/ai-shortlist/` — sin `/blog/` delante, porque en local
+WordPress está en la raíz y `thallo_shortlist_at_root()` lo detecta solo.
+
+El hub y un volumen se crean desde wp-admin como en producción: **AI Shortlist
+→ The hub page** y **AI Shortlist → New volume**.
+
+> Este apartado describía un `blog-local/seed-shortlist.php` y un servidor en
+> el 8080. Ninguno de los dos existe en este repositorio; eran de otro sitio de
+> trabajo. Si alguna vez hace falta sembrar la serie de un golpe, hay que
+> escribir ese script, no buscarlo.
 
 ## Subir
 
