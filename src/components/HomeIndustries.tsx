@@ -11,10 +11,11 @@ import { BASE } from '@/lib/site';
  *
  * Meant to be the section that stops the scroll (Cami, 1 November: "tiene que
  * ser la más que llame la atención"). Professional services is the
- * photograph in the middle; the other four are small white cards floating
- * over its two edges, two a side, each breathing on the /industries/ quote
- * cards' float at its own offset. On the way in they slide out from behind
- * the photograph to their places.
+ * photograph in the middle; the other four are small white cards sitting on
+ * it, two near each side, every one fully inside the frame (Cami's second
+ * pass: two of them hung off the edges). Each drifts a few pixels on a slow
+ * cycle at its own offset, and on the way in they slide a short way out to
+ * their places. Both motions were larger at first and read as jittery.
  *
  * The first version had five cards in a grid, the four white ones large and
  * empty; this one keeps them only as big as their names.
@@ -26,13 +27,15 @@ import { BASE } from '@/lib/site';
 
 type Side = 'left' | 'right';
 
-/* Positions at lg, over the photograph's edges. Staggered heights so the four
-   never line up into a frame around it. */
+/* Positions at lg, as a share of the stage. The photograph spans the middle
+   72% (14% to 86%), so every value here keeps a card inside it, and all four
+   stay in the upper part, clear of the title at the bottom. Staggered heights
+   so they never line up into a frame. */
 const OTHERS: { name: string; side: Side; pos: string; delay: string }[] = [
-  { name: 'Fintech', side: 'left', pos: 'lg:left-[4%] lg:top-[14%]', delay: '0s' },
-  { name: 'Health Tech', side: 'left', pos: 'lg:left-0 lg:bottom-[16%]', delay: '-3s' },
-  { name: 'Legal Tech', side: 'right', pos: 'lg:right-0 lg:top-[22%]', delay: '-1.5s' },
-  { name: 'Specialized Software', side: 'right', pos: 'lg:right-[5%] lg:bottom-[10%]', delay: '-4.5s' },
+  { name: 'Fintech', side: 'left', pos: 'lg:left-[16.5%] lg:top-[9%]', delay: '0s' },
+  { name: 'Health Tech', side: 'left', pos: 'lg:left-[19%] lg:top-[40%]', delay: '-4s' },
+  { name: 'Legal Tech', side: 'right', pos: 'lg:right-[18.5%] lg:top-[15%]', delay: '-2s' },
+  { name: 'Specialized Software', side: 'right', pos: 'lg:right-[16.5%] lg:top-[46%]', delay: '-6s' },
 ];
 
 export default function HomeIndustries() {
@@ -45,16 +48,16 @@ export default function HomeIndustries() {
       mm.add('(min-width: 1024px)', () => {
         const cards = gsap.utils.toArray<HTMLElement>('[data-side]');
         gsap.from(cards, {
-          x: (_, el: HTMLElement) => (el.dataset.side === 'left' ? 160 : -160),
+          x: (_, el: HTMLElement) => (el.dataset.side === 'left' ? 40 : -40),
           autoAlpha: 0,
-          scale: 0.85,
+          scale: 0.94,
           duration: 1,
           ease: 'power3.out',
           stagger: 0.12,
           scrollTrigger: { trigger: stageRef.current, start: 'top 70%', once: true },
         });
         gsap.from('[data-feature]', {
-          scale: 0.94,
+          scale: 0.97,
           autoAlpha: 0,
           duration: 1.1,
           ease: 'power3.out',
@@ -72,10 +75,10 @@ export default function HomeIndustries() {
         <div className="mx-auto max-w-3xl text-center mb-12 2xl:mb-14">
           <SplitReveal
             as="h2"
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 mb-6 font-sans leading-[1.05]"
+            className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 font-sans leading-[1.05]"
             html='Who Do We <span class="italic text-[#39471D]">Work With?</span>'
           />
-          <p className="mx-auto text-gray-500 font-medium text-base sm:text-lg leading-relaxed max-w-[56ch]">
+          <p className="mx-auto text-gray-500 font-medium text-base leading-relaxed max-w-[56ch]">
             Our work is a fit for companies whose expertise, capabilities or approach need to be understood before a
             customer commits.
           </p>
@@ -90,7 +93,7 @@ export default function HomeIndustries() {
           <a
             data-feature
             href={`${BASE}/industries/`}
-            className="group relative isolate z-0 flex h-[380px] lg:h-full w-full lg:w-[58%] lg:mx-auto flex-col items-center justify-end overflow-hidden rounded-[32px] bg-[#171A10] p-8 sm:p-12 text-center shadow-[0_30px_70px_-30px_rgba(23,26,16,0.55)]"
+            className="group relative isolate z-0 flex h-[380px] lg:h-full w-full lg:w-[72%] lg:mx-auto flex-col items-center justify-end overflow-hidden rounded-[32px] bg-[#171A10] p-8 sm:p-12 text-center shadow-[0_30px_70px_-30px_rgba(23,26,16,0.55)]"
           >
             <img
               loading="lazy"
@@ -118,9 +121,9 @@ export default function HomeIndustries() {
                 <div className="float-lg" style={{ animationDelay: delay }}>
                   <a
                     href={`${BASE}/industries/`}
-                    className="group flex h-full items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 lg:min-w-[250px] lg:px-6 lg:py-5 shadow-[0_18px_40px_-18px_rgba(23,26,16,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-[#39471D]/40"
+                    className="group flex h-full items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 lg:min-w-[230px] lg:px-5 lg:py-4 shadow-[0_18px_40px_-18px_rgba(23,26,16,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-[#39471D]/40"
                   >
-                    <span className="text-[15px] lg:text-lg font-semibold tracking-tight text-gray-900">{name}</span>
+                    <span className="text-[15px] lg:text-base font-semibold tracking-tight text-gray-900">{name}</span>
                     <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors duration-300 group-hover:border-[#39471D] group-hover:bg-[#39471D] group-hover:text-white">
                       <ArrowUpRight className="text-[11px]" />
                     </span>

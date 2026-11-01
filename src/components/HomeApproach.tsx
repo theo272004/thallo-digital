@@ -10,8 +10,12 @@ import type { FillPart } from '@/components/motion/ScrollFill';
  * No card and no photograph. The video right above it is already a dark
  * framed object, and a second one straight after read oddly (Cami, 1
  * November), so this section is type on the page's own ground: the heading
- * centred, and the two paragraphs under it as one centred column at reading
- * size.
+ * centred on two lines, and the two paragraphs side by side under it.
+ *
+ * Sizes are the site's, not this section's own: the heading is every h2's
+ * text-4xl/5xl and the paragraphs are the body's text-base. A larger pass
+ * (6xl heading, 2xl copy, one long column) made it the biggest and tallest
+ * thing on the page, and Cami asked for it unified with the rest.
  *
  * What moves is the reading: each paragraph fills in word by word as it
  * scrolls up, from pale grey to ink, and the phrases that carry the argument
@@ -19,7 +23,7 @@ import type { FillPart } from '@/components/motion/ScrollFill';
  * cards over a photograph, then a dark photo banner — are in git history.
  */
 
-const INK = '#1F2937'; // gray-800
+const INK = '#4B5563'; // gray-600: a step darker than the body grey, so the fill reads
 const OLIVE = '#39471D';
 
 const RESEARCH: FillPart[] = [
@@ -40,17 +44,17 @@ const PLAN: FillPart[] = [
 
 export default function HomeApproach() {
   return (
-    <section className="bg-[#F7F8F9] py-24 2xl:py-32 border-b border-gray-100" id="approach">
+    <section className="bg-[#F7F8F9] py-20 2xl:py-24 border-b border-gray-100" id="approach">
       <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
         <SplitReveal
           as="h2"
-          className="max-w-[18ch] text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans text-balance"
+          className="max-w-[26ch] text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans text-balance"
           html='Show Buyers <span class="italic text-[#39471D]">What Your Customers Already Know.</span>'
         />
 
-        <div className="mt-14 lg:mt-16 flex max-w-[60ch] flex-col gap-8 lg:gap-10">
-          <ScrollFill parts={RESEARCH} className="text-xl sm:text-2xl font-medium leading-[1.55] tracking-tight" />
-          <ScrollFill parts={PLAN} className="text-xl sm:text-2xl font-medium leading-[1.55] tracking-tight" />
+        <div className="mt-10 lg:mt-12 grid w-full max-w-[1040px] grid-cols-1 gap-6 text-left md:grid-cols-2 md:gap-12">
+          <ScrollFill parts={RESEARCH} className="text-base font-medium leading-relaxed" />
+          <ScrollFill parts={PLAN} className="text-base font-medium leading-relaxed" />
         </div>
       </div>
     </section>

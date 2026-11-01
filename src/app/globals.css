@@ -140,11 +140,17 @@ body {
   animation: quote-float 6s ease-in-out infinite;
   will-change: transform;
 }
-/* The same float, desktop only: the industry cards around the professional
-   services photograph on the home. On a phone they sit still in a grid. */
+/* A quieter float, desktop only: the industry cards on the professional
+   services photograph on the home. Four pixels each way over eight seconds;
+   the quote cards' ten over six read as jittery on cards this small. On a
+   phone they sit still in a grid. */
+@keyframes float-soft {
+  0%, 100% { transform: translateY(-4px); }
+  50%      { transform: translateY(4px); }
+}
 @media (min-width: 1024px) {
   .float-lg {
-    animation: quote-float 6s ease-in-out infinite;
+    animation: float-soft 8s ease-in-out infinite;
     will-change: transform;
   }
 }
