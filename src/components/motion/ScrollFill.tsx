@@ -21,10 +21,14 @@ export function ScrollFill({
   parts,
   as: Tag = 'p',
   className,
+  from = START,
 }: {
   parts: FillPart[];
   as?: React.ElementType;
   className?: string;
+  /** The unfilled colour. The default suits a white ground; on a dark one,
+   *  pass a faint white. */
+  from?: string;
 }) {
   const ref = useRef<HTMLElement>(null);
 
@@ -40,7 +44,7 @@ export function ScrollFill({
         return;
       }
 
-      gsap.set(words, { color: START });
+      gsap.set(words, { color: from });
       const tl = gsap.timeline({
         scrollTrigger: { trigger: el, start: 'top 85%', end: 'top 40%', scrub: 0.6 },
       });

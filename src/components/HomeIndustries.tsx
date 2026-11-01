@@ -46,7 +46,7 @@ export default function HomeIndustries() {
               <img
                 loading="lazy"
                 decoding="async"
-                src={`${BASE}/industry-professional-services-bg.webp`}
+                src={`${BASE}/shift.webp`}
                 alt=""
                 className="absolute inset-0 -z-10 h-full w-full object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
               />

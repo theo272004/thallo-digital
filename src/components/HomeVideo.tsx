@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 import { BASE } from '@/lib/site';
 
 /**
@@ -10,6 +11,14 @@ import { BASE } from '@/lib/site';
  * the desk photograph, a flat scrim, the white play disc. Larger here, and
  * centred, because it is the second thing on the page rather than a stop in
  * the middle of it.
+ *
+ * ## The entrance
+ *
+ * The hero takes the whole first screen, so on arrival there is only the
+ * headline. A short scroll brings the frame's top edge into view and it pops
+ * up into place, from small and low to full size with a little overshoot
+ * (Cami: "sale el video así, plum"). Scroll back above it and it drops away
+ * again, so the pop is there every time. Reduced motion skips it.
  *
  * ## Until the video exists
  *
@@ -45,13 +54,34 @@ const SOURCE = readSource(VIDEO_URL);
 
 export default function HomeVideo() {
   const [playing, setPlaying] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      if (!frameRef.current || prefersReducedMotion()) return;
+      gsap.fromTo(
+        frameRef.current,
+        { autoAlpha: 0, scale: 0.72, y: 140 },
+        {
+          autoAlpha: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.95,
+          ease: 'back.out(1.6)',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 92%', toggleActions: 'play none none reverse' },
+        }
+      );
+    },
+    { scope: sectionRef }
+  );
 
   return (
-    <section className="bg-white pb-20 2xl:pb-28 border-b border-gray-100" id="intro-video" aria-label="An introduction to Thallo">
+    <section ref={sectionRef} className="bg-white pb-20 2xl:pb-28 border-b border-gray-100" id="intro-video" aria-label="An introduction to Thallo">
       <div className="max-w-[1440px] mx-auto px-6">
         <div
-          data-reveal
-          className="relative mx-auto max-w-[1180px] aspect-[16/10] sm:aspect-[16/8] rounded-[32px] overflow-hidden bg-[#171A10] shadow-[0_24px_60px_-28px_rgba(23,26,16,0.45)]"
+          ref={frameRef}
+          className="relative mx-auto origin-bottom max-w-[1180px] aspect-[16/10] sm:aspect-[16/8] rounded-[32px] overflow-hidden bg-[#171A10] shadow-[0_24px_60px_-28px_rgba(23,26,16,0.45)]"
         >
           {playing && SOURCE ? (
             SOURCE.kind === 'youtube' ? (

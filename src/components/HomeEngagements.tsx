@@ -68,7 +68,10 @@ function Panel({ e }: { e: Engagement }) {
   return (
     <article
       id={e.id}
-      className={`relative isolate flex flex-col overflow-hidden rounded-[24px] p-7 sm:p-10 transition-transform duration-300 hover:-translate-y-1 ${
+      /* From lg the panel is a subgrid over five shared rows (title, intro,
+         list, closing line, button), so each block starts at the same height
+         in both panels even though the intros differ in length. */
+      className={`relative isolate flex flex-col lg:grid lg:grid-rows-subgrid lg:row-span-5 lg:gap-0 overflow-hidden rounded-[24px] p-7 sm:p-10 transition-transform duration-300 hover:-translate-y-1 ${
         d ? 'bg-[#171A10]' : 'border border-gray-200/80 bg-[#F7F8F9]'
       }`}
     >
@@ -123,8 +126,8 @@ function Panel({ e }: { e: Engagement }) {
 
       <p className={`text-[14.5px] font-medium leading-relaxed mb-8 ${d ? 'text-white/75' : 'text-gray-500'}`}>{e.close}</p>
 
-      {/* mt-auto: the shorter panel's link drops to the same line as the
-          longer one's, so the pair ends level. */}
+      {/* mt-auto on a phone, the button row of the subgrid from lg: either
+          way the pair ends level. */}
       <a
         href={e.link.href}
         onClick={(ev) => {

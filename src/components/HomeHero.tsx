@@ -17,11 +17,14 @@ import { BASE } from '@/lib/site';
  * The words are Cami's homepage copy of 1 November, unchanged.
  */
 export default function HomeHero() {
+  /* A full screen of its own, so the first thing anyone sees is the headline
+     and nothing else; the video waits below the fold and pops in on the first
+     scroll (HomeVideo). */
   return (
-    <section className="relative w-full bg-white overflow-hidden pt-36 pb-16 sm:pt-44 sm:pb-20 2xl:pt-52 2xl:pb-24">
+    <section className="relative w-full bg-white overflow-hidden min-h-[100svh] flex items-center pt-28 pb-16">
       <BackgroundGrid />
 
-      <div className="relative z-10 mx-auto max-w-[1440px] px-6 flex flex-col items-center text-center">
+      <div className="relative z-10 mx-auto max-w-[1440px] w-full px-6 flex flex-col items-center text-center">
         <SplitReveal
           as="h1"
           scroll={false}
@@ -51,18 +54,18 @@ export default function HomeHero() {
                 e.preventDefault();
                 scrollToEl('#cta');
               }}
-              className="px-6 py-3.5 rounded-full text-xs font-bold text-white bg-[#39471D] border border-[#39471D] hover:bg-[#55672E] hover:border-[#55672E] transition-all flex items-center gap-2 group shadow-sm shadow-[#55672E]/10"
+              className="px-8 py-4 sm:px-9 sm:py-[1.1rem] rounded-full text-sm sm:text-[15px] font-bold text-white bg-[#39471D] border border-[#39471D] hover:bg-[#55672E] hover:border-[#55672E] transition-all flex items-center gap-2 group shadow-sm shadow-[#55672E]/10"
             >
               Talk To Thallo
-              <ArrowUpRight className="text-[11px] group-hover:translate-x-0.5 transition-transform" />
+              <ArrowUpRight className="text-[13px] group-hover:translate-x-0.5 transition-transform" />
             </a>
           </Magnetic>
           <a
             href={`${BASE}/results/`}
-            className="px-6 py-3.5 rounded-full text-xs font-bold text-gray-800 border border-gray-200 bg-white hover:border-gray-400 transition-all flex items-center gap-2 group"
+            className="px-8 py-4 sm:px-9 sm:py-[1.1rem] rounded-full text-sm sm:text-[15px] font-bold text-gray-800 border border-gray-200 bg-white hover:border-gray-400 transition-all flex items-center gap-2 group"
           >
             See Our Work
-            <ArrowUpRight className="text-[11px] text-gray-500 group-hover:translate-x-0.5 transition-transform" />
+            <ArrowUpRight className="text-[13px] text-gray-500 group-hover:translate-x-0.5 transition-transform" />
           </a>
         </div>
       </div>
