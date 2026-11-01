@@ -111,11 +111,10 @@ export default function HomeIndustries() {
             <span className="text-4xl sm:text-5xl font-bold tracking-tight text-white leading-[1.05]">
               Professional Services
             </span>
-            {/* On hover the disc only changes colour, the way the small cards'
-                discs do. It used to grow and push the arrow out, which Cami
-                didn't like (2 November). The white border keeps the olive disc from
-                sinking into the dark photograph. */}
-            <span className="mt-6 flex h-12 w-12 items-center justify-center rounded-full border border-white bg-white text-[#39471D] transition-colors duration-300 group-hover:border-white/70 group-hover:bg-[#39471D] group-hover:text-white">
+            {/* The disc stays white and still on hover; only the photograph
+                zooms. It used to grow and push the arrow out, then to turn
+                olive, and Cami wanted neither (2 November). */}
+            <span className="mt-6 flex h-12 w-12 items-center justify-center rounded-full bg-white text-[#39471D]">
               <ArrowUpRight className="text-[15px]" />
             </span>
           </a>
