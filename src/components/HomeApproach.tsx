@@ -13,7 +13,9 @@ import type { FillPart } from '@/components/motion/ScrollFill';
  * centred on two lines, and the two paragraphs side by side under it.
  *
  * Sizes are the site's, not this section's own: the heading is every h2's
- * text-4xl/5xl and the paragraphs are the body's text-base. A larger pass
+ * text-4xl/5xl and the paragraphs are text-base, rising to text-lg from sm
+ * exactly as the About statement's paragraph does. Both columns are
+ * justified, at Cami's request, so they end square instead of ragged. A larger pass
  * (6xl heading, 2xl copy, one long column) made it the biggest and tallest
  * thing on the page, and Cami asked for it unified with the rest. The room it
  * needs comes from spacing instead: generous padding, a wide gap under the
@@ -41,12 +43,14 @@ const PLAN: FillPart[] = [
     text: 'Then, we use those insights to plan your website’s structure, decide which content and resources to create and how we’ll distribute them to reach the right people. Over time, useful, credible work gives people',
     color: INK,
   },
-  { text: ' a reason to remember your business and recommend it.', color: OLIVE },
+  /* The space before "it." is a no-break space, so the last word never ends
+     up alone on a line of its own. */
+  { text: ' a reason to remember your business and recommend it.', color: OLIVE },
 ];
 
 export default function HomeApproach() {
   return (
-    <section className="bg-[#F7F8F9] py-28 2xl:py-36 border-b border-gray-100" id="approach">
+    <section className="bg-[#F7F8F9] py-32 2xl:py-40 border-b border-gray-100" id="approach">
       <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
         <SplitReveal
           as="h2"
@@ -54,9 +58,9 @@ export default function HomeApproach() {
           html='Show Buyers <span class="italic text-[#39471D]">What Your Customers Already Know.</span>'
         />
 
-        <div className="mt-14 lg:mt-20 grid w-full max-w-[1120px] grid-cols-1 gap-8 text-left md:grid-cols-2 md:gap-20">
-          <ScrollFill parts={RESEARCH} className="text-base font-medium leading-relaxed" />
-          <ScrollFill parts={PLAN} className="text-base font-medium leading-relaxed" />
+        <div className="mt-16 lg:mt-24 grid w-full max-w-[1200px] grid-cols-1 gap-8 text-left md:grid-cols-2 md:gap-20">
+          <ScrollFill parts={RESEARCH} className="text-base sm:text-lg font-medium leading-relaxed text-justify hyphens-none [text-wrap:pretty]" />
+          <ScrollFill parts={PLAN} className="text-base sm:text-lg font-medium leading-relaxed text-justify hyphens-none [text-wrap:pretty]" />
         </div>
       </div>
     </section>

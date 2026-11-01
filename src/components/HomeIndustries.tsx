@@ -31,13 +31,14 @@ type Side = 'left' | 'right';
 
 /* Positions at lg, as a share of the stage. The photograph spans the middle
    72% (its edges at 14% and 86%) and a card is about 19% wide, so 5% puts a
-   card half over the edge and 8.5% puts it about two thirds over. Staggered
-   heights so the four never line up into a frame. */
+   card half over the edge and 8.5% puts it about two thirds over. The four
+   are spread down the whole height of the photograph, top to near the
+   bottom, at staggered heights so they never line up into a frame. */
 const OTHERS: { name: string; side: Side; pos: string; delay: string }[] = [
-  { name: 'Fintech', side: 'left', pos: 'lg:left-[5%] lg:top-[12%]', delay: '0s' },
-  { name: 'Health Tech', side: 'left', pos: 'lg:left-[8.5%] lg:top-[50%]', delay: '-4s' },
-  { name: 'Legal Tech', side: 'right', pos: 'lg:right-[8.5%] lg:top-[20%]', delay: '-2s' },
-  { name: 'Specialized Software', side: 'right', pos: 'lg:right-[4%] lg:top-[58%]', delay: '-6s' },
+  { name: 'Fintech', side: 'left', pos: 'lg:left-[5%] lg:top-[7%]', delay: '0s' },
+  { name: 'Health Tech', side: 'left', pos: 'lg:left-[8.5%] lg:top-[52%]', delay: '-4s' },
+  { name: 'Legal Tech', side: 'right', pos: 'lg:right-[8.5%] lg:top-[24%]', delay: '-2s' },
+  { name: 'Specialized Software', side: 'right', pos: 'lg:right-[4%] lg:top-[76%]', delay: '-6s' },
 ];
 
 export default function HomeIndustries() {
