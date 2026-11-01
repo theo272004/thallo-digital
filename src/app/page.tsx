@@ -2,40 +2,58 @@
 
 import React from 'react';
 import Navbar from '@/components/Navbar';
-import Hero from '@/components/Hero';
-import About from '@/components/About';
-import TheProblem from '@/components/TheProblem';
-import ResearchAndScan from '@/components/ResearchAndScan';
-import PlaybookContrast from '@/components/PlaybookContrast';
-import HowItWorks from '@/components/HowItWorks';
-import AuditOffer from '@/components/AuditOffer';
-import PublicPricing from '@/components/PublicPricing';
-import FitCheck from '@/components/FitCheck';
+import HomeHero from '@/components/HomeHero';
+import HomeVideo from '@/components/HomeVideo';
+import HomeApproach from '@/components/HomeApproach';
+import HowItWorks, { type HowItWorksStep } from '@/components/HowItWorks';
+import HomeIndustries from '@/components/HomeIndustries';
+import HomeEngagements from '@/components/HomeEngagements';
 import HomeFaq from '@/components/HomeFaq';
 import Testimonials from '@/components/Testimonials';
-/* BlogSection — the testimonial carousel — is hidden further down this file
-   rather than removed. Its import is commented out with it, because an unused
-   import is a lint error and would block the build.
-import BlogSection from '@/components/BlogSection'; */
 import CTASection from '@/components/CTASection';
 import Footer from '@/components/Footer';
 import { useRevealBatch } from '@/components/motion';
+import { BASE } from '@/lib/site';
 
 /**
- * The home page, in the order of the approved copy.
+ * The home page, as of 1 November 2026.
  *
- * One argument, start to finish: who we are, what changed, what everyone else
- * is still selling, what we do instead, a free way to check where you stand,
- * the awkward questions answered, the writing, the ask.
+ * Shorter on purpose, and for now: Cami cut it down to her homepage copy of
+ * that day as part of a strategy, and everything that came off — the
+ * phone-to-browser hero, the shift cards, the turning flower, the research and
+ * scan pair, the playbook, the audit, the prices, the fit check — runs whole
+ * on /home-archive/ (src/components/HomeArchive), on the mirror only, because
+ * it will be used again.
  *
- * Four sections came off it to get there. The results dashboard and the
- * industries panel were both saying, at length, things the sections around
- * them now say once; the video was a stop in the middle of an argument that
- * reads better without one; and the testimonial carousel is commented out
- * below rather than deleted. The industries themselves did not go anywhere —
- * they are the ticker under About, which is where the copy puts them, and
- * `/industries/` still holds the long version.
+ * Everything from the hero to "How can we work together?" uses the words of
+ * that copy and nothing else. The FAQ, the writing and the closing panel are
+ * unchanged.
  */
+
+/* "What we do for your business" — the branch section, with the new words. */
+const CAPABILITIES: HowItWorksStep[] = [
+  {
+    title: 'Research And Content',
+    body: 'We turn expert interviews and customer research into a clear content strategy and resources that demonstrate your expertise. That includes service pages, blog posts, white papers, case studies, original research and articles for relevant publications.',
+    link: { label: 'See Our Content Work', href: `${BASE}/results/` },
+  },
+  {
+    title: 'Website Design And Development',
+    body: 'We plan, design and build websites that make your offer clear and give potential customers a straightforward path to contact you. Working with Kaiva Studio, we manage the architecture, navigation, design, development and launch.',
+    link: { label: 'Discuss Your Website', href: '#cta' },
+  },
+  {
+    title: 'Search And AI Visibility',
+    body: 'We address the technical and content issues that affect how your business is found and understood in search and AI answers, then track visibility and relevant website actions to guide improvements.',
+    link: { label: 'Explore AI Visibility', href: `${BASE}/thallo-ai/method/` },
+  },
+  {
+    title: 'Digital PR And Distribution',
+    body: 'We develop media pitches, bylined articles and press releases around your expertise and pursue relevant publication opportunities. We also adapt the work for LinkedIn, newsletters and other channels your customers follow.',
+    link: { label: 'Discuss PR And Distribution', href: '#cta' },
+  },
+];
+
 export default function Home() {
   useRevealBatch('home');
 
@@ -43,59 +61,21 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-white">
       <Navbar />
       <main className="flex-grow">
-        <Hero />
-        {/* Who the buyer is and what they ask while researching. Straight
-            under the hero since Cami's pass of 3 October. */}
-        <TheProblem />
-        {/* Who we are, and the one idea the whole page rests on. */}
-        <About />
-        {/* The proof that we measure what we sell (The AI Shortlist) beside the
-            same measurement run on your own brand (the free scan) — one section,
-            two cards, since Cami's pass of 5 October. Straight above the
-            playbook since 6 October, where Cami placed it. */}
-        <ResearchAndScan />
-        {/* What the alternative is, and why it stopped working. */}
-        <PlaybookContrast />
-        {/* What we do instead — read as the answer to the two above it. */}
-        <HowItWorks />
-        {/* The paid first step, with its price and its scope. */}
-        <AuditOffer />
-        {/* All three prices at once, so nobody has to ask. */}
-        <PublicPricing />
-        {/* Who this is for and who it is not, before the form. */}
-        <FitCheck />
-        {/* The awkward questions, answered before the writing and the ask.
-            They spent a week as the last thing on the page; they sit above the
-            closing panel again at Cami's request, which is why the intro
-            sentence points at the form *below* it. */}
+        <HomeHero />
+        <HomeVideo />
+        <HomeApproach />
+        <HowItWorks
+          id="services"
+          heading='What We Do <span class="italic text-[#39471D]">For Your Business.</span>'
+          intro={null}
+          steps={CAPABILITIES}
+        />
+        <HomeIndustries />
+        <HomeEngagements />
         <HomeFaq />
         {/* "Blogs & guides" — the writing, despite the file name. */}
         <Testimonials />
-        {/* Closes the argument: with the form on its own route now, this is the
-            home's hand-off to /contact/. */}
         <CTASection />
-
-        {/*
-          ── HIDDEN, NOT DELETED ─────────────────────────────────────────────
-          <BlogSection /> — the testimonial carousel, headed "Teams that became
-          the answer", despite the file name. Taken off the home on 8 August
-          2026 at Cami's request.
-
-          Nothing else references it, so it ships nowhere while this line is
-          commented out. The component itself is untouched in
-          src/components/BlogSection.tsx and its content is intact; putting it
-          back is uncommenting the line below and restoring the import at the
-          top of this file.
-
-          Worth a decision rather than a drift: a home page with no third-party
-          proof on it is a deliberate choice, not an oversight, and if it stays
-          off then the quotes should probably find a home somewhere else rather
-          than sitting in a component nobody renders.
-
-          <BlogSection />
-          ────────────────────────────────────────────────────────────────────
-        */}
-
       </main>
       <Footer />
     </div>

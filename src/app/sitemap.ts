@@ -22,16 +22,12 @@ export const dynamic = 'force-static';
 const SOURCES = {
   home: [
     'src/app/page.tsx',
-    'src/components/Hero',
-    'src/components/About.tsx',
-    'src/components/TheProblem.tsx',
-    'src/components/PlaybookContrast.tsx',
+    'src/components/HomeHero.tsx',
+    'src/components/HomeVideo.tsx',
+    'src/components/HomeApproach.tsx',
     'src/components/HowItWorks.tsx',
-    // The four sections "Cami's eleven" added to the home page.
-    'src/components/ResearchAndScan.tsx',
-    'src/components/AuditOffer.tsx',
-    'src/components/PublicPricing.tsx',
-    'src/components/FitCheck.tsx',
+    'src/components/HomeIndustries.tsx',
+    'src/components/HomeEngagements.tsx',
     'src/components/HomeFaq.tsx',
     'src/components/Testimonials.tsx',
     'src/components/CTASection.tsx',

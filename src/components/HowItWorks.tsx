@@ -3,13 +3,73 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { SplitReveal } from '@/components/motion';
+import { SplitReveal, scrollToEl } from '@/components/motion';
+import ArrowUpRight from '@/components/ui/ArrowUpRight';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function HowItWorks() {
+/**
+ * One step beside the branch. `chips` are the deliverable pills the archived
+ * home shows; `link` is the text link the 1 November home shows instead. A
+ * link to an in-page anchor (`#...`) scrolls rather than jumps.
+ */
+export type HowItWorksStep = {
+  title: string;
+  body: string;
+  chips?: string[];
+  link?: { label: string; href: string };
+};
+
+/* Four steps, always: the branch has four side-shoots and each circle is timed
+   to one of them. */
+const DEFAULT_STEPS: HowItWorksStep[] = [
+  {
+    title: 'Diagnose',
+    body: 'Measure where you appear, what the models say, and who wins the questions that matter.',
+    chips: ['Visibility baseline', 'Competitor citation gap', 'Question map'],
+  },
+  {
+    title: 'Build the work',
+    body: 'Produce original evidence nobody else could run: studies, data, definitive guides.',
+    chips: ['Data studies', 'Research reports', 'Whitepapers', 'Definitive guides'],
+  },
+  {
+    title: 'Make it readable',
+    body: 'Make your site readable for AI and built so authority compounds over time.',
+    chips: ['Technical SEO', 'Pillar pages', 'Generative Engine Optimization'],
+  },
+  {
+    title: 'Carry it out',
+    body: 'Place the work where buyers and models find it: press, podcasts, the 20 sites that count.',
+    chips: ['LinkedIn', 'Communities', 'Podcasts', 'Newsletters'],
+  },
+];
+
+/* Cami's copy of 3 October. The engine is named in the paragraph now; the
+   heading says what it is made of. */
+const DEFAULT_HEADING =
+  'Good research. Useful content. <span class="italic text-[#39471D]">A connected operation.</span>';
+const DEFAULT_INTRO =
+  'Our Authority Engine brings research, content, technical SEO and distribution into one ongoing service. We run the work from diagnosis through publishing and promotion, then track what changes in your visibility.';
+
+/* When each circle appears on the scrubbed timeline: the moment its leaf
+   blooms on the branch. */
+const CIRCLE_AT = [2.2, 4.05, 4.65, 6.28];
+
+export default function HowItWorks({
+  heading = DEFAULT_HEADING,
+  intro = DEFAULT_INTRO,
+  steps = DEFAULT_STEPS,
+  id = 'approach',
+}: {
+  heading?: string;
+  /** Left out entirely when null: the 1 November home has no paragraph here. */
+  intro?: string | null;
+  steps?: HowItWorksStep[];
+  id?: string;
+} = {}) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   // ── Stroke refs (drawn via strokeDashoffset) ───────────────────────────────
@@ -27,26 +87,22 @@ export default function HowItWorks() {
   const hoja5Ref      = useRef<SVGGElement>(null);
   const florFinRef    = useRef<SVGGElement>(null);
 
-  // ── Step highlight refs ────────────────────────────────────────────────────
-  const step1Ref = useRef<HTMLDivElement>(null);
-  const step2Ref = useRef<HTMLDivElement>(null);
-  const step3Ref = useRef<HTMLDivElement>(null);
-  const step4Ref = useRef<HTMLDivElement>(null);
-
-  // ── Circle + line refs ─────────────────────────────────────────────────────
-  const circle1Ref = useRef<HTMLDivElement>(null);
-  const circle2Ref = useRef<HTMLDivElement>(null);
-  const circle3Ref = useRef<HTMLDivElement>(null);
-  const circle4Ref = useRef<HTMLDivElement>(null);
+  // ── Step highlight + circle refs, one per step ─────────────────────────────
+  const stepRefs   = useRef<(HTMLDivElement | null)[]>([]);
+  const circleRefs = useRef<(HTMLDivElement | null)[]>([]);
   const lineRef    = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!sectionRef.current || !stemRef.current) return;
 
-    // Measure circle 1→4 centers and set line height precisely so it stops at circle 04
-    if (circle1Ref.current && circle4Ref.current && lineRef.current) {
-      const c1 = circle1Ref.current.getBoundingClientRect();
-      const c4 = circle4Ref.current.getBoundingClientRect();
+    const circles = circleRefs.current;
+    const first = circles[0];
+    const last = circles[circles.length - 1];
+
+    // Measure first→last circle centers and set line height precisely so it stops at the last one
+    if (first && last && lineRef.current) {
+      const c1 = first.getBoundingClientRect();
+      const c4 = last.getBoundingClientRect();
       const parent = lineRef.current.parentElement!.getBoundingClientRect();
       const topOffset  = (c1.top - parent.top) + c1.height / 2;
       const lineHeight = (c4.top + c4.height / 2) - (c1.top + c1.height / 2);
@@ -105,19 +161,18 @@ export default function HowItWorks() {
     // ── Circle indicators — synced with plant blooms ───────────────────────
     // Line grows from circle 1 appearance through circle 4 appearance
     tl.to(lineRef.current,    { scaleY: 1, ease: 'none', duration: 4.08 }, 2.2);
-    tl.to(circle1Ref.current, { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.6 }, 2.2);
-    tl.to(circle2Ref.current, { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.6 }, 4.05);
-    tl.to(circle3Ref.current, { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.6 }, 4.65);
-    tl.to(circle4Ref.current, { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.6 }, 6.28);
+    circles.forEach((c, i) => {
+      if (c) tl.to(c, { scale: 1, opacity: 1, ease: 'power3.out', duration: 0.6 }, CIRCLE_AT[i] ?? CIRCLE_AT[CIRCLE_AT.length - 1]);
+    });
 
     // ── Step highlights (non-scrubbed, one-way) ────────────────────────────
-    [step1Ref, step2Ref, step3Ref, step4Ref].forEach((ref) => {
-      if (!ref.current) return;
+    stepRefs.current.forEach((el) => {
+      if (!el) return;
       ScrollTrigger.create({
-        trigger: ref.current,
+        trigger: el,
         start: 'top 78%',
-        onEnter:     () => { ref.current?.classList.add('opacity-100');    ref.current?.classList.remove('opacity-40'); },
-        onLeaveBack: () => { ref.current?.classList.remove('opacity-100'); ref.current?.classList.add('opacity-40'); },
+        onEnter:     () => { el.classList.add('opacity-100');    el.classList.remove('opacity-40'); },
+        onLeaveBack: () => { el.classList.remove('opacity-100'); el.classList.add('opacity-40'); },
       });
     });
 
@@ -131,7 +186,7 @@ export default function HowItWorks() {
          ever moves in the page order the colour stays with the slot and not
          with the approach. */
       className="bg-white border-b border-gray-100 pt-[5.5rem] lg:pt-0 pb-[5.5rem]"
-      id="approach"
+      id={id}
       ref={sectionRef}
     >
       <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[38%_1fr] gap-16 items-start">
@@ -230,16 +285,14 @@ export default function HowItWorks() {
           <div>
             <SplitReveal
               as="h2"
-              className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans"
-              /* Cami's copy of 3 October. The engine is named in the paragraph
-                 now; the heading says what it is made of. */
-              html='Good research. Useful content. <span class="italic text-[#39471D]">A connected operation.</span>'
+              className={`text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans ${intro ? 'mb-6' : ''}`}
+              html={heading}
             />
-            <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch] mx-auto lg:mx-0">
-              Our Authority Engine brings research, content, technical SEO and distribution into one ongoing service.
-              We run the work from diagnosis through publishing and promotion, then track what changes in your
-              visibility.
-            </p>
+            {intro && (
+              <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[45ch] mx-auto lg:mx-0">
+                {intro}
+              </p>
+            )}
           </div>
 
           {/* Steps with circle indicators + connecting line */}
@@ -257,100 +310,60 @@ export default function HowItWorks() {
               }}
             />
 
-            <div ref={step1Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start justify-center lg:justify-start">
+            {steps.map((step, i) => (
               <div
-                ref={circle1Ref}
-                className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
-                style={{ backgroundColor: '#39471D', transform: 'scale(0)', opacity: 0 }}
+                key={step.title}
+                ref={(el) => { stepRefs.current[i] = el; }}
+                className="opacity-40 transition-opacity duration-500 flex gap-6 items-start justify-center lg:justify-start"
               >
-                <span className="text-[11px] font-semibold text-white">01</span>
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-gray-900 mb-2">Diagnose</h3>
-                <p className="text-[15px] text-gray-500 leading-relaxed">
-                  Measure where you appear, what the models say, and who wins the questions that matter.
-                </p>
-                {/* What the phase hands over. Named deliverables rather than
-                    adjectives — a phase you cannot point at the output of is a
-                    phase nobody can tell you finished.
+                <div
+                  ref={(el) => { circleRefs.current[i] = el; }}
+                  className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
+                  style={{ backgroundColor: '#39471D', transform: 'scale(0)', opacity: 0 }}
+                >
+                  <span className="text-[11px] font-semibold text-white">{String(i + 1).padStart(2, '0')}</span>
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-gray-900 mb-2">{step.title}</h3>
+                  <p className="text-[15px] text-gray-500 leading-relaxed">{step.body}</p>
+                  {/* What the phase hands over. Named deliverables rather than
+                      adjectives: a phase you cannot point at the output of is a
+                      phase nobody can tell you finished.
 
-                    The hover edge is the industry cards' own — `#55672E` at
-                    40%, over 300ms — so the two read as the same gesture. Only
-                    the border moves: those cards also lift and cast a shadow,
-                    and a 26px pill doing that reads as a button promising
-                    something it does not do. */}
-                <div className="flex flex-wrap gap-1.5 mt-3.5 justify-center lg:justify-start">
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Visibility baseline</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Competitor citation gap</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Question map</span>
+                      The hover edge is the industry cards' own (`#55672E` at
+                      40%, over 300ms) so the two read as the same gesture. Only
+                      the border moves: those cards also lift and cast a shadow,
+                      and a 26px pill doing that reads as a button promising
+                      something it does not do. */}
+                  {step.chips && (
+                    <div className="flex flex-wrap gap-1.5 mt-3.5 justify-center lg:justify-start">
+                      {step.chips.map((chip) => (
+                        <span
+                          key={chip}
+                          className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]"
+                        >
+                          {chip}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {step.link && (
+                    <a
+                      href={step.link.href}
+                      onClick={(e) => {
+                        if (!step.link?.href.startsWith('#')) return;
+                        e.preventDefault();
+                        scrollToEl(step.link.href);
+                      }}
+                      className="group mt-4 inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[#39471D] hover:text-[#55672E] transition-colors"
+                    >
+                      {step.link.label}
+                      <ArrowUpRight className="text-[11px] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                    </a>
+                  )}
                 </div>
               </div>
-            </div>
-
-            <div ref={step2Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start justify-center lg:justify-start">
-              <div
-                ref={circle2Ref}
-                className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
-                style={{ backgroundColor: '#39471D', transform: 'scale(0)', opacity: 0 }}
-              >
-                <span className="text-[11px] font-semibold text-white">02</span>
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-gray-900 mb-2">Build the work</h3>
-                <p className="text-[15px] text-gray-500 leading-relaxed">
-                  Produce original evidence nobody else could run: studies, data, definitive guides.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mt-3.5 justify-center lg:justify-start">
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Data studies</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Research reports</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Whitepapers</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Definitive guides</span>
-                </div>
-              </div>
-            </div>
-
-            <div ref={step3Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start justify-center lg:justify-start">
-              <div
-                ref={circle3Ref}
-                className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
-                style={{ backgroundColor: '#39471D', transform: 'scale(0)', opacity: 0 }}
-              >
-                <span className="text-[11px] font-semibold text-white">03</span>
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-gray-900 mb-2">Make it readable</h3>
-                <p className="text-[15px] text-gray-500 leading-relaxed">
-                  Make your site readable for AI and built so authority compounds over time.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mt-3.5 justify-center lg:justify-start">
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Technical SEO</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Pillar pages</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Generative Engine Optimization</span>
-                </div>
-              </div>
-            </div>
-
-            <div ref={step4Ref} className="opacity-40 transition-opacity duration-500 flex gap-6 items-start justify-center lg:justify-start">
-              <div
-                ref={circle4Ref}
-                className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
-                style={{ backgroundColor: '#39471D', transform: 'scale(0)', opacity: 0 }}
-              >
-                <span className="text-[11px] font-semibold text-white">04</span>
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-gray-900 mb-2">Carry it out</h3>
-                <p className="text-[15px] text-gray-500 leading-relaxed">
-                  Place the work where buyers and models find it: press, podcasts, the 20 sites that count.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mt-3.5 justify-center lg:justify-start">
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">LinkedIn</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Communities</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Podcasts</span>
-                  <span className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]">Newsletters</span>
-                </div>
-              </div>
-            </div>
+            ))}
 
           </div>
         </div>

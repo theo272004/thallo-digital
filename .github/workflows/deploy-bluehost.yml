@@ -43,6 +43,12 @@ jobs:
           # build ships no tag and no cookie banner (src/components/Analytics.tsx).
           NEXT_PUBLIC_GA_ID: ${{ secrets.GA_MEASUREMENT_ID }}
 
+      # The previous home page, kept on the Pages mirror so its sections can be
+      # reused (src/components/HomeArchive.tsx). It is never part of the live
+      # site, so it comes out of the build before anything is uploaded.
+      - name: Leave the home archive off the live site
+        run: rm -rf out/home-archive
+
       # Fails the run before a single byte is uploaded if the destination has
       # not been set. The default that used to sit in `server-dir` was
       # /public_html/, which on this account belongs to a DIFFERENT website —
