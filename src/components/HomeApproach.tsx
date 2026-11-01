@@ -15,7 +15,9 @@ import type { FillPart } from '@/components/motion/ScrollFill';
  * Sizes are the site's, not this section's own: the heading is every h2's
  * text-4xl/5xl and the paragraphs are the body's text-base. A larger pass
  * (6xl heading, 2xl copy, one long column) made it the biggest and tallest
- * thing on the page, and Cami asked for it unified with the rest.
+ * thing on the page, and Cami asked for it unified with the rest. The room it
+ * needs comes from spacing instead: generous padding, a wide gap under the
+ * heading and between the columns.
  *
  * What moves is the reading: each paragraph fills in word by word as it
  * scrolls up, from pale grey to ink, and the phrases that carry the argument
@@ -44,7 +46,7 @@ const PLAN: FillPart[] = [
 
 export default function HomeApproach() {
   return (
-    <section className="bg-[#F7F8F9] py-20 2xl:py-24 border-b border-gray-100" id="approach">
+    <section className="bg-[#F7F8F9] py-28 2xl:py-36 border-b border-gray-100" id="approach">
       <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
         <SplitReveal
           as="h2"
@@ -52,7 +54,7 @@ export default function HomeApproach() {
           html='Show Buyers <span class="italic text-[#39471D]">What Your Customers Already Know.</span>'
         />
 
-        <div className="mt-10 lg:mt-12 grid w-full max-w-[1040px] grid-cols-1 gap-6 text-left md:grid-cols-2 md:gap-12">
+        <div className="mt-14 lg:mt-20 grid w-full max-w-[1120px] grid-cols-1 gap-8 text-left md:grid-cols-2 md:gap-20">
           <ScrollFill parts={RESEARCH} className="text-base font-medium leading-relaxed" />
           <ScrollFill parts={PLAN} className="text-base font-medium leading-relaxed" />
         </div>

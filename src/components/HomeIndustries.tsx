@@ -11,9 +11,11 @@ import { BASE } from '@/lib/site';
  *
  * Meant to be the section that stops the scroll (Cami, 1 November: "tiene que
  * ser la más que llame la atención"). Professional services is the
- * photograph in the middle; the other four are small white cards sitting on
- * it, two near each side, every one fully inside the frame (Cami's second
- * pass: two of them hung off the edges). Each drifts a few pixels on a slow
+ * photograph in the middle; the other four are small white cards straddling
+ * its two edges, two a side. Each pair is set unevenly on purpose: one card
+ * half over the photograph, the other further in (about two thirds over), so
+ * they read as placed rather than as a frame. Neither extreme worked: fully
+ * off the edge looked detached, fully inside looked boxed in. Each drifts a few pixels on a slow
  * cycle at its own offset, and on the way in they slide a short way out to
  * their places. Both motions were larger at first and read as jittery.
  *
@@ -28,14 +30,14 @@ import { BASE } from '@/lib/site';
 type Side = 'left' | 'right';
 
 /* Positions at lg, as a share of the stage. The photograph spans the middle
-   72% (14% to 86%), so every value here keeps a card inside it, and all four
-   stay in the upper part, clear of the title at the bottom. Staggered heights
-   so they never line up into a frame. */
+   72% (its edges at 14% and 86%) and a card is about 19% wide, so 5% puts a
+   card half over the edge and 8.5% puts it about two thirds over. Staggered
+   heights so the four never line up into a frame. */
 const OTHERS: { name: string; side: Side; pos: string; delay: string }[] = [
-  { name: 'Fintech', side: 'left', pos: 'lg:left-[16.5%] lg:top-[9%]', delay: '0s' },
-  { name: 'Health Tech', side: 'left', pos: 'lg:left-[19%] lg:top-[40%]', delay: '-4s' },
-  { name: 'Legal Tech', side: 'right', pos: 'lg:right-[18.5%] lg:top-[15%]', delay: '-2s' },
-  { name: 'Specialized Software', side: 'right', pos: 'lg:right-[16.5%] lg:top-[46%]', delay: '-6s' },
+  { name: 'Fintech', side: 'left', pos: 'lg:left-[5%] lg:top-[12%]', delay: '0s' },
+  { name: 'Health Tech', side: 'left', pos: 'lg:left-[8.5%] lg:top-[50%]', delay: '-4s' },
+  { name: 'Legal Tech', side: 'right', pos: 'lg:right-[8.5%] lg:top-[20%]', delay: '-2s' },
+  { name: 'Specialized Software', side: 'right', pos: 'lg:right-[4%] lg:top-[58%]', delay: '-6s' },
 ];
 
 export default function HomeIndustries() {
