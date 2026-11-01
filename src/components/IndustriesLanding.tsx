@@ -223,8 +223,8 @@ export default function IndustriesPage() {
                 key={ind.name}
                 className={`relative overflow-hidden rounded-3xl p-5 flex flex-col gap-3 transition-all duration-300 min-h-[170px] ${
                   ind.type === 'phrase'
-                    ? 'isolate bg-[#1C160E] border border-[#1C160E] hover:-translate-y-1 hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,0.55)]'
-                    : 'bg-gray-50/60 border border-gray-200 lift'
+                    ? 'isolate bg-[#171A10] border border-[#171A10] hover:-translate-y-1 hover:shadow-[0_24px_60px_-20px_rgba(57,71,29,0.55)]'
+                    : 'bg-white border border-gray-200 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] lift'
                 }`}
               >
                 {/* The photograph is its own layer rather than a
@@ -249,7 +249,18 @@ export default function IndustriesPage() {
                     Re-measured after, at desktop and at phone widths: warm by 4-7
                     points of red over green, highlights 120-192, and the
                     worst-case contrast under the quote is 5.05-5.6 against the
-                    5.03-5.67 it had before. Nothing was traded for the warmth. */}
+                    5.03-5.67 it had before. Nothing was traded for the warmth.
+
+                    1 November 2026: Cami found that warmth was the problem —
+                    next to the rest of the site the three photographs read
+                    yellow-brown. They now take the house treatment every other
+                    dark photo panel uses (the video, the playbook and
+                    engagement panels, the closing CTA): the olive black
+                    #171A10, rgb(23,26,16), as both the card ground and the
+                    scrim, and the photograph slightly desaturated instead of
+                    pushed to 1.45. The scrim keeps the same shape, so the quote
+                    and the name keep their dark grounds. The figure cards went
+                    from grey to white at the same time. */}
                 {ind.type === 'phrase' && (
                   <>
                     <img
@@ -259,14 +270,14 @@ export default function IndustriesPage() {
                       loading="lazy"
                       decoding="async"
                       className="pointer-events-none absolute inset-0 -z-10 h-full w-full select-none object-cover"
-                      style={{ filter: 'saturate(1.45) contrast(1.08) brightness(1.18)' }}
+                      style={{ filter: 'saturate(0.8) contrast(1.05) brightness(1.1)' }}
                     />
                     <div
                       aria-hidden
                       className="pointer-events-none absolute inset-0 -z-10"
                       style={{
                         background:
-                          'linear-gradient(180deg, rgba(28,22,14,0.82) 0%, rgba(28,22,14,0.74) 46%, rgba(28,22,14,0.28) 68%, rgba(28,22,14,0.80) 76%, rgba(28,22,14,0.92) 100%)',
+                          'linear-gradient(180deg, rgba(23,26,16,0.84) 0%, rgba(23,26,16,0.76) 46%, rgba(23,26,16,0.32) 68%, rgba(23,26,16,0.82) 76%, rgba(23,26,16,0.93) 100%)',
                       }}
                     />
                   </>
