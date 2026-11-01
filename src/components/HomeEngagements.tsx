@@ -72,7 +72,9 @@ function Panel({ e }: { e: Engagement }) {
          list, closing line, button), so each block starts at the same height
          in both panels even though the intros differ in length. */
       className={`relative isolate flex flex-col lg:grid lg:grid-rows-subgrid lg:row-span-5 lg:gap-0 overflow-hidden rounded-[24px] p-7 sm:p-10 transition-transform duration-300 hover:-translate-y-1 ${
-        d ? 'bg-[#171A10]' : 'border border-gray-200/80 bg-[#F7F8F9]'
+        /* Both panels carry a 1px border, the dark one transparent, so
+           their content starts on exactly the same pixel. */
+        d ? 'border border-transparent bg-[#171A10]' : 'border border-gray-200/80 bg-[#F7F8F9]'
       }`}
     >
       {d && (

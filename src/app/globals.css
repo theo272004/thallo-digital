@@ -140,6 +140,14 @@ body {
   animation: quote-float 6s ease-in-out infinite;
   will-change: transform;
 }
+/* The same float, desktop only: the industry cards around the professional
+   services photograph on the home. On a phone they sit still in a grid. */
+@media (min-width: 1024px) {
+  .float-lg {
+    animation: quote-float 6s ease-in-out infinite;
+    will-change: transform;
+  }
+}
 
 
 /* Services · "How an engagement runs". Each step's drawing loops a motion that

@@ -15,10 +15,11 @@ import { BASE } from '@/lib/site';
  * ## The entrance
  *
  * The hero takes the whole first screen, so on arrival there is only the
- * headline. A short scroll brings the frame's top edge into view and it pops
- * up into place, from small and low to full size with a little overshoot
- * (Cami: "sale el video así, plum"). Scroll back above it and it drops away
- * again, so the pop is there every time. Reduced motion skips it.
+ * headline. As the frame comes up from the bottom of the screen it grows
+ * from small and faint to full size, tied to the scroll itself: it moves
+ * exactly as fast as the reader does, and scrolling back runs it in reverse.
+ * The first version was a timed pop with an overshoot; Cami asked for
+ * something more fluid. Reduced motion skips it.
  *
  * ## Until the video exists
  *
@@ -62,14 +63,17 @@ export default function HomeVideo() {
       if (!frameRef.current || prefersReducedMotion()) return;
       gsap.fromTo(
         frameRef.current,
-        { autoAlpha: 0, scale: 0.72, y: 140 },
+        { autoAlpha: 0, scale: 0.78, y: 120 },
         {
           autoAlpha: 1,
           scale: 1,
           y: 0,
-          duration: 0.95,
-          ease: 'back.out(1.6)',
-          scrollTrigger: { trigger: sectionRef.current, start: 'top 92%', toggleActions: 'play none none reverse' },
+          ease: 'power2.out',
+          /* From the moment the frame's top edge clears the bottom of the
+             screen until it is a third of the way up. `scrub: 0.8` lets the
+             frame catch up over a beat instead of locking to the wheel, which
+             is what keeps it soft. */
+          scrollTrigger: { trigger: sectionRef.current, start: 'top bottom', end: 'top 30%', scrub: 0.8 },
         }
       );
     },
@@ -81,7 +85,7 @@ export default function HomeVideo() {
       <div className="max-w-[1440px] mx-auto px-6">
         <div
           ref={frameRef}
-          className="relative mx-auto origin-bottom max-w-[1180px] aspect-[16/10] sm:aspect-[16/8] rounded-[32px] overflow-hidden bg-[#171A10] shadow-[0_24px_60px_-28px_rgba(23,26,16,0.45)]"
+          className="relative mx-auto origin-bottom max-w-[1340px] aspect-[16/10] sm:aspect-[16/8.5] rounded-[32px] overflow-hidden bg-[#171A10] shadow-[0_24px_60px_-28px_rgba(23,26,16,0.45)]"
         >
           {playing && SOURCE ? (
             SOURCE.kind === 'youtube' ? (

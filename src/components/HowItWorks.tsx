@@ -355,10 +355,12 @@ export default function HowItWorks({
                         e.preventDefault();
                         scrollToEl(step.link.href);
                       }}
-                      className="group mt-4 inline-flex items-center gap-1.5 text-[13.5px] font-bold text-[#39471D] hover:text-[#55672E] transition-colors"
+                      /* A pill, the same shape as the deliverable chips this
+                         slot held before: border at rest, olive fill on hover. */
+                      className="group mt-4 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-[13px] font-bold text-gray-900 shadow-[0_2px_8px_-4px_rgba(23,26,16,0.12)] transition-all duration-300 hover:border-[#39471D] hover:bg-[#39471D] hover:text-white"
                     >
                       {step.link.label}
-                      <ArrowUpRight className="text-[11px] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                      <ArrowUpRight className="text-[11px] text-gray-500 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                     </a>
                   )}
                 </div>
