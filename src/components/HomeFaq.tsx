@@ -26,8 +26,7 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
       <>
         The visibility baseline lands in the first two weeks, so you know where you stand almost immediately. Movement
         in how the models describe you typically shows up between month three and month six, depending on how much
-        ground your category already has covered. Anyone promising results in thirty days is selling you something
-        else.
+        ground your category already has covered. Anyone promising results in thirty days is selling you something&nbsp;else.
       </>
     ),
   },

@@ -14,7 +14,8 @@ import { BASE } from '@/lib/site';
  * stays from that hero is its material: the faint grid behind, the masked line
  * reveal on the headline, the same two buttons in the same two weights.
  *
- * The words are Cami's homepage copy of 1 November, unchanged.
+ * The words are Cami's homepage copy of 1 November, unchanged. The lede ends
+ * on a no-break space so "finish." never sits alone on the last line.
  */
 export default function HomeHero() {
   /* A full screen of its own, so the first thing anyone sees is the headline
@@ -43,7 +44,7 @@ export default function HomeHero() {
 
         <p className="text-gray-500 font-medium text-base sm:text-lg leading-relaxed max-w-[56ch] mb-10 2xl:mb-12">
           We turn your team&rsquo;s expertise into clear, useful content, taking responsibility for the strategy,
-          writing, SEO and distribution from start to finish.
+          writing, SEO and distribution from start to&nbsp;finish.
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-4">

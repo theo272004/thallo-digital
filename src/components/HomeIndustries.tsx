@@ -30,15 +30,17 @@ import { BASE } from '@/lib/site';
 type Side = 'left' | 'right';
 
 /* Positions at lg, as a share of the stage. The photograph spans the middle
-   72% (its edges at 14% and 86%) and a card is about 19% wide, so 5% puts a
-   card half over the edge and 8.5% puts it about two thirds over. The four
+   64% (its edges at 18% and 82%) and a card is about 23% wide, so 6.5% puts a
+   card half over the edge and 10.5% puts it about two thirds over. Cami (2
+   November) asked for the cards a little bigger and the photograph a little
+   smaller; at 72% and 19% the photograph swallowed them. The four
    are spread down the whole height of the photograph, top to near the
    bottom, at staggered heights so they never line up into a frame. */
 const OTHERS: { name: string; side: Side; pos: string; delay: string }[] = [
-  { name: 'Fintech', side: 'left', pos: 'lg:left-[5%] lg:top-[7%]', delay: '0s' },
-  { name: 'Health Tech', side: 'left', pos: 'lg:left-[8.5%] lg:top-[52%]', delay: '-4s' },
-  { name: 'Legal Tech', side: 'right', pos: 'lg:right-[8.5%] lg:top-[24%]', delay: '-2s' },
-  { name: 'Specialized Software', side: 'right', pos: 'lg:right-[4%] lg:top-[76%]', delay: '-6s' },
+  { name: 'Fintech', side: 'left', pos: 'lg:left-[6.5%] lg:top-[6%]', delay: '0s' },
+  { name: 'Health Tech', side: 'left', pos: 'lg:left-[10.5%] lg:top-[52%]', delay: '-4s' },
+  { name: 'Legal Tech', side: 'right', pos: 'lg:right-[10.5%] lg:top-[23%]', delay: '-2s' },
+  { name: 'Specialized Software', side: 'right', pos: 'lg:right-[5.5%] lg:top-[74%]', delay: '-6s' },
 ];
 
 export default function HomeIndustries() {
@@ -91,12 +93,12 @@ export default function HomeIndustries() {
           Explore how we apply that work to your industry:
         </p>
 
-        <div ref={stageRef} className="relative mx-auto max-w-[1240px] lg:h-[560px]">
+        <div ref={stageRef} className="relative mx-auto max-w-[1240px] lg:h-[520px]">
           {/* ── Professional services, in the middle ───────────────────── */}
           <a
             data-feature
             href={`${BASE}/industries/`}
-            className="group relative isolate z-0 flex h-[380px] lg:h-full w-full lg:w-[72%] lg:mx-auto flex-col items-center justify-end overflow-hidden rounded-[32px] bg-[#171A10] p-8 sm:p-12 text-center shadow-[0_30px_70px_-30px_rgba(23,26,16,0.55)]"
+            className="group relative isolate z-0 flex h-[380px] lg:h-full w-full lg:w-[64%] lg:mx-auto flex-col items-center justify-end overflow-hidden rounded-[32px] bg-[#171A10] p-8 sm:p-12 text-center shadow-[0_30px_70px_-30px_rgba(23,26,16,0.55)]"
           >
             <img
               loading="lazy"
@@ -109,8 +111,12 @@ export default function HomeIndustries() {
             <span className="text-4xl sm:text-5xl font-bold tracking-tight text-white leading-[1.05]">
               Professional Services
             </span>
-            <span className="mt-6 flex h-12 w-12 items-center justify-center rounded-full bg-white text-[#39471D] transition-transform duration-300 group-hover:scale-110">
-              <ArrowUpRight className="text-[15px] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            {/* On hover the disc only changes colour, the way the small cards'
+                discs do. It used to grow and push the arrow out, which Cami
+                didn't like (2 November). The white border keeps the olive disc from
+                sinking into the dark photograph. */}
+            <span className="mt-6 flex h-12 w-12 items-center justify-center rounded-full border border-white bg-white text-[#39471D] transition-colors duration-300 group-hover:border-white/70 group-hover:bg-[#39471D] group-hover:text-white">
+              <ArrowUpRight className="text-[15px]" />
             </span>
           </a>
 
@@ -124,11 +130,11 @@ export default function HomeIndustries() {
                 <div className="float-lg" style={{ animationDelay: delay }}>
                   <a
                     href={`${BASE}/industries/`}
-                    className="group flex h-full items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 lg:min-w-[230px] lg:px-5 lg:py-4 shadow-[0_18px_40px_-18px_rgba(23,26,16,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-[#39471D]/40"
+                    className="group flex h-full items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 lg:min-w-[280px] lg:gap-6 lg:px-6 lg:py-5 shadow-[0_18px_40px_-18px_rgba(23,26,16,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-[#39471D]/40"
                   >
-                    <span className="text-[15px] lg:text-base font-semibold tracking-tight text-gray-900">{name}</span>
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors duration-300 group-hover:border-[#39471D] group-hover:bg-[#39471D] group-hover:text-white">
-                      <ArrowUpRight className="text-[11px]" />
+                    <span className="text-[15px] lg:text-lg font-semibold tracking-tight text-gray-900">{name}</span>
+                    <span className="flex h-8 w-8 lg:h-10 lg:w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors duration-300 group-hover:border-[#39471D] group-hover:bg-[#39471D] group-hover:text-white">
+                      <ArrowUpRight className="text-[11px] lg:text-[13px]" />
                     </span>
                   </a>
                 </div>

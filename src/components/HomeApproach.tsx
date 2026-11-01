@@ -1,8 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { SplitReveal, ScrollFill } from '@/components/motion';
 import type { FillPart } from '@/components/motion/ScrollFill';
+import SpinFlower from '@/components/ui/SpinFlower';
+import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 
 /**
  * "Show buyers what your customers already know."
@@ -25,6 +27,11 @@ import type { FillPart } from '@/components/motion/ScrollFill';
  * scrolls up, from pale grey to ink, and the phrases that carry the argument
  * finish in olive so a skim still lands on them. Two earlier versions — white
  * cards over a photograph, then a dark photo banner — are in git history.
+ *
+ * Type alone read as too bare (Cami, 2 November: "está muy solo ahí"), so it
+ * takes two of the house's own marks and no new words: the turning isotipo
+ * above the heading, as on the About statement, and an olive rule between the
+ * two columns that draws down as they fill, joining research to plan.
  */
 
 const INK = '#4B5563'; // gray-600: a step darker than the body grey, so the fill reads
@@ -49,16 +56,41 @@ const PLAN: FillPart[] = [
 ];
 
 export default function HomeApproach() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      if (prefersReducedMotion()) return;
+      gsap.fromTo(
+        '[data-rule]',
+        { scaleY: 0 },
+        {
+          scaleY: 1,
+          ease: 'none',
+          scrollTrigger: { trigger: '[data-columns]', start: 'top 80%', end: 'bottom 55%', scrub: 0.6 },
+        }
+      );
+    },
+    { scope: sectionRef }
+  );
+
   return (
-    <section className="bg-[#F7F8F9] py-32 2xl:py-40 border-b border-gray-100" id="approach">
+    <section ref={sectionRef} className="bg-[#F7F8F9] py-32 2xl:py-40 border-b border-gray-100" id="approach">
       <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
+        <SpinFlower className="mb-8 block h-20 w-20 opacity-80" />
         <SplitReveal
           as="h2"
           className="max-w-[26ch] text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans text-balance"
           html='Show Buyers <span class="italic text-[#39471D]">What Your Customers Already Know.</span>'
         />
 
-        <div className="mt-16 lg:mt-24 grid w-full max-w-[1200px] grid-cols-1 gap-8 text-left md:grid-cols-2 md:gap-20">
+        <div data-columns className="relative mt-16 lg:mt-24 grid w-full max-w-[1200px] grid-cols-1 gap-8 text-left md:grid-cols-2 md:gap-20">
+          {/* The rule between the columns: a hairline track, and the olive
+              line that grows down it on scroll. Desktop only, where there are
+              two columns to join. */}
+          <span aria-hidden className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 bg-gray-200 md:block">
+            <span data-rule className="absolute inset-0 origin-top bg-[#39471D]" />
+          </span>
           <ScrollFill parts={RESEARCH} className="text-base sm:text-lg font-medium leading-relaxed text-justify hyphens-none [text-wrap:pretty]" />
           <ScrollFill parts={PLAN} className="text-base sm:text-lg font-medium leading-relaxed text-justify hyphens-none [text-wrap:pretty]" />
         </div>
