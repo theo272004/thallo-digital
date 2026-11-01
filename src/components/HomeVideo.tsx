@@ -21,19 +21,27 @@ import { BASE } from '@/lib/site';
  * The first version was a timed pop with an overshoot; Cami asked for
  * something more fluid. Reduced motion skips it.
  *
- * ## Until the video exists
+ * ## The video
  *
- * `VIDEO_URL` is empty, so the poster says "Video coming soon." and the disc
- * does nothing. Put a YouTube link (watch, youtu.be, shorts or embed) or the
- * address of an .mp4/.webm in it and the disc starts playing it in place —
- * nothing else needs to change.
+ * `VIDEO_URL` is the 59 s introduction ("The call"), served from this site at
+ * public/video/thallo-intro.mp4 — a web encode (~8 MB, H.264, faststart) of
+ * the promo master. It is
+ * written as a site path under `BASE`, so the GitHub Pages mirror and Bluehost
+ * each play their own copy. A YouTube link (watch, youtu.be, shorts or embed)
+ * or a full .mp4/.webm address works here too; empty brings back the
+ * "Video coming soon." poster.
+ *
+ * The frame is 16:9 because the film is: at the earlier 16/8.5 (and 16/10 on
+ * phones) the playing video sat between black bars.
  */
-const VIDEO_URL = '';
+const VIDEO_URL = `${BASE}/video/thallo-intro.mp4`;
 
 type Source = { kind: 'youtube'; id: string } | { kind: 'file'; src: string };
 
 function readSource(raw: string): Source | null {
   if (!raw.trim()) return null;
+  // A path on this site: no host to read, only the extension.
+  if (raw.trim().startsWith('/')) return /\.(mp4|webm)$/i.test(raw.trim()) ? { kind: 'file', src: raw.trim() } : null;
   let url: URL;
   try {
     url = new URL(raw.trim());
@@ -85,7 +93,7 @@ export default function HomeVideo() {
       <div className="max-w-[1440px] mx-auto px-6">
         <div
           ref={frameRef}
-          className="relative mx-auto origin-bottom max-w-[1340px] aspect-[16/10] sm:aspect-[16/8.5] rounded-[32px] overflow-hidden bg-[#171A10] shadow-[0_24px_60px_-28px_rgba(23,26,16,0.45)]"
+          className="relative mx-auto origin-bottom max-w-[1340px] aspect-video rounded-[32px] overflow-hidden bg-[#171A10] shadow-[0_24px_60px_-28px_rgba(23,26,16,0.45)]"
         >
           {playing && SOURCE ? (
             SOURCE.kind === 'youtube' ? (
