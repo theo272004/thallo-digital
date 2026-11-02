@@ -25,7 +25,7 @@ export default function CTASection() {
       headingSlot={
         <SplitReveal
           as="h2"
-          className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-8 font-sans"
+          className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-8 short:mb-4 font-sans"
           html="Let&rsquo;s work out <em>where to start.</em>"
         />
       }

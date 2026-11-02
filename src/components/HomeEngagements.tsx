@@ -71,7 +71,7 @@ function Panel({ e }: { e: Engagement }) {
       /* From lg the panel is a subgrid over five shared rows (title, intro,
          list, closing line, button), so each block starts at the same height
          in both panels even though the intros differ in length. */
-      className={`relative isolate flex flex-col lg:grid lg:grid-rows-subgrid lg:row-span-5 lg:gap-0 overflow-hidden rounded-[24px] p-7 sm:p-10 transition-transform duration-300 hover:-translate-y-1 ${
+      className={`relative isolate flex flex-col lg:grid lg:grid-rows-subgrid lg:row-span-5 lg:gap-0 overflow-hidden rounded-[24px] p-7 sm:p-10 short:p-6 transition-transform duration-300 hover:-translate-y-1 ${
         /* Both panels carry a 1px border, the dark one transparent, so
            their content starts on exactly the same pixel. */
         d ? 'border border-transparent bg-[#171A10]' : 'border border-gray-200/80 bg-[#F7F8F9]'
@@ -99,16 +99,18 @@ function Panel({ e }: { e: Engagement }) {
         </>
       )}
 
-      <h3 className={`text-2xl sm:text-[1.75rem] font-bold tracking-tight mb-4 ${d ? 'text-white' : 'text-gray-900'}`}>
+      <h3 className={`text-2xl sm:text-[1.75rem] font-bold tracking-tight mb-4 short:mb-2 ${d ? 'text-white' : 'text-gray-900'}`}>
         {e.title}
       </h3>
-      <p className={`text-[15px] font-medium leading-relaxed mb-6 ${d ? 'text-white/75' : 'text-gray-500'}`}>{e.intro}</p>
+      <p className={`text-[15px] font-medium leading-relaxed mb-6 short:mb-3 short:text-sm ${d ? 'text-white/75' : 'text-gray-500'}`}>{e.intro}</p>
 
-      <ul className="flex flex-col mb-6">
+      {/* On a laptop a long list takes two columns: six rows was what ran the
+          section past the bottom of the screen. */}
+      <ul className={`flex flex-col mb-6 short:mb-3 ${e.items.length > 3 ? 'short:grid short:grid-cols-2 short:gap-x-6' : ''}`}>
         {e.items.map((item) => (
           <li
             key={item}
-            className={`flex items-start gap-3.5 border-b py-3.5 text-[14.5px] font-semibold leading-snug last:border-0 ${
+            className={`flex items-start gap-3.5 border-b py-3.5 short:py-2 text-[14.5px] short:text-[13.5px] font-semibold leading-snug last:border-0 ${e.items.length > 3 ? 'short:[&:nth-last-child(-n+2)]:border-0' : ''} ${
               d ? 'border-white/15 text-white' : 'border-gray-200/70 text-gray-800'
             }`}
           >
@@ -126,7 +128,7 @@ function Panel({ e }: { e: Engagement }) {
         ))}
       </ul>
 
-      <p className={`text-[14.5px] font-medium leading-relaxed mb-8 ${d ? 'text-white/75' : 'text-gray-500'}`}>{e.close}</p>
+      <p className={`text-[14.5px] short:text-sm font-medium leading-relaxed mb-8 short:mb-4 ${d ? 'text-white/75' : 'text-gray-500'}`}>{e.close}</p>
 
       {/* mt-auto on a phone, the button row of the subgrid from lg: either
           way the pair ends level. */}
@@ -152,15 +154,15 @@ function Panel({ e }: { e: Engagement }) {
 
 export default function HomeEngagements() {
   return (
-    <section className="border-b border-gray-100 bg-white py-20 2xl:py-28" id="ways-to-work">
+    <section className="border-b border-gray-100 bg-white py-20 2xl:py-28 short:pt-24 short:pb-6" id="ways-to-work">
       <div className="mx-auto max-w-[1440px] px-6" data-reveal>
-        <div className="mx-auto mb-10 max-w-3xl text-center sm:mb-14">
+        <div className="mx-auto mb-10 max-w-3xl short:max-w-5xl text-center sm:mb-14 short:mb-5">
           <SplitReveal
             as="h2"
             className="font-sans text-4xl font-bold leading-[1.08] tracking-tight text-gray-900 sm:text-5xl"
             html='How Can We <span class="italic text-[#39471D]">Work Together?</span>'
           />
-          <p className="mx-auto mt-5 max-w-[62ch] text-base font-medium leading-relaxed text-gray-500">
+          <p className="mx-auto mt-5 short:mt-3 max-w-[62ch] short:max-w-[100ch] text-base short:text-[15px] font-medium leading-relaxed text-gray-500">
             We work best with companies that want to build authority and attract relevant inquiries, need a partner to
             manage delivery and can make their experts available to share their knowledge and review the work.
           </p>

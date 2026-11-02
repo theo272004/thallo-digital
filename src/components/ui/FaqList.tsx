@@ -83,7 +83,7 @@ export default function FaqList({
               aria-expanded={isOpen}
               aria-controls={`${idPrefix}-a-${i}`}
               onClick={() => setOpen(isOpen ? null : i)}
-              className="group flex w-full items-center justify-between gap-6 py-6 text-left"
+              className="group flex w-full items-center justify-between gap-6 py-6 short:py-3.5 text-left"
             >
               <span
                 className={`text-[17px] font-semibold tracking-[-0.01em] transition-colors duration-300 ${
@@ -116,7 +116,7 @@ export default function FaqList({
               style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
             >
               <div className="overflow-hidden">
-                <p className="max-w-[64ch] pb-7 text-[15.5px] font-medium leading-relaxed text-gray-500">
+                <p className="max-w-[64ch] pb-7 short:pb-4 text-[15.5px] short:text-[14.5px] font-medium leading-relaxed text-gray-500">
                   {faq.a}
                 </p>
               </div>

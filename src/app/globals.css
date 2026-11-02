@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "../styles/hero.css";
 
+/* A laptop's height. The rule is that a section is seen whole on one screen,
+   and a Mac leaves about 790px of a 900px display once the browser has taken
+   its share, so the desktop spacing, sized for tall monitors, runs over it.
+   `short:` tightens a section for those screens without touching the phone
+   layout or a tall monitor. Sections keep pt-24 under it because the navbar
+   stays on screen, 86px tall, and would otherwise sit on their headings. */
+@custom-variant short (@media (min-width: 1024px) and (max-height: 1000px));
+
 @theme inline {
   --font-sans: var(--font-sans);
   --font-serif: var(--font-serif);

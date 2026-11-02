@@ -253,7 +253,7 @@ export default function Testimonials() {
 
   return (
     /* id="blog" is the target the navbar and footer have always pointed at. */
-    <section className="bg-[#F7F8F9] pt-6 pb-16 2xl:pt-8 2xl:pb-20 border-b border-gray-100" id="blog">
+    <section className="bg-[#F7F8F9] pt-6 pb-16 2xl:pt-8 2xl:pb-20 short:pt-24 short:pb-6 border-b border-gray-100" id="blog">
       <div className="max-w-[1440px] mx-auto px-6">
 
         {/* Masthead, centred — the index link sits below the grid, where it
@@ -269,7 +269,7 @@ export default function Testimonials() {
             on the site is. It briefly was not, and a section heading set a step
             smaller than its neighbours does not read as restraint — it reads as
             a mistake. */}
-        <div className="mx-auto mb-9 max-w-2xl text-center">
+        <div className="mx-auto mb-9 short:mb-4 max-w-2xl text-center">
           <h2 className="font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
             Blogs &amp; guides.
           </h2>
@@ -290,7 +290,7 @@ export default function Testimonials() {
                 src={lead.image ?? `${BASE}/${IMAGES[0]}`}
                 alt=""
                 aria-hidden="true"
-                className="aspect-[16/9] w-full select-none object-cover"
+                className="aspect-[16/9] short:aspect-[3/1] w-full select-none object-cover"
               />
               <span aria-hidden="true" className="absolute inset-0" style={{ background: PHOTO_TINT }} />
             </span>
@@ -302,7 +302,7 @@ export default function Testimonials() {
                 {lead.title}
               </span>
 
-              <span className="mt-2.5 max-w-[52ch] text-sm font-medium leading-relaxed text-gray-500 line-clamp-4">
+              <span className="mt-2.5 max-w-[52ch] text-sm font-medium leading-relaxed text-gray-500 line-clamp-4 short:line-clamp-2">
                 {lead.desc}
               </span>
 
@@ -333,12 +333,12 @@ export default function Testimonials() {
                   </span>
 
                   {/* Only an excerpt from the blog runs long enough to need the clamp. */}
-                  <span className={`mt-1.5 text-[13px] font-medium leading-relaxed text-gray-500 ${a.href ? 'line-clamp-2' : ''}`}>
+                  <span className={`mt-1.5 text-[13px] font-medium leading-relaxed text-gray-500 ${a.href ? 'line-clamp-2 short:line-clamp-1' : ''}`}>
                     {a.desc}
                   </span>
 
                   {a.href && (
-                    <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-[11px] font-bold text-[#39471D]">
+                    <span className="mt-auto inline-flex items-center gap-1.5 pt-4 short:pt-2 text-[11px] font-bold text-[#39471D]">
                       Read the note
                       <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </span>
@@ -355,7 +355,7 @@ export default function Testimonials() {
                     src={a.image ?? `${BASE}/${IMAGES[i + 1]}`}
                     alt=""
                     aria-hidden="true"
-                    className="h-[88px] w-[104px] select-none object-cover"
+                    className="h-[88px] w-[104px] short:h-[72px] short:w-[88px] select-none object-cover"
                   />
                   <span aria-hidden="true" className="absolute inset-0" style={{ background: PHOTO_TINT }} />
                 </span>
@@ -365,7 +365,7 @@ export default function Testimonials() {
 
         </div>
 
-        <div className="mt-8 flex justify-center">
+        <div className="mt-8 short:mt-4 flex justify-center">
           <a
             href="https://thallodigital.com/blog/"
             className="group inline-flex items-center gap-1.5 rounded-full border border-[#39471D] bg-[#39471D] px-5 py-2.5 text-[13px] font-bold text-white transition-colors hover:border-[#55672E] hover:bg-[#55672E]"

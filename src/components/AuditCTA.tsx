@@ -72,13 +72,13 @@ export default function AuditCTA({
   formVariant = 'enquiry',
 }: Props) {
   return (
-    <section className="bg-white py-20 2xl:py-24 border-b border-gray-100" id={id}>
+    <section className="bg-white py-20 2xl:py-24 short:pt-24 short:pb-6 border-b border-gray-100" id={id}>
       <div className="max-w-[1440px] mx-auto px-6 w-full">
         {/* The form sets this panel's height now, so the padding only has to
             frame it. At py-28 — right for the text-only panel this used to be —
             it added 112px of dead ground above and below a card that was
             already tall. Sides stay generous; the top and bottom do not. */}
-        <div className="relative overflow-hidden rounded-[28px] px-8 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14">
+        <div className="relative overflow-hidden rounded-[28px] px-8 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14 short:py-7">
           <img loading="lazy" decoding="async"
             src={image}
             alt=""
@@ -120,7 +120,7 @@ export default function AuditCTA({
                   here is what lets the form's own button say "Send message"
                   rather than borrowing this one's label. */}
               {steps && (
-                <ol className="mt-8 flex flex-col gap-3.5">
+                <ol className="mt-8 short:mt-4 flex flex-col gap-3.5 short:gap-2.5">
                   {steps.map((step, i) => (
                     /* The number fills white under the cursor, the way the
                        other hover states on the site answer (Cami, 5 October). */
@@ -155,7 +155,7 @@ export default function AuditCTA({
               )}
 
               {footnote && (
-                <p className="mt-8 max-w-[44ch] text-[15.5px] font-medium leading-relaxed text-[#CBD0AC]">{footnote}</p>
+                <p className="mt-8 short:mt-4 max-w-[44ch] text-[15.5px] font-medium leading-relaxed text-[#CBD0AC]">{footnote}</p>
               )}
             </div>
 

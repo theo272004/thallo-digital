@@ -81,7 +81,7 @@ export default function HomeApproach() {
   );
 
   return (
-    <section ref={sectionRef} className="bg-[#F7F8F9] py-32 2xl:py-40 border-b border-gray-100" id="approach">
+    <section ref={sectionRef} className="bg-[#F7F8F9] py-32 2xl:py-40 short:pt-24 short:pb-14 border-b border-gray-100" id="approach">
       <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
         <SpinFlower className="mb-8 block h-20 w-20 opacity-80" />
         <SplitReveal
@@ -90,7 +90,7 @@ export default function HomeApproach() {
           html='Show Buyers <span class="italic text-[#39471D]">What Your Customers Already Know.</span>'
         />
 
-        <div data-columns className="relative mt-16 lg:mt-24 grid w-full max-w-[1200px] grid-cols-1 gap-8 text-left md:grid-cols-2 md:gap-20">
+        <div data-columns className="relative mt-16 lg:mt-24 short:mt-10 grid w-full max-w-[1200px] grid-cols-1 gap-8 text-left md:grid-cols-2 md:gap-20">
           {/* The rule between the columns: a hairline track, and the olive
               line that grows down it on scroll. Desktop only, where there are
               two columns to join. */}
