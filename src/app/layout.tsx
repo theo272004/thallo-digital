@@ -55,18 +55,19 @@ const SITE_URL = "https://thallodigital.com";
 const SAME_AS: string[] = ['https://www.linkedin.com/company/thallo-digital/'];
 /* The sentence every machine repeats about us: the home page's meta
    description, its Open Graph card, the Organization schema and the opening
-   line of /llms.txt all read it. So it says the three things an assistant
-   needs to describe Thallo correctly — what kind of company, for whom, and the
-   outcome — in the words the rest of the site uses: B2B, high-consideration,
-   and the five assistants the scan measures. The old line ("conversational LLM
-   search answers") named neither who we serve nor Gemini. */
+   line of /llms.txt all read it. Cami rewrote it on 1 November to lead with
+   the category a buyer searches for — content marketing — and with what the
+   work is for: being the source the industry cites, and the leads that
+   follow. The previous line led with "AI visibility agency" and named the
+   five assistants the scan measures; it is in git history if that framing is
+   wanted back. */
 const DESCRIPTION =
-  "The AI visibility agency for B2B companies in high-consideration industries. We make you the name ChatGPT, Claude, Gemini, Perplexity and Google AI recommend.";
+  "Become the expert source in your industry and attract qualified leads. We manage buyer research, content strategy, writing, SEO and distribution.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Thallo · The AI Visibility Agency",
+    default: "Boutique Content Marketing Agency | Build Digital Authority",
     template: "%s · Thallo Digital",
   },
   description: DESCRIPTION,
@@ -85,7 +86,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Thallo Digital",
-    title: "Thallo · The AI Visibility Agency",
+    title: "Boutique Content Marketing Agency | Build Digital Authority",
     description: DESCRIPTION,
     url: SITE_URL,
     locale: "en_US",
@@ -93,7 +94,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Thallo · The AI Visibility Agency",
+    title: "Boutique Content Marketing Agency | Build Digital Authority",
     description: DESCRIPTION,
     images: [`${SITE_URL}/og.png`],
   },

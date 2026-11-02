@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { SplitReveal, ScrollFill } from '@/components/motion';
-import type { FillPart } from '@/components/motion/ScrollFill';
+import { SplitReveal } from '@/components/motion';
 import SpinFlower from '@/components/ui/SpinFlower';
 import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 
@@ -23,21 +22,28 @@ import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
  * needs comes from spacing instead: generous padding, a wide gap under the
  * heading and between the columns.
  *
- * What moves is the reading: each paragraph fills in word by word as it
- * scrolls up, from pale grey to ink, and the phrases that carry the argument
- * finish in olive so a skim still lands on them. Two earlier versions — white
- * cards over a photograph, then a dark photo banner — are in git history.
+ * Nothing in the copy moves. Each paragraph used to fill in word by word on
+ * scroll, from pale grey to ink; it meant the section could only be read at
+ * the speed of the scrollbar, and half-read if you stopped (Cami, 1
+ * November), so the words are simply there now. What the fill was for — a
+ * skim landing on the argument — the olive still does: the phrases that carry
+ * it are set in it. ScrollFill itself is kept in motion/ for other uses. Two
+ * earlier versions of the whole section — white cards over a photograph, then
+ * a dark photo banner — are in git history.
  *
  * Type alone read as too bare (Cami, 2 November: "está muy solo ahí"), so it
  * takes two of the house's own marks and no new words: the turning isotipo
  * above the heading, as on the About statement, and an olive rule between the
- * two columns that draws down as they fill, joining research to plan.
+ * two columns that draws down as they scroll past, joining research to plan.
  */
 
-const INK = '#4B5563'; // gray-600: a step darker than the body grey, so the fill reads
+/** A run of the paragraph and the colour it is set in. */
+type Part = { text: string; color: string };
+
+const INK = '#4B5563'; // gray-600: a step darker than the body grey, so the olive reads against it
 const OLIVE = '#39471D';
 
-const RESEARCH: FillPart[] = [
+const RESEARCH: Part[] = [
   {
     text: 'What customers value most about your business doesn’t always come through in your content. We interview your experts and conduct customer research, using sales materials and search data to really understand',
     color: INK,
@@ -45,7 +51,7 @@ const RESEARCH: FillPart[] = [
   { text: ' how buyers compare their options, what holds them back and what gives them confidence to choose you.', color: OLIVE },
 ];
 
-const PLAN: FillPart[] = [
+const PLAN: Part[] = [
   {
     text: 'Then, we use those insights to plan your website’s structure, decide which content and resources to create and how we’ll distribute them to reach the right people. Over time, useful, credible work gives people',
     color: INK,
@@ -91,10 +97,22 @@ export default function HomeApproach() {
           <span aria-hidden className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 bg-gray-200 md:block">
             <span data-rule className="absolute inset-0 origin-top bg-[#39471D]" />
           </span>
-          <ScrollFill parts={RESEARCH} className="text-base sm:text-lg font-medium leading-relaxed text-justify hyphens-none [text-wrap:pretty]" />
-          <ScrollFill parts={PLAN} className="text-base sm:text-lg font-medium leading-relaxed text-justify hyphens-none [text-wrap:pretty]" />
+          <Paragraph parts={RESEARCH} />
+          <Paragraph parts={PLAN} />
         </div>
       </div>
     </section>
+  );
+}
+
+function Paragraph({ parts }: { parts: Part[] }) {
+  return (
+    <p className="text-base sm:text-lg font-medium leading-relaxed text-justify hyphens-none [text-wrap:pretty]">
+      {parts.map((part) => (
+        <span key={part.text} style={{ color: part.color }}>
+          {part.text}
+        </span>
+      ))}
+    </p>
   );
 }

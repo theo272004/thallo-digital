@@ -11,37 +11,21 @@ import { BASE } from '@/lib/site';
  *
  * Meant to be the section that stops the scroll (Cami, 1 November: "tiene que
  * ser la más que llame la atención"). Professional services is the
- * photograph in the middle; the other four are small white cards straddling
- * its two edges, two a side. Each pair is set unevenly on purpose: one card
- * half over the photograph, the other further in (about two thirds over), so
- * they read as placed rather than as a frame. Neither extreme worked: fully
- * off the edge looked detached, fully inside looked boxed in. Each drifts a few pixels on a slow
- * cycle at its own offset, and on the way in they slide a short way out to
- * their places. Both motions were larger at first and read as jittery.
+ * photograph, and the other four sit beside it: the photograph on the left,
+ * a 2×2 of white cards filling the rest of the row, both the same height.
  *
- * The first version had five cards in a grid, the four white ones large and
- * empty; this one keeps them only as big as their names.
+ * The version before this one floated the four cards over the two edges of a
+ * centred photograph, each drifting on its own slow cycle. It read as
+ * decoration over the picture rather than as four places to go, and the names
+ * were the smallest type in the section; side by side they are four plain
+ * cards the size of the photograph's half, which is what they are. The
+ * floating composition is in git history at c8a492b.
  *
  * All five go to /industries/ until each sector has a page of its own. Below
- * lg the composition becomes the photograph with a 2×2 of the small cards
- * under it.
+ * lg the row stacks: the photograph, then the 2×2 under it.
  */
 
-type Side = 'left' | 'right';
-
-/* Positions at lg, as a share of the stage. The photograph spans the middle
-   64% (its edges at 18% and 82%) and a card is about 23% wide, so 6.5% puts a
-   card half over the edge and 10.5% puts it about two thirds over. Cami (2
-   November) asked for the cards a little bigger and the photograph a little
-   smaller; at 72% and 19% the photograph swallowed them. The four
-   are spread down the whole height of the photograph, top to near the
-   bottom, at staggered heights so they never line up into a frame. */
-const OTHERS: { name: string; side: Side; pos: string; delay: string }[] = [
-  { name: 'Fintech', side: 'left', pos: 'lg:left-[6.5%] lg:top-[6%]', delay: '0s' },
-  { name: 'Health Tech', side: 'left', pos: 'lg:left-[10.5%] lg:top-[52%]', delay: '-4s' },
-  { name: 'Legal Tech', side: 'right', pos: 'lg:right-[10.5%] lg:top-[23%]', delay: '-2s' },
-  { name: 'Specialized Software', side: 'right', pos: 'lg:right-[5.5%] lg:top-[74%]', delay: '-6s' },
-];
+const OTHERS = ['Fintech', 'Health Tech', 'Legal Tech', 'Specialized Software'];
 
 export default function HomeIndustries() {
   const stageRef = useRef<HTMLDivElement>(null);
@@ -51,22 +35,20 @@ export default function HomeIndustries() {
       if (prefersReducedMotion()) return;
       const mm = gsap.matchMedia();
       mm.add('(min-width: 1024px)', () => {
-        const cards = gsap.utils.toArray<HTMLElement>('[data-side]');
-        gsap.from(cards, {
-          x: (_, el: HTMLElement) => (el.dataset.side === 'left' ? 40 : -40),
-          autoAlpha: 0,
-          scale: 0.94,
-          duration: 1,
-          ease: 'power3.out',
-          stagger: 0.12,
-          scrollTrigger: { trigger: stageRef.current, start: 'top 70%', once: true },
-        });
         gsap.from('[data-feature]', {
           scale: 0.97,
           autoAlpha: 0,
           duration: 1.1,
           ease: 'power3.out',
           scrollTrigger: { trigger: stageRef.current, start: 'top 80%', once: true },
+        });
+        gsap.from(gsap.utils.toArray<HTMLElement>('[data-card]'), {
+          y: 28,
+          autoAlpha: 0,
+          duration: 0.9,
+          ease: 'power3.out',
+          stagger: 0.1,
+          scrollTrigger: { trigger: stageRef.current, start: 'top 70%', once: true },
         });
       });
       return () => mm.revert();
@@ -93,12 +75,17 @@ export default function HomeIndustries() {
           Explore how we apply that work to your industry:
         </p>
 
-        <div ref={stageRef} className="relative mx-auto max-w-[1240px] lg:h-[520px]">
-          {/* ── Professional services, in the middle ───────────────────── */}
+        {/* The photograph and the 2×2 share a row and a height, so the grid of
+            four is exactly as tall as the picture beside it. */}
+        <div
+          ref={stageRef}
+          className="mx-auto grid max-w-[1240px] gap-4 lg:h-[560px] lg:grid-cols-[37%_1fr] lg:gap-6"
+        >
+          {/* ── Professional services, the photograph ───────────────────── */}
           <a
             data-feature
             href={`${BASE}/industries/`}
-            className="group relative isolate z-0 flex h-[380px] lg:h-full w-full lg:w-[64%] lg:mx-auto flex-col items-center justify-end overflow-hidden rounded-[32px] bg-[#171A10] p-8 sm:p-12 text-center shadow-[0_30px_70px_-30px_rgba(23,26,16,0.55)]"
+            className="group relative isolate flex h-[380px] lg:h-full flex-col justify-end overflow-hidden rounded-[32px] bg-[#171A10] p-8 sm:p-10 shadow-[0_30px_70px_-30px_rgba(23,26,16,0.55)]"
           >
             <img
               loading="lazy"
@@ -108,35 +95,27 @@ export default function HomeIndustries() {
               className="absolute inset-0 -z-10 h-full w-full object-cover transition-transform duration-[1.4s] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
             />
             <span aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
-            <span className="text-4xl sm:text-5xl font-bold tracking-tight text-white leading-[1.05]">
-              Professional Services
-            </span>
-            {/* The disc stays white and still on hover; only the photograph
-                zooms. It used to grow and push the arrow out, then to turn
-                olive, and Cami wanted neither (2 November). */}
-            <span className="mt-6 flex h-12 w-12 items-center justify-center rounded-full bg-white text-[#39471D]">
-              <ArrowUpRight className="text-[15px]" />
-            </span>
+            <div className="flex items-end justify-between gap-6">
+              <span className="text-3xl sm:text-4xl 2xl:text-5xl font-bold tracking-tight text-white leading-[1.05]">
+                Professional Services
+              </span>
+              <ArrowUpRight className="mb-1 text-[22px] text-white" />
+            </div>
           </a>
 
-          {/* ── The other four, floating over its edges ────────────────── */}
-          <ul className="mt-4 grid grid-cols-2 gap-3 lg:mt-0 lg:block">
-            {OTHERS.map(({ name, side, pos, delay }) => (
-              <li key={name} data-side={side} className={`lg:absolute lg:z-10 ${pos}`}>
-                {/* The float lives on its own wrapper so it never fights the
-                    hover lift on the link inside it. Desktop only: on a phone
-                    the cards sit in a grid and stay still. */}
-                <div className="float-lg" style={{ animationDelay: delay }}>
-                  <a
-                    href={`${BASE}/industries/`}
-                    className="group flex h-full items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white px-5 py-4 lg:min-w-[280px] lg:gap-6 lg:px-6 lg:py-5 shadow-[0_18px_40px_-18px_rgba(23,26,16,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-[#39471D]/40"
-                  >
-                    <span className="text-[15px] lg:text-lg font-semibold tracking-tight text-gray-900">{name}</span>
-                    <span className="flex h-8 w-8 lg:h-10 lg:w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors duration-300 group-hover:border-[#39471D] group-hover:bg-[#39471D] group-hover:text-white">
-                      <ArrowUpRight className="text-[11px] lg:text-[13px]" />
-                    </span>
-                  </a>
-                </div>
+          {/* ── The other four, two by two ──────────────────────────────── */}
+          <ul className="grid grid-cols-2 grid-rows-2 gap-4 lg:gap-6">
+            {OTHERS.map((name) => (
+              <li key={name} data-card className="min-h-[140px]">
+                <a
+                  href={`${BASE}/industries/`}
+                  className="group flex h-full flex-col justify-between rounded-[24px] border border-gray-200 bg-white p-6 sm:p-8 2xl:p-10 shadow-[0_18px_40px_-28px_rgba(23,26,16,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-[#39471D]/40"
+                >
+                  <span className="text-xl sm:text-2xl 2xl:text-[1.75rem] font-bold tracking-tight text-gray-900 leading-[1.15]">
+                    {name}
+                  </span>
+                  <ArrowUpRight className="self-end text-[18px] text-[#39471D] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </a>
               </li>
             ))}
           </ul>
