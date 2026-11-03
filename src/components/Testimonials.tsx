@@ -357,31 +357,45 @@ export default function Testimonials() {
             {/* Keyed by position, not title: a new post must refill a slot,
                 not replace it. */}
             {rest.map((a, i) => (
-              <CardShell key={i} a={a} className="flex-1 items-start gap-4 p-4">
+              /* items-stretch, so the text column and the picture both run
+                 the card's full height: "Read the note" sits on the bottom
+                 edge and the picture fills its side, instead of both hanging
+                 at the top over an empty band (Cami, 3 November). */
+              <CardShell key={i} a={a} className="flex-1 basis-0 items-stretch gap-5 p-4">
                 <span className="flex min-w-0 flex-1 flex-col">
                   <Meta a={a} />
 
-                  <span className="mt-2.5 text-base font-bold leading-snug text-gray-900 text-balance transition-colors duration-300 group-hover:text-[#39471D]">
+                  {/* The title's box is two lines in every card, whether it
+                      needs one or two, so the three cards' text starts and
+                      ends on the same lines (Cami, 3 November: "que todos
+                      tengan el mismo tamaño de caja de texto"). */}
+                  <span className="mt-2.5 line-clamp-2 min-h-[2.75em] text-base font-bold leading-snug text-gray-900 transition-colors duration-300 group-hover:text-[#39471D]">
                     {a.title}
                   </span>
 
-                  {/* Only an excerpt from the blog runs long enough to need the clamp. */}
-                  <span className={`mt-1.5 text-[13px] font-medium leading-relaxed text-gray-500 ${a.href ? 'line-clamp-2 short:line-clamp-1' : ''}`}>
+                  {/* Every excerpt is the same box: two lines, held at two
+                      even when the text is shorter, so the three cards end
+                      their text on the same line. Body size, as everywhere. */}
+                  <span className="mt-1.5 line-clamp-2 min-h-[3.25em] text-base font-medium leading-relaxed text-gray-500 short:line-clamp-1 short:min-h-[1.625em]">
                     {a.desc}
                   </span>
 
-                  {a.href && (
-                    <span className="mt-auto inline-flex items-center gap-1.5 pt-4 short:pt-2 text-[11px] font-bold text-[#39471D]">
-                      Read the note
-                      <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                    </span>
-                  )}
+                  {/* A planned note has nothing to read yet, but keeps the
+                      row's room (invisible, and hidden from readers) so its
+                      card is the same height as the two beside it. */}
+                  <span
+                    aria-hidden={a.href ? undefined : true}
+                    className={`mt-auto inline-flex items-center gap-1.5 pt-4 short:pt-2 text-[11px] font-bold text-[#39471D] ${a.href ? '' : 'invisible'}`}
+                  >
+                    Read the note
+                    <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </span>
                 </span>
 
                 {/* Hidden on the narrowest screens: at full width the card is
                     already a column of text, and a thumbnail beside it leaves
                     the title three words to a line. */}
-                <span className="relative hidden shrink-0 overflow-hidden rounded-xl bg-[#39471D] sm:block">
+                <span className="relative hidden w-[150px] shrink-0 overflow-hidden rounded-xl bg-[#39471D] sm:block short:w-[120px]">
                   <img
                     loading="lazy"
                     decoding="async"
@@ -389,7 +403,7 @@ export default function Testimonials() {
                     alt=""
                     aria-hidden="true"
                     style={{ objectPosition: focusOf(pics[i + 1]) }}
-                    className="h-[88px] w-[104px] short:h-[72px] short:w-[88px] select-none object-cover"
+                    className="absolute inset-0 h-full w-full select-none object-cover"
                   />
                   <span aria-hidden="true" className="absolute inset-0" style={{ background: PHOTO_TINT }} />
                 </span>
