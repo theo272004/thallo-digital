@@ -167,15 +167,7 @@ body {
   0%, 100% { transform: translateY(-4px); }
   50%      { transform: translateY(4px); }
 }
-/* Show Buyers' diagram (ShowBuyersDiagram.tsx): a short dash running along
-   each hairline, and the isotipo turning. */
-.sb-flow {
-  stroke-dasharray: 2 18;
-  animation: sb-flow 2.4s linear infinite;
-}
-@keyframes sb-flow {
-  to { stroke-dashoffset: -40; }
-}
+/* Show Buyers' animation (ShowBuyersDiagram.tsx): the isotipo turning. */
 .sb-spin {
   transform-box: fill-box;
   transform-origin: center;
@@ -185,7 +177,7 @@ body {
   to { transform: rotate(360deg); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .sb-flow, .sb-spin { animation: none; }
+  .sb-spin { animation: none; }
 }
 @media (min-width: 1024px) {
   .float-lg {

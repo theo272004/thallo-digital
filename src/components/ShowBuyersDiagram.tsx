@@ -5,49 +5,44 @@ import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 import { BASE } from '@/lib/site';
 
 /**
- * The Show Buyers copy, drawn (Cami, 3 November: "un tipo de animación que
- * explique lo que dice ahí", and not a card, because the video above is one).
+ * The Show Buyers copy, as motion (Cami, 3 November: "un tipo de animación
+ * que explique lo que dice ahí", not a card, because the video above is one).
  *
- * Minimal on purpose. A first version had a ring and an icon for every input
- * and output and a beating heart, and read heavy ("tosca"); this one is hairlines and
- * dots. Left to right it says the same as the paragraphs beside it: many
- * things heard (four grey dots) run into one understanding (the isotipo),
- * which goes out to the right people (three olive dots), who pass it on to
- * one another (the small arcs between them). No words: the copy has them.
+ * Two earlier drawings joined nodes with lines — first with icons, then with
+ * hairlines — and both read as a flowchart ("no me gusta que sea línea, como
+ * que conecta"). This one has no lines between things. It is a field of
+ * orbits around the isotipo, and it plays the paragraphs as one loop:
  *
- * The lines draw once on the way in; then a short olive dash keeps running
- * along each one and the isotipo turns slowly. With reduced motion it is the
- * finished drawing, still.
+ *   1. Listening: grey points drift in from outside and are absorbed by the
+ *      isotipo (interviews, research, sales materials, search data).
+ *   2. Understanding: the isotipo swells once.
+ *   3. Reach: a ripple goes out from it, and each point on the orbits turns
+ *      olive as it passes (the right people, remembering, passing it on).
+ *
+ * The orbits turn very slowly the whole time. With reduced motion it is the
+ * last frame, still: the isotipo and the olive points.
  */
 
 const OLIVE = '#39471D';
+const GREY = '#D1D5DB';
+const C = 120; // centre of the 240×240 box
+const CORE_R = 24;
+const RIPPLE_TO = 116;
 
-const IN_Y = [24, 61, 99, 136];
-const OUT_Y = [40, 80, 120];
-const IN_X = 10;
-const CORE = { x: 160, y: 80 };
-const OUT_X = 300;
-
-const IN_PATHS = IN_Y.map((y) => `M${IN_X + 4},${y} C${IN_X + 70},${y} ${CORE.x - 70},${CORE.y} ${CORE.x - 24},${CORE.y}`);
-const OUT_PATHS = OUT_Y.map((y) => `M${CORE.x + 24},${CORE.y} C${CORE.x + 70},${CORE.y} ${OUT_X - 70},${y} ${OUT_X - 5},${y}`);
-const PASS_PATHS = [
-  `M${OUT_X + 6},${OUT_Y[0]} C${OUT_X + 26},${OUT_Y[0]} ${OUT_X + 26},${OUT_Y[1]} ${OUT_X + 6},${OUT_Y[1]}`,
-  `M${OUT_X + 6},${OUT_Y[1]} C${OUT_X + 26},${OUT_Y[1]} ${OUT_X + 26},${OUT_Y[2]} ${OUT_X + 6},${OUT_Y[2]}`,
+const ORBITS = [52, 80, 106];
+/* The points that light up: [orbit radius, angle in degrees]. */
+const PEOPLE: [number, number][] = [
+  [52, -30], [52, 150],
+  [80, 20], [80, 110], [80, 215], [80, 300],
+  [106, -70], [106, 60], [106, 170], [106, 250],
 ];
+/* Where the incoming points start, outside the last orbit. */
+const SIGNALS = [200, 25, 290, 120, 335];
 
-function Lines({ paths, stage }: { paths: string[]; stage: string }) {
-  return (
-    <>
-      {paths.map((d) => (
-        <g key={d}>
-          <path d={d} fill="none" stroke="#E5E7EB" strokeWidth={1} />
-          <path d={d} data-draw={stage} fill="none" stroke={OLIVE} strokeOpacity={0.35} strokeWidth={1} />
-          <path d={d} data-flow fill="none" stroke={OLIVE} strokeWidth={1.5} strokeLinecap="round" className="sb-flow" />
-        </g>
-      ))}
-    </>
-  );
-}
+const at = (r: number, deg: number) => {
+  const a = (deg * Math.PI) / 180;
+  return { x: C + r * Math.cos(a), y: C + r * Math.sin(a) };
+};
 
 export default function ShowBuyersDiagram({ className = '' }: { className?: string }) {
   const ref = useRef<SVGSVGElement>(null);
@@ -56,32 +51,51 @@ export default function ShowBuyersDiagram({ className = '' }: { className?: stri
     () => {
       const svg = ref.current;
       if (!svg) return;
-      const draws = (stage: string) => gsap.utils.toArray<SVGPathElement>(`[data-draw="${stage}"]`, svg);
-      const flows = gsap.utils.toArray<SVGPathElement>('[data-flow]', svg);
+      const people = gsap.utils.toArray<SVGCircleElement>('[data-person]', svg);
+      const signals = gsap.utils.toArray<SVGCircleElement>('[data-signal]', svg);
 
       if (prefersReducedMotion()) {
-        gsap.set(flows, { autoAlpha: 0 });
+        gsap.set(people, { attr: { fill: OLIVE } });
+        gsap.set(signals, { autoAlpha: 0 });
         return;
       }
 
-      [...draws('in'), ...draws('out'), ...draws('pass')].forEach((p) => {
-        const len = p.getTotalLength();
-        gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
-      });
-      gsap.set(flows, { autoAlpha: 0 });
-      gsap.set('[data-node]', { autoAlpha: 0, scale: 0.5, transformOrigin: '50% 50%' });
+      gsap.to('[data-orbits]', { rotation: 360, svgOrigin: `${C} ${C}`, duration: 90, ease: 'none', repeat: -1 });
 
-      const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.out' } });
-      tl.to('[data-node="in"]', { autoAlpha: 1, scale: 1, duration: 0.4, stagger: 0.08 })
-        .to(draws('in'), { strokeDashoffset: 0, duration: 0.7, stagger: 0.06, ease: 'power1.inOut' }, '-=0.1')
-        .to('[data-node="core"]', { autoAlpha: 1, scale: 1, duration: 0.5 }, '-=0.2')
-        .to(draws('out'), { strokeDashoffset: 0, duration: 0.7, stagger: 0.06, ease: 'power1.inOut' })
-        .to('[data-node="out"]', { autoAlpha: 1, scale: 1, duration: 0.4, stagger: 0.08 }, '-=0.3')
-        .to(draws('pass'), { strokeDashoffset: 0, duration: 0.5, stagger: 0.1, ease: 'power1.inOut' })
-        .to(flows, { autoAlpha: 1, duration: 0.6 });
+      const RIPPLE_DUR = 1.8;
+      const loop = gsap.timeline({ paused: true, repeat: -1, repeatDelay: 0.6 });
+
+      // 1. Listening: the signals drift in and vanish into the centre.
+      loop.fromTo(
+        signals,
+        { attr: { cx: (i: number) => at(140, SIGNALS[i]).x, cy: (i: number) => at(140, SIGNALS[i]).y }, autoAlpha: 0 },
+        { attr: { cx: C, cy: C }, autoAlpha: 1, duration: 1.4, ease: 'power2.in', stagger: 0.18 }
+      );
+      loop.to(signals, { autoAlpha: 0, duration: 0.2, stagger: 0.18 }, '<1.2');
+
+      // 2. Understanding: the isotipo swells once.
+      loop.to('[data-core]', { scale: 1.12, svgOrigin: `${C} ${C}`, duration: 0.35, ease: 'power2.out' });
+      loop.to('[data-core]', { scale: 1, svgOrigin: `${C} ${C}`, duration: 0.5, ease: 'power2.inOut' });
+
+      // 3. Reach: a ripple, and every point it passes turns olive.
+      const rippleAt = loop.duration() - 0.4;
+      loop.fromTo(
+        '[data-ripple]',
+        { attr: { r: CORE_R }, autoAlpha: 0.55 },
+        { attr: { r: RIPPLE_TO }, autoAlpha: 0, duration: RIPPLE_DUR, ease: 'power1.out' },
+        rippleAt
+      );
+      people.forEach((p) => {
+        const r = Number(p.dataset.r);
+        const t = rippleAt + ((r - CORE_R) / (RIPPLE_TO - CORE_R)) * RIPPLE_DUR * 0.75;
+        loop.to(p, { attr: { fill: OLIVE, r: 4.5 }, duration: 0.35, ease: 'power2.out' }, t);
+      });
+
+      // Rest a moment lit, then fade back to grey for the next pass.
+      loop.to(people, { attr: { fill: GREY, r: 3.5 }, duration: 0.8, ease: 'power1.inOut' }, '+=1.4');
 
       gsap.timeline({
-        scrollTrigger: { trigger: svg, start: 'top 85%', once: true, onEnter: () => tl.play() },
+        scrollTrigger: { trigger: svg, start: 'top 85%', once: true, onEnter: () => loop.play() },
       });
     },
     { scope: ref }
@@ -90,27 +104,31 @@ export default function ShowBuyersDiagram({ className = '' }: { className?: stri
   return (
     <svg
       ref={ref}
-      viewBox="0 0 340 160"
+      viewBox="0 0 240 240"
       className={`h-auto w-full overflow-visible ${className}`}
       aria-hidden="true"
       focusable="false"
     >
-      <Lines paths={IN_PATHS} stage="in" />
-      <Lines paths={OUT_PATHS} stage="out" />
-      <Lines paths={PASS_PATHS} stage="pass" />
-
-      {IN_Y.map((y) => (
-        <circle key={y} data-node="in" cx={IN_X} cy={y} r={3.5} fill="#D1D5DB" />
-      ))}
-
-      <g data-node="core">
-        <circle cx={CORE.x} cy={CORE.y} r={22} fill="none" stroke={OLIVE} strokeOpacity={0.2} />
-        <image href={`${BASE}/flower.webp`} x={CORE.x - 15} y={CORE.y - 15} width={30} height={30} className="sb-spin" />
+      <g data-orbits>
+        {ORBITS.map((r) => (
+          <circle key={r} cx={C} cy={C} r={r} fill="none" stroke="#E5E7EB" strokeWidth={0.75} />
+        ))}
+        {PEOPLE.map(([r, deg]) => {
+          const p = at(r, deg);
+          return <circle key={`${r}-${deg}`} data-person data-r={r} cx={p.x} cy={p.y} r={3.5} fill={GREY} />;
+        })}
       </g>
 
-      {OUT_Y.map((y) => (
-        <circle key={y} data-node="out" cx={OUT_X} cy={y} r={4.5} fill={OLIVE} />
+      <circle data-ripple cx={C} cy={C} r={CORE_R} fill="none" stroke={OLIVE} strokeWidth={1} opacity={0} />
+
+      {SIGNALS.map((deg) => (
+        <circle key={deg} data-signal cx={C} cy={C} r={2.5} fill="#9CA3AF" opacity={0} />
       ))}
+
+      <g data-core>
+        <circle cx={C} cy={C} r={CORE_R} fill={OLIVE} fillOpacity={0.08} />
+        <image href={`${BASE}/flower.webp`} x={C - 15} y={C - 15} width={30} height={30} className="sb-spin" />
+      </g>
     </svg>
   );
 }

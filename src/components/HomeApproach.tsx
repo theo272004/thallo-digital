@@ -44,7 +44,7 @@ import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
  * it, with wide gaps.
  *
  * Still "nada" after that (3 November): too empty for what it says. The left
- * column now carries a wordless drawing of the copy (ShowBuyersDiagram) under
+ * column now carries a wordless animation of the copy (ShowBuyersDiagram) under
  * the heading, and the lone turning flower that sat over the heading went
  * into the drawing's centre.
  */
@@ -108,9 +108,9 @@ export default function HomeApproach() {
             className="max-w-[20ch] text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans text-balance"
             html='Show Buyers <span class="italic text-[#39471D]">What Your Customers Already Know.</span>'
           />
-          {/* The copy beside it, drawn: what we listen to, what it becomes,
-              what we plan from it, who it reaches. */}
-          <ShowBuyersDiagram className="max-w-[340px]" />
+          {/* The copy beside it, as motion: what we hear comes in, the
+              understanding goes out, the right people light up. */}
+          <ShowBuyersDiagram className="max-w-[240px]" />
         </div>
 
         <div data-columns className="relative flex flex-col gap-8 lg:py-4 lg:pl-14">
