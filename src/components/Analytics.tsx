@@ -7,7 +7,7 @@ import CookieBanner from '@/components/CookieBanner';
 import { CONSENT_EVENT, readConsent, writeConsent, type Consent } from '@/lib/consent';
 
 /**
- * GA4, baked in at build time.
+ * GA4 and Microsoft Clarity, baked in at build time.
  *
  * This is a static export, so there is no server to read an environment
  * variable at request time — `NEXT_PUBLIC_GA_ID` is substituted into the bundle
@@ -21,7 +21,8 @@ import { CONSENT_EVENT, readConsent, writeConsent, type Consent } from '@/lib/co
  * ── Nothing loads until someone says yes ────────────────────────────────────
  * This component also owns the consent question, because the two facts are the
  * same fact: there is a banner exactly when there is a tag to consent to. A
- * build with no `NEXT_PUBLIC_GA_ID` returns null below and the banner never
+ * build with neither `NEXT_PUBLIC_GA_ID` nor `NEXT_PUBLIC_CLARITY_ID` returns
+ * null below and the banner never
  * renders — no cookie notice on a site that sets no cookies, which is the
  * other way of lying about this.
  *
@@ -33,10 +34,21 @@ import { CONSENT_EVENT, readConsent, writeConsent, type Consent } from '@/lib/co
    re-reading the variable and drifting from it. */
 export const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? '';
 
+/**
+ * Microsoft Clarity — heatmaps and session recordings. Same rules as GA: baked
+ * in at build time, set only by the Bluehost workflow, and behind the same
+ * consent. One question covers both tags; the banner names both.
+ */
+export const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID ?? '';
+
+/** Is there any tag on this build to ask about? The banner exists exactly when this is true. */
+export const HAS_ANALYTICS = Boolean(GA_ID || CLARITY_ID);
+
 declare global {
   interface Window {
     dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
+    clarity?: (...args: unknown[]) => void;
   }
 }
 
@@ -101,13 +113,13 @@ export default function Analytics() {
     });
   }, [pathname, consent]);
 
-  if (!GA_ID) return null;
+  if (!HAS_ANALYTICS) return null;
 
   return (
     <>
       {/* The only place googletagmanager.com is named. Declined or unanswered,
           these do not render, no request is made and no cookie is set. */}
-      {'granted' === consent && (
+      {GA_ID && 'granted' === consent && (
         <>
           <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
           <Script id="ga4-init" strategy="afterInteractive">
@@ -122,6 +134,23 @@ export default function Analytics() {
             `}
           </Script>
         </>
+      )}
+
+      {/* Microsoft's own snippet, verbatim but for the ID. The consentv2 call
+          tells Clarity the visitor said yes — without it, Clarity treats EEA
+          visitors as unconsented and runs cookieless. Ads stay denied: the
+          banner promises no advertising, and Clarity has no business there. */}
+      {CLARITY_ID && 'granted' === consent && (
+        <Script id="clarity-init" strategy="afterInteractive">
+          {`
+            (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "${CLARITY_ID}");
+            window.clarity('consentv2', { ad_Storage: 'denied', analytics_Storage: 'granted' });
+          `}
+        </Script>
       )}
 
       {/* Only when the answer is a known absence. `undefined` is "not read

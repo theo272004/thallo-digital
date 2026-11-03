@@ -42,6 +42,10 @@ jobs:
           # traffic from a review copy as if it were the live site. Unset, the
           # build ships no tag and no cookie banner (src/components/Analytics.tsx).
           NEXT_PUBLIC_GA_ID: ${{ secrets.GA_MEASUREMENT_ID }}
+          # Microsoft Clarity project ID. Public — it is printed in every page's
+          # source — so it lives here rather than in a secret. Same rule as GA:
+          # only this workflow sets it.
+          NEXT_PUBLIC_CLARITY_ID: z2cjq37jfy
 
       # The previous home page, kept on the Pages mirror so its sections can be
       # reused (src/components/HomeArchive.tsx). It is never part of the live

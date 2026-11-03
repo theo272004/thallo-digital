@@ -74,7 +74,12 @@ function dropAnalyticsCookies(): void {
   const names = document.cookie
     .split(';')
     .map((c) => c.split('=')[0].trim())
-    .filter((n) => '_ga' === n || n.startsWith('_ga_') || n.startsWith('_gid'));
+    /* `_clck` and `_clsk` are Clarity's first-party pair. Its cookies on
+       clarity.ms itself are out of reach from here; the consentv2 call in
+       writeConsent is what tells Clarity to drop those. */
+    .filter(
+      (n) => '_ga' === n || n.startsWith('_ga_') || n.startsWith('_gid') || '_clck' === n || '_clsk' === n,
+    );
 
   const host = window.location.hostname;
   /* '' means "whatever the cookie was written with" and covers the host-only
@@ -93,6 +98,10 @@ export function writeConsent(value: Consent): void {
   /* Before the event, so that anything re-rendering on the back of it is
      already looking at a browser with no analytics cookies in it. */
   if ('denied' === value) {
+    /* Clarity keeps recording on this page view until it is told otherwise —
+       unmounting its <Script> does not unload it. Denying erases its cookies
+       and stops the session. Absent on a build without it, hence the `?.`. */
+    window.clarity?.('consentv2', { ad_Storage: 'denied', analytics_Storage: 'denied' });
     dropAnalyticsCookies();
   }
 
