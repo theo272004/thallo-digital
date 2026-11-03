@@ -39,8 +39,9 @@ import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
  * now: the heading on the left, the two paragraphs stacked on the right, read
  * at once with nothing waiting below for another scroll. It was a full screen
  * tall at first and read big and empty (Cami, 2 November: "grandota y
- * vacía"), so it is only as tall as its copy, on a narrower measure, with
- * a smaller flower over the heading.
+ * vacía"), and then, cut down to its copy, too small (3 November). It sits
+ * between the two: four fifths of a screen on a desktop, the copy centred in
+ * it, with the full-size flower over the heading and wide gaps.
  */
 
 /** A run of the paragraph and the colour it is set in. */
@@ -92,12 +93,12 @@ export default function HomeApproach() {
   return (
     <section
       ref={sectionRef}
-      className="bg-[#F7F8F9] py-20 2xl:py-24 short:pt-24 short:pb-16 border-b border-gray-100"
+      className="flex items-center bg-[#F7F8F9] py-28 lg:min-h-[80svh] short:pt-28 short:pb-20 border-b border-gray-100"
       id="approach"
     >
-      <div className="mx-auto grid w-full max-w-[1200px] grid-cols-1 items-center gap-10 px-6 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
-        <div className="flex flex-col items-center gap-5 text-center lg:items-start lg:text-left">
-          <SpinFlower className="block h-14 w-14 shrink-0 opacity-80" />
+      <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 items-center gap-12 px-6 lg:grid-cols-[1fr_1.15fr] lg:gap-24">
+        <div className="flex flex-col items-center gap-7 text-center lg:items-start lg:text-left">
+          <SpinFlower className="block h-20 w-20 shrink-0 opacity-80" />
           <SplitReveal
             as="h2"
             className="max-w-[20ch] text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans text-balance"
@@ -105,7 +106,7 @@ export default function HomeApproach() {
           />
         </div>
 
-        <div data-columns className="relative flex flex-col gap-6 lg:pl-12">
+        <div data-columns className="relative flex flex-col gap-8 lg:py-4 lg:pl-14">
           {/* The rule beside the copy: a hairline track, and the olive line
               that draws down it once. Desktop only. */}
           <span aria-hidden className="pointer-events-none absolute inset-y-0 left-0 hidden w-px bg-gray-200 lg:block">
