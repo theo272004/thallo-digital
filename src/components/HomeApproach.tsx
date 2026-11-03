@@ -67,7 +67,7 @@ const RESEARCH: Part[] = [
     text: 'What customers value most about your business doesn’t always come through in your content. We interview your experts and conduct customer research, using sales materials and search data to really understand',
     color: INK,
   },
-  { text: ' how buyers compare their options, what holds them back and what gives them confidence to choose you.', color: OLIVE },
+  { text: ' how buyers compare their options, what holds them back and what gives them confidence to choose you.', color: OLIVE },
 ];
 
 const PLAN: Part[] = [
@@ -75,9 +75,10 @@ const PLAN: Part[] = [
     text: 'Then, we use those insights to plan your website’s structure, decide which content and resources to create and how we’ll distribute them to reach the right people. Over time, useful, credible work gives people',
     color: INK,
   },
-  /* The space before "it." is a no-break space, so the last word never ends
-     up alone on a line of its own. */
-  { text: ' a reason to remember your business and recommend it.', color: OLIVE },
+  /* The last four words of each paragraph are joined by no-break spaces, so
+     the closing line is never one or two words on their own ("recommend it."
+     was, Cami 3 November). */
+  { text: ' a reason to remember your business and recommend it.', color: OLIVE },
 ];
 
 export default function HomeApproach() {

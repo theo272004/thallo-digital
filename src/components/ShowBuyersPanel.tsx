@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { FileText, LayoutTemplate, MessagesSquare, Mic, PenLine, Scale, Target, Users } from 'lucide-react';
+import { ChevronLeft, ChevronRight, FileText, LayoutTemplate, MessagesSquare, Mic, PenLine, Scale, Target, Users } from 'lucide-react';
 import { prefersReducedMotion } from '@/lib/gsap';
 
 /**
@@ -19,6 +19,14 @@ import { prefersReducedMotion } from '@/lib/gsap';
  * November). Every few seconds the front card lifts away and the deck moves
  * up. The dots under it count the eight steps in two groups, research and
  * plan, the two paragraphs.
+ *
+ * It can be driven by hand (Cami, 3 November: "que yo también pueda dar
+ * clic… si lo quiero leer muy rápido"): click the front card or the arrow to
+ * go on, the other arrow to go back, a dot to jump. Any of those restarts the
+ * clock, and the deck holds still while the pointer is over it.
+ *
+ * Labels are balanced across their lines, so a two-line one never leaves a
+ * pair of words on its own ("recommend it" was).
  *
  * Only the full olive, never a tint of it (no light green on this site).
  */
@@ -48,67 +56,101 @@ function place(offset: number) {
 export default function ShowBuyersPanel() {
   const ref = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
+  const [hover, setHover] = useState(false);
+  const [visible, setVisible] = useState(false);
+  /* Bumped by every hand move, so the clock starts its wait over. */
+  const [nudge, setNudge] = useState(0);
 
-  /* Turn the deck while it is on screen. */
   useEffect(() => {
     const el = ref.current;
-    if (!el || prefersReducedMotion()) return;
-    let timer = 0;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        window.clearInterval(timer);
-        if (entry.isIntersecting) timer = window.setInterval(() => setActive((a) => (a + 1) % N), STEP_MS);
-      },
-      { threshold: 0.4 }
-    );
+    if (!el) return;
+    const io = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.4 });
     io.observe(el);
-    return () => {
-      io.disconnect();
-      window.clearInterval(timer);
-    };
+    return () => io.disconnect();
   }, []);
+
+  /* Turn the deck while it is on screen and nobody is holding it. */
+  useEffect(() => {
+    if (!visible || hover || prefersReducedMotion()) return;
+    const timer = window.setInterval(() => setActive((a) => (a + 1) % N), STEP_MS);
+    return () => window.clearInterval(timer);
+  }, [visible, hover, nudge]);
+
+  const go = (i: number) => {
+    setActive(((i % N) + N) % N);
+    setNudge((n) => n + 1);
+  };
+
+  const arrow =
+    'flex h-8 w-8 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-700 transition-colors duration-300 hover:border-[#39471D] hover:bg-[#39471D] hover:text-white';
 
   return (
     <div
       ref={ref}
-      aria-hidden="true"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
       className="flex flex-col items-center justify-center rounded-[28px] bg-[#ECEDEF] px-6 py-12 sm:px-12 lg:h-full"
     >
-      <div className="relative h-[150px] w-full max-w-[400px]">
+      {/* As tall as what is drawn in it: the front card (96px) and the two
+          peeking under it (42px more), so the group centres on what you see. */}
+      <div className="relative h-[138px] w-full max-w-[400px]">
         {STEPS.map(({ text, Icon }, i) => {
           const offset = (i - active + N) % N;
+          const front = offset === 0;
           return (
-            <div
+            <button
               key={text}
-              className="absolute inset-x-0 top-0 flex h-[96px] origin-top items-center gap-4 rounded-2xl border border-gray-200/70 bg-white px-5 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              type="button"
+              tabIndex={front ? 0 : -1}
+              aria-hidden={front ? undefined : true}
+              onClick={() => go(active + 1)}
+              className={`absolute inset-x-0 top-0 flex h-[96px] origin-top items-center gap-4 rounded-2xl border border-gray-200/70 bg-white px-5 text-left shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                front ? 'cursor-pointer' : 'pointer-events-none'
+              }`}
               style={place(offset)}
             >
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#39471D] text-white">
                 <Icon className="h-5 w-5" strokeWidth={1.75} />
               </span>
-              <span className="min-w-0 flex-1 text-[15px] font-semibold leading-snug text-gray-900 first-letter:uppercase">
+              <span className="min-w-0 flex-1 text-[15px] font-semibold leading-snug text-gray-900 text-balance first-letter:uppercase">
                 {text}
               </span>
               <span className="self-start pt-4 text-[11px] font-semibold tabular-nums text-gray-400">
                 {String(i + 1).padStart(2, '0')}
               </span>
-            </div>
+            </button>
           );
         })}
       </div>
 
-      {/* Eight steps, two groups: the research, then the plan. */}
-      <div className="mt-6 flex items-center gap-1.5">
-        {STEPS.map(({ text }, i) => (
-          <React.Fragment key={text}>
-            {i === 4 && <span className="w-3" />}
-            <span
-              className={`block h-1.5 rounded-full transition-all duration-500 ${
-                i === active ? 'w-5 bg-[#39471D]' : 'w-1.5 bg-gray-300'
-              }`}
-            />
-          </React.Fragment>
-        ))}
+      {/* Back, the eight steps in two groups (research, then plan), on. */}
+      <div className="mt-7 flex items-center gap-4">
+        <button type="button" aria-label="Previous" onClick={() => go(active - 1)} className={arrow}>
+          <ChevronLeft className="h-4 w-4" strokeWidth={2} />
+        </button>
+        <div className="flex items-center gap-1.5">
+          {STEPS.map(({ text }, i) => (
+            <React.Fragment key={text}>
+              {i === 4 && <span className="w-3" />}
+              <button
+                type="button"
+                aria-label={String(i + 1)}
+                aria-current={i === active ? 'step' : undefined}
+                onClick={() => go(i)}
+                className="flex h-5 items-center"
+              >
+                <span
+                  className={`block h-1.5 rounded-full transition-all duration-500 ${
+                    i === active ? 'w-5 bg-[#39471D]' : 'w-1.5 bg-gray-300 hover:bg-gray-500'
+                  }`}
+                />
+              </button>
+            </React.Fragment>
+          ))}
+        </div>
+        <button type="button" aria-label="Next" onClick={() => go(active + 1)} className={arrow}>
+          <ChevronRight className="h-4 w-4" strokeWidth={2} />
+        </button>
       </div>
     </div>
   );
