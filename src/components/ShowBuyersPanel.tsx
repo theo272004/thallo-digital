@@ -89,11 +89,12 @@ export default function ShowBuyersPanel() {
       ref={ref}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      className="flex flex-col items-center justify-center rounded-[28px] bg-[#ECEDEF] px-6 py-12 sm:px-12 lg:h-full"
+      className="relative h-[320px] overflow-hidden rounded-[28px] bg-[#ECEDEF] lg:h-full"
     >
-      {/* As tall as what is drawn in it: the front card (96px) and the two
-          peeking under it (42px more), so the group centres on what you see. */}
-      <div className="relative h-[138px] w-full max-w-[400px]">
+      {/* The box is exactly the front card, centred in the panel both ways:
+          the card being shown is what sits in the middle (Cami, 3 November).
+          The two coming next peek out under it, past the box. */}
+      <div className="absolute left-1/2 top-1/2 h-[96px] w-[calc(100%-3rem)] max-w-[400px] -translate-x-1/2 -translate-y-1/2">
         {STEPS.map(({ text, Icon }, i) => {
           const offset = (i - active + N) % N;
           const front = offset === 0;
@@ -123,8 +124,9 @@ export default function ShowBuyersPanel() {
         })}
       </div>
 
-      {/* Back, the eight steps in two groups (research, then plan), on. */}
-      <div className="mt-7 flex items-center gap-4">
+      {/* Back, the eight steps in two groups (research, then plan), on: held
+          to the panel's foot so they never pull the card off centre. */}
+      <div className="absolute inset-x-0 bottom-7 flex items-center justify-center gap-4">
         <button type="button" aria-label="Previous" onClick={() => go(active - 1)} className={arrow}>
           <ChevronLeft className="h-4 w-4" strokeWidth={2} />
         </button>
