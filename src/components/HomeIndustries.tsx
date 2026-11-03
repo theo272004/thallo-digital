@@ -21,6 +21,11 @@ import { BASE } from '@/lib/site';
  * cards the size of the photograph's half, which is what they are. The
  * floating composition is in git history at c8a492b.
  *
+ * Smaller on 2 November (Cami: "las cartas están muy grandes"): the
+ * photograph is square now rather than a tall strip, and the four cards are
+ * sized to their names rather than to half the row. The whole section fits
+ * one screen.
+ *
  * All five go to /industries/ until each sector has a page of its own. Below
  * lg the row stacks: the photograph, then the 2×2 under it.
  */
@@ -79,13 +84,13 @@ export default function HomeIndustries() {
             four is exactly as tall as the picture beside it. */}
         <div
           ref={stageRef}
-          className="mx-auto grid max-w-[1240px] gap-4 lg:h-[560px] short:h-[clamp(280px,calc(100svh-390px),560px)] lg:grid-cols-[37%_1fr] lg:gap-6"
+          className="mx-auto grid max-w-[960px] gap-4 lg:h-[420px] 2xl:h-[460px] short:h-[clamp(280px,calc(100svh-390px),420px)] lg:grid-cols-[auto_1fr] lg:gap-5"
         >
           {/* ── Professional services, the photograph ───────────────────── */}
           <a
             data-feature
             href={`${BASE}/industries/`}
-            className="group relative isolate flex h-[380px] lg:h-full flex-col justify-end overflow-hidden rounded-[32px] bg-[#171A10] p-8 sm:p-10 shadow-[0_30px_70px_-30px_rgba(23,26,16,0.55)]"
+            className="group relative isolate flex h-[340px] lg:h-full lg:aspect-square flex-col justify-end overflow-hidden rounded-[28px] bg-[#171A10] p-7 sm:p-8 shadow-[0_30px_70px_-30px_rgba(23,26,16,0.55)]"
           >
             <img
               loading="lazy"
@@ -96,7 +101,7 @@ export default function HomeIndustries() {
             />
             <span aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
             <div className="flex items-end justify-between gap-6">
-              <span className="text-3xl sm:text-4xl 2xl:text-5xl font-bold tracking-tight text-white leading-[1.05]">
+              <span className="text-3xl sm:text-4xl font-bold tracking-tight text-white leading-[1.05]">
                 Professional Services
               </span>
               <ArrowUpRight className="mb-1 text-[22px] text-white" />
@@ -104,17 +109,17 @@ export default function HomeIndustries() {
           </a>
 
           {/* ── The other four, two by two ──────────────────────────────── */}
-          <ul className="grid grid-cols-2 grid-rows-2 gap-4 lg:gap-6">
+          <ul className="grid grid-cols-2 grid-rows-2 gap-4 lg:gap-5">
             {OTHERS.map((name) => (
-              <li key={name} data-card className="min-h-[140px] short:min-h-0">
+              <li key={name} data-card className="min-h-[120px] short:min-h-0">
                 <a
                   href={`${BASE}/industries/`}
-                  className="group flex h-full flex-col justify-between rounded-[24px] border border-gray-200 bg-white p-6 sm:p-8 2xl:p-10 short:p-6 shadow-[0_18px_40px_-28px_rgba(23,26,16,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-[#39471D]/40"
+                  className="group flex h-full flex-col justify-between rounded-[20px] border border-gray-200 bg-white p-5 sm:p-6 shadow-[0_18px_40px_-28px_rgba(23,26,16,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-[#39471D]/40"
                 >
-                  <span className="text-xl sm:text-2xl 2xl:text-[1.75rem] font-bold tracking-tight text-gray-900 leading-[1.15]">
+                  <span className="text-lg sm:text-xl font-bold tracking-tight text-gray-900 leading-[1.15]">
                     {name}
                   </span>
-                  <ArrowUpRight className="self-end text-[18px] text-[#39471D] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  <ArrowUpRight className="self-end text-[15px] text-[#39471D] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </a>
               </li>
             ))}

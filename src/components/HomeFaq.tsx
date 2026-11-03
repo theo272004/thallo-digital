@@ -19,7 +19,10 @@ import { BASE } from '@/lib/site';
  * not be the same list.
  */
 
-const FAQS: { q: string; a: React.ReactNode }[] = [
+type Faq = { q: string; a: React.ReactNode };
+
+/* The set /home-archive/ keeps. The live home passes its own (src/app/page.tsx). */
+const DEFAULT_FAQS: Faq[] = [
   {
     q: 'How long before we start seeing results?',
     a: (
@@ -122,7 +125,18 @@ const FAQS: { q: string; a: React.ReactNode }[] = [
   },
 ];
 
-export default function HomeFaq() {
+const DEFAULT_HEADING = 'Questions we get <span class="italic text-[#39471D]">before the first call.</span>';
+
+export default function HomeFaq({
+  heading = DEFAULT_HEADING,
+  showIntro = true,
+  items = DEFAULT_FAQS,
+}: {
+  heading?: string;
+  /** The "ask it in the form below" line under the heading. */
+  showIntro?: boolean;
+  items?: Faq[];
+} = {}) {
   return (
     <section id="faq" className="border-b border-gray-100 bg-white py-16 2xl:py-28 short:pt-24 short:pb-6">
       <div className="mx-auto max-w-[1440px] px-6">
@@ -131,16 +145,18 @@ export default function HomeFaq() {
             <SplitReveal
               as="h2"
               className="mb-4 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl"
-              html='Questions we get <span class="italic text-[#39471D]">before the first call.</span>'
+              html={heading}
             />
-            <p className="max-w-[42ch] text-base font-medium leading-relaxed text-gray-500">
-              {/* "below": the questions sit above the closing panel now, and
-                  the enquiry form lives inside it. */}
-              If yours isn&rsquo;t here, ask it in the form below and you&rsquo;ll get a straight answer.
-            </p>
+            {showIntro && (
+              <p className="max-w-[42ch] text-base font-medium leading-relaxed text-gray-500">
+                {/* "below": the questions sit above the closing panel now, and
+                    the enquiry form lives inside it. */}
+                If yours isn&rsquo;t here, ask it in the form below and you&rsquo;ll get a straight answer.
+              </p>
+            )}
           </div>
 
-          <FaqList items={FAQS} idPrefix="home-faq" schema />
+          <FaqList items={items} idPrefix="home-faq" schema />
         </div>
       </div>
     </section>

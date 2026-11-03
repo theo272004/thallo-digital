@@ -115,8 +115,19 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${instrumentSerif.variable} ${spaceMono.variable} h-full antialiased`}
       style={{ scrollBehavior: 'smooth' }}
+      /* The script below adds a class to this element before React hydrates. */
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col font-sans bg-white text-gray-900">
+        {/* Marks a Mac (not an iPad, which also says "Mac" but takes touch), so
+            the `short:` spacing in globals.css applies there and nowhere else.
+            Inline and first in the body so the class is on before paint. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var n=navigator,p=(n.userAgentData&&n.userAgentData.platform)||n.platform||'';if(/mac/i.test(p)&&!(n.maxTouchPoints>1))document.documentElement.classList.add('is-mac')}catch(e){}",
+          }}
+        />
         {/* Machine-readable identity.
 
             An agency selling AI visibility should be unambiguous to the crawlers

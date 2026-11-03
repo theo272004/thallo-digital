@@ -12,8 +12,32 @@ import { BASE } from '@/lib/site';
  * audit" but "let's work out where to start", with the three steps that follow
  * the form and a smaller form behind them. The two buttons go, because the
  * footnote now carries the scan and the form is the booking.
+ *
+ * The defaults are the words /home-archive/ keeps. The 2 November home passes
+ * Cami's newer pair: a lede about who you want to reach and what you'd like to
+ * achieve, and a footnote that says what happens next instead of offering the
+ * scan.
  */
-export default function CTASection() {
+const DEFAULT_COPY =
+  "Tell us about your business and what you want to improve. We'll discuss whether an audit, a project or ongoing support makes sense.";
+
+const DEFAULT_FOOTNOTE = (
+  <>
+    Prefer to explore first?{' '}
+    <a href={`${BASE}/thallo-ai/scan/`} className="font-semibold text-white underline underline-offset-4 hover:text-[#CBD0AC]">
+      Check my visibility
+    </a>{' '}
+    · free scan, no account.
+  </>
+);
+
+export default function CTASection({
+  copy = DEFAULT_COPY,
+  footnote = DEFAULT_FOOTNOTE,
+}: {
+  copy?: string;
+  footnote?: React.ReactNode;
+} = {}) {
   return (
     <AuditCTA
       id="cta"
@@ -29,17 +53,9 @@ export default function CTASection() {
           html="Let&rsquo;s work out <em>where to start.</em>"
         />
       }
-      copy="Tell us about your business and what you want to improve. We'll discuss whether an audit, a project or ongoing support makes sense."
+      copy={copy}
       steps={['Tell us where you stand', 'Discuss your goals and fit', 'Review a clear scope before committing']}
-      footnote={
-        <>
-          Prefer to explore first?{' '}
-          <a href={`${BASE}/thallo-ai/scan/`} className="font-semibold text-white underline underline-offset-4 hover:text-[#CBD0AC]">
-            Check my visibility
-          </a>{' '}
-          · free scan, no account.
-        </>
-      }
+      footnote={footnote}
       actions={false}
       plans={CONVERSATION_PLANS}
       activePlans={['Not sure yet']}

@@ -10,8 +10,7 @@ import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
  *
  * No card and no photograph. The video right above it is already a dark
  * framed object, and a second one straight after read oddly (Cami, 1
- * November), so this section is type on the page's own ground: the heading
- * centred on two lines, and the two paragraphs side by side under it.
+ * November), so this section is type on the page's own ground.
  *
  * Sizes are the site's, not this section's own: the heading is every h2's
  * text-4xl/5xl and the paragraphs are text-base, rising to text-lg from sm
@@ -19,8 +18,7 @@ import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
  * justified, at Cami's request, so they end square instead of ragged. A larger pass
  * (6xl heading, 2xl copy, one long column) made it the biggest and tallest
  * thing on the page, and Cami asked for it unified with the rest. The room it
- * needs comes from spacing instead: generous padding, a wide gap under the
- * heading and between the columns.
+ * needs comes from spacing instead.
  *
  * Nothing in the copy moves. Each paragraph used to fill in word by word on
  * scroll, from pale grey to ink; it meant the section could only be read at
@@ -33,8 +31,14 @@ import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
  *
  * Type alone read as too bare (Cami, 2 November: "está muy solo ahí"), so it
  * takes two of the house's own marks and no new words: the turning isotipo
- * above the heading, as on the About statement, and an olive rule between the
- * two columns that draws down as they scroll past, joining research to plan.
+ * by the heading, as on the About statement, and an olive rule beside the
+ * copy that draws down once as the section arrives.
+ *
+ * Then, the same day, the centred heading over two side-by-side paragraphs
+ * went too ("no me gusta que esté estos dos párrafos así"). It is a split
+ * now: the heading on the left, the two paragraphs stacked on the right, and
+ * the whole section one screen tall, so it is read at once and nothing waits
+ * below for another scroll.
  */
 
 /** A run of the paragraph and the colour it is set in. */
@@ -67,13 +71,16 @@ export default function HomeApproach() {
   useGSAP(
     () => {
       if (prefersReducedMotion()) return;
+      /* Once, not scrubbed: the copy is whole the moment the section is on
+         screen, and the rule only finishes drawing beside it. */
       gsap.fromTo(
         '[data-rule]',
         { scaleY: 0 },
         {
           scaleY: 1,
-          ease: 'none',
-          scrollTrigger: { trigger: '[data-columns]', start: 'top 80%', end: 'bottom 55%', scrub: 0.6 },
+          duration: 1.4,
+          ease: 'power2.inOut',
+          scrollTrigger: { trigger: '[data-columns]', start: 'top 75%', once: true },
         }
       );
     },
@@ -81,20 +88,25 @@ export default function HomeApproach() {
   );
 
   return (
-    <section ref={sectionRef} className="bg-[#F7F8F9] py-32 2xl:py-40 short:pt-24 short:pb-14 border-b border-gray-100" id="approach">
-      <div className="max-w-[1440px] mx-auto px-6 flex flex-col items-center text-center">
-        <SpinFlower className="mb-8 block h-20 w-20 opacity-80" />
-        <SplitReveal
-          as="h2"
-          className="max-w-[26ch] text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans text-balance"
-          html='Show Buyers <span class="italic text-[#39471D]">What Your Customers Already Know.</span>'
-        />
+    <section
+      ref={sectionRef}
+      className="flex items-center bg-[#F7F8F9] py-24 lg:min-h-[100svh] lg:pt-28 lg:pb-16 border-b border-gray-100"
+      id="approach"
+    >
+      <div className="mx-auto grid w-full max-w-[1240px] grid-cols-1 items-center gap-12 px-6 lg:grid-cols-[5fr_7fr] lg:gap-24">
+        <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
+          <SpinFlower className="mb-8 block h-20 w-20 opacity-80" />
+          <SplitReveal
+            as="h2"
+            className="max-w-[16ch] text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans text-balance"
+            html='Show Buyers <span class="italic text-[#39471D]">What Your Customers Already Know.</span>'
+          />
+        </div>
 
-        <div data-columns className="relative mt-16 lg:mt-24 short:mt-10 grid w-full max-w-[1200px] grid-cols-1 gap-8 text-left md:grid-cols-2 md:gap-20">
-          {/* The rule between the columns: a hairline track, and the olive
-              line that grows down it on scroll. Desktop only, where there are
-              two columns to join. */}
-          <span aria-hidden className="pointer-events-none absolute inset-y-0 left-1/2 hidden w-px -translate-x-1/2 bg-gray-200 md:block">
+        <div data-columns className="relative flex flex-col gap-8 lg:pl-12">
+          {/* The rule beside the copy: a hairline track, and the olive line
+              that draws down it once. Desktop only. */}
+          <span aria-hidden className="pointer-events-none absolute inset-y-0 left-0 hidden w-px bg-gray-200 lg:block">
             <span data-rule className="absolute inset-0 origin-top bg-[#39471D]" />
           </span>
           <Paragraph parts={RESEARCH} />

@@ -17,49 +17,38 @@ import { BASE } from '@/lib/site';
  * was being argued against. Here both are real offers, so the difference is
  * only of material: the ongoing service gets the photograph because it is the
  * one we lead with. Same height, same structure, same weight of type.
+ *
+ * 2 November: Cami's new words. The heading names the two offers ("A focused
+ * project or ongoing support."), the masthead paragraph and both lists are
+ * gone, and the line about what your team contributes closes the section
+ * under both panels. The section is one screen tall.
  */
 
 type Engagement = {
   id: string;
   title: string;
-  intro: string;
-  items: string[];
-  close: string;
+  body: string;
   link: { label: string; href: string };
   dark: boolean;
 };
 
+/* Cami's copy of 2 November, word for word. Focused projects lead now, and
+   neither panel carries a list: each is its title, one paragraph and its
+   button. The ongoing service keeps the photograph. */
 const ENGAGEMENTS: Engagement[] = [
-  {
-    id: 'authority-engine',
-    title: 'Ongoing Support',
-    intro:
-      'The Authority Engine is our ongoing service for companies that need someone to take responsibility for their content and its reach.',
-    items: [
-      'A content plan and delivery schedule',
-      'Production, publishing and distribution managed for you',
-      'SEO and content updates as the work develops',
-    ],
-    close:
-      'Your team contributes its knowledge and reviews the substance. We manage delivery and use search performance, inquiry quality and commercial feedback to guide the next round.',
-    link: { label: 'Explore The Authority Engine', href: `${BASE}/services/` },
-    dark: true,
-  },
   {
     id: 'focused-projects',
     title: 'Focused Projects',
-    intro: 'You may already have a project in mind, but need the expertise or capacity to get it done.',
-    items: [
-      'Research studies',
-      'Website builds and content overhauls',
-      'White papers',
-      'SEO and AI visibility audits',
-      'Outreach campaigns',
-      'Interactive tools and assessments',
-    ],
-    close: 'We agree on the scope, deliverables and timeline upfront, then manage the work from planning through delivery.',
+    body: 'You have a specific project in mind and need the expertise or capacity to get it done. We agree on scope, deliverables and timeline upfront, then manage the work from planning through delivery.',
     link: { label: 'Discuss A Project', href: '#cta' },
     dark: false,
+  },
+  {
+    id: 'authority-engine',
+    title: 'Ongoing Support',
+    body: 'You need a partner to take responsibility for your content and its reach. Through the Authority Engine, we manage research, content, SEO and distribution.',
+    link: { label: 'Explore The Authority Engine', href: `${BASE}/services/` },
+    dark: true,
   },
 ];
 
@@ -68,10 +57,10 @@ function Panel({ e }: { e: Engagement }) {
   return (
     <article
       id={e.id}
-      /* From lg the panel is a subgrid over five shared rows (title, intro,
-         list, closing line, button), so each block starts at the same height
-         in both panels even though the intros differ in length. */
-      className={`relative isolate flex flex-col lg:grid lg:grid-rows-subgrid lg:row-span-5 lg:gap-0 overflow-hidden rounded-[24px] p-7 sm:p-10 short:p-6 transition-transform duration-300 hover:-translate-y-1 ${
+      /* From lg the panel is a subgrid over three shared rows (title,
+         paragraph, button), so each block starts at the same height in both
+         panels even though the paragraphs differ in length. */
+      className={`relative isolate flex flex-col lg:grid lg:grid-rows-subgrid lg:row-span-3 lg:gap-0 overflow-hidden rounded-[24px] p-7 sm:p-10 short:p-7 transition-transform duration-300 hover:-translate-y-1 ${
         /* Both panels carry a 1px border, the dark one transparent, so
            their content starts on exactly the same pixel. */
         d ? 'border border-transparent bg-[#171A10]' : 'border border-gray-200/80 bg-[#F7F8F9]'
@@ -99,36 +88,10 @@ function Panel({ e }: { e: Engagement }) {
         </>
       )}
 
-      <h3 className={`text-2xl sm:text-[1.75rem] font-bold tracking-tight mb-4 short:mb-2 ${d ? 'text-white' : 'text-gray-900'}`}>
+      <h3 className={`text-2xl sm:text-[1.75rem] font-bold tracking-tight mb-4 ${d ? 'text-white' : 'text-gray-900'}`}>
         {e.title}
       </h3>
-      <p className={`text-[15px] font-medium leading-relaxed mb-6 short:mb-3 short:text-sm ${d ? 'text-white/75' : 'text-gray-500'}`}>{e.intro}</p>
-
-      {/* On a laptop a long list takes two columns: six rows was what ran the
-          section past the bottom of the screen. */}
-      <ul className={`flex flex-col mb-6 short:mb-3 ${e.items.length > 3 ? 'short:grid short:grid-cols-2 short:gap-x-6' : ''}`}>
-        {e.items.map((item) => (
-          <li
-            key={item}
-            className={`flex items-start gap-3.5 border-b py-3.5 short:py-2 text-[14.5px] short:text-[13.5px] font-semibold leading-snug last:border-0 ${e.items.length > 3 ? 'short:[&:nth-last-child(-n+2)]:border-0' : ''} ${
-              d ? 'border-white/15 text-white' : 'border-gray-200/70 text-gray-800'
-            }`}
-          >
-            <img
-              src={`${BASE}/isotipo.png`}
-              alt=""
-              aria-hidden="true"
-              loading="lazy"
-              decoding="async"
-              className="mt-[3px] block h-[15px] w-[15px] shrink-0 select-none object-contain"
-              style={d ? { filter: 'brightness(0) invert(1)' } : undefined}
-            />
-            {item}
-          </li>
-        ))}
-      </ul>
-
-      <p className={`text-[14.5px] short:text-sm font-medium leading-relaxed mb-8 short:mb-4 ${d ? 'text-white/75' : 'text-gray-500'}`}>{e.close}</p>
+      <p className={`text-base font-medium leading-relaxed mb-8 ${d ? 'text-white/75' : 'text-gray-500'}`}>{e.body}</p>
 
       {/* mt-auto on a phone, the button row of the subgrid from lg: either
           way the pair ends level. */}
@@ -139,7 +102,7 @@ function Panel({ e }: { e: Engagement }) {
           ev.preventDefault();
           scrollToEl(e.link.href);
         }}
-        className={`group mt-auto inline-flex w-fit items-center gap-2 rounded-full px-5 py-3 text-xs font-bold transition-all ${
+        className={`group mt-auto self-start inline-flex w-fit items-center gap-2 rounded-full px-5 py-3 text-xs font-bold transition-all ${
           d
             ? 'bg-white text-gray-900 hover:bg-[#F7F8F9]'
             : 'bg-[#39471D] text-white hover:bg-[#55672E]'
@@ -154,25 +117,28 @@ function Panel({ e }: { e: Engagement }) {
 
 export default function HomeEngagements() {
   return (
-    <section className="border-b border-gray-100 bg-white py-20 2xl:py-28 short:pt-24 short:pb-6" id="ways-to-work">
-      <div className="mx-auto max-w-[1440px] px-6" data-reveal>
-        <div className="mx-auto mb-10 max-w-3xl short:max-w-5xl text-center sm:mb-14 short:mb-5">
-          <SplitReveal
-            as="h2"
-            className="font-sans text-4xl font-bold leading-[1.08] tracking-tight text-gray-900 sm:text-5xl"
-            html='How Can We <span class="italic text-[#39471D]">Work Together?</span>'
-          />
-          <p className="mx-auto mt-5 short:mt-3 max-w-[62ch] short:max-w-[100ch] text-base short:text-[15px] font-medium leading-relaxed text-gray-500">
-            We work best with companies that want to build authority and attract relevant inquiries, need a partner to
-            manage delivery and can make their experts available to share their knowledge and review the work.
-          </p>
-        </div>
+    <section
+      className="flex items-center border-b border-gray-100 bg-white py-20 lg:min-h-[100svh] lg:pt-28 lg:pb-16"
+      id="ways-to-work"
+    >
+      <div className="mx-auto w-full max-w-[1240px] px-6" data-reveal>
+        <SplitReveal
+          as="h2"
+          className="mx-auto mb-10 sm:mb-14 max-w-[24ch] text-center font-sans text-4xl font-bold leading-[1.08] tracking-tight text-gray-900 sm:text-5xl text-balance"
+          html='A Focused Project <span class="italic text-[#39471D]">Or Ongoing Support</span>.'
+        />
 
         <div className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-2 lg:gap-5">
           {ENGAGEMENTS.map((e) => (
             <Panel key={e.id} e={e} />
           ))}
         </div>
+
+        {/* Said of both, so it sits under both. */}
+        <p className="mx-auto mt-10 max-w-[62ch] text-center text-base font-medium leading-relaxed text-gray-500">
+          Your team contributes its knowledge and reviews the substance. We coordinate the agreed work and keep you
+          informed throughout.
+        </p>
       </div>
     </section>
   );
