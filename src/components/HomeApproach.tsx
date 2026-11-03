@@ -2,7 +2,7 @@
 
 import React, { useRef } from 'react';
 import { SplitReveal } from '@/components/motion';
-import SpinFlower from '@/components/ui/SpinFlower';
+import ShowBuyersDiagram from '@/components/ShowBuyersDiagram';
 import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 
 /**
@@ -41,7 +41,12 @@ import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
  * tall at first and read big and empty (Cami, 2 November: "grandota y
  * vacía"), and then, cut down to its copy, too small (3 November). It sits
  * between the two: four fifths of a screen on a desktop, the copy centred in
- * it, with the full-size flower over the heading and wide gaps.
+ * it, with wide gaps.
+ *
+ * Still "nada" after that (3 November): too empty for what it says. The left
+ * column now carries a wordless drawing of the copy (ShowBuyersDiagram) under
+ * the heading, and the lone turning flower that sat over the heading went
+ * into the drawing's centre.
  */
 
 /** A run of the paragraph and the colour it is set in. */
@@ -97,13 +102,15 @@ export default function HomeApproach() {
       id="approach"
     >
       <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 items-center gap-12 px-6 lg:grid-cols-[1fr_1.15fr] lg:gap-24">
-        <div className="flex flex-col items-center gap-7 text-center lg:items-start lg:text-left">
-          <SpinFlower className="block h-20 w-20 shrink-0 opacity-80" />
+        <div className="flex flex-col items-center gap-10 text-center lg:items-start lg:text-left">
           <SplitReveal
             as="h2"
             className="max-w-[20ch] text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans text-balance"
             html='Show Buyers <span class="italic text-[#39471D]">What Your Customers Already Know.</span>'
           />
+          {/* The copy beside it, drawn: what we listen to, what it becomes,
+              what we plan from it, who it reaches. */}
+          <ShowBuyersDiagram className="max-w-[560px]" />
         </div>
 
         <div data-columns className="relative flex flex-col gap-8 lg:py-4 lg:pl-14">
