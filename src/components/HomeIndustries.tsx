@@ -22,9 +22,9 @@ import { BASE } from '@/lib/site';
  * floating composition is in git history at c8a492b.
  *
  * Smaller on 2 November (Cami: "las cartas están muy grandes"): the
- * photograph is square now rather than a tall strip, and the four cards are
- * sized to their names rather than to half the row. The whole section fits
- * one screen.
+ * photograph is square now rather than a tall strip, and the four are long
+ * low cards stacked beside it, the shape they had when they floated over the
+ * photograph, rather than a 2×2 of big squares. The section is shorter for it.
  *
  * All five go to /industries/ until each sector has a page of its own. Below
  * lg the row stacks: the photograph, then the 2×2 under it.
@@ -84,7 +84,7 @@ export default function HomeIndustries() {
             four is exactly as tall as the picture beside it. */}
         <div
           ref={stageRef}
-          className="mx-auto grid max-w-[960px] gap-4 lg:h-[420px] 2xl:h-[460px] short:h-[clamp(280px,calc(100svh-390px),420px)] lg:grid-cols-[auto_1fr] lg:gap-5"
+          className="mx-auto grid max-w-[1000px] gap-4 lg:h-[380px] 2xl:h-[400px] short:h-[clamp(280px,calc(100svh-390px),380px)] lg:grid-cols-[auto_1fr] lg:gap-5"
         >
           {/* ── Professional services, the photograph ───────────────────── */}
           <a
@@ -108,18 +108,21 @@ export default function HomeIndustries() {
             </div>
           </a>
 
-          {/* ── The other four, two by two ──────────────────────────────── */}
-          <ul className="grid grid-cols-2 grid-rows-2 gap-4 lg:gap-5">
+          {/* ── The other four, one under another ───────────────────────── */}
+          {/* Long white cards, name on the left and the arrow disc on the
+              right: the shape these four had when they floated over the
+              photograph (git c8a492b), stacked now beside it. */}
+          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1 lg:grid-rows-4 lg:gap-4">
             {OTHERS.map((name) => (
-              <li key={name} data-card className="min-h-[120px] short:min-h-0">
+              <li key={name} data-card>
                 <a
                   href={`${BASE}/industries/`}
-                  className="group flex h-full flex-col justify-between rounded-[20px] border border-gray-200 bg-white p-5 sm:p-6 shadow-[0_18px_40px_-28px_rgba(23,26,16,0.35)] transition-all duration-300 hover:-translate-y-1 hover:border-[#39471D]/40"
+                  className="group flex h-full items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white px-6 py-4 shadow-[0_18px_40px_-28px_rgba(23,26,16,0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#39471D]/40"
                 >
-                  <span className="text-lg sm:text-xl font-bold tracking-tight text-gray-900 leading-[1.15]">
-                    {name}
+                  <span className="text-base lg:text-lg font-semibold tracking-tight text-gray-900">{name}</span>
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors duration-300 group-hover:border-[#39471D] group-hover:bg-[#39471D] group-hover:text-white">
+                    <ArrowUpRight className="text-[12px]" />
                   </span>
-                  <ArrowUpRight className="self-end text-[15px] text-[#39471D] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </a>
               </li>
             ))}

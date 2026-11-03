@@ -36,9 +36,11 @@ import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
  *
  * Then, the same day, the centred heading over two side-by-side paragraphs
  * went too ("no me gusta que esté estos dos párrafos así"). It is a split
- * now: the heading on the left, the two paragraphs stacked on the right, and
- * the whole section one screen tall, so it is read at once and nothing waits
- * below for another scroll.
+ * now: the heading on the left, the two paragraphs stacked on the right, read
+ * at once with nothing waiting below for another scroll. It was a full screen
+ * tall at first and read big and empty (Cami, 2 November: "grandota y
+ * vacía"), so it is only as tall as its copy, on a narrower measure, with
+ * a smaller flower over the heading.
  */
 
 /** A run of the paragraph and the colour it is set in. */
@@ -90,20 +92,20 @@ export default function HomeApproach() {
   return (
     <section
       ref={sectionRef}
-      className="flex items-center bg-[#F7F8F9] py-24 lg:min-h-[100svh] lg:pt-28 lg:pb-16 border-b border-gray-100"
+      className="bg-[#F7F8F9] py-20 2xl:py-24 short:pt-24 short:pb-16 border-b border-gray-100"
       id="approach"
     >
-      <div className="mx-auto grid w-full max-w-[1240px] grid-cols-1 items-center gap-12 px-6 lg:grid-cols-[5fr_7fr] lg:gap-24">
-        <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
-          <SpinFlower className="mb-8 block h-20 w-20 opacity-80" />
+      <div className="mx-auto grid w-full max-w-[1200px] grid-cols-1 items-center gap-10 px-6 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
+        <div className="flex flex-col items-center gap-5 text-center lg:items-start lg:text-left">
+          <SpinFlower className="block h-14 w-14 shrink-0 opacity-80" />
           <SplitReveal
             as="h2"
-            className="max-w-[16ch] text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans text-balance"
+            className="max-w-[20ch] text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans text-balance"
             html='Show Buyers <span class="italic text-[#39471D]">What Your Customers Already Know.</span>'
           />
         </div>
 
-        <div data-columns className="relative flex flex-col gap-8 lg:pl-12">
+        <div data-columns className="relative flex flex-col gap-6 lg:pl-12">
           {/* The rule beside the copy: a hairline track, and the olive line
               that draws down it once. Desktop only. */}
           <span aria-hidden className="pointer-events-none absolute inset-y-0 left-0 hidden w-px bg-gray-200 lg:block">

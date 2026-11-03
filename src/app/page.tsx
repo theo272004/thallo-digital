@@ -94,6 +94,7 @@ export default function Home() {
           heading='What We Do <span class="italic text-[#39471D]">For Your Business.</span>'
           intro={null}
           steps={CAPABILITIES}
+          compact
         />
         <HomeIndustries />
         <HomeEngagements />

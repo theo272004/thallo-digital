@@ -52,6 +52,9 @@ const ENGAGEMENTS: Engagement[] = [
   },
 ];
 
+/* The dark panel's scrim, shared with the window in the light panel's button. */
+const SCRIM = 'linear-gradient(to right, rgba(23,26,16,.94) 0%, rgba(23,26,16,.84) 45%, rgba(23,26,16,.66) 100%)';
+
 function Panel({ e }: { e: Engagement }) {
   const d = e.dark;
   return (
@@ -80,10 +83,7 @@ function Panel({ e }: { e: Engagement }) {
           <div
             aria-hidden
             className="absolute inset-0 -z-10"
-            style={{
-              background:
-                'linear-gradient(to right, rgba(23,26,16,.94) 0%, rgba(23,26,16,.84) 45%, rgba(23,26,16,.66) 100%)',
-            }}
+            style={{ background: SCRIM }}
           />
         </>
       )}
@@ -94,7 +94,15 @@ function Panel({ e }: { e: Engagement }) {
       <p className={`text-base font-medium leading-relaxed mb-8 ${d ? 'text-white/75' : 'text-gray-500'}`}>{e.body}</p>
 
       {/* mt-auto on a phone, the button row of the subgrid from lg: either
-          way the pair ends level. */}
+          way the pair ends level.
+
+          The light panel's button is a window onto the dark panel's
+          photograph (Cami, 2 November: "que no sea verde… algo especial").
+          The photo and scrim inside it are positioned against the panel, not
+          the button, so they are exactly the size the neighbouring panel
+          shows them at; the button's clip-path cuts that down to its pill.
+          clip-path, not overflow, because overflow would not clip something
+          whose containing block is outside the button. */}
       <a
         href={e.link.href}
         onClick={(ev) => {
@@ -105,11 +113,29 @@ function Panel({ e }: { e: Engagement }) {
         className={`group mt-auto self-start inline-flex w-fit items-center gap-2 rounded-full px-5 py-3 text-xs font-bold transition-all ${
           d
             ? 'bg-white text-gray-900 hover:bg-[#F7F8F9]'
-            : 'bg-[#39471D] text-white hover:bg-[#55672E]'
+            : 'bg-[#171A10] text-white [clip-path:inset(0_round_9999px)]'
         }`}
       >
-        {e.link.label}
-        <ArrowUpRight className="text-[11px] group-hover:translate-x-0.5 transition-transform" />
+        {!d && (
+          <>
+            <img
+              src={`${BASE}/notebook-desk.webp`}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
+            />
+            {/* Lighter than the panel's scrim: at the panel's full strength
+                the corner the button sits in reads as flat black, and the
+                point is that the photograph shows. */}
+            <span aria-hidden className="absolute inset-0 bg-[#171A10]/40 transition-colors duration-300 group-hover:bg-[#171A10]/20" />
+          </>
+        )}
+        <span className="relative inline-flex items-center gap-2">
+          {e.link.label}
+          <ArrowUpRight className="text-[11px] group-hover:translate-x-0.5 transition-transform" />
+        </span>
       </a>
     </article>
   );

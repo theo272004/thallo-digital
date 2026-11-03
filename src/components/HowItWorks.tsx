@@ -63,12 +63,17 @@ export default function HowItWorks({
   intro = DEFAULT_INTRO,
   steps = DEFAULT_STEPS,
   id = 'approach',
+  compact = false,
 }: {
   heading?: string;
   /** Left out entirely when null: the 1 November home has no paragraph here. */
   intro?: string | null;
   steps?: HowItWorksStep[];
   id?: string;
+  /** Tighter rhythm for the 1 November home's four longer steps: on a desktop
+   *  the archive's gaps spread them out and stretched the branch beside them
+   *  (Cami, 2 November: "menos espacio"). The archive keeps its own. */
+  compact?: boolean;
 } = {}) {
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -192,7 +197,11 @@ export default function HowItWorks({
       <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[38%_1fr] gap-16 items-start">
 
         {/* ── Left: Illustrator SVG, flush with the section border ──────────── */}
-        <div className="relative hidden lg:block h-[860px] 2xl:h-[1000px] short:h-[min(860px,calc(100svh-1rem))]">
+        <div
+          className={`relative hidden lg:block ${
+            compact ? 'h-[720px] 2xl:h-[780px]' : 'h-[860px] 2xl:h-[1000px]'
+          } short:h-[min(860px,calc(100svh-1rem))]`}
+        >
           <svg
             viewBox="0 0 205.56 764.83"
             xmlns="http://www.w3.org/2000/svg"
@@ -281,7 +290,11 @@ export default function HowItWorks({
         {/* The drawn branch is desktop-only, so on phones this column is the whole
             section — left-aligned copy hugging one edge read as a leftover of a
             two-column layout that isn't there. Centred, it stands on its own. */}
-        <div className="flex flex-col gap-14 2xl:gap-20 short:gap-4 lg:pt-[5.5rem] short:pt-24 text-center lg:text-left">
+        <div
+          className={`flex flex-col ${
+            compact ? 'gap-10 2xl:gap-12' : 'gap-14 2xl:gap-20'
+          } short:gap-4 lg:pt-[5.5rem] short:pt-24 text-center lg:text-left`}
+        >
           <div>
             <SplitReveal
               as="h2"
@@ -296,7 +309,7 @@ export default function HowItWorks({
           </div>
 
           {/* Steps with circle indicators + connecting line */}
-          <div className="relative flex flex-col gap-14 2xl:gap-20 short:gap-3">
+          <div className={`relative flex flex-col ${compact ? 'gap-8 2xl:gap-10' : 'gap-14 2xl:gap-20'} short:gap-3`}>
 
             {/* Vertical line — height set by useEffect to exactly span circle 1→4 centers */}
             <div
