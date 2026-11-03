@@ -100,7 +100,7 @@ export default function AboutLanding() {
     <>
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="border-b border-gray-100 bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12">
-        <div className="mx-auto flex max-w-[1440px] flex-col items-center px-6 text-center">
+        <div className="mx-auto flex max-w-[1440px] xl:max-w-[min(1440px,76vw)] flex-col items-center px-6 text-center">
           <h1 className="mb-6 max-w-[17ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
             We built Thallo for a <span className="text-[#39471D]">market that changed.</span>
           </h1>
@@ -114,7 +114,7 @@ export default function AboutLanding() {
 
       {/* ── The belief the business rests on ──────────────────────────────── */}
       <section className="border-b border-gray-100 bg-white py-16 2xl:py-24">
-        <div className="mx-auto max-w-[1440px] px-6">
+        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6">
           {/* The photograph is the panel's ground now, not a column beside the
               prose. As a column it was an illustration sitting next to an
               argument; behind it, it is the room the argument is made in. */}
@@ -166,7 +166,7 @@ export default function AboutLanding() {
 
       {/* ── Why the company exists ────────────────────────────────────────── */}
       <section className="border-b border-gray-100 bg-[#F7F8F9] py-16 2xl:py-24">
-        <div className="mx-auto max-w-[1440px] px-6">
+        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
             <h2 className="max-w-[14ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
               Why Thallo <span className="text-[#39471D]">exists.</span>
@@ -195,7 +195,7 @@ export default function AboutLanding() {
 
       {/* ── The positions ─────────────────────────────────────────────────── */}
       <section className="border-b border-gray-100 bg-white py-16 2xl:py-24">
-        <div className="mx-auto max-w-[1440px] px-6">
+        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6">
           <div className="mx-auto mb-12 max-w-2xl text-center">
             <h2 className="mb-4 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
               What we <span className="text-[#39471D]">believe.</span>
@@ -272,7 +272,7 @@ export default function AboutLanding() {
 
       {/* ── How an engagement runs ────────────────────────────────────────── */}
       <section className="border-b border-gray-100 bg-[#F7F8F9] py-16 2xl:py-24">
-        <div className="mx-auto max-w-[1440px] px-6">
+        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6">
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-center lg:gap-16">
             <div>
               <h2 className="mb-4 max-w-[15ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
@@ -306,7 +306,7 @@ export default function AboutLanding() {
           The olive moves from a filled panel to the numerals and the rules, so
           the section still carries brand colour without another block of it. */}
       <section className="border-b border-gray-100 bg-white py-16 2xl:py-24">
-        <div className="mx-auto max-w-[1440px] px-6">
+        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6">
           <div className="mx-auto mb-12 max-w-2xl text-center">
             <h2 className="font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
               We are a good fit <span className="italic text-[#39471D]">if.</span>

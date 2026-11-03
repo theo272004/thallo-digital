@@ -95,7 +95,7 @@ function Filled({ template }: { template: string }) {
 /** Section shell — white ground, the site's vertical rhythm, hairline divider. */
 const Section = ({ children }: { children: React.ReactNode }) => (
   <section className="border-b border-gray-100 bg-white py-16 2xl:py-28">
-    <div className="mx-auto max-w-[1440px] px-6">
+    <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6">
       <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[300px_1fr] lg:gap-16">{children}</div>
     </div>
   </section>
@@ -112,7 +112,7 @@ export default function ThalloAIPage() {
     <>
       {/* ── Intro ────────────────────────────────────────────────────────── */}
       <section className="border-b border-gray-100 bg-white pt-32 pb-16 2xl:pt-40 2xl:pb-24">
-        <div className="mx-auto flex max-w-[1440px] flex-col items-center px-6 text-center">
+        <div className="mx-auto flex max-w-[1440px] xl:max-w-[min(1440px,76vw)] flex-col items-center px-6 text-center">
           <h1 className="mb-6 max-w-3xl text-balance font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
             No black box. Here is exactly what it measures.
           </h1>

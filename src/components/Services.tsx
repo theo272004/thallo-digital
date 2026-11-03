@@ -62,7 +62,7 @@ export default function Services() {
 
   return (
     <section className="bg-white py-16 2xl:py-28 min-h-[80vh] flex flex-col justify-center border-b border-gray-100" id="services">
-      <div className="max-w-[1440px] mx-auto px-6">
+      <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
         <div className="max-w-2xl mb-16">
           <SplitReveal
             as="h2"

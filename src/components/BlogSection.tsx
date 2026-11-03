@@ -68,7 +68,7 @@ export default function BlogSection() {
         }
       `}</style>
 
-      <div className="max-w-[1440px] mx-auto px-6">
+      <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
         <div className="max-w-2xl mb-14">
           <SplitReveal
             as="h2"

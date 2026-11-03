@@ -76,7 +76,7 @@ export default function Industries() {
 
   return (
     <section className="bg-[#F7F8F9] py-16 2xl:py-24 min-h-[80vh] flex flex-col justify-center border-b border-gray-100" id="industries">
-      <div className="max-w-[1440px] mx-auto px-6">
+      <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
         <div className="max-w-2xl mb-14">
           <SplitReveal
             as="h2"

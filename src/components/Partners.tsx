@@ -17,7 +17,7 @@ export default function Partners() {
 
   return (
     <section className="bg-white border-b border-gray-100 py-24 2xl:py-28" id="team">
-      <div className="mx-auto max-w-[1440px] px-6">
+      <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6">
         <div className="mx-auto mb-14 max-w-2xl text-center">
           <SplitReveal
             as="h2"

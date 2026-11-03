@@ -25,7 +25,7 @@ export default function HomeHero() {
     <section className="relative w-full bg-white overflow-hidden min-h-[100svh] flex items-center pt-28 pb-16">
       <BackgroundGrid />
 
-      <div className="relative z-10 mx-auto max-w-[90rem] w-full px-6 flex flex-col items-center text-center">
+      <div className="relative z-10 mx-auto max-w-[90rem] xl:max-w-[min(90rem,76vw)] w-full px-6 flex flex-col items-center text-center">
         <SplitReveal
           as="h1"
           scroll={false}

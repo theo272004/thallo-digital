@@ -34,7 +34,7 @@ const QUESTIONS = [
 export default function TheProblem() {
   return (
     <section className="bg-[#F7F8F9] py-20 2xl:py-24 border-b border-gray-100" id="shift">
-      <div className="max-w-[1440px] mx-auto px-6">
+      <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
         {/* ── Feature card — panoramic, full-width, dark image-backed ── */}
         <div className="relative overflow-hidden rounded-[28px] bg-[#171A10] w-full aspect-[16/6] min-h-[360px] lg:min-h-0">
           <img loading="lazy" decoding="async"

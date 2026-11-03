@@ -653,7 +653,7 @@ export default function ToolPresentation() {
           already centres the board inside itself, so anything more here reads
           as the heading and the animation belonging to different pages. */}
       <section className="px-6 pt-32 pb-6">
-        <div className="mx-auto max-w-[1440px]">
+        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)]">
           <Opening />
         </div>
       </section>
@@ -679,7 +679,7 @@ export default function ToolPresentation() {
               className="absolute inset-0"
               style={{ background: 'linear-gradient(to top, #fff 34%, rgba(255,255,255,0.92) 58%, rgba(255,255,255,0) 100%)' }}
             />
-            <div className="relative mx-auto flex max-w-[1440px] items-end justify-between gap-8">
+            <div className="relative mx-auto flex max-w-[1440px] xl:max-w-[min(1440px,76vw)] items-end justify-between gap-8">
               <div>
                 {/* Chapter 0 is the establishing shot and the last is the same
                     frame again, so neither of them gets a number — they are not
@@ -715,7 +715,7 @@ export default function ToolPresentation() {
 function PresentationCTA() {
   return (
     <section className="border-t border-[#E7ECD9] bg-white px-6 py-20 sm:py-24">
-      <div className="relative mx-auto max-w-[1440px] overflow-hidden rounded-[28px] px-8 py-12 sm:px-12 sm:py-16 lg:px-16 lg:py-20">
+      <div className="relative mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] overflow-hidden rounded-[28px] px-8 py-12 sm:px-12 sm:py-16 lg:px-16 lg:py-20">
         <img
           src={`${BASE}/cta-bg.webp`}
           alt=""

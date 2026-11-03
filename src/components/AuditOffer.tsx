@@ -35,7 +35,7 @@ const ITEMS = [
 export default function AuditOffer() {
   return (
     <section className="border-b border-gray-100 bg-white py-16 2xl:py-24" id="audit">
-      <div className="mx-auto max-w-[1440px] px-6" data-reveal>
+      <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6" data-reveal>
         <div className="relative isolate overflow-hidden rounded-[28px] bg-[#171A10] px-8 py-12 sm:px-12 sm:py-14 lg:px-16 lg:py-16">
           {/* The photograph, softened. scale-110 pushes the blur's faded
               edge outside the rounded corners. */}

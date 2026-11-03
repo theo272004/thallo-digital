@@ -45,7 +45,7 @@ const CARD =
 export default function ResearchAndScan() {
   return (
     <section className="border-b border-gray-100 bg-[#F7F8F9] py-24 lg:py-32 2xl:py-40" id="research">
-      <div className="mx-auto grid max-w-[1440px] grid-cols-1 gap-5 px-6 lg:grid-cols-2">
+      <div className="mx-auto grid max-w-[1440px] xl:max-w-[min(1440px,76vw)] grid-cols-1 gap-5 px-6 lg:grid-cols-2">
         {/* ── Scan ─────────────────────────────────────────────────────── */}
         <div data-reveal className="flex">
           <div className={`${CARD} relative isolate overflow-hidden border-transparent bg-[#171A10]`}>

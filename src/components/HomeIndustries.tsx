@@ -64,7 +64,7 @@ export default function HomeIndustries() {
 
   return (
     <section className="bg-[#F7F8F9] py-24 2xl:py-32 border-b border-gray-100 overflow-hidden" id="industries">
-      <div className="max-w-[90rem] mx-auto px-6">
+      <div className="max-w-[90rem] xl:max-w-[min(90rem,76vw)] mx-auto px-6">
         <div className="mx-auto max-w-3xl text-center mb-12 2xl:mb-14">
           <SplitReveal
             as="h2"

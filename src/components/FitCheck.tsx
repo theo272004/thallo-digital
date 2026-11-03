@@ -63,7 +63,7 @@ const NOT_FOR_YOU = [
 export default function FitCheck() {
   return (
     <section className="border-b border-gray-100 bg-white py-16 2xl:py-24" id="fit">
-      <div className="mx-auto max-w-[1440px] px-6" data-reveal>
+      <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6" data-reveal>
         <div className="mb-10 max-w-3xl sm:mb-12">
           <SplitReveal
             as="h2"

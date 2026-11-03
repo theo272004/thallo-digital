@@ -224,7 +224,7 @@ export default function ScanFlow() {
 
       {/* `w-full` because the section is a flex column on the first step, and a
           flex child sizes to its content rather than its parent. */}
-      <div className="relative mx-auto w-full max-w-[1440px] px-6">
+      <div className="relative mx-auto w-full max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6">
         {/* ── The rail ───────────────────────────────────────────────────────
             Full width and above everything, on every stage including the first.
 
