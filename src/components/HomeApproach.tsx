@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { SplitReveal } from '@/components/motion';
 import ShowBuyersPanel from '@/components/ShowBuyersPanel';
-import { prefersReducedMotion } from '@/lib/gsap';
 
 /**
  * "Show buyers what your customers already know."
@@ -45,12 +44,16 @@ import { prefersReducedMotion } from '@/lib/gsap';
  *
  * Still "nada" after that (3 November): too empty for what it says. Three
  * wordless drawings beside the heading followed (nodes and lines, hairlines,
- * orbits) and none of them landed. What stands now is the layout of the
- * reference Cami sent the same day: on the left the heading and the two
- * paragraphs as a list you can step through, the active one marked by an
- * olive bar; on the right a pale panel whose small white card shows, without
- * words, what the active paragraph says (ShowBuyersPanel). It steps on its
- * own every few seconds while on screen and stops once someone picks one.
+ * orbits) and none of them landed; then a stepped list beside a panel, after
+ * a reference Cami sent, which showed one paragraph and then the other and
+ * whose wordless cards nobody could read ("no entiendo… ¿por qué un
+ * micrófono?").
+ *
+ * What stands now: on the left the heading and both paragraphs, whole and
+ * together; on the right a pale panel with a deck of cards that tells the
+ * whole process in order, one step per card, each named in the copy's own
+ * words (ShowBuyersPanel). The card coming next shows smaller under the
+ * front one.
  */
 
 /** A run of the paragraph and the colour it is set in. */
@@ -77,33 +80,9 @@ const PLAN: Part[] = [
   { text: ' a reason to remember your business and recommend it.', color: OLIVE },
 ];
 
-const STEPS = [RESEARCH, PLAN];
-const STEP_MS = 7000;
-
 export default function HomeApproach() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const [active, setActive] = useState(0);
-  const [picked, setPicked] = useState(false);
-
-  /* Step on its own while the section is on screen, until someone picks. */
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el || picked || prefersReducedMotion()) return;
-    let timer = 0;
-    const io = new IntersectionObserver(([entry]) => {
-      window.clearInterval(timer);
-      if (entry.isIntersecting) timer = window.setInterval(() => setActive((a) => (a + 1) % STEPS.length), STEP_MS);
-    }, { threshold: 0.4 });
-    io.observe(el);
-    return () => {
-      io.disconnect();
-      window.clearInterval(timer);
-    };
-  }, [picked]);
-
   return (
     <section
-      ref={sectionRef}
       className="flex items-center bg-[#F7F8F9] py-24 lg:min-h-[80svh] short:pt-28 short:pb-16 border-b border-gray-100"
       id="approach"
     >
@@ -115,53 +94,24 @@ export default function HomeApproach() {
             html='Show Buyers <span class="italic text-[#39471D]">What Your Customers Already Know.</span>'
           />
 
-          <div className="mt-10 flex flex-col gap-2" role="tablist" aria-label="Show Buyers">
-            {STEPS.map((parts, i) => {
-              const on = i === active;
-              return (
-                <button
-                  key={i}
-                  type="button"
-                  role="tab"
-                  aria-selected={on}
-                  onClick={() => {
-                    setActive(i);
-                    setPicked(true);
-                  }}
-                  className="group relative py-3 pl-6 text-left"
-                >
-                  {/* The bar: grey track, olive when this one is showing. */}
-                  <span
-                    aria-hidden
-                    className={`absolute inset-y-3 left-0 w-[2px] rounded-full transition-colors duration-500 ${
-                      on ? 'bg-[#39471D]' : 'bg-gray-200 group-hover:bg-gray-300'
-                    }`}
-                  />
-                  <Paragraph parts={parts} on={on} />
-                </button>
-              );
-            })}
+          {/* Both paragraphs, whole and together, beside an olive rule. */}
+          <div className="relative mt-10 flex flex-col gap-6 border-l-2 border-[#39471D] pl-6">
+            <Paragraph parts={RESEARCH} />
+            <Paragraph parts={PLAN} />
           </div>
         </div>
 
-        <ShowBuyersPanel active={active} />
+        <ShowBuyersPanel />
       </div>
     </section>
   );
 }
 
-/* The inactive paragraph stays fully readable, in the body grey (#6B7280);
-   only the active one takes the darker ink and its olive phrase. Nothing is
-   ever faded out to be read later. */
-function Paragraph({ parts, on }: { parts: Part[]; on: boolean }) {
+function Paragraph({ parts }: { parts: Part[] }) {
   return (
     <p className="text-base font-medium leading-relaxed text-justify hyphens-none [text-wrap:pretty]">
       {parts.map((part) => (
-        <span
-          key={part.text}
-          className="transition-colors duration-500"
-          style={{ color: on ? part.color : '#6B7280' }}
-        >
+        <span key={part.text} style={{ color: part.color }}>
           {part.text}
         </span>
       ))}

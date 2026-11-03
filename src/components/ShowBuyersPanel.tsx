@@ -1,107 +1,114 @@
 'use client';
 
-import React from 'react';
-import { LayoutTemplate, Mic } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { FileText, LayoutTemplate, MessagesSquare, Mic, PenLine, Scale, Target, Users } from 'lucide-react';
+import { prefersReducedMotion } from '@/lib/gsap';
 
 /**
- * The right half of Show Buyers: a pale panel with one small white card in
- * it, after the reference Cami sent on 3 November (a feature list on the left,
- * a panel on the right whose card follows the selected item).
+ * The right half of Show Buyers: a pale panel holding a deck of cards that
+ * tells the whole process the two paragraphs describe, one step per card, in
+ * order, and then starts again.
  *
- * The card carries no words, because the copy is all in the paragraphs on the
- * left and none may be added. It is drawn in the grammar of a product screen
- * instead: an icon, skeleton lines for text, and one small motion that says
- * what the selected paragraph says.
+ * Every card is named with a phrase lifted word for word from the copy beside
+ * it, so the drawing can be read (an earlier, wordless version could not: "no
+ * entiendo… ¿por qué un micrófono?"), and no new words are added. The icon is
+ * the step: the microphone is the interviews with your experts.
  *
- *   0 — research: a transcript whose key phrases are highlighted one by one,
- *       and three tags that fill as the insights are captured.
- *   1 — plan: a site map that builds itself (a page, then three under it),
- *       and below it the right people lighting up as the work reaches them.
+ * The front card is the step now; the next two sit under it, each a little
+ * smaller and further down, so the one coming in is always in view (Cami, 3
+ * November). Every few seconds the front card lifts away and the deck moves
+ * up. The dots under it count the eight steps in two groups, research and
+ * plan, the two paragraphs.
  *
- * No light green anywhere (Cami's standing rule): the panel is a neutral
- * grey, and every olive in the card is the full olive, never a tint of it.
- *
- * Each card remounts when it becomes the active one (keyed by `active`), so
- * its CSS animations start over every time. Styles are in globals.css under
- * "Show Buyers' panel".
+ * Only the full olive, never a tint of it (no light green on this site).
  */
 
-function Bar({ w, hl, delay }: { w: string; hl?: boolean; delay?: number }) {
-  return (
-    <span
-      className={`block h-2 rounded-full bg-gray-200 ${hl ? 'sbp-hl' : ''}`}
-      style={{ width: w, animationDelay: delay !== undefined ? `${delay}s` : undefined }}
-    />
-  );
+const STEPS: { text: string; Icon: typeof Mic }[] = [
+  { text: 'We interview your experts', Icon: Mic },
+  { text: 'conduct customer research', Icon: Users },
+  { text: 'using sales materials and search data', Icon: FileText },
+  { text: 'understand how buyers compare their options', Icon: Scale },
+  { text: 'plan your website’s structure', Icon: LayoutTemplate },
+  { text: 'decide which content and resources to create', Icon: PenLine },
+  { text: 'reach the right people', Icon: Target },
+  { text: 'a reason to remember your business and recommend it', Icon: MessagesSquare },
+];
+const N = STEPS.length;
+const STEP_MS = 2800;
+
+/* Where a card sits by how far it is behind the front one. */
+function place(offset: number) {
+  if (offset === 0) return { transform: 'translateY(0) scale(1)', opacity: 1, zIndex: 30 };
+  if (offset === 1) return { transform: 'translateY(22px) scale(0.94)', opacity: 0.75, zIndex: 20 };
+  if (offset === 2) return { transform: 'translateY(42px) scale(0.88)', opacity: 0.4, zIndex: 10 };
+  if (offset === N - 1) return { transform: 'translateY(-28px) scale(1.02)', opacity: 0, zIndex: 40 };
+  return { transform: 'translateY(56px) scale(0.84)', opacity: 0, zIndex: 0 };
 }
 
-function Header({ Icon }: { Icon: typeof Mic }) {
-  return (
-    <div className="flex items-center gap-3">
-      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#39471D] text-white">
-        <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
-      </span>
-      <span className="flex flex-col gap-1.5">
-        <span className="block h-2.5 w-28 rounded-full bg-gray-300" />
-        <span className="block h-2 w-40 rounded-full bg-gray-200" />
-      </span>
-    </div>
-  );
-}
+export default function ShowBuyersPanel() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
 
-function ResearchCard() {
+  /* Turn the deck while it is on screen. */
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || prefersReducedMotion()) return;
+    let timer = 0;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        window.clearInterval(timer);
+        if (entry.isIntersecting) timer = window.setInterval(() => setActive((a) => (a + 1) % N), STEP_MS);
+      },
+      { threshold: 0.4 }
+    );
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      window.clearInterval(timer);
+    };
+  }, []);
+
   return (
-    <>
-      <Header Icon={Mic} />
-      <div className="mt-6 flex flex-col gap-2.5">
-        <div className="flex gap-1.5"><Bar w="22%" /><Bar w="34%" hl delay={0.5} /><Bar w="18%" /></div>
-        <div className="flex gap-1.5"><Bar w="30%" /><Bar w="16%" /><Bar w="28%" /></div>
-        <div className="flex gap-1.5"><Bar w="14%" /><Bar w="26%" /><Bar w="36%" hl delay={1.2} /></div>
-        <div className="flex gap-1.5"><Bar w="40%" hl delay={1.9} /><Bar w="22%" /></div>
+    <div
+      ref={ref}
+      aria-hidden="true"
+      className="flex flex-col items-center justify-center rounded-[28px] bg-[#ECEDEF] px-6 py-12 sm:px-12 lg:min-h-[440px] short:min-h-[360px]"
+    >
+      <div className="relative h-[150px] w-full max-w-[400px]">
+        {STEPS.map(({ text, Icon }, i) => {
+          const offset = (i - active + N) % N;
+          return (
+            <div
+              key={text}
+              className="absolute inset-x-0 top-0 flex h-[96px] origin-top items-center gap-4 rounded-2xl border border-gray-200/70 bg-white px-5 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={place(offset)}
+            >
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#39471D] text-white">
+                <Icon className="h-5 w-5" strokeWidth={1.75} />
+              </span>
+              <span className="min-w-0 flex-1 text-[15px] font-semibold leading-snug text-gray-900 first-letter:uppercase">
+                {text}
+              </span>
+              <span className="self-start pt-4 text-[11px] font-semibold tabular-nums text-gray-400">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+            </div>
+          );
+        })}
       </div>
-      <div className="mt-6 flex gap-2">
-        {[2.6, 2.9, 3.2].map((d) => (
-          <span key={d} className="sbp-tag block h-5 w-14 rounded-full border border-gray-200" style={{ animationDelay: `${d}s` }} />
+
+      {/* Eight steps, two groups: the research, then the plan. */}
+      <div className="mt-6 flex items-center gap-1.5">
+        {STEPS.map(({ text }, i) => (
+          <React.Fragment key={text}>
+            {i === 4 && <span className="w-3" />}
+            <span
+              className={`block h-1.5 rounded-full transition-all duration-500 ${
+                i === active ? 'w-5 bg-[#39471D]' : 'w-1.5 bg-gray-300'
+              }`}
+            />
+          </React.Fragment>
         ))}
-      </div>
-    </>
-  );
-}
-
-function PlanCard() {
-  return (
-    <>
-      <Header Icon={LayoutTemplate} />
-      <div className="mt-6 flex flex-col items-center">
-        <span className="sbp-pop block h-6 w-24 rounded-md border border-[#39471D] bg-white" style={{ animationDelay: '0.3s' }} />
-        <span className="sbp-pop block h-3 w-px bg-gray-300" style={{ animationDelay: '0.6s' }} />
-        <span className="sbp-pop block h-px w-[60%] bg-gray-300" style={{ animationDelay: '0.6s' }} />
-        <div className="flex w-[66%] justify-between">
-          {[0.9, 1.1, 1.3].map((d) => (
-            <span key={d} className="flex flex-col items-center">
-              <span className="sbp-pop block h-3 w-px bg-gray-300" style={{ animationDelay: `${d}s` }} />
-              <span className="sbp-pop block h-5 w-14 rounded-md border border-gray-200 bg-white" style={{ animationDelay: `${d}s` }} />
-            </span>
-          ))}
-        </div>
-      </div>
-      <div className="mt-6 flex items-center justify-center gap-2.5">
-        {[2.0, 2.2, 2.4, 2.6, 2.8].map((d) => (
-          <span key={d} className="sbp-person block h-2.5 w-2.5 rounded-full bg-gray-200" style={{ animationDelay: `${d}s` }} />
-        ))}
-      </div>
-    </>
-  );
-}
-
-export default function ShowBuyersPanel({ active }: { active: number }) {
-  return (
-    <div className="flex items-center justify-center rounded-[28px] bg-[#ECEDEF] p-8 sm:p-12 lg:min-h-[440px] short:min-h-[360px]">
-      <div
-        key={active}
-        className="sbp-card w-full max-w-[360px] rounded-2xl border border-gray-200/70 bg-white p-6 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)]"
-      >
-        {active === 0 ? <ResearchCard /> : <PlanCard />}
       </div>
     </div>
   );
