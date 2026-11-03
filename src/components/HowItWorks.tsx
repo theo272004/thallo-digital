@@ -96,6 +96,36 @@ export default function HowItWorks({
   const stepRefs   = useRef<(HTMLDivElement | null)[]>([]);
   const circleRefs = useRef<(HTMLDivElement | null)[]>([]);
   const lineRef    = useRef<HTMLDivElement>(null);
+  const branchRef  = useRef<HTMLDivElement>(null);
+
+  /* Compact: the branch box ends exactly at the 04 circle, so the last
+     bloom sits level with it (Cami, 3 November: "que termine donde dice 04,
+     literal"). Measured, because the steps' height changes with the screen.
+     The circle is scaled to zero until it blooms; its centre is unaffected. */
+  useEffect(() => {
+    if (!compact) return;
+    const box = branchRef.current;
+    const lastCircle = circleRefs.current[circleRefs.current.length - 1];
+    if (!box || !lastCircle) return;
+    const fit = () => {
+      const top = box.getBoundingClientRect().top;
+      const c = lastCircle.getBoundingClientRect();
+      const bottom = c.top + c.height / 2 + 16; // the circle's lower edge
+      box.style.height = `${Math.max(bottom - top, 320)}px`;
+      ScrollTrigger.refresh();
+    };
+    fit();
+    /* Again once the fonts settle and whenever the steps reflow. */
+    const refit = () => requestAnimationFrame(fit);
+    document.fonts?.ready.then(refit);
+    const ro = new ResizeObserver(refit);
+    ro.observe(lastCircle.parentElement?.parentElement ?? box);
+    window.addEventListener('resize', refit);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', refit);
+    };
+  }, [compact]);
 
   useEffect(() => {
     if (!sectionRef.current || !stemRef.current) return;
@@ -198,11 +228,11 @@ export default function HowItWorks({
 
         {/* ── Left: Illustrator SVG, flush with the section border ──────────── */}
         <div
+          ref={branchRef}
           className={`relative hidden lg:block ${
-            /* Compact: as tall as the steps beside it, whatever the screen,
-               so the branch's last bloom lands level with step 04 instead of
-               ending above it or running past it (Cami, 3 November). */
-            compact ? 'self-stretch min-h-[30rem]' : 'h-[53.75rem] 2xl:h-[62.5rem]'
+            /* Compact: its height is set from the 04 circle (see the effect
+               above); this is only the size before that runs. */
+            compact ? 'h-[45rem]' : 'h-[53.75rem] 2xl:h-[62.5rem]'
           }`}
         >
           <svg
