@@ -72,7 +72,7 @@ export default function ShowBuyersPanel() {
     <div
       ref={ref}
       aria-hidden="true"
-      className="flex flex-col items-center justify-center rounded-[28px] bg-[#ECEDEF] px-6 py-12 sm:px-12 lg:min-h-[440px] short:min-h-[360px]"
+      className="flex flex-col items-center justify-center rounded-[28px] bg-[#ECEDEF] px-6 py-12 sm:px-12 lg:h-full"
     >
       <div className="relative h-[150px] w-full max-w-[400px]">
         {STEPS.map(({ text, Icon }, i) => {

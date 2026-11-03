@@ -86,7 +86,10 @@ export default function HomeApproach() {
       className="flex items-center bg-[#F7F8F9] py-24 lg:min-h-[80svh] short:pt-28 short:pb-16 border-b border-gray-100"
       id="approach"
     >
-      <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 items-center gap-12 px-6 lg:grid-cols-[1fr_1.05fr] lg:gap-20">
+      {/* The full width the other sections use, and the panel stretched to the
+          copy's height, so its top meets the heading and its foot the last
+          line (Cami, 3 November). */}
+      <div className="mx-auto grid w-full max-w-[1440px] grid-cols-1 gap-12 px-6 lg:grid-cols-2 lg:items-stretch lg:gap-16">
         <div>
           <SplitReveal
             as="h2"
