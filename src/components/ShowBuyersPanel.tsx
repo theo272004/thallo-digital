@@ -18,6 +18,9 @@ import { LayoutTemplate, Mic } from 'lucide-react';
  *   1 — plan: a site map that builds itself (a page, then three under it),
  *       and below it the right people lighting up as the work reaches them.
  *
+ * No light green anywhere (Cami's standing rule): the panel is a neutral
+ * grey, and every olive in the card is the full olive, never a tint of it.
+ *
  * Each card remounts when it becomes the active one (keyed by `active`), so
  * its CSS animations start over every time. Styles are in globals.css under
  * "Show Buyers' panel".
@@ -35,7 +38,7 @@ function Bar({ w, hl, delay }: { w: string; hl?: boolean; delay?: number }) {
 function Header({ Icon }: { Icon: typeof Mic }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#39471D]/10 text-[#39471D]">
+      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#39471D] text-white">
         <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
       </span>
       <span className="flex flex-col gap-1.5">
@@ -70,7 +73,7 @@ function PlanCard() {
     <>
       <Header Icon={LayoutTemplate} />
       <div className="mt-6 flex flex-col items-center">
-        <span className="sbp-pop block h-6 w-24 rounded-md border border-[#39471D]/40 bg-[#39471D]/[0.06]" style={{ animationDelay: '0.3s' }} />
+        <span className="sbp-pop block h-6 w-24 rounded-md border border-[#39471D] bg-white" style={{ animationDelay: '0.3s' }} />
         <span className="sbp-pop block h-3 w-px bg-gray-300" style={{ animationDelay: '0.6s' }} />
         <span className="sbp-pop block h-px w-[60%] bg-gray-300" style={{ animationDelay: '0.6s' }} />
         <div className="flex w-[66%] justify-between">
@@ -93,7 +96,7 @@ function PlanCard() {
 
 export default function ShowBuyersPanel({ active }: { active: number }) {
   return (
-    <div className="flex items-center justify-center rounded-[28px] bg-[#ECEEE7] p-8 sm:p-12 lg:min-h-[440px] short:min-h-[360px]">
+    <div className="flex items-center justify-center rounded-[28px] bg-[#ECEDEF] p-8 sm:p-12 lg:min-h-[440px] short:min-h-[360px]">
       <div
         key={active}
         className="sbp-card w-full max-w-[360px] rounded-2xl border border-gray-200/70 bg-white p-6 shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)]"
