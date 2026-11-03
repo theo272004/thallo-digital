@@ -357,10 +357,9 @@ export default function Testimonials() {
             {/* Keyed by position, not title: a new post must refill a slot,
                 not replace it. */}
             {rest.map((a, i) => (
-              /* items-stretch, so the text column and the picture both run
-                 the card's full height: "Read the note" sits on the bottom
-                 edge and the picture fills its side, instead of both hanging
-                 at the top over an empty band (Cami, 3 November). */
+              /* items-stretch, so the text column runs the card's full
+                 height and "Read the note" sits on the bottom edge instead
+                 of hanging at the top over an empty band (Cami, 3 November). */
               <CardShell key={i} a={a} className="flex-1 basis-0 items-stretch gap-5 p-4">
                 <span className="flex min-w-0 flex-1 flex-col">
                   <Meta a={a} />
@@ -395,7 +394,10 @@ export default function Testimonials() {
                 {/* Hidden on the narrowest screens: at full width the card is
                     already a column of text, and a thumbnail beside it leaves
                     the title three words to a line. */}
-                <span className="relative hidden w-[150px] shrink-0 overflow-hidden rounded-xl bg-[#39471D] sm:block short:w-[120px]">
+                {/* The shape it always had (104×88), a size up, and centred
+                    on the card's height rather than running floor to ceiling
+                    or hanging at the top (Cami, 3 November). */}
+                <span className="relative hidden h-[102px] w-[120px] shrink-0 self-center overflow-hidden rounded-xl bg-[#39471D] sm:block short:h-[81px] short:w-[96px]">
                   <img
                     loading="lazy"
                     decoding="async"
