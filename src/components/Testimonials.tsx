@@ -78,12 +78,14 @@ const IMAGES = ['blog-lead.webp', 'engine-bg.webp', 'results-bg.webp', 'scanner-
 
 /* Where to crop a picture that does not hold its subject in the middle. The
    blog's wall banner is a wide strip with the isotipo at the left and a plant
-   at the centre; a card shows a slice, and the slice should be the flower,
-   in the middle of it (Cami, 2 November: "la planta no dice nada ahí", then
-   "que se vea a la mitad"). The isotipo's centre is 23% across the strip and
-   a 16:9 card shows 40% of its width, so 5% puts the flower mid-frame. */
+   at the centre; a card shows a slice, and the slice should lead with the
+   flower (Cami, 2 November: "la planta no dice nada ahí"). Not the whole
+   flower, though: cut by the card's left edge, the way the post's own header
+   shows it ("que no se vea toda la flor completa, así como está cuando entra
+   al blog"). That header starts its window 18% into the strip; a 16:9 card
+   shows 40% of the width, so 30% starts the card at the same place. */
 const FOCUS: [string, string][] = [
-  ['bannercito-doc', '5% 50%'],
+  ['bannercito-doc', '30% 50%'],
   ['engine-bg', '22% 62%'],
   ['results-bg', '40% 50%'],
 ];
