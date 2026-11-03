@@ -167,17 +167,28 @@ body {
   0%, 100% { transform: translateY(-4px); }
   50%      { transform: translateY(4px); }
 }
-/* Show Buyers' animation (ShowBuyersDiagram.tsx): the isotipo turning. */
-.sb-spin {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: sb-spin 40s linear infinite;
+/* Show Buyers' panel (ShowBuyersPanel.tsx). The card fades up when its
+   paragraph becomes the active one; inside it, a phrase is highlighted, a tag
+   fills, a page appears, a person lights up, each on its own delay. */
+.sbp-card { animation: sbp-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes sbp-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
 }
-@keyframes sb-spin {
-  to { transform: rotate(360deg); }
+.sbp-hl { animation: sbp-hl 0.6s ease-out both; }
+@keyframes sbp-hl { to { background-color: rgba(57, 71, 29, 0.55); } }
+.sbp-tag { animation: sbp-tag 0.5s ease-out both; }
+@keyframes sbp-tag { to { background-color: rgba(57, 71, 29, 0.12); border-color: rgba(57, 71, 29, 0.45); } }
+.sbp-pop { animation: sbp-pop 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@keyframes sbp-pop {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
 }
+.sbp-person { animation: sbp-person 0.4s ease-out both; }
+@keyframes sbp-person { to { background-color: #39471D; } }
 @media (prefers-reduced-motion: reduce) {
-  .sb-spin { animation: none; }
+  .sbp-card, .sbp-pop { animation: none; }
+  .sbp-hl, .sbp-tag, .sbp-person { animation-duration: 0s; animation-delay: 0s !important; }
 }
 @media (min-width: 1024px) {
   .float-lg {
