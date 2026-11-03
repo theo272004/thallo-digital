@@ -222,7 +222,7 @@ function usePosts(): Article[] {
  */
 function Meta({ a }: { a: Article }) {
   return (
-    <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-bold uppercase tracking-[0.12em] text-gray-400">
+    <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.625rem] font-bold uppercase tracking-[0.12em] text-gray-400">
       <span className="rounded-full bg-[#39471D]/10 px-2 py-0.5 text-[#39471D]">{a.badge}</span>
       {a.href ? (
         <>
@@ -285,8 +285,8 @@ export default function Testimonials() {
 
   return (
     /* id="blog" is the target the navbar and footer have always pointed at. */
-    <section className="bg-[#F7F8F9] pt-6 pb-16 2xl:pt-8 2xl:pb-20 short:pt-24 short:pb-6 border-b border-gray-100" id="blog">
-      <div className="max-w-[1440px] mx-auto px-6">
+    <section className="bg-[#F7F8F9] pt-6 pb-16 2xl:pt-8 2xl:pb-20 border-b border-gray-100" id="blog">
+      <div className="max-w-[90rem] mx-auto px-6">
 
         {/* Masthead, centred — the index link sits below the grid, where it
             reads as the end of the list rather than as a second heading.
@@ -301,7 +301,7 @@ export default function Testimonials() {
             on the site is. It briefly was not, and a section heading set a step
             smaller than its neighbours does not read as restraint — it reads as
             a mistake. */}
-        <div className="mx-auto mb-9 short:mb-4 max-w-2xl text-center">
+        <div className="mx-auto mb-9 max-w-2xl text-center">
           <h2 className="font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">
             Blogs &amp; guides.
           </h2>
@@ -323,7 +323,7 @@ export default function Testimonials() {
                 alt=""
                 aria-hidden="true"
                 style={{ objectPosition: focusOf(pics[0]) }}
-                className="aspect-[16/9] short:aspect-[3/1] w-full select-none object-cover"
+                className="aspect-[16/9] w-full select-none object-cover"
               />
               <span aria-hidden="true" className="absolute inset-0" style={{ background: PHOTO_TINT }} />
             </span>
@@ -335,7 +335,7 @@ export default function Testimonials() {
                 {lead.title}
               </span>
 
-              <span className="mt-2.5 max-w-[52ch] text-base font-medium leading-relaxed text-gray-500 line-clamp-4 short:line-clamp-2">
+              <span className="mt-2.5 max-w-[52ch] text-base font-medium leading-relaxed text-gray-500 line-clamp-4">
                 {lead.desc}
               </span>
 
@@ -344,7 +344,7 @@ export default function Testimonials() {
                   to pin on a planned note: "Read the note" is an instruction
                   that would not work if followed. */}
               {lead.href && (
-                <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-[11px] font-bold text-[#39471D]">
+                <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-[0.6875rem] font-bold text-[#39471D]">
                   Read the note
                   <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
@@ -375,7 +375,7 @@ export default function Testimonials() {
                   {/* Every excerpt is the same box: two lines, held at two
                       even when the text is shorter, so the three cards end
                       their text on the same line. Body size, as everywhere. */}
-                  <span className="mt-1.5 line-clamp-2 min-h-[3.25em] text-base font-medium leading-relaxed text-gray-500 short:line-clamp-1 short:min-h-[1.625em]">
+                  <span className="mt-1.5 line-clamp-2 min-h-[3.25em] text-base font-medium leading-relaxed text-gray-500">
                     {a.desc}
                   </span>
 
@@ -384,7 +384,7 @@ export default function Testimonials() {
                       card is the same height as the two beside it. */}
                   <span
                     aria-hidden={a.href ? undefined : true}
-                    className={`mt-auto inline-flex items-center gap-1.5 pt-4 short:pt-2 text-[11px] font-bold text-[#39471D] ${a.href ? '' : 'invisible'}`}
+                    className={`mt-auto inline-flex items-center gap-1.5 pt-4 text-[0.6875rem] font-bold text-[#39471D] ${a.href ? '' : 'invisible'}`}
                   >
                     Read the note
                     <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -397,7 +397,7 @@ export default function Testimonials() {
                 {/* The shape it always had (104×88), a size up, and centred
                     on the card's height rather than running floor to ceiling
                     or hanging at the top (Cami, 3 November). */}
-                <span className="relative hidden h-[102px] w-[120px] shrink-0 self-center overflow-hidden rounded-xl bg-[#39471D] sm:block short:h-[81px] short:w-[96px]">
+                <span className="relative hidden h-[6.375rem] w-[7.5rem] shrink-0 self-center overflow-hidden rounded-xl bg-[#39471D] sm:block">
                   <img
                     loading="lazy"
                     decoding="async"
@@ -415,10 +415,10 @@ export default function Testimonials() {
 
         </div>
 
-        <div className="mt-8 short:mt-4 flex justify-center">
+        <div className="mt-8 flex justify-center">
           <a
             href="https://thallodigital.com/blog/"
-            className="group inline-flex items-center gap-1.5 rounded-full border border-[#39471D] bg-[#39471D] px-5 py-2.5 text-[13px] font-bold text-white transition-colors hover:border-[#55672E] hover:bg-[#55672E]"
+            className="group inline-flex items-center gap-1.5 rounded-full border border-[#39471D] bg-[#39471D] px-5 py-2.5 text-[0.8125rem] font-bold text-white transition-colors hover:border-[#55672E] hover:bg-[#55672E]"
           >
             Read our blog
             <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

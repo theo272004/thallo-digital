@@ -63,21 +63,21 @@ export default function HomeIndustries() {
   );
 
   return (
-    <section className="bg-[#F7F8F9] py-24 2xl:py-32 short:pt-24 short:pb-6 border-b border-gray-100 overflow-hidden" id="industries">
-      <div className="max-w-[1440px] mx-auto px-6">
-        <div className="mx-auto max-w-3xl short:max-w-4xl text-center mb-12 2xl:mb-14 short:mb-4">
+    <section className="bg-[#F7F8F9] py-24 2xl:py-32 border-b border-gray-100 overflow-hidden" id="industries">
+      <div className="max-w-[90rem] mx-auto px-6">
+        <div className="mx-auto max-w-3xl text-center mb-12 2xl:mb-14">
           <SplitReveal
             as="h2"
-            className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 short:mb-3 font-sans leading-[1.05]"
+            className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 font-sans leading-[1.05] text-balance"
             html='Who Do We <span class="italic text-[#39471D]">Work With?</span>'
           />
-          <p className="mx-auto text-gray-500 font-medium text-base leading-relaxed max-w-[56ch] short:max-w-none">
+          <p className="mx-auto text-gray-500 font-medium text-base leading-relaxed max-w-[56ch]">
             Our work is a fit for companies whose expertise, capabilities or approach need to be understood before a
-            customer commits.
+            customer&nbsp;commits.
           </p>
         </div>
 
-        <p className="text-center text-[13.5px] font-bold text-gray-900 mb-6 short:mb-3">
+        <p className="text-center text-[0.84375rem] font-bold text-gray-900 mb-6">
           Explore how we apply that work to your industry:
         </p>
 
@@ -85,13 +85,13 @@ export default function HomeIndustries() {
             four is exactly as tall as the picture beside it. */}
         <div
           ref={stageRef}
-          className="mx-auto grid max-w-[1280px] gap-4 lg:h-[360px] 2xl:h-[380px] short:h-[clamp(280px,calc(100svh-390px),360px)] lg:grid-cols-[auto_1fr] lg:gap-5"
+          className="mx-auto grid max-w-[80rem] gap-4 lg:h-[22.5rem] 2xl:h-[23.75rem] lg:grid-cols-[auto_1fr] lg:gap-5"
         >
           {/* ── Professional services, the photograph ───────────────────── */}
           <a
             data-feature
             href={`${BASE}/industries/`}
-            className="group relative isolate flex h-[340px] lg:h-full lg:aspect-square flex-col justify-end overflow-hidden rounded-[28px] bg-[#171A10] p-7 sm:p-8 shadow-[0_30px_70px_-30px_rgba(23,26,16,0.55)]"
+            className="group relative isolate flex h-[21.25rem] lg:h-full lg:aspect-square flex-col justify-end overflow-hidden rounded-[1.75rem] bg-[#171A10] p-7 sm:p-8 shadow-[0_30px_70px_-30px_rgba(23,26,16,0.55)]"
           >
             <img
               loading="lazy"
@@ -109,7 +109,7 @@ export default function HomeIndustries() {
                   cards' discs do. It stays white and still on hover (Cami,
                   1 November); only the photograph zooms. */}
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-[#39471D]">
-                <ArrowUpRight className="text-[15px]" />
+                <ArrowUpRight className="text-[0.9375rem]" />
               </span>
             </div>
           </a>
@@ -128,11 +128,11 @@ export default function HomeIndustries() {
               <li key={name} data-card>
                 <a
                   href={`${BASE}/industries/`}
-                  className="group flex h-full min-h-[130px] flex-col justify-between gap-4 rounded-[20px] border border-[#39471D]/45 bg-white p-5 sm:p-6 shadow-[0_18px_40px_-28px_rgba(23,26,16,0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#39471D]"
+                  className="group flex h-full min-h-[8.125rem] flex-col justify-between gap-4 rounded-[1.25rem] border border-[#39471D]/45 bg-white p-5 sm:p-6 shadow-[0_18px_40px_-28px_rgba(23,26,16,0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#39471D]"
                 >
                   <span className="text-lg sm:text-xl font-bold tracking-tight text-gray-900 leading-[1.15]">{name}</span>
                   <span className="flex h-10 w-10 self-end shrink-0 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors duration-300 group-hover:border-[#39471D] group-hover:bg-[#39471D] group-hover:text-white">
-                    <ArrowUpRight className="text-[13px]" />
+                    <ArrowUpRight className="text-[0.8125rem]" />
                   </span>
                 </a>
               </li>

@@ -39,7 +39,7 @@ const ENGAGEMENTS: Engagement[] = [
   {
     id: 'focused-projects',
     title: 'Focused Projects',
-    body: 'You have a specific project in mind and need the expertise or capacity to get it done. We agree on scope, deliverables and timeline upfront, then manage the work from planning through delivery.',
+    body: 'You have a specific project in mind and need the expertise or capacity to get it done. We agree on scope, deliverables and timeline upfront, then manage the work from planning through delivery.',
     link: { label: 'Discuss A Project', href: '#cta' },
     dark: false,
   },
@@ -63,7 +63,7 @@ function Panel({ e }: { e: Engagement }) {
       /* From lg the panel is a subgrid over three shared rows (title,
          paragraph, button), so each block starts at the same height in both
          panels even though the paragraphs differ in length. */
-      className={`relative isolate flex flex-col lg:grid lg:grid-rows-subgrid lg:row-span-3 lg:gap-0 overflow-hidden rounded-[24px] p-7 sm:p-10 short:p-7 transition-transform duration-300 hover:-translate-y-1 ${
+      className={`relative isolate flex flex-col lg:grid lg:grid-rows-subgrid lg:row-span-3 lg:gap-0 overflow-hidden rounded-[1.5rem] p-7 sm:p-10 transition-transform duration-300 hover:-translate-y-1 ${
         /* Both panels carry a 1px border, the dark one transparent, so
            their content starts on exactly the same pixel. */
         d ? 'border border-transparent bg-[#171A10]' : 'border border-gray-200/80 bg-[#F7F8F9]'
@@ -134,7 +134,7 @@ function Panel({ e }: { e: Engagement }) {
         )}
         <span className="relative inline-flex items-center gap-2">
           {e.link.label}
-          <ArrowUpRight className="text-[11px] group-hover:translate-x-0.5 transition-transform" />
+          <ArrowUpRight className="text-[0.6875rem] group-hover:translate-x-0.5 transition-transform" />
         </span>
       </a>
     </article>
@@ -147,7 +147,7 @@ export default function HomeEngagements() {
       className="flex items-center border-b border-gray-100 bg-white py-20 lg:min-h-[100svh] lg:pt-28 lg:pb-16"
       id="ways-to-work"
     >
-      <div className="mx-auto w-full max-w-[1240px] px-6">
+      <div className="mx-auto w-full max-w-[77.5rem] px-6">
         <SplitReveal
           as="h2"
           className="mx-auto mb-10 sm:mb-14 max-w-[24ch] text-center font-sans text-4xl font-bold leading-[1.08] tracking-tight text-gray-900 sm:text-5xl text-balance"

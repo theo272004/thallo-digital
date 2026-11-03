@@ -120,7 +120,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-sans bg-white text-gray-900">
         {/* Marks a Mac (not an iPad, which also says "Mac" but takes touch), so
-            the `short:` spacing in globals.css applies there and nowhere else.
+            the Mac scale in globals.css applies there and nowhere else.
             Inline and first in the body so the class is on before paint. */}
         <script
           dangerouslySetInnerHTML={{

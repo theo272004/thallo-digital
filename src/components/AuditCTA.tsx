@@ -72,13 +72,13 @@ export default function AuditCTA({
   formVariant = 'enquiry',
 }: Props) {
   return (
-    <section className="bg-white py-20 2xl:py-24 short:pt-24 short:pb-6 border-b border-gray-100" id={id}>
-      <div className="max-w-[1440px] mx-auto px-6 w-full">
+    <section className="bg-white py-20 2xl:py-24 border-b border-gray-100" id={id}>
+      <div className="max-w-[90rem] mx-auto px-6 w-full">
         {/* The form sets this panel's height now, so the padding only has to
             frame it. At py-28 — right for the text-only panel this used to be —
             it added 112px of dead ground above and below a card that was
             already tall. Sides stay generous; the top and bottom do not. */}
-        <div className="relative overflow-hidden rounded-[28px] px-8 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14 short:py-7">
+        <div className="relative overflow-hidden rounded-[1.75rem] px-8 py-10 sm:px-12 sm:py-12 lg:px-16 lg:py-14">
           <img loading="lazy" decoding="async"
             src={image}
             alt=""
@@ -102,7 +102,7 @@ export default function AuditCTA({
           <div className="relative z-[2] grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)] lg:gap-14">
             <div>
               {eyebrow && (
-                <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.18em] text-[#CBD0AC]">{eyebrow}</p>
+                <p className="mb-5 text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-[#CBD0AC]">{eyebrow}</p>
               )}
               {headingSlot ?? (
                 <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-8 font-sans">
@@ -122,12 +122,12 @@ export default function AuditCTA({
                   here is what lets the form's own button say "Send message"
                   rather than borrowing this one's label. */}
               {steps && (
-                <ol className="mt-8 short:mt-4 flex flex-col gap-3.5 short:gap-2.5">
+                <ol className="mt-8 flex flex-col gap-3.5">
                   {steps.map((step, i) => (
                     /* The number fills white under the cursor, the way the
                        other hover states on the site answer (Cami, 5 October). */
                     <li key={step} className="group flex cursor-default items-center gap-3.5 text-base font-medium text-white">
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/40 text-[12px] font-semibold text-white/90 transition-colors duration-300 group-hover:border-white group-hover:bg-white group-hover:text-[#171A10]">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/40 text-[0.75rem] font-semibold text-white/90 transition-colors duration-300 group-hover:border-white group-hover:bg-white group-hover:text-[#171A10]">
                         {i + 1}
                       </span>
                       {step}
@@ -157,7 +157,7 @@ export default function AuditCTA({
               )}
 
               {footnote && (
-                <p className="mt-8 short:mt-4 max-w-[44ch] text-base font-medium leading-relaxed text-[#CBD0AC]">{footnote}</p>
+                <p className="mt-8 max-w-[44ch] text-base font-medium leading-relaxed text-[#CBD0AC]">{footnote}</p>
               )}
             </div>
 

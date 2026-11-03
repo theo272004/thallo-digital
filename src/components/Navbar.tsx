@@ -76,7 +76,7 @@ export default function Navbar() {
       }`}
     >
       <div
-        className={`max-w-[1440px] mx-auto rounded-full flex justify-between items-center px-4 sm:px-6 py-2.5 transition-all duration-300 ${
+        className={`max-w-[90rem] mx-auto rounded-full flex justify-between items-center px-4 sm:px-6 py-2.5 transition-all duration-300 ${
           scrolled
             ? 'bg-white/95 backdrop-blur-xl border border-gray-200 shadow-[0_20px_45px_-20px_rgba(57,71,29,0.35)]'
             : 'bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_12px_36px_-18px_rgba(57,71,29,0.22)]'
@@ -97,7 +97,7 @@ export default function Navbar() {
             named the series and the pill is the design; what gives is the width
             at which a bar this full still fits. The blog's copy of this navbar
             carries the same 1100. */}
-        <div className="hidden min-[1100px]:flex items-center gap-5 xl:gap-7">
+        <div className="hidden min-[68.75rem]:flex items-center gap-5 xl:gap-7">
           {LINKS.map((l) => {
             const here = isCurrent(l.page);
             return (
@@ -116,7 +116,7 @@ export default function Navbar() {
         </div>
 
         {/* Right CTA */}
-        <div className="hidden min-[1100px]:flex items-center gap-3 shrink-0">
+        <div className="hidden min-[68.75rem]:flex items-center gap-3 shrink-0">
           <a
             href={`${BASE}/thallo-ai/scan/`}
             className="px-4 py-2 border border-gray-200 rounded-full text-sm font-semibold text-gray-800 hover:border-gray-400 hover:bg-gray-50 transition-all"
@@ -132,14 +132,14 @@ export default function Navbar() {
 
         {/* Mobile Hamburger */}
         <button
-          className="min-[1100px]:hidden flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 text-gray-800 shrink-0"
+          className="min-[68.75rem]:hidden flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 text-gray-800 shrink-0"
           onClick={() => setMobileMenuOpen(true)}
           aria-label="Toggle navigation menu"
         >
           <span className="flex flex-col justify-between w-4 h-3">
-            <span className="w-full h-[1.5px] bg-current rounded-full"></span>
-            <span className="w-3/4 h-[1.5px] bg-current rounded-full self-end"></span>
-            <span className="w-full h-[1.5px] bg-current rounded-full"></span>
+            <span className="w-full h-[0.09375rem] bg-current rounded-full"></span>
+            <span className="w-3/4 h-[0.09375rem] bg-current rounded-full self-end"></span>
+            <span className="w-full h-[0.09375rem] bg-current rounded-full"></span>
           </span>
         </button>
       </div>

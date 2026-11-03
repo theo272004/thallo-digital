@@ -190,17 +190,17 @@ export default function HowItWorks({
          the ground belongs to the slot rather than to the component, so if this
          ever moves in the page order the colour stays with the slot and not
          with the approach. */
-      className="bg-white border-b border-gray-100 pt-[5.5rem] lg:pt-0 pb-[5.5rem] short:pb-4"
+      className="bg-white border-b border-gray-100 pt-[5.5rem] lg:pt-0 pb-[5.5rem]"
       id={id}
       ref={sectionRef}
     >
-      <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[38%_1fr] gap-16 items-start">
+      <div className="max-w-[90rem] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[38%_1fr] gap-16 items-start">
 
         {/* ── Left: Illustrator SVG, flush with the section border ──────────── */}
         <div
           className={`relative hidden lg:block ${
-            compact ? 'h-[720px] 2xl:h-[780px]' : 'h-[860px] 2xl:h-[1000px]'
-          } short:h-[min(860px,calc(100svh-1rem))]`}
+            compact ? 'h-[45rem] 2xl:h-[48.75rem]' : 'h-[53.75rem] 2xl:h-[62.5rem]'
+          }`}
         >
           <svg
             viewBox="0 0 205.56 764.83"
@@ -293,7 +293,7 @@ export default function HowItWorks({
         <div
           className={`flex flex-col ${
             compact ? 'gap-10 2xl:gap-12' : 'gap-14 2xl:gap-20'
-          } short:gap-4 lg:pt-[5.5rem] short:pt-24 text-center lg:text-left`}
+          } lg:pt-[5.5rem] text-center lg:text-left`}
         >
           <div>
             <SplitReveal
@@ -309,7 +309,7 @@ export default function HowItWorks({
           </div>
 
           {/* Steps with circle indicators + connecting line */}
-          <div className={`relative flex flex-col ${compact ? 'gap-8 2xl:gap-10' : 'gap-14 2xl:gap-20'} short:gap-3`}>
+          <div className={`relative flex flex-col ${compact ? 'gap-8 2xl:gap-10' : 'gap-14 2xl:gap-20'}`}>
 
             {/* Vertical line — height set by useEffect to exactly span circle 1→4 centers */}
             <div
@@ -331,14 +331,14 @@ export default function HowItWorks({
               >
                 <div
                   ref={(el) => { circleRefs.current[i] = el; }}
-                  className="w-[32px] h-[32px] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
+                  className="w-[2rem] h-[2rem] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
                   style={{ backgroundColor: '#39471D', transform: 'scale(0)', opacity: 0 }}
                 >
-                  <span className="text-[11px] font-semibold text-white">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="text-[0.6875rem] font-semibold text-white">{String(i + 1).padStart(2, '0')}</span>
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-gray-900 mb-2 short:mb-1">{step.title}</h3>
-                  <p className="text-base text-gray-500 leading-relaxed short:leading-normal">{step.body}</p>
+                  <h3 className="text-base font-bold text-gray-900 mb-2">{step.title}</h3>
+                  <p className="text-base text-gray-500 leading-relaxed">{step.body}</p>
                   {/* What the phase hands over. Named deliverables rather than
                       adjectives: a phase you cannot point at the output of is a
                       phase nobody can tell you finished.
@@ -353,7 +353,7 @@ export default function HowItWorks({
                       {step.chips.map((chip) => (
                         <span
                           key={chip}
-                          className="text-[12px] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]"
+                          className="text-[0.75rem] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]"
                         >
                           {chip}
                         </span>
@@ -370,10 +370,10 @@ export default function HowItWorks({
                       }}
                       /* A pill, the same shape as the deliverable chips this
                          slot held before: border at rest, olive fill on hover. */
-                      className="group mt-4 short:mt-1.5 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 short:py-0.5 text-[13px] short:text-[12px] font-bold text-gray-900 shadow-[0_2px_8px_-4px_rgba(23,26,16,0.12)] transition-all duration-300 hover:border-[#39471D] hover:bg-[#39471D] hover:text-white"
+                      className="group mt-4 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-[0.8125rem] font-bold text-gray-900 shadow-[0_2px_8px_-4px_rgba(23,26,16,0.12)] transition-all duration-300 hover:border-[#39471D] hover:bg-[#39471D] hover:text-white"
                     >
                       {step.link.label}
-                      <ArrowUpRight className="text-[11px] text-gray-500 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                      <ArrowUpRight className="text-[0.6875rem] text-gray-500 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                     </a>
                   )}
                 </div>

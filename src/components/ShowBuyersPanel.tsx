@@ -47,10 +47,10 @@ const STEP_MS = 2800;
 /* Where a card sits by how far it is behind the front one. */
 function place(offset: number) {
   if (offset === 0) return { transform: 'translateY(0) scale(1)', opacity: 1, zIndex: 30 };
-  if (offset === 1) return { transform: 'translateY(22px) scale(0.94)', opacity: 0.75, zIndex: 20 };
-  if (offset === 2) return { transform: 'translateY(42px) scale(0.88)', opacity: 0.4, zIndex: 10 };
-  if (offset === N - 1) return { transform: 'translateY(-28px) scale(1.02)', opacity: 0, zIndex: 40 };
-  return { transform: 'translateY(56px) scale(0.84)', opacity: 0, zIndex: 0 };
+  if (offset === 1) return { transform: 'translateY(1.375rem) scale(0.94)', opacity: 0.75, zIndex: 20 };
+  if (offset === 2) return { transform: 'translateY(2.625rem) scale(0.88)', opacity: 0.4, zIndex: 10 };
+  if (offset === N - 1) return { transform: 'translateY(-1.75rem) scale(1.02)', opacity: 0, zIndex: 40 };
+  return { transform: 'translateY(3.5rem) scale(0.84)', opacity: 0, zIndex: 0 };
 }
 
 export default function ShowBuyersPanel() {
@@ -89,12 +89,12 @@ export default function ShowBuyersPanel() {
       ref={ref}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      className="relative h-[320px] overflow-hidden rounded-[28px] bg-[#ECEDEF] lg:h-full"
+      className="relative h-[20rem] overflow-hidden rounded-[1.75rem] bg-[#ECEDEF] lg:h-full"
     >
       {/* The box is exactly the front card, centred in the panel both ways:
           the card being shown is what sits in the middle (Cami, 3 November).
           The two coming next peek out under it, past the box. */}
-      <div className="absolute left-1/2 top-1/2 h-[96px] w-[calc(100%-3rem)] max-w-[400px] -translate-x-1/2 -translate-y-1/2">
+      <div className="absolute left-1/2 top-1/2 h-[6rem] w-[calc(100%-3rem)] max-w-[25rem] -translate-x-1/2 -translate-y-1/2">
         {STEPS.map(({ text, Icon }, i) => {
           const offset = (i - active + N) % N;
           const front = offset === 0;
@@ -105,7 +105,7 @@ export default function ShowBuyersPanel() {
               tabIndex={front ? 0 : -1}
               aria-hidden={front ? undefined : true}
               onClick={() => go(active + 1)}
-              className={`absolute inset-x-0 top-0 flex h-[96px] origin-top items-center gap-4 rounded-2xl border border-gray-200/70 bg-white px-5 text-left shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+              className={`absolute inset-x-0 top-0 flex h-[6rem] origin-top items-center gap-4 rounded-2xl border border-gray-200/70 bg-white px-5 text-left shadow-[0_6px_20px_-8px_rgba(23,26,16,0.14)] transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                 front ? 'cursor-pointer' : 'pointer-events-none'
               }`}
               style={place(offset)}
@@ -113,10 +113,10 @@ export default function ShowBuyersPanel() {
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#39471D] text-white">
                 <Icon className="h-5 w-5" strokeWidth={1.75} />
               </span>
-              <span className="min-w-0 flex-1 text-[15px] font-semibold leading-snug text-gray-900 text-balance first-letter:uppercase">
+              <span className="min-w-0 flex-1 text-[0.9375rem] font-semibold leading-snug text-gray-900 text-balance first-letter:uppercase">
                 {text}
               </span>
-              <span className="self-start pt-4 text-[11px] font-semibold tabular-nums text-gray-400">
+              <span className="self-start pt-4 text-[0.6875rem] font-semibold tabular-nums text-gray-400">
                 {String(i + 1).padStart(2, '0')}
               </span>
             </button>

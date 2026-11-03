@@ -19,7 +19,7 @@ const INBOX = 'contact@thallodigital.com';
 const fieldCls =
   'w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm font-medium text-gray-900 placeholder:text-gray-400 outline-none transition-colors duration-200 focus:border-[#55672E] hover:border-gray-300';
 const labelCls =
-  'block text-[11px] font-bold text-gray-500 tracking-wider uppercase mb-1.5';
+  'block text-[0.6875rem] font-bold text-gray-500 tracking-wider uppercase mb-1.5';
 
 type Status = 'idle' | 'sending' | 'sent' | 'mail' | 'error';
 
@@ -172,7 +172,7 @@ Website: ${payload.website}`
       onSubmit={onSubmit}
       className="rounded-2xl bg-white p-6 shadow-[0_24px_60px_-30px_rgba(23,26,16,0.6)]"
     >
-      <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#55672E] mb-4">
+      <p className="text-[0.6875rem] font-bold uppercase tracking-[0.16em] text-[#55672E] mb-4">
         {conversation ? 'Start a conversation' : 'Tell us where you stand'}
       </p>
 

@@ -45,7 +45,7 @@ const CAPABILITIES: HowItWorksStep[] = [
   },
   {
     title: 'Search And AI Visibility',
-    body: 'We address the technical and content issues that affect how your business is found and understood in search and AI answers, then track visibility and relevant website actions to guide improvements.',
+    body: 'We address the technical and content issues that affect how your business is found and understood in search and AI answers, then track visibility and relevant website actions to guide improvements.',
     link: { label: 'Explore AI Visibility', href: `${BASE}/thallo-ai/method/` },
   },
   {
@@ -107,7 +107,7 @@ export default function Home() {
         <Testimonials />
         <CTASection
           copy="Tell us about your business, who you want to reach and what you’d like to achieve. We’ll discuss your priorities and recommend a starting point, whether that’s a focused project or ongoing support."
-          footnote="We’ll get in touch to arrange a conversation."
+          footnote="We’ll get in touch to arrange a conversation."
         />
       </main>
       <Footer />

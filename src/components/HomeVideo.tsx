@@ -89,11 +89,11 @@ export default function HomeVideo() {
   );
 
   return (
-    <section ref={sectionRef} className="bg-white pb-20 2xl:pb-28 short:pb-8 border-b border-gray-100" id="intro-video" aria-label="An introduction to Thallo">
-      <div className="max-w-[1440px] mx-auto px-6">
+    <section ref={sectionRef} className="bg-white pb-20 2xl:pb-28 border-b border-gray-100" id="intro-video" aria-label="An introduction to Thallo">
+      <div className="max-w-[90rem] mx-auto px-6">
         <div
           ref={frameRef}
-          className="relative mx-auto origin-bottom max-w-[1340px] short:max-w-[calc((100svh-7rem)*16/9)] aspect-video rounded-[32px] overflow-hidden bg-[#171A10] shadow-[0_24px_60px_-28px_rgba(23,26,16,0.45)]"
+          className="relative mx-auto origin-bottom max-w-[83.75rem] aspect-video rounded-[2rem] overflow-hidden bg-[#171A10] shadow-[0_24px_60px_-28px_rgba(23,26,16,0.45)]"
         >
           {playing && SOURCE ? (
             SOURCE.kind === 'youtube' ? (
@@ -144,7 +144,7 @@ export default function HomeVideo() {
               </span>
 
               {!SOURCE && (
-                <span className="relative text-[11px] font-bold uppercase tracking-widest text-white/70">
+                <span className="relative text-[0.6875rem] font-bold uppercase tracking-widest text-white/70">
                   Video coming soon.
                 </span>
               )}

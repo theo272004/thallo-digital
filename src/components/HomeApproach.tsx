@@ -103,13 +103,13 @@ export default function HomeApproach() {
 
   return (
     <section
-      className="flex items-center bg-[#F7F8F9] py-24 lg:min-h-[80svh] short:pt-28 short:pb-16 border-b border-gray-100"
+      className="flex items-center bg-[#F7F8F9] py-24 lg:min-h-[80svh] border-b border-gray-100"
       id="approach"
     >
       {/* The full width the other sections use, and the panel stretched to the
           copy's height, so its top meets the heading and its foot the last
           line (Cami, 3 November). */}
-      <div className="mx-auto grid w-full max-w-[1440px] grid-cols-1 gap-12 px-6 lg:grid-cols-2 lg:items-stretch lg:gap-16">
+      <div className="mx-auto grid w-full max-w-[90rem] grid-cols-1 gap-12 px-6 lg:grid-cols-2 lg:items-stretch lg:gap-16">
         <div>
           <SplitReveal
             as="h2"
@@ -120,7 +120,7 @@ export default function HomeApproach() {
           {/* Both paragraphs, whole and together, beside an olive rule that
               draws down on scroll over a grey hairline track. */}
           <div className="relative mt-10 flex flex-col gap-6 pl-6">
-            <span aria-hidden className="absolute inset-y-0 left-0 w-[2px] rounded-full bg-gray-200">
+            <span aria-hidden className="absolute inset-y-0 left-0 w-[0.125rem] rounded-full bg-gray-200">
               <span ref={ruleRef} className="absolute inset-0 origin-top rounded-full bg-[#39471D]" />
             </span>
             <Paragraph parts={RESEARCH} />

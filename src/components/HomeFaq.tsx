@@ -138,8 +138,8 @@ export default function HomeFaq({
   items?: Faq[];
 } = {}) {
   return (
-    <section id="faq" className="border-b border-gray-100 bg-white py-16 2xl:py-28 short:pt-24 short:pb-6">
-      <div className="mx-auto max-w-[1440px] px-6">
+    <section id="faq" className="border-b border-gray-100 bg-white py-16 2xl:py-28">
+      <div className="mx-auto max-w-[90rem] px-6">
         <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-20">
           <div>
             <SplitReveal
