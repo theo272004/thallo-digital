@@ -1,20 +1,6 @@
 @import "tailwindcss";
 @import "../styles/hero.css";
 
-/* On a Mac the whole page is drawn a size smaller, in proportion, so a
-   laptop sees the same composition a desktop monitor does (Cami, 3 November:
-   "debería verse como se ve en la web, pero en Mac").
-
-   It works through the root font size: every size on the home is set in rem
-   (spacing, type, and the larger fixed measures, converted from px), so one
-   number scales all of it. On a 1470px-wide Mac that is about 14px to the
-   rem, and it rises with the screen to the normal 16px from about 1700px.
-   Windows and phones never get the class and stay at 16px.
-
-   This replaced a `short:` variant that tightened padding and gaps on short
-   screens but left everything else at full size: on her Mac the sections
-   came out crammed and oversized at once. `html.is-mac` is set by the inline
-   script at the top of the layout's body, before anything paints. */
 /* Running text never ends on a word of its own (Cami has asked more than
    once): browsers that support it rebalance a paragraph's last lines. The
    lines that still broke badly carry a no-break space before their last
@@ -22,12 +8,6 @@
 main p,
 footer p {
   text-wrap: pretty;
-}
-
-@media (min-width: 1024px) {
-  :root.is-mac {
-    font-size: clamp(13.5px, calc(0.8333vw + 2px), 16px);
-  }
 }
 
 @theme inline {

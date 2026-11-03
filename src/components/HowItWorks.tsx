@@ -199,7 +199,10 @@ export default function HowItWorks({
         {/* ── Left: Illustrator SVG, flush with the section border ──────────── */}
         <div
           className={`relative hidden lg:block ${
-            compact ? 'h-[45rem] 2xl:h-[48.75rem]' : 'h-[53.75rem] 2xl:h-[62.5rem]'
+            /* Compact: as tall as the steps beside it, whatever the screen,
+               so the branch's last bloom lands level with step 04 instead of
+               ending above it or running past it (Cami, 3 November). */
+            compact ? 'self-stretch min-h-[30rem]' : 'h-[53.75rem] 2xl:h-[62.5rem]'
           }`}
         >
           <svg
@@ -334,10 +337,10 @@ export default function HowItWorks({
                   className="w-[2rem] h-[2rem] rounded-full flex items-center justify-center flex-shrink-0 hidden lg:flex"
                   style={{ backgroundColor: '#39471D', transform: 'scale(0)', opacity: 0 }}
                 >
-                  <span className="text-[0.6875rem] font-semibold text-white">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="text-xs font-semibold text-white">{String(i + 1).padStart(2, '0')}</span>
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-gray-900 mb-2">{step.title}</h3>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">{step.title}</h3>
                   <p className="text-base text-gray-500 leading-relaxed">{step.body}</p>
                   {/* What the phase hands over. Named deliverables rather than
                       adjectives: a phase you cannot point at the output of is a
@@ -353,7 +356,7 @@ export default function HowItWorks({
                       {step.chips.map((chip) => (
                         <span
                           key={chip}
-                          className="text-[0.75rem] font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]"
+                          className="text-xs font-medium text-gray-800 bg-white border border-gray-200 rounded-full px-3 py-1 lift-sm transition-all duration-300 hover:text-[#39471D]"
                         >
                           {chip}
                         </span>
@@ -370,10 +373,10 @@ export default function HowItWorks({
                       }}
                       /* A pill, the same shape as the deliverable chips this
                          slot held before: border at rest, olive fill on hover. */
-                      className="group mt-4 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-[0.8125rem] font-bold text-gray-900 shadow-[0_2px_8px_-4px_rgba(23,26,16,0.12)] transition-all duration-300 hover:border-[#39471D] hover:bg-[#39471D] hover:text-white"
+                      className="group mt-4 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-900 shadow-[0_2px_8px_-4px_rgba(23,26,16,0.12)] transition-all duration-300 hover:border-[#39471D] hover:bg-[#39471D] hover:text-white"
                     >
                       {step.link.label}
-                      <ArrowUpRight className="text-[0.6875rem] text-gray-500 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                      <ArrowUpRight className="text-xs text-gray-500 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                     </a>
                   )}
                 </div>

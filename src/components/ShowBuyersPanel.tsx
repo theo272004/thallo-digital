@@ -36,7 +36,7 @@ const STEPS: { text: string; Icon: typeof Mic }[] = [
   { text: 'conduct customer research', Icon: Users },
   { text: 'using sales materials and search data', Icon: FileText },
   { text: 'understand how buyers compare their options', Icon: Scale },
-  { text: 'plan your website’s structure', Icon: LayoutTemplate },
+  { text: 'plan your website’s structure', Icon: LayoutTemplate },
   { text: 'decide which content and resources to create', Icon: PenLine },
   { text: 'reach the right people', Icon: Target },
   { text: 'a reason to remember your business and recommend it', Icon: MessagesSquare },
@@ -113,10 +113,10 @@ export default function ShowBuyersPanel() {
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#39471D] text-white">
                 <Icon className="h-5 w-5" strokeWidth={1.75} />
               </span>
-              <span className="min-w-0 flex-1 text-[0.9375rem] font-semibold leading-snug text-gray-900 text-balance first-letter:uppercase">
+              <span className="min-w-0 flex-1 text-base font-semibold leading-snug text-gray-900 text-balance first-letter:uppercase">
                 {text}
               </span>
-              <span className="self-start pt-4 text-[0.6875rem] font-semibold tabular-nums text-gray-400">
+              <span className="self-start pt-4 text-xs font-semibold tabular-nums text-gray-400">
                 {String(i + 1).padStart(2, '0')}
               </span>
             </button>

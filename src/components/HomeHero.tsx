@@ -55,18 +55,18 @@ export default function HomeHero() {
                 e.preventDefault();
                 scrollToEl('#cta');
               }}
-              className="px-8 py-4 sm:px-9 sm:py-[1.1rem] rounded-full text-sm sm:text-[0.9375rem] font-bold text-white bg-[#39471D] border border-[#39471D] hover:bg-[#55672E] hover:border-[#55672E] transition-all flex items-center gap-2 group shadow-sm shadow-[#55672E]/10"
+              className="px-8 py-4 sm:px-9 sm:py-[1.1rem] rounded-full text-base font-bold text-white bg-[#39471D] border border-[#39471D] hover:bg-[#55672E] hover:border-[#55672E] transition-all flex items-center gap-2 group shadow-sm shadow-[#55672E]/10"
             >
               Talk To Thallo
-              <ArrowUpRight className="text-[0.8125rem] group-hover:translate-x-0.5 transition-transform" />
+              <ArrowUpRight className="text-sm group-hover:translate-x-0.5 transition-transform" />
             </a>
           </Magnetic>
           <a
             href={`${BASE}/results/`}
-            className="px-8 py-4 sm:px-9 sm:py-[1.1rem] rounded-full text-sm sm:text-[0.9375rem] font-bold text-gray-800 border border-gray-200 bg-white hover:border-gray-400 transition-all flex items-center gap-2 group"
+            className="px-8 py-4 sm:px-9 sm:py-[1.1rem] rounded-full text-base font-bold text-gray-800 border border-gray-200 bg-white hover:border-gray-400 transition-all flex items-center gap-2 group"
           >
             See Our Work
-            <ArrowUpRight className="text-[0.8125rem] text-gray-500 group-hover:translate-x-0.5 transition-transform" />
+            <ArrowUpRight className="text-sm text-gray-500 group-hover:translate-x-0.5 transition-transform" />
           </a>
         </div>
       </div>

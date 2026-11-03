@@ -88,7 +88,7 @@ function Panel({ e }: { e: Engagement }) {
         </>
       )}
 
-      <h3 className={`text-2xl sm:text-[1.75rem] font-bold tracking-tight mb-4 ${d ? 'text-white' : 'text-gray-900'}`}>
+      <h3 className={`text-2xl font-bold tracking-tight mb-4 ${d ? 'text-white' : 'text-gray-900'}`}>
         {e.title}
       </h3>
       <p className={`text-base font-medium leading-relaxed mb-8 ${d ? 'text-white/75' : 'text-gray-500'}`}>{e.body}</p>
@@ -110,7 +110,7 @@ function Panel({ e }: { e: Engagement }) {
           ev.preventDefault();
           scrollToEl(e.link.href);
         }}
-        className={`group mt-auto self-start inline-flex w-fit items-center gap-2 rounded-full px-5 py-3 text-xs font-bold transition-all ${
+        className={`group mt-auto self-start inline-flex w-fit items-center gap-2 rounded-full px-5 py-3 text-sm font-bold transition-all ${
           d
             ? 'bg-white text-gray-900 hover:bg-[#F7F8F9]'
             : 'bg-[#171A10] text-white [clip-path:inset(0_round_9999px)]'
@@ -134,7 +134,7 @@ function Panel({ e }: { e: Engagement }) {
         )}
         <span className="relative inline-flex items-center gap-2">
           {e.link.label}
-          <ArrowUpRight className="text-[0.6875rem] group-hover:translate-x-0.5 transition-transform" />
+          <ArrowUpRight className="text-xs group-hover:translate-x-0.5 transition-transform" />
         </span>
       </a>
     </article>

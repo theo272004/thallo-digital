@@ -102,10 +102,10 @@ export default function AuditCTA({
           <div className="relative z-[2] grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)] lg:gap-14">
             <div>
               {eyebrow && (
-                <p className="mb-5 text-[0.6875rem] font-bold uppercase tracking-[0.18em] text-[#CBD0AC]">{eyebrow}</p>
+                <p className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-[#CBD0AC]">{eyebrow}</p>
               )}
               {headingSlot ?? (
-                <h2 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.05] mb-8 font-sans">
+                <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-white leading-[1.05] mb-8 font-sans">
                   {heading}
                 </h2>
               )}
@@ -127,7 +127,7 @@ export default function AuditCTA({
                     /* The number fills white under the cursor, the way the
                        other hover states on the site answer (Cami, 5 October). */
                     <li key={step} className="group flex cursor-default items-center gap-3.5 text-base font-medium text-white">
-                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/40 text-[0.75rem] font-semibold text-white/90 transition-colors duration-300 group-hover:border-white group-hover:bg-white group-hover:text-[#171A10]">
+                      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/40 text-xs font-semibold text-white/90 transition-colors duration-300 group-hover:border-white group-hover:bg-white group-hover:text-[#171A10]">
                         {i + 1}
                       </span>
                       {step}

@@ -222,7 +222,7 @@ function usePosts(): Article[] {
  */
 function Meta({ a }: { a: Article }) {
   return (
-    <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.625rem] font-bold uppercase tracking-[0.12em] text-gray-400">
+    <span className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-bold uppercase tracking-[0.12em] text-gray-400">
       <span className="rounded-full bg-[#39471D]/10 px-2 py-0.5 text-[#39471D]">{a.badge}</span>
       {a.href ? (
         <>
@@ -331,7 +331,7 @@ export default function Testimonials() {
             <span className="flex flex-1 flex-col p-4">
               <Meta a={lead} />
 
-              <span className="mt-3 text-xl font-bold leading-[1.2] tracking-tight text-gray-900 text-balance transition-colors duration-300 group-hover:text-[#39471D] sm:text-2xl">
+              <span className="mt-3 text-2xl font-bold leading-[1.2] tracking-tight text-gray-900 text-balance transition-colors duration-300 group-hover:text-[#39471D]">
                 {lead.title}
               </span>
 
@@ -344,7 +344,7 @@ export default function Testimonials() {
                   to pin on a planned note: "Read the note" is an instruction
                   that would not work if followed. */}
               {lead.href && (
-                <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-[0.6875rem] font-bold text-[#39471D]">
+                <span className="mt-auto inline-flex items-center gap-1.5 pt-5 text-xs font-bold text-[#39471D]">
                   Read the note
                   <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
@@ -368,7 +368,7 @@ export default function Testimonials() {
                       needs one or two, so the three cards' text starts and
                       ends on the same lines (Cami, 3 November: "que todos
                       tengan el mismo tamaño de caja de texto"). */}
-                  <span className="mt-2.5 line-clamp-2 min-h-[2.75em] text-base font-bold leading-snug text-gray-900 transition-colors duration-300 group-hover:text-[#39471D]">
+                  <span className="mt-2.5 line-clamp-2 min-h-[2.75em] text-lg font-bold leading-snug text-gray-900 transition-colors duration-300 group-hover:text-[#39471D]">
                     {a.title}
                   </span>
 
@@ -384,7 +384,7 @@ export default function Testimonials() {
                       card is the same height as the two beside it. */}
                   <span
                     aria-hidden={a.href ? undefined : true}
-                    className={`mt-auto inline-flex items-center gap-1.5 pt-4 text-[0.6875rem] font-bold text-[#39471D] ${a.href ? '' : 'invisible'}`}
+                    className={`mt-auto inline-flex items-center gap-1.5 pt-4 text-xs font-bold text-[#39471D] ${a.href ? '' : 'invisible'}`}
                   >
                     Read the note
                     <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -418,7 +418,7 @@ export default function Testimonials() {
         <div className="mt-8 flex justify-center">
           <a
             href="https://thallodigital.com/blog/"
-            className="group inline-flex items-center gap-1.5 rounded-full border border-[#39471D] bg-[#39471D] px-5 py-2.5 text-[0.8125rem] font-bold text-white transition-colors hover:border-[#55672E] hover:bg-[#55672E]"
+            className="group inline-flex items-center gap-1.5 rounded-full border border-[#39471D] bg-[#39471D] px-5 py-2.5 text-sm font-bold text-white transition-colors hover:border-[#55672E] hover:bg-[#55672E]"
           >
             Read our blog
             <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

@@ -103,7 +103,7 @@ export default function HomeApproach() {
 
   return (
     <section
-      className="flex items-center bg-[#F7F8F9] py-24 lg:min-h-[80svh] border-b border-gray-100"
+      className="flex items-center bg-[#F7F8F9] py-28 lg:py-32 lg:min-h-[85svh] border-b border-gray-100"
       id="approach"
     >
       {/* The full width the other sections use, and the panel stretched to the

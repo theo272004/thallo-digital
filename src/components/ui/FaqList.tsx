@@ -86,7 +86,7 @@ export default function FaqList({
               className="group flex w-full items-center justify-between gap-6 py-6 text-left"
             >
               <span
-                className={`text-[1.0625rem] font-semibold tracking-[-0.01em] transition-colors duration-300 ${
+                className={`text-lg font-semibold tracking-[-0.01em] text-balance transition-colors duration-300 ${
                   isOpen ? 'text-[#39471D]' : 'text-gray-900 group-hover:text-[#39471D]'
                 }`}
               >

@@ -144,7 +144,7 @@ export default function HomeVideo() {
               </span>
 
               {!SOURCE && (
-                <span className="relative text-[0.6875rem] font-bold uppercase tracking-widest text-white/70">
+                <span className="relative text-xs font-bold uppercase tracking-widest text-white/70">
                   Video coming soon.
                 </span>
               )}

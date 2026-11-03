@@ -77,7 +77,7 @@ export default function HomeIndustries() {
           </p>
         </div>
 
-        <p className="text-center text-[0.84375rem] font-bold text-gray-900 mb-6">
+        <p className="text-center text-sm font-bold text-gray-900 mb-6">
           Explore how we apply that work to your industry:
         </p>
 
@@ -102,14 +102,14 @@ export default function HomeIndustries() {
             />
             <span aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
             <div className="flex items-end justify-between gap-6">
-              <span className="text-3xl sm:text-4xl font-bold tracking-tight text-white leading-[1.05]">
+              <span className="text-2xl font-bold tracking-tight text-white leading-[1.05]">
                 Professional Services
               </span>
               {/* The white disc says "this is a link" as plainly as the four
                   cards' discs do. It stays white and still on hover (Cami,
                   1 November); only the photograph zooms. */}
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-[#39471D]">
-                <ArrowUpRight className="text-[0.9375rem]" />
+                <ArrowUpRight className="text-base" />
               </span>
             </div>
           </a>
@@ -130,9 +130,9 @@ export default function HomeIndustries() {
                   href={`${BASE}/industries/`}
                   className="group flex h-full min-h-[8.125rem] flex-col justify-between gap-4 rounded-[1.25rem] border border-[#39471D]/45 bg-white p-5 sm:p-6 shadow-[0_18px_40px_-28px_rgba(23,26,16,0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#39471D]"
                 >
-                  <span className="text-lg sm:text-xl font-bold tracking-tight text-gray-900 leading-[1.15]">{name}</span>
+                  <span className="text-lg font-bold tracking-tight text-gray-900 leading-[1.15]">{name}</span>
                   <span className="flex h-10 w-10 self-end shrink-0 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors duration-300 group-hover:border-[#39471D] group-hover:bg-[#39471D] group-hover:text-white">
-                    <ArrowUpRight className="text-[0.8125rem]" />
+                    <ArrowUpRight className="text-sm" />
                   </span>
                 </a>
               </li>

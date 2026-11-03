@@ -61,15 +61,15 @@ export default function Footer() {
               className="h-5 w-auto object-contain"
             />
           </a>
-          <p className="text-[0.6875rem] text-gray-400 font-semibold leading-relaxed max-w-[28ch]">
+          <p className="text-xs text-gray-400 font-semibold leading-relaxed max-w-[28ch]">
             Authority That Makes You The Clear&nbsp;Choice.
           </p>
         </div>
 
         {COLUMNS.map((col) => (
           <div key={col.title}>
-            <h4 className="text-[0.6875rem] font-bold text-gray-900 tracking-wider uppercase mb-4">{col.title}</h4>
-            <div className="flex flex-col gap-2.5 text-[0.6875rem] text-gray-500 font-semibold">
+            <h4 className="text-xs font-bold text-gray-900 tracking-wider uppercase mb-4">{col.title}</h4>
+            <div className="flex flex-col gap-2.5 text-xs text-gray-500 font-semibold">
               {col.links.map((l) => (
                 <a
                   key={l.label}
@@ -90,16 +90,16 @@ export default function Footer() {
           footer, and a reader looking for the refund window should not have to
           find it among the service links. */}
       <div className="max-w-[90rem] mx-auto px-6 border-t border-gray-100 pt-8 flex flex-wrap gap-x-7 gap-y-3">
-        <a href={`${BASE}/terms/`} className="text-[0.6875rem] font-semibold text-gray-500 hover:text-[#39471D]">
+        <a href={`${BASE}/terms/`} className="text-xs font-semibold text-gray-500 hover:text-[#39471D]">
           Terms &amp; Conditions
         </a>
-        <a href={`${BASE}/refund-policy/`} className="text-[0.6875rem] font-semibold text-gray-500 hover:text-[#39471D]">
+        <a href={`${BASE}/refund-policy/`} className="text-xs font-semibold text-gray-500 hover:text-[#39471D]">
           Refund Policy
         </a>
-        <a href={`${BASE}/privacy/`} className="text-[0.6875rem] font-semibold text-gray-500 hover:text-[#39471D]">
+        <a href={`${BASE}/privacy/`} className="text-xs font-semibold text-gray-500 hover:text-[#39471D]">
           Privacy Policy
         </a>
-        <a href={`${BASE}/contact/`} className="text-[0.6875rem] font-semibold text-gray-500 hover:text-[#39471D]">
+        <a href={`${BASE}/contact/`} className="text-xs font-semibold text-gray-500 hover:text-[#39471D]">
           Contact
         </a>
       </div>
@@ -110,7 +110,7 @@ export default function Footer() {
           the row the small print already occupies, in the same grey, and only
           the name itself is a link — "Developed by" is not part of the target,
           so the click area is the studio and nothing else. */}
-      <div className="max-w-[90rem] mx-auto px-6 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[0.6875rem] font-medium tracking-wider text-gray-400">
+      <div className="max-w-[90rem] mx-auto px-6 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-medium tracking-wider text-gray-400">
         <span>© 2026 Thallo Digital. All rights reserved.</span>
         <span className="order-3">
           Developed by{' '}
