@@ -147,21 +147,24 @@ export default function HomeEngagements() {
       className="flex items-center border-b border-gray-100 bg-white py-20 lg:min-h-[100svh] lg:pt-28 lg:pb-16"
       id="ways-to-work"
     >
-      <div className="mx-auto w-full max-w-[1240px] px-6" data-reveal>
+      <div className="mx-auto w-full max-w-[1240px] px-6">
         <SplitReveal
           as="h2"
           className="mx-auto mb-10 sm:mb-14 max-w-[24ch] text-center font-sans text-4xl font-bold leading-[1.08] tracking-tight text-gray-900 sm:text-5xl text-balance"
           html='A Focused Project <span class="italic text-[#39471D]">Or Ongoing Support</span>.'
         />
 
-        <div className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-2 lg:gap-5">
+        {/* The heading has its own line reveal; the panels and the closing
+            line rise in after it. The whole block used to fade up as one,
+            which moved the heading twice at once. */}
+        <div data-reveal className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-2 lg:gap-5">
           {ENGAGEMENTS.map((e) => (
             <Panel key={e.id} e={e} />
           ))}
         </div>
 
         {/* Said of both, so it sits under both. */}
-        <p className="mx-auto mt-10 max-w-[62ch] text-center text-base font-medium leading-relaxed text-gray-500">
+        <p data-reveal className="mx-auto mt-10 max-w-[62ch] text-center text-base font-medium leading-relaxed text-gray-500">
           Your team contributes its knowledge and reviews the substance. We coordinate the agreed work and keep you
           informed throughout.
         </p>

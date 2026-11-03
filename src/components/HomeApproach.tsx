@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { SplitReveal } from '@/components/motion';
 import ShowBuyersPanel from '@/components/ShowBuyersPanel';
+import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
 
 /**
  * "Show buyers what your customers already know."
@@ -82,6 +83,24 @@ const PLAN: Part[] = [
 ];
 
 export default function HomeApproach() {
+  const ruleRef = useRef<HTMLSpanElement>(null);
+
+  /* Only the line moves: it draws down beside the copy as the page scrolls
+     (Cami, 3 November), the text itself stays put and whole. */
+  useGSAP(() => {
+    const rule = ruleRef.current;
+    if (!rule || prefersReducedMotion()) return;
+    gsap.fromTo(
+      rule,
+      { scaleY: 0 },
+      {
+        scaleY: 1,
+        ease: 'none',
+        scrollTrigger: { trigger: rule.parentElement, start: 'top 85%', end: 'bottom 55%', scrub: 0.6 },
+      }
+    );
+  });
+
   return (
     <section
       className="flex items-center bg-[#F7F8F9] py-24 lg:min-h-[80svh] short:pt-28 short:pb-16 border-b border-gray-100"
@@ -98,8 +117,12 @@ export default function HomeApproach() {
             html='Show Buyers <span class="italic text-[#39471D]">What Your Customers Already Know.</span>'
           />
 
-          {/* Both paragraphs, whole and together, beside an olive rule. */}
-          <div className="relative mt-10 flex flex-col gap-6 border-l-2 border-[#39471D] pl-6">
+          {/* Both paragraphs, whole and together, beside an olive rule that
+              draws down on scroll over a grey hairline track. */}
+          <div className="relative mt-10 flex flex-col gap-6 pl-6">
+            <span aria-hidden className="absolute inset-y-0 left-0 w-[2px] rounded-full bg-gray-200">
+              <span ref={ruleRef} className="absolute inset-0 origin-top rounded-full bg-[#39471D]" />
+            </span>
             <Paragraph parts={RESEARCH} />
             <Paragraph parts={PLAN} />
           </div>
