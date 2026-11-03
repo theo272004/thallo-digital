@@ -115,9 +115,10 @@ export default function HomeIndustries() {
           </a>
 
           {/* ── The other four, two by two ──────────────────────────────── */}
-          {/* The olive outline is always on (Cami, 3 November), in the full
-              olive: a translucent one read as light green, which the site
-              does not use. */}
+          {/* The olive outline is always on (Cami, 3 November), at 45%: the
+              lighter line she asked for. Taken to the full olive it read as
+              too dark, and she wanted the lighter one back; the light-green
+              rule is about fills, not this hairline. It deepens on hover. */}
           {/* Wider than they are tall, each a card in its own right — name at
               the top, arrow disc at the bottom — but smaller than the
               photograph, which is the one that matters most. Stacked in one
@@ -127,7 +128,7 @@ export default function HomeIndustries() {
               <li key={name} data-card>
                 <a
                   href={`${BASE}/industries/`}
-                  className="group flex h-full min-h-[130px] flex-col justify-between gap-4 rounded-[20px] border border-[#39471D] bg-white p-5 sm:p-6 shadow-[0_18px_40px_-28px_rgba(23,26,16,0.35)] transition-all duration-300 hover:-translate-y-0.5"
+                  className="group flex h-full min-h-[130px] flex-col justify-between gap-4 rounded-[20px] border border-[#39471D]/45 bg-white p-5 sm:p-6 shadow-[0_18px_40px_-28px_rgba(23,26,16,0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#39471D]"
                 >
                   <span className="text-lg sm:text-xl font-bold tracking-tight text-gray-900 leading-[1.15]">{name}</span>
                   <span className="flex h-10 w-10 self-end shrink-0 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition-colors duration-300 group-hover:border-[#39471D] group-hover:bg-[#39471D] group-hover:text-white">
