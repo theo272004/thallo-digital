@@ -20,22 +20,35 @@
 
 <!-- ══ 1 · The masthead ═══════════════════════════════════════════════════════
 
-     Type alone. No photograph beside it: the series is measurement, and the
-     picture it has is the panel of figures directly below. -->
+     Type alone, centred. No photograph beside it: the series is measurement,
+     and the picture it has is the panel of figures directly below.
+
+     No eyebrow either. It read "A research series · Thallo Digital" above the
+     title, and both halves of it were already on the page — the name of the
+     series is the title itself, and whose it is, is the logo in the bar above
+     and the footer below. A line that repeats what is already said twice is a
+     line the eye has to get past to reach the point. -->
 <!-- wp:group {"className":"thallo-mast thallo-mast--solo thallo-mast--series","layout":{"type":"default"}} -->
 <div class="wp-block-group thallo-mast thallo-mast--solo thallo-mast--series">
 
-<!-- wp:html -->
-<p class="thallo-mast__eyebrow">A research series · Thallo Digital</p>
-<!-- /wp:html -->
-
-<!-- The title with its last word in the serif italic, from the page's own
-     title. See thallo_shortlist_title(). -->
+<!-- The title with its last word in olive, from the page's own title — the
+     emphasis /results/ uses, "Companies that became <the answer.>". See
+     thallo_shortlist_title(). The italic is the question under it, only. -->
 <!-- wp:html -->
 <h1 class="thallo-mast__title thallo-mast__title--series">[thallo_shortlist_title]</h1>
 <!-- /wp:html -->
 
 <!-- wp:post-excerpt {"className":"thallo-series__question"} /-->
+
+<!-- The turning isotype, between the question and the intro (Cami,
+     2026-09-22) — and, as on /results/, one you can grab and flick:
+     assets/shortlist.js drives the turn and takes the drag. The CSS turn
+     underneath is for a page where the script never runs. -->
+<!-- wp:html -->
+<span class="thallo-mast__flower" aria-hidden="true">
+  <img src="https://thallodigital.com/flower.webp" alt="" decoding="async" />
+</span>
+<!-- /wp:html -->
 
 <!-- wp:group {"className":"thallo-series__intro","layout":{"type":"default"}} -->
 <div class="wp-block-group thallo-series__intro">
@@ -48,51 +61,108 @@
 
 <!-- ══ 2 · The method ═════════════════════════════════════════════════════════
 
-     Four figures on the photograph, in the dark glass cards the site uses for
-     its own numbers. Static per season: when the method changes — a fourth
-     model, a different number of runs — this block changes with it, and the
-     colophon on every volume already says which method it was run under. -->
+     How a volume is run, said in four steps and shown on a card.
+
+     Not the scan. The first cut of this block presented the method as the
+     site's scan tool run on a category, with the tool's own stepper across
+     the card; the studies are not run with the tool, and Cami does not want
+     a reader to think they are (2026-09-21). What stayed is the card she
+     liked — the shape of it, the distribution — now labelled as what it is:
+     one question of Volume 01 and what came back. Left, the four steps with
+     the figures in them. Right, the card: the question typing itself, the
+     three models — with their marks — answering with the firms they name,
+     and the shortlist filling in underneath. Every figure on the card is
+     from Volume 01. The motion is CSS, started by the same reveal that lifts
+     every block on this page; a reader who asked for less motion sees the
+     card finished.
+
+     Static per season: when the method changes — a fourth model, a different
+     number of runs — this block changes with it, and the colophon on every
+     volume already says which method it was run under. -->
 <!-- wp:html -->
-<section class="thallo-method" data-reveal aria-labelledby="thallo-method-h">
-  <div class="thallo-method__scrim" aria-hidden="true"></div>
-  <div class="thallo-method__say">
-    <h2 class="thallo-method__h" id="thallo-method-h">How every volume is run.</h2>
-    <p class="thallo-method__p">The same questions, the same three models, the same clean sessions — so a volume in Finance can be read against one in Professional Services.</p>
-  </div>
-  <div class="thallo-method__grid">
-    <div class="thallo-method__card">
-      <p class="thallo-method__n" data-count="12">12</p>
-      <h3 class="thallo-method__l">Buying questions</h3>
-      <p class="thallo-method__c">By function, by sector, by situation, and four a buyer would type with no context at all.</p>
+<section class="thallo-run" data-reveal aria-labelledby="thallo-run-h">
+  <div class="thallo-run__scrim" aria-hidden="true"></div>
+  <div class="thallo-run__grid">
+
+    <div class="thallo-run__say">
+      <p class="thallo-run__eyebrow">The method</p>
+      <h2 class="thallo-run__h" id="thallo-run-h">How every volume is run.</h2>
+      <p class="thallo-run__p">The same questions, the same three models, the same clean sessions — so a volume in Finance can be read against one in Professional Services.</p>
+
+      <!-- Two by two, one line each: the panel was 670px tall and the steps
+           were most of it, and the studies under it began a screen and a half
+           down (Cami, 2026-09-21). The figure is the step. -->
+      <ol class="thallo-steps">
+        <li class="thallo-step">
+          <span class="thallo-step__n">1</span>
+          <span class="thallo-step__say"><strong>One category</strong>One industry per volume, three weeks apart.</span>
+        </li>
+        <li class="thallo-step">
+          <span class="thallo-step__n">2</span>
+          <span class="thallo-step__say"><strong>12 buying questions</strong>By function, sector and situation, and four with no context.</span>
+        </li>
+        <li class="thallo-step">
+          <span class="thallo-step__n">3</span>
+          <span class="thallo-step__say"><strong>3 models × 3 runs</strong>ChatGPT, Claude and Gemini. Clean sessions, the same day.</span>
+        </li>
+        <li class="thallo-step">
+          <span class="thallo-step__n">4</span>
+          <span class="thallo-step__say"><strong>108 answers, counted</strong>Every firm named is counted. Nothing is picked in advance.</span>
+        </li>
+      </ol>
+
     </div>
-    <div class="thallo-method__card">
-      <p class="thallo-method__n" data-count="3">3</p>
-      <h3 class="thallo-method__l">Models</h3>
-      <p class="thallo-method__c">ChatGPT, Claude and Gemini, asked the same thing on the same day.</p>
+
+    <div class="thallo-console" aria-label="One question of Volume 01, and what came back">
+      <div class="thallo-console__top">
+        <span class="thallo-console__vol">Volume 01 <span>Executive search firms</span></span>
+        <span class="thallo-console__tag">Run 3 of 3</span>
+      </div>
+
+      <p class="thallo-console__q"><span class="thallo-console__ql">Question 10 of 12</span><span class="thallo-console__type">What are the best executive search firms in the US?</span></p>
+
+      <ul class="thallo-console__models">
+        <li class="thallo-console__model" style="--i: 0">
+          <span class="thallo-console__who"><img src="https://thallodigital.com/logos/chatgpt.svg" alt="" width="16" height="16" decoding="async" />ChatGPT</span>
+          <span class="thallo-console__named"><span>Korn Ferry</span><span>Spencer Stuart</span><span>JM Search</span></span>
+        </li>
+        <li class="thallo-console__model" style="--i: 1">
+          <span class="thallo-console__who"><img src="https://thallodigital.com/logos/claude.svg" alt="" width="16" height="16" decoding="async" />Claude</span>
+          <span class="thallo-console__named"><span>Korn Ferry</span><span>Spencer Stuart</span><span>Heidrick &amp; Struggles</span></span>
+        </li>
+        <li class="thallo-console__model" style="--i: 2">
+          <span class="thallo-console__who"><img src="https://thallodigital.com/logos/gemini.svg" alt="" width="16" height="16" decoding="async" />Gemini</span>
+          <span class="thallo-console__named"><span>Korn Ferry</span><span>Cowen Partners</span><span>Talentfoot</span></span>
+        </li>
+      </ul>
+
+      <div class="thallo-console__list">
+        <p class="thallo-console__ll">Named by AI <span>Mention rate · 108 responses</span></p>
+        <ol class="thallo-console__rows">
+          <li style="--pct: 72; --i: 0"><span>Korn Ferry</span><span class="thallo-console__bar"><i></i></span><b>72%</b></li>
+          <li style="--pct: 71; --i: 1"><span>Spencer Stuart</span><span class="thallo-console__bar"><i></i></span><b>71%</b></li>
+          <li style="--pct: 70; --i: 2"><span>Heidrick &amp; Struggles</span><span class="thallo-console__bar"><i></i></span><b>70%</b></li>
+          <li style="--pct: 69; --i: 3"><span>Russell Reynolds</span><span class="thallo-console__bar"><i></i></span><b>69%</b></li>
+        </ol>
+      </div>
+
+      <p class="thallo-console__foot">12 questions · 3 models · 3 runs · 108 responses</p>
     </div>
-    <div class="thallo-method__card">
-      <p class="thallo-method__n" data-count="3">3</p>
-      <h3 class="thallo-method__l">Runs per question</h3>
-      <p class="thallo-method__c">Because one answer is an anecdote. Three is the start of a pattern.</p>
-    </div>
-    <div class="thallo-method__card">
-      <p class="thallo-method__n" data-count="108">108</p>
-      <h3 class="thallo-method__l">Responses per volume</h3>
-      <p class="thallo-method__c">Every firm named in any of them is counted. Nothing is picked in advance.</p>
-    </div>
+
   </div>
 </section>
 <!-- /wp:html -->
 
 <!-- ══ 3 · The volumes ════════════════════════════════════════════════════════
 
-     Published ones link; scheduled ones sit in the list in grey with their
+     A filter of pills over a grid of cards, as /results/ lists its cases.
+     Published ones link; scheduled ones sit on the grey ground with their
      date. The list is the child pages of this one — see
-     thallo_shortlist_list(). -->
+     thallo_shortlist_list(). No heading over it: the cards say what they are. -->
 <!-- wp:html -->
-<div class="thallo-rule thallo-rule--tight">
-  <h2 class="thallo-rule__h">The volumes</h2>
-  <p class="thallo-rule__note">A new category every three weeks. Dates are fixed; categories after the next one may change.</p>
+<!-- The heading alone — no cadence, no promise (Cami, 2026-09-22). -->
+<div class="thallo-vols__head">
+  <h2 class="thallo-kicker">The volumes</h2>
 </div>
 <!-- /wp:html -->
 
@@ -100,45 +170,25 @@
 [thallo_shortlist_volumes]
 <!-- /wp:shortcode -->
 
-<!-- ══ 4 · The list ═══════════════════════════════════════════════════════════
-
-     Same block, same endpoint as the blog's; the note on the row says it came
-     from here. -->
-<!-- wp:html -->
-<section class="thallo-sub thallo-sub--series" data-reveal>
-  <div class="thallo-sub__say">
-    <span class="thallo-sub__mark" aria-hidden="true">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5" /><path d="m3.5 7 8.5 6 8.5-6" /></svg>
-    </span>
-    <p class="thallo-sub__p"><strong>Get the next volume first.</strong><br />One email when a volume goes up. Nothing else.</p>
-  </div>
-  <form class="thallo-sub__form" data-thallo-subscribe novalidate>
-    <label class="thallo-sub__label" for="thallo-sub-email">Your email address</label>
-    <input class="thallo-sub__input" id="thallo-sub-email" type="email" name="email" placeholder="you@company.com" autocomplete="email" required />
-    <input class="thallo-sub__pot" type="text" name="website_url" tabindex="-1" autocomplete="off" aria-hidden="true" />
-    <button class="thallo-btn thallo-btn--solid thallo-sub__go" type="submit">Send me the next volume</button>
-    <p class="thallo-sub__note" data-thallo-subscribe-note>No spam. Unsubscribe anytime.</p>
-  </form>
-</section>
-<!-- /wp:html -->
-
-<!-- ══ 5 · The invitation ═════════════════════════════════════════════════════
+<!-- ══ 4 · The invitation ═════════════════════════════════════════════════════
 
      The scan, offered once, as the thing a reader of this series most
-     obviously wants next: the same questions, on their own category. -->
+     obviously wants next: the same questions, on their own category. The
+     site's closing photograph panel — the one /results/ ends on — with the
+     scan as its first button and the audit as its second; no form, because
+     the ask here is a minute, not a message. -->
 <!-- wp:html -->
-<section class="thallo-close" data-reveal>
-  <span class="thallo-close__mark" aria-hidden="true">
-    <img src="https://thallodigital.com/flower.webp" alt="" decoding="async" loading="lazy" />
-  </span>
-  <div class="thallo-close__say">
-    <h2 class="thallo-close__h">Run the questions on your own category</h2>
-    <p class="thallo-close__p">Write the questions your buyers ask and see how the models answer them today. Free, no account, under a minute.</p>
+<section class="thallo-panel" data-reveal aria-labelledby="thallo-panel-h">
+  <img class="thallo-panel__img" src="https://thallodigital.com/results-bg.webp" alt="" decoding="async" loading="lazy" />
+  <div class="thallo-panel__scrim" aria-hidden="true"></div>
+  <div class="thallo-panel__say">
+    <h2 class="thallo-panel__h" id="thallo-panel-h">Run the questions on your own category.</h2>
+    <p class="thallo-panel__p">Write the questions your buyers ask and see how the models answer them today. Free, no account, under a minute.</p>
+    <div class="thallo-panel__go">
+      <a class="thallo-panel__btn thallo-panel__btn--solid" href="https://thallodigital.com/thallo-ai/scan/">Run my scan <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a>
+      <a class="thallo-panel__btn thallo-panel__btn--ghost" href="https://thallodigital.com/contact/">Book an audit <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg></a>
+    </div>
   </div>
-  <a class="thallo-btn thallo-btn--solid thallo-close__go" href="https://thallodigital.com/thallo-ai/scan/">
-    Run my scan
-    <svg class="thallo-arrow" viewBox="0 0 24 24" width="1em" height="1em" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg>
-  </a>
 </section>
 <!-- /wp:html -->
 

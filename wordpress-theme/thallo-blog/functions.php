@@ -419,6 +419,26 @@ function thallo_blog_list_script() {
 }
 add_action( 'wp_enqueue_scripts', 'thallo_blog_list_script' );
 
+/**
+ * The favicon — the same Thallo mark the rest of thallodigital.com shows.
+ *
+ * The Next.js pages get theirs from `src/app/icon.png`; WordPress is a separate
+ * app under /blog/ and printed no icon link at all, so every blog post and every
+ * Shortlist page opened with a blank tab. The file ships inside the theme so it
+ * travels with the zip. If a Site Icon is ever set in the Customizer, WordPress
+ * prints that one and this steps aside rather than printing two.
+ */
+function thallo_blog_favicon() {
+	if ( has_site_icon() ) {
+		return;
+	}
+	$icon = esc_url( get_stylesheet_directory_uri() . '/assets/img/icon.png' );
+	echo '<link rel="icon" href="' . $icon . '" sizes="512x512" type="image/png">' . "\n";
+	echo '<link rel="apple-touch-icon" href="' . $icon . '">' . "\n";
+}
+add_action( 'wp_head', 'thallo_blog_favicon', 2 );
+add_action( 'admin_head', 'thallo_blog_favicon' );
+
 /* The blog's front page is built from its own file: five shortcodes' worth of
    composition that would otherwise double the length of this one. */
 require_once get_stylesheet_directory() . '/inc/hub.php';
