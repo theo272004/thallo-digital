@@ -167,14 +167,14 @@ body {
   0%, 100% { transform: translateY(-4px); }
   50%      { transform: translateY(4px); }
 }
-/* Show Buyers' diagram (ShowBuyersDiagram.tsx): dashes running along its
-   lines, the isotipo turning, the heart beating. */
+/* Show Buyers' diagram (ShowBuyersDiagram.tsx): a short dash running along
+   each hairline, and the isotipo turning. */
 .sb-flow {
-  stroke-dasharray: 3 13;
-  animation: sb-flow 1.6s linear infinite;
+  stroke-dasharray: 2 18;
+  animation: sb-flow 2.4s linear infinite;
 }
 @keyframes sb-flow {
-  to { stroke-dashoffset: -32; }
+  to { stroke-dashoffset: -40; }
 }
 .sb-spin {
   transform-box: fill-box;
@@ -184,17 +184,8 @@ body {
 @keyframes sb-spin {
   to { transform: rotate(360deg); }
 }
-.sb-beat {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: sb-beat 1.8s ease-in-out infinite;
-}
-@keyframes sb-beat {
-  0%, 60%, 100% { transform: scale(1); }
-  30% { transform: scale(1.14); }
-}
 @media (prefers-reduced-motion: reduce) {
-  .sb-flow, .sb-spin, .sb-beat { animation: none; }
+  .sb-flow, .sb-spin { animation: none; }
 }
 @media (min-width: 1024px) {
   .float-lg {

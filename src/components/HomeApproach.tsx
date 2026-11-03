@@ -110,7 +110,7 @@ export default function HomeApproach() {
           />
           {/* The copy beside it, drawn: what we listen to, what it becomes,
               what we plan from it, who it reaches. */}
-          <ShowBuyersDiagram className="max-w-[560px]" />
+          <ShowBuyersDiagram className="max-w-[340px]" />
         </div>
 
         <div data-columns className="relative flex flex-col gap-8 lg:py-4 lg:pl-14">
