@@ -69,6 +69,11 @@ export default function HomeVideo() {
   useGSAP(
     () => {
       if (!frameRef.current || prefersReducedMotion()) return;
+      /* Desktop only. On a phone the scrubbed entrance made the page catch
+         under the thumb (Cami, 3 November), so there the video simply sits
+         in the page. */
+      const mm = gsap.matchMedia();
+      mm.add('(min-width: 1024px)', () => {
       gsap.fromTo(
         frameRef.current,
         { autoAlpha: 0, scale: 0.78, y: 120 },
@@ -84,6 +89,8 @@ export default function HomeVideo() {
           scrollTrigger: { trigger: sectionRef.current, start: 'top bottom', end: 'top 30%', scrub: 0.8 },
         }
       );
+      });
+      return () => mm.revert();
     },
     { scope: sectionRef }
   );

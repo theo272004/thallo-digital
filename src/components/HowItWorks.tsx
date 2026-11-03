@@ -127,6 +127,23 @@ export default function HowItWorks({
     };
   }, [compact]);
 
+  /* Phones have no branch, so the steps say "you are here" another way: as
+     the middle of a step crosses the middle of the screen, its button turns
+     olive, and stays olive (Cami, 3 November). */
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section || !window.matchMedia('(max-width: 1023px)').matches) return;
+    const triggers = Array.from(section.querySelectorAll<HTMLElement>('[data-step-link]')).map((link) =>
+      ScrollTrigger.create({
+        trigger: link.parentElement ?? link,
+        start: 'center center',
+        once: true,
+        onEnter: () => link.setAttribute('data-on', ''),
+      })
+    );
+    return () => triggers.forEach((t) => t.kill());
+  }, []);
+
   useEffect(() => {
     if (!sectionRef.current || !stemRef.current) return;
 
@@ -395,6 +412,7 @@ export default function HowItWorks({
                   )}
                   {step.link && (
                     <a
+                      data-step-link
                       href={step.link.href}
                       onClick={(e) => {
                         if (!step.link?.href.startsWith('#')) return;
@@ -403,10 +421,10 @@ export default function HowItWorks({
                       }}
                       /* A pill, the same shape as the deliverable chips this
                          slot held before: border at rest, olive fill on hover. */
-                      className="group mt-4 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-900 shadow-[0_2px_8px_-4px_rgba(23,26,16,0.12)] transition-all duration-300 hover:border-[#39471D] hover:bg-[#39471D] hover:text-white"
+                      className="group mt-4 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-bold text-gray-900 shadow-[0_2px_8px_-4px_rgba(23,26,16,0.12)] transition-all duration-500 hover:border-[#39471D] hover:bg-[#39471D] hover:text-white data-[on]:border-[#39471D] data-[on]:bg-[#39471D] data-[on]:text-white"
                     >
                       {step.link.label}
-                      <ArrowUpRight className="text-xs text-gray-500 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                      <ArrowUpRight className="text-xs text-gray-500 group-hover:text-white group-data-[on]:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                     </a>
                   )}
                 </div>
