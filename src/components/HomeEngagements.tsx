@@ -144,7 +144,7 @@ function Panel({ e }: { e: Engagement }) {
 export default function HomeEngagements() {
   return (
     <section
-      className="flex items-center border-b border-gray-100 bg-white py-20 lg:min-h-[100svh] lg:pt-28 lg:pb-16"
+      className="flex items-center border-b border-gray-100 bg-white py-20 lg:min-h-[100svh] lg:py-24"
       id="ways-to-work"
     >
       <div className="mx-auto w-full max-w-[77.5rem] xl:max-w-[min(77.5rem,80vw)] px-6">

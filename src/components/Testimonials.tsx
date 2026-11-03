@@ -285,7 +285,7 @@ export default function Testimonials() {
 
   return (
     /* id="blog" is the target the navbar and footer have always pointed at. */
-    <section className="bg-[#F7F8F9] pt-6 pb-16 2xl:pt-8 2xl:pb-20 border-b border-gray-100" id="blog">
+    <section className="bg-[#F7F8F9] py-16 2xl:py-20 border-b border-gray-100" id="blog">
       <div className="max-w-[90rem] xl:max-w-[min(90rem,80vw)] mx-auto px-6">
 
         {/* Masthead, centred — the index link sits below the grid, where it
