@@ -139,7 +139,7 @@ export default function HomeFaq({
 } = {}) {
   return (
     <section id="faq" className="border-b border-gray-100 bg-white py-16 2xl:py-28">
-      <div className="mx-auto max-w-[90rem] xl:max-w-[min(90rem,76vw)] px-6">
+      <div className="mx-auto max-w-[90rem] xl:max-w-[min(90rem,80vw)] px-6">
         <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-20">
           <div>
             <SplitReveal

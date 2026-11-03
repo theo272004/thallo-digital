@@ -109,7 +109,7 @@ export default function HomeApproach() {
       {/* The full width the other sections use, and the panel stretched to the
           copy's height, so its top meets the heading and its foot the last
           line (Cami, 3 November). */}
-      <div className="mx-auto grid w-full max-w-[90rem] xl:max-w-[min(90rem,76vw)] grid-cols-1 gap-12 px-6 lg:grid-cols-2 lg:items-stretch lg:gap-16">
+      <div className="mx-auto grid w-full max-w-[90rem] xl:max-w-[min(90rem,80vw)] grid-cols-1 gap-12 px-6 lg:grid-cols-2 lg:items-stretch lg:gap-16">
         <div>
           <SplitReveal
             as="h2"

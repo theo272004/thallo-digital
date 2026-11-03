@@ -31,7 +31,7 @@ const PRICES = [
 export default function PublicPricing() {
   return (
     <section className="border-b border-gray-100 bg-[#F7F8F9] py-16 2xl:py-24" id="pricing">
-      <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6" data-reveal>
+      <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,80vw)] px-6" data-reveal>
         <div className="text-center">
           <div className="mb-6 flex justify-center">
             <SpinFlower alt="" className="block h-14 w-14 opacity-80" />

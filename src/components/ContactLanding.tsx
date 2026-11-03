@@ -158,7 +158,7 @@ export default function ContactLanding() {
             than the screen — so it degrades to top-aligned rather than
             centring the top of the card off the top of the page. */}
         {/* The card lines up with the navbar above it. Both sit in the same
-            `max-w-[1440px] xl:max-w-[min(1440px,76vw)]` container — which the laptop rule in globals.css
+            `max-w-[1440px] xl:max-w-[min(1440px,80vw)]` container — which the laptop rule in globals.css
             narrows to 90vw — so matching them is a matter of the card taking
             that container whole: no `lg:px-14` on the wrapper, no 1180 cap on
             the card. That was 58px a side, which is what showed as the
@@ -170,7 +170,7 @@ export default function ContactLanding() {
             the bar, not from the top of the page. The extra 48px above splits
             in half and nudges the card down 24px, which is the amount that
             looks centred rather than the amount that is. */}
-        <div className="my-auto w-full max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6 lg:px-0 pt-32 pb-20 sm:pt-36 sm:pb-24 lg:pt-28 lg:pb-16">
+        <div className="my-auto w-full max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6 lg:px-0 pt-32 pb-20 sm:pt-36 sm:pb-24 lg:pt-28 lg:pb-16">
           {/* ── Floating editorial card ──────────────────────────────────────── */}
           <div
             data-reveal
@@ -338,7 +338,7 @@ export default function ContactLanding() {
       {/* ── For visitors who are not ready to write yet. Sits above the pinned
              photograph, so scrolling slides it up over the picture. ───────── */}
       <section className="relative z-10 bg-white py-24 lg:py-28 border-b border-gray-100">
-        <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6 lg:px-14">
+        <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6 lg:px-14">
           <div className="flex flex-col items-center text-center mb-12">
             <SpinFlower className="block w-16 h-16 opacity-80 mb-8" />
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans text-balance">

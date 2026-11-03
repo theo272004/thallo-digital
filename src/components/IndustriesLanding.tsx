@@ -122,7 +122,7 @@ export default function IndustriesPage() {
       <JsonLd data={INDUSTRIES_SCHEMA} />
       {/* Hero */}
       <section className="bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12 border-b border-gray-100">
-        <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6 flex flex-col items-center text-center">
+        <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6 flex flex-col items-center text-center">
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-2xl">
             Built for high-consideration<br />industries.
           </h1>
@@ -137,7 +137,7 @@ export default function IndustriesPage() {
       {/* Top padding trimmed against the hero's own trailing whitespace — the
           two together read as one empty screen. */}
       <section className="bg-white pt-10 pb-16 2xl:pt-14 2xl:pb-28 border-b border-gray-100">
-        <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
+        <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6">
           <div
             className="relative overflow-hidden rounded-[28px] px-10 py-14 sm:px-16 sm:py-20"
             style={{
@@ -208,7 +208,7 @@ export default function IndustriesPage() {
           the figures come down a step. Nothing here needed to be that large;
           the cards were sized by habit rather than by their content. */}
       <section className="bg-white py-12 2xl:py-20 border-b border-gray-100">
-        <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
+        <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6">
           <div className="max-w-2xl mb-8">
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans mb-3">
               Industries we build authority for.
@@ -335,7 +335,7 @@ export default function IndustriesPage() {
 
       {/* Testimonials */}
       <section className="bg-gray-50/50 py-14 2xl:py-24 border-b border-gray-100">
-        <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
+        <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6">
           {/* Three quotes arrived on the page with nothing above them saying
               what they were, so they read as decoration between two sections
               that did have titles. Small on purpose — this is a caption over

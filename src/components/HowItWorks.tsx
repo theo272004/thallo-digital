@@ -224,7 +224,7 @@ export default function HowItWorks({
       id={id}
       ref={sectionRef}
     >
-      <div className="max-w-[90rem] xl:max-w-[min(90rem,76vw)] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[38%_1fr] gap-16 items-start">
+      <div className="max-w-[90rem] xl:max-w-[min(90rem,80vw)] mx-auto px-6 grid grid-cols-1 lg:grid-cols-[38%_1fr] gap-16 items-start">
 
         {/* ── Left: Illustrator SVG, flush with the section border ──────────── */}
         <div

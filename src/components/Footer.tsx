@@ -45,7 +45,7 @@ export default function Footer() {
           columns, word for word. The four capabilities go to "What we do" on
           the home, the two ways of working to their offers, every sector to
           /industries/ until each has a page of its own. */}
-      <div className="max-w-[90rem] xl:max-w-[min(90rem,76vw)] mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+      <div className="max-w-[90rem] xl:max-w-[min(90rem,80vw)] mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
         <div className="md:col-span-1">
           <a href={`${BASE}/`} className="inline-block mb-4">
             {/* Trimmed of its transparent margin, so h-5 is 20px of actual
@@ -89,7 +89,7 @@ export default function Footer() {
           a payment processor reviewing the site looks for these three in the
           footer, and a reader looking for the refund window should not have to
           find it among the service links. */}
-      <div className="max-w-[90rem] xl:max-w-[min(90rem,76vw)] mx-auto px-6 border-t border-gray-100 pt-8 flex flex-wrap gap-x-7 gap-y-3">
+      <div className="max-w-[90rem] xl:max-w-[min(90rem,80vw)] mx-auto px-6 border-t border-gray-100 pt-8 flex flex-wrap gap-x-7 gap-y-3">
         <a href={`${BASE}/terms/`} className="text-xs font-semibold text-gray-500 hover:text-[#39471D]">
           Terms &amp; Conditions
         </a>
@@ -110,7 +110,7 @@ export default function Footer() {
           the row the small print already occupies, in the same grey, and only
           the name itself is a link — "Developed by" is not part of the target,
           so the click area is the studio and nothing else. */}
-      <div className="max-w-[90rem] xl:max-w-[min(90rem,76vw)] mx-auto px-6 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-medium tracking-wider text-gray-400">
+      <div className="max-w-[90rem] xl:max-w-[min(90rem,80vw)] mx-auto px-6 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-medium tracking-wider text-gray-400">
         <span>© 2026 Thallo Digital. All rights reserved.</span>
         <span className="order-3">
           Developed by{' '}

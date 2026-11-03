@@ -147,7 +147,7 @@ export default function HomeEngagements() {
       className="flex items-center border-b border-gray-100 bg-white py-20 lg:min-h-[100svh] lg:pt-28 lg:pb-16"
       id="ways-to-work"
     >
-      <div className="mx-auto w-full max-w-[77.5rem] xl:max-w-[min(77.5rem,76vw)] px-6">
+      <div className="mx-auto w-full max-w-[77.5rem] xl:max-w-[min(77.5rem,80vw)] px-6">
         <SplitReveal
           as="h2"
           className="mx-auto mb-10 sm:mb-14 max-w-[24ch] text-center font-sans text-4xl font-bold leading-[1.08] tracking-tight text-gray-900 sm:text-5xl text-balance"

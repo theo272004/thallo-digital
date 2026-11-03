@@ -90,7 +90,7 @@ export default function HomeVideo() {
 
   return (
     <section ref={sectionRef} className="bg-white pb-20 2xl:pb-28 border-b border-gray-100" id="intro-video" aria-label="An introduction to Thallo">
-      <div className="max-w-[90rem] xl:max-w-[min(90rem,76vw)] mx-auto px-6">
+      <div className="max-w-[90rem] xl:max-w-[min(90rem,80vw)] mx-auto px-6">
         <div
           ref={frameRef}
           className="relative mx-auto origin-bottom max-w-[83.75rem] aspect-video rounded-[2rem] overflow-hidden bg-[#171A10] shadow-[0_24px_60px_-28px_rgba(23,26,16,0.45)]"

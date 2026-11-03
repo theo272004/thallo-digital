@@ -11,11 +11,11 @@ footer p {
 }
 
 /* Laptops (Cami's Mac among them) get the desktop's composition, not a
-   stretched one: section containers stop at 76vw from 1280px up (see the
-   `xl:max-w-[min(…,76vw)]` on each), which leaves side margins in the same
+   stretched one: section containers stop at 80vw from 1280px up (see the
+   `xl:max-w-[min(…,80vw)]` on each), which leaves side margins in the same
    proportion a 1920px monitor has, and the type and spacing come down half a
    step, to 15px a rem, below 1600px. The 1920px desktop is untouched: there
-   76vw is wider than the 1440px cap, and the rem stays 16px. */
+   80vw is wider than the 1440px cap, and the rem stays 16px. */
 @media (min-width: 1024px) and (max-width: 1599px) {
   html {
     font-size: 15px;

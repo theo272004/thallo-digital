@@ -59,7 +59,7 @@ export default function PlaybookContrast() {
           separated nothing — the two panels inside it are the objects here, and
           a border around the pair only competed with them. What is left is the
           section's own ground, the words, and the two panels. */}
-      <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6" data-reveal>
+      <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,80vw)] px-6" data-reveal>
         {/* Centred masthead. The heading used to sit left over a left-aligned
             paragraph with the two panels below it, which made the section read
             as a column with a table attached. Centred, the heading belongs to

@@ -73,7 +73,7 @@ export default function AuditCTA({
 }: Props) {
   return (
     <section className="bg-white py-20 2xl:py-24 border-b border-gray-100" id={id}>
-      <div className="max-w-[90rem] xl:max-w-[min(90rem,76vw)] mx-auto px-6 w-full">
+      <div className="max-w-[90rem] xl:max-w-[min(90rem,80vw)] mx-auto px-6 w-full">
         {/* The form sets this panel's height now, so the padding only has to
             frame it. At py-28 — right for the text-only panel this used to be —
             it added 112px of dead ground above and below a card that was

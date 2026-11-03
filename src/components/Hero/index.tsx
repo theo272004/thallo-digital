@@ -182,7 +182,7 @@ export default function Hero() {
       {/* Even padding, so the copy sits centred under the menu. The 3 October
           lift (a heavier bottom padding, 60px closer to the menu) was undone at
           Cami's request on 4 October. */}
-      <div className="flex-1 max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 w-full py-4 lg:py-8">
+      <div className="flex-1 max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 w-full py-4 lg:py-8">
         {/* Left — copy */}
         <HeroText />
 

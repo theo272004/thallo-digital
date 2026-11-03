@@ -465,7 +465,7 @@ export default function SeoLanding() {
     <>
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden border-b border-gray-100 bg-white pb-16 pt-32 2xl:pb-24 2xl:pt-40">
-        <div className="mx-auto grid max-w-[1440px] xl:max-w-[min(1440px,76vw)] grid-cols-1 items-center gap-14 px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-start lg:gap-20">
+        <div className="mx-auto grid max-w-[1440px] xl:max-w-[min(1440px,80vw)] grid-cols-1 items-center gap-14 px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-start lg:gap-20">
           {/* Top-aligned, not centred: the card changes height a little with each
               search, and centring would nudge the headline every time it did. */}
           <div ref={heroCopy} className="lg:pt-12">
@@ -507,7 +507,7 @@ export default function SeoLanding() {
 
       {/* ── Why SEO still matters ─────────────────────────────────────────── */}
       <section className="border-b border-gray-100 bg-white py-16 2xl:py-24">
-        <div className="mx-auto grid max-w-[1440px] xl:max-w-[min(1440px,76vw)] grid-cols-1 gap-8 px-6 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-20">
+        <div className="mx-auto grid max-w-[1440px] xl:max-w-[min(1440px,80vw)] grid-cols-1 gap-8 px-6 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-20">
           <div>
             <span className={`${KICKER} mb-4`}>Why SEO still matters</span>
             <SplitReveal className={H2} html={'Visibility still begins in <span class="italic font-light text-[#39471D]">search.</span>'} />
@@ -522,7 +522,7 @@ export default function SeoLanding() {
 
       {/* ── What's included ───────────────────────────────────────────────── */}
       <section className="border-b border-gray-100 bg-white py-16 2xl:py-24">
-        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6">
+        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,80vw)] px-6">
           <div className="mb-10 grid grid-cols-1 gap-6 lg:mb-14 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-end lg:gap-14">
             <div>
               <span className={`${KICKER} mb-4`}>What’s included</span>
@@ -556,7 +556,7 @@ export default function SeoLanding() {
 
       {/* ── How it runs ───────────────────────────────────────────────────── */}
       <section className="border-b border-gray-100 bg-white py-16 2xl:py-24">
-        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6">
+        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,80vw)] px-6">
           <div className="mb-8 grid grid-cols-1 gap-6 lg:mb-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-end lg:gap-14">
             <div>
               <span className={`${KICKER} mb-4`}>How it runs</span>
@@ -572,7 +572,7 @@ export default function SeoLanding() {
 
       {/* ── Results ───────────────────────────────────────────────────────── */}
       <section className="border-b border-gray-100 bg-white py-16 2xl:py-24">
-        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6">
+        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,80vw)] px-6">
           <Reveal y={40} className="relative overflow-hidden rounded-[28px] bg-[#39471D] px-8 py-12 text-white sm:px-12 sm:py-14 lg:px-16 lg:py-16">
             <SpinFlower
               className="pointer-events-none absolute -bottom-40 -right-40 block h-[26rem] w-[26rem] opacity-[0.1] [&_img]:brightness-0 [&_img]:invert"
@@ -628,7 +628,7 @@ export default function SeoLanding() {
 
       {/* ── Who it's for ──────────────────────────────────────────────────── */}
       <section className="border-b border-gray-100 bg-white py-16 2xl:py-24">
-        <div className="mx-auto grid max-w-[1440px] xl:max-w-[min(1440px,76vw)] grid-cols-1 gap-8 px-6 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-20">
+        <div className="mx-auto grid max-w-[1440px] xl:max-w-[min(1440px,80vw)] grid-cols-1 gap-8 px-6 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-20">
           <div>
             <span className={`${KICKER} mb-4`}>Who it’s for</span>
             <SplitReveal className={H2} html={'Built for industries where trust decides the <span class="italic font-light text-[#39471D]">sale.</span>'} />
@@ -664,7 +664,7 @@ export default function SeoLanding() {
 
       {/* ── How it connects ───────────────────────────────────────────────── */}
       <section className="border-b border-gray-100 bg-white py-16 2xl:py-24">
-        <div className="mx-auto grid max-w-[1440px] xl:max-w-[min(1440px,76vw)] grid-cols-1 items-center gap-12 px-6 lg:grid-cols-2 lg:gap-20">
+        <div className="mx-auto grid max-w-[1440px] xl:max-w-[min(1440px,80vw)] grid-cols-1 items-center gap-12 px-6 lg:grid-cols-2 lg:gap-20">
           <div>
             <span className={`${KICKER} mb-4`}>How it connects</span>
             <SplitReveal className={`${H2} mb-6`} html={'One part of a bigger <span class="italic font-light whitespace-nowrap text-[#39471D]">visibility plan.</span>'} />
@@ -687,7 +687,7 @@ export default function SeoLanding() {
 
       {/* ── Two ways to begin ─────────────────────────────────────────────── */}
       <section id="start" className="scroll-mt-24 border-b border-gray-100 bg-white py-16 2xl:py-24">
-        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6">
+        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,80vw)] px-6">
           <div className="mb-10 grid grid-cols-1 gap-6 lg:mb-14 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-end lg:gap-14">
             <div>
               <span className={`${KICKER} mb-4`}>How to start</span>
@@ -787,7 +787,7 @@ export default function SeoLanding() {
 
       {/* ── FAQ ───────────────────────────────────────────────────────────── */}
       <section className="border-b border-gray-100 bg-white py-16 2xl:py-24">
-        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6">
+        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,80vw)] px-6">
           <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-20">
             <div>
               <SplitReveal className={`${H2} mb-4`} html={'Questions about <span class="italic font-light text-[#39471D]">SEO.</span>'} />

@@ -286,7 +286,7 @@ export default function Testimonials() {
   return (
     /* id="blog" is the target the navbar and footer have always pointed at. */
     <section className="bg-[#F7F8F9] pt-6 pb-16 2xl:pt-8 2xl:pb-20 border-b border-gray-100" id="blog">
-      <div className="max-w-[90rem] xl:max-w-[min(90rem,76vw)] mx-auto px-6">
+      <div className="max-w-[90rem] xl:max-w-[min(90rem,80vw)] mx-auto px-6">
 
         {/* Masthead, centred — the index link sits below the grid, where it
             reads as the end of the list rather than as a second heading.
@@ -312,7 +312,8 @@ export default function Testimonials() {
           {/* ── Lead note ─────────────────────────────────────────────────── */}
           <CardShell a={lead} className="flex-col p-3">
             {/* The cover: its own block above the words, not a ground beneath
-                them. 16:9 rather than 16:10 — with three notes beside it now
+                them. 2:1 since 3 November, so the section ends clear of the
+                bottom of a laptop screen; before that 16:9, and 16:9 rather than 16:10 — with three notes beside it now
                 instead of two, the taller crop pushed the lead's own text past
                 the bottom of the stack. */}
             <span className="relative block overflow-hidden rounded-2xl bg-[#39471D]">
@@ -323,7 +324,7 @@ export default function Testimonials() {
                 alt=""
                 aria-hidden="true"
                 style={{ objectPosition: focusOf(pics[0]) }}
-                className="aspect-[16/9] w-full select-none object-cover"
+                className="aspect-[2/1] w-full select-none object-cover"
               />
               <span aria-hidden="true" className="absolute inset-0" style={{ background: PHOTO_TINT }} />
             </span>
@@ -335,7 +336,7 @@ export default function Testimonials() {
                 {lead.title}
               </span>
 
-              <span className="mt-2.5 max-w-[52ch] text-base font-medium leading-relaxed text-gray-500 line-clamp-4">
+              <span className="mt-2.5 max-w-[52ch] text-base font-medium leading-relaxed text-gray-500 line-clamp-3">
                 {lead.desc}
               </span>
 
@@ -375,7 +376,7 @@ export default function Testimonials() {
                   {/* Every excerpt is the same box: two lines, held at two
                       even when the text is shorter, so the three cards end
                       their text on the same line. Body size, as everywhere. */}
-                  <span className="mt-1.5 line-clamp-2 min-h-[3.25em] text-base font-medium leading-relaxed text-gray-500">
+                  <span className="mt-1.5 line-clamp-2 min-h-[3.25em] text-base font-medium leading-relaxed text-gray-500 2xl:line-clamp-2 max-2xl:line-clamp-1 max-2xl:min-h-[1.625em]">
                     {a.desc}
                   </span>
 

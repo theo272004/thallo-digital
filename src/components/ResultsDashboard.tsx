@@ -93,7 +93,7 @@ export default function ResultsDashboard() {
       {/* The 1440 grid, the 64px gap and the lg:pt-10 below are the original
           composition — the copy column is optically aligned to the card, not to
           the top of the grid. */}
-      <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
+      <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-[28%_1fr] gap-16 items-start">
 
           {/* ── Left: copy ─────────────────────────────────────────────── */}

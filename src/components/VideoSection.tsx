@@ -8,7 +8,7 @@ export default function VideoSection() {
 
   return (
     <section className="bg-white py-16 border-b border-gray-100">
-      <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
+      <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6">
         <div className="relative text-white rounded-[32px] overflow-hidden bg-[#171A10]">
           {/* Desk photo — same treatment as the "Notes on getting found" card:
               a flat black scrim over it so white type stays legible. The scrim

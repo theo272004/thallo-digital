@@ -314,7 +314,7 @@ export default function ServicesPage() {
 
       {/* ── Hero (centered) ───────────────────────────────────────────────── */}
       <section className="bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12 border-b border-gray-100">
-        <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6 flex flex-col items-center text-center">
+        <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6 flex flex-col items-center text-center">
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-6 font-sans max-w-2xl">
             Three ways to <span className="italic text-[#39471D]">work with us.</span>
           </h1>
@@ -333,7 +333,7 @@ export default function ServicesPage() {
           bottom keeps its generosity — it is the one separating two dense
           sections. */}
       <section className="bg-white pt-10 pb-16 2xl:pt-14 2xl:pb-28 border-b border-gray-100">
-        <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
+        <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6">
 
           {/* Tab switcher */}
           <div className="flex justify-center mb-10">
@@ -554,7 +554,7 @@ export default function ServicesPage() {
             control over how much picture there is. py-24/32 rather than the
             16/24 it was, paid for out of what Standalone Projects gave back
             when its bottom row went to one-and-a-half cards wide. */}
-        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,76vw)] px-6 py-24 2xl:py-32">
+        <div className="mx-auto max-w-[1440px] xl:max-w-[min(1440px,80vw)] px-6 py-24 2xl:py-32">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start lg:gap-14">
             <h2 className="max-w-[16ch] font-sans text-4xl font-bold leading-[1.05] tracking-tight text-white sm:text-5xl">
               {/* Sage, not the olive the light sections use — #39471D on this
@@ -641,7 +641,7 @@ export default function ServicesPage() {
           rows, and the heading column has more than enough for a heading and
           three lines. */}
       <section className="bg-white pt-12 pb-14 2xl:pt-16 2xl:pb-20 border-b border-gray-100">
-        <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
+        <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,0.55fr)_minmax(0,1.45fr)] lg:gap-12">
             <div>
               <h2 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] font-sans mb-4">
@@ -715,7 +715,7 @@ export default function ServicesPage() {
           so the eye has somewhere to rest while the list changes height.
        ─────────────────────────────────────────────────────────────────────── */}
       <section className="bg-white py-16 2xl:py-24 border-b border-gray-100">
-        <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
+        <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6">
           <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-20">
             <div>
               <h2 className="mb-4 font-sans text-4xl font-bold leading-[1.05] tracking-tight text-gray-900 sm:text-5xl">

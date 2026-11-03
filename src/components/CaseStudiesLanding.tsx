@@ -122,7 +122,7 @@ export default function CaseStudiesLanding() {
     <>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12 border-b border-gray-100">
-        <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6 flex flex-col items-center text-center">
+        <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6 flex flex-col items-center text-center">
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 leading-[1.05] mb-4 font-sans max-w-[16ch]">
             {/* Emphasis by colour, as everywhere else on the site. */}
             Companies that became <span className="text-[#39471D]">the answer.</span>
@@ -144,7 +144,7 @@ export default function CaseStudiesLanding() {
           either is deleting a comment marker, not rewriting the copy.
 
           <section className="bg-[#F7F8F9] pt-12 pb-16 2xl:pt-16 2xl:pb-24 border-b border-gray-100">
-            <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
+            <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6">
               <div className="grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] lg:gap-16">
                 <div>
                   <SplitReveal
@@ -177,7 +177,7 @@ export default function CaseStudiesLanding() {
 
       {/* ── The list, with its filter ────────────────────────────────────── */}
       <section className="bg-white py-16 2xl:py-24 border-b border-gray-100">
-        <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
+        <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6">
           {/* The filter sits above the list it governs — pills rather than a
               select, so every option is visible at a glance and the count of
               sectors stays honest about how much work is published. */}

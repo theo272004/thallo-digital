@@ -125,7 +125,7 @@ export default function ResultsLanding() {
     <>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="bg-white pt-32 pb-10 2xl:pt-40 2xl:pb-12 border-b border-gray-100">
-        <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6 flex flex-col items-center text-center">
+        <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6 flex flex-col items-center text-center">
           {/* This page used to BE /results/; it now sits under it, so it needs a
               way back up to the index that lists it. */}
           <a
@@ -149,7 +149,7 @@ export default function ResultsLanding() {
 
       {/* ── Headline figures, on the photo panel ─────────────────────────── */}
       <section className="bg-[#F7F8F9] pt-12 pb-16 2xl:pt-16 2xl:pb-20 border-b border-gray-100">
-        <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
+        <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6">
           <div
             className="relative overflow-hidden rounded-[28px] px-10 py-12 sm:px-16 sm:py-14"
             style={{
@@ -202,7 +202,7 @@ export default function ResultsLanding() {
 
       {/* ── The six-month trajectory ─────────────────────────────────────── */}
       <section className="bg-white py-16 2xl:py-20 border-b border-gray-100">
-        <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
+        <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6">
           <div className="max-w-2xl mb-10">
             <SplitReveal
               as="h2"
@@ -328,7 +328,7 @@ export default function ResultsLanding() {
 
       {/* ── The compounding effect ───────────────────────────────────────── */}
       <section className="relative overflow-hidden bg-[#F7F8F9] py-16 2xl:py-20 border-b border-gray-100">
-        <div className="max-w-[1440px] xl:max-w-[min(1440px,76vw)] mx-auto px-6">
+        <div className="max-w-[1440px] xl:max-w-[min(1440px,80vw)] mx-auto px-6">
           <div className="max-w-2xl mb-10">
             <SplitReveal
               as="h2"
