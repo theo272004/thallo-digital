@@ -42,7 +42,7 @@ export default function HomeHero() {
           }
         />
 
-        <p className="text-gray-500 font-medium text-base sm:text-lg leading-relaxed max-w-[56ch] mb-10 2xl:mb-12">
+        <p className="text-gray-500 font-medium text-base leading-relaxed max-w-[56ch] mb-10 2xl:mb-12">
           We turn your team&rsquo;s expertise into clear, useful content, taking responsibility for the strategy,
           writing, SEO and distribution from start to&nbsp;finish.
         </p>

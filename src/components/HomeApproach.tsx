@@ -13,8 +13,8 @@ import { gsap, useGSAP, prefersReducedMotion } from '@/lib/gsap';
  * November), so this section is type on the page's own ground.
  *
  * Sizes are the site's, not this section's own: the heading is every h2's
- * text-4xl/5xl and the paragraphs are text-base, rising to text-lg from sm
- * exactly as the About statement's paragraph does. Both columns are
+ * text-4xl/5xl and the paragraphs are text-base, the body size of every other
+ * paragraph on the page (Cami, 2 November: one size for all running text). Both columns are
  * justified, at Cami's request, so they end square instead of ragged. A larger pass
  * (6xl heading, 2xl copy, one long column) made it the biggest and tallest
  * thing on the page, and Cami asked for it unified with the rest. The room it
@@ -121,7 +121,7 @@ export default function HomeApproach() {
 
 function Paragraph({ parts }: { parts: Part[] }) {
   return (
-    <p className="text-base sm:text-lg font-medium leading-relaxed text-justify hyphens-none [text-wrap:pretty]">
+    <p className="text-base font-medium leading-relaxed text-justify hyphens-none [text-wrap:pretty]">
       {parts.map((part) => (
         <span key={part.text} style={{ color: part.color }}>
           {part.text}

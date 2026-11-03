@@ -338,7 +338,7 @@ export default function HowItWorks({
                 </div>
                 <div>
                   <h3 className="text-base font-bold text-gray-900 mb-2 short:mb-1">{step.title}</h3>
-                  <p className="text-[15px] short:text-[13px] text-gray-500 leading-relaxed short:leading-normal">{step.body}</p>
+                  <p className="text-base text-gray-500 leading-relaxed short:leading-normal">{step.body}</p>
                   {/* What the phase hands over. Named deliverables rather than
                       adjectives: a phase you cannot point at the output of is a
                       phase nobody can tell you finished.

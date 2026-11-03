@@ -43,6 +43,12 @@ import { ScrollTrigger } from '@/lib/gsap';
    Change the featured image in WordPress and the card follows. A planned note
    has no post to take one from, so it keeps one of the site's photographs.
 
+   Except a repeat. When a post's cover is one an earlier card already shows,
+   that card takes its slot's house photograph instead (Cami, 2 November: the
+   three newest posts all carried the same banner). Give the posts their own
+   covers in WordPress and the cards follow them again. The house photographs
+   are Thallo's own and appear nowhere else on the home or the blog.
+
    ## Two things deliberately not taken from the reference
 
    The reference gives every card a byline with an author's face and name.
@@ -67,8 +73,29 @@ type Article = {
 const SLOTS = 4;
 
 /* Photographs the site already holds, by slot — the picture for a planned
-   note, which has no featured image of its own. */
-const IMAGES = ['blog-lead.webp', 'buyers-bg.webp', 'case-film-bg.webp', 'measured-bg.webp'];
+   note, or for a post whose cover repeats one already shown. */
+const IMAGES = ['blog-lead.webp', 'engine-bg.webp', 'results-bg.webp', 'scanner-bg.webp'];
+
+/* Where to crop a picture that does not hold its subject in the middle. The
+   blog's wall banner is a wide strip with the isotipo at the left and a plant
+   at the centre; a card shows a slice, and the slice should be the flower
+   (Cami, 2 November: "la planta no dice nada ahí"). */
+const FOCUS: [string, string][] = [
+  ['bannercito-doc', '10% 50%'],
+  ['engine-bg', '22% 62%'],
+  ['results-bg', '40% 50%'],
+];
+const focusOf = (src: string) => FOCUS.find(([k]) => src.includes(k))?.[1];
+
+/** Each slot's picture: the post's own cover unless an earlier card shows it. */
+function pictures(slots: Article[]): string[] {
+  const seen = new Set<string>();
+  return slots.map((a, i) => {
+    const own = a.image && !seen.has(a.image) ? a.image : undefined;
+    if (own) seen.add(own);
+    return own ?? `${BASE}/${IMAGES[i]}`;
+  });
+}
 
 const FALLBACK: Article[] = [
   {
@@ -250,6 +277,7 @@ export default function Testimonials() {
   /* Real posts first, newest leading; planned notes fill what is left. */
   const slots = Array.from({ length: SLOTS }, (_, i) => posts[i] ?? PLANNED[(i - posts.length) % PLANNED.length]);
   const [lead, ...rest] = slots;
+  const pics = pictures(slots);
 
   return (
     /* id="blog" is the target the navbar and footer have always pointed at. */
@@ -287,9 +315,10 @@ export default function Testimonials() {
               <img
                 loading="lazy"
                 decoding="async"
-                src={lead.image ?? `${BASE}/${IMAGES[0]}`}
+                src={pics[0]}
                 alt=""
                 aria-hidden="true"
+                style={{ objectPosition: focusOf(pics[0]) }}
                 className="aspect-[16/9] short:aspect-[3/1] w-full select-none object-cover"
               />
               <span aria-hidden="true" className="absolute inset-0" style={{ background: PHOTO_TINT }} />
@@ -302,7 +331,7 @@ export default function Testimonials() {
                 {lead.title}
               </span>
 
-              <span className="mt-2.5 max-w-[52ch] text-sm font-medium leading-relaxed text-gray-500 line-clamp-4 short:line-clamp-2">
+              <span className="mt-2.5 max-w-[52ch] text-base font-medium leading-relaxed text-gray-500 line-clamp-4 short:line-clamp-2">
                 {lead.desc}
               </span>
 
@@ -352,9 +381,10 @@ export default function Testimonials() {
                   <img
                     loading="lazy"
                     decoding="async"
-                    src={a.image ?? `${BASE}/${IMAGES[i + 1]}`}
+                    src={pics[i + 1]}
                     alt=""
                     aria-hidden="true"
+                    style={{ objectPosition: focusOf(pics[i + 1]) }}
                     className="h-[88px] w-[104px] short:h-[72px] short:w-[88px] select-none object-cover"
                   />
                   <span aria-hidden="true" className="absolute inset-0" style={{ background: PHOTO_TINT }} />

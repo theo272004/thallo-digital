@@ -116,7 +116,7 @@ export default function FaqList({
               style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
             >
               <div className="overflow-hidden">
-                <p className="max-w-[64ch] pb-7 short:pb-4 text-[15.5px] short:text-[14.5px] font-medium leading-relaxed text-gray-500">
+                <p className="max-w-[64ch] pb-7 short:pb-4 text-base font-medium leading-relaxed text-gray-500">
                   {faq.a}
                 </p>
               </div>

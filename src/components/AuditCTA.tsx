@@ -109,10 +109,12 @@ export default function AuditCTA({
                   {heading}
                 </h2>
               )}
-              {/* The FAQ answers' type (FaqList): 15.5px, medium, relaxed. The
-                  panel's body copy, its steps and its footnote all share it —
-                  Cami, 5 October: one size, the one the answers use. */}
-              <p className="text-[#CBD0AC] font-medium text-[15.5px] leading-relaxed max-w-[44ch]">
+              {/* The site's body size (text-base), medium, relaxed, the same as
+                  the FAQ answers. The panel's body copy, its steps and its
+                  footnote all share it: Cami, 5 October, one size, and on 2
+                  November that size unified with every other paragraph
+                  (it was 15.5px). */}
+              <p className="text-[#CBD0AC] font-medium text-base leading-relaxed max-w-[44ch]">
                 {copy}
               </p>
 
@@ -124,7 +126,7 @@ export default function AuditCTA({
                   {steps.map((step, i) => (
                     /* The number fills white under the cursor, the way the
                        other hover states on the site answer (Cami, 5 October). */
-                    <li key={step} className="group flex cursor-default items-center gap-3.5 text-[15.5px] font-medium text-white">
+                    <li key={step} className="group flex cursor-default items-center gap-3.5 text-base font-medium text-white">
                       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/40 text-[12px] font-semibold text-white/90 transition-colors duration-300 group-hover:border-white group-hover:bg-white group-hover:text-[#171A10]">
                         {i + 1}
                       </span>
@@ -155,7 +157,7 @@ export default function AuditCTA({
               )}
 
               {footnote && (
-                <p className="mt-8 short:mt-4 max-w-[44ch] text-[15.5px] font-medium leading-relaxed text-[#CBD0AC]">{footnote}</p>
+                <p className="mt-8 short:mt-4 max-w-[44ch] text-base font-medium leading-relaxed text-[#CBD0AC]">{footnote}</p>
               )}
             </div>
 
