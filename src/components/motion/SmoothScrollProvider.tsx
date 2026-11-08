@@ -29,7 +29,10 @@ export default function SmoothScrollProvider({ children }: { children: ReactNode
 
     const instance = new Lenis({
       autoRaf: false, // we drive raf from gsap.ticker (one shared loop)
-      lerp: 0.09,
+      /* 0.14, up from 0.09: at 0.09 the page trailed the wheel long enough
+         to feel slow (Cami, 3 November). Still smooth, just closer to the
+         hand. */
+      lerp: 0.14,
       smoothWheel: true,
       syncTouch: false,
     });

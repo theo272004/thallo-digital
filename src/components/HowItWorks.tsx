@@ -111,7 +111,11 @@ export default function HowItWorks({
       const top = box.getBoundingClientRect().top;
       const c = lastCircle.getBoundingClientRect();
       const bottom = c.top + c.height / 2 + 16; // the circle's lower edge
-      box.style.height = `${Math.max(bottom - top, 320)}px`;
+      const next = `${Math.round(Math.max(bottom - top, 320))}px`;
+      /* Only when it changed: a ScrollTrigger refresh re-measures every
+         trigger on the page, too costly to run on each resize tick. */
+      if (box.style.height === next) return;
+      box.style.height = next;
       ScrollTrigger.refresh();
     };
     fit();
