@@ -24,6 +24,7 @@ const SOURCES = {
     'src/app/page.tsx',
     'src/components/HomeHero.tsx',
     'src/components/HomeVideo.tsx',
+    'src/components/HomeDiagnostic.tsx',
     'src/components/HomeApproach.tsx',
     'src/components/HowItWorks.tsx',
     'src/components/HomeIndustries.tsx',

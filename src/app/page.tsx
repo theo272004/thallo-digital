@@ -4,6 +4,7 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import HomeHero from '@/components/HomeHero';
 import HomeVideo from '@/components/HomeVideo';
+import HomeDiagnostic from '@/components/HomeDiagnostic';
 import HomeApproach from '@/components/HomeApproach';
 import HowItWorks, { type HowItWorksStep } from '@/components/HowItWorks';
 import HomeIndustries from '@/components/HomeIndustries';
@@ -88,6 +89,9 @@ export default function Home() {
       <main className="flex-grow">
         <HomeHero />
         <HomeVideo />
+        {/* "Where is your marketing getting stuck?" (Cami, 7 November:
+            "debajo del video"). */}
+        <HomeDiagnostic />
         <HomeApproach />
         <HowItWorks
           id="services"

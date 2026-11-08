@@ -32,14 +32,15 @@ type Engagement = {
   dark: boolean;
 };
 
-/* Cami's copy of 2 November, word for word. Focused projects lead now, and
+/* Cami's copy of 2 November, word for word (Focused Projects' paragraph
+   rewritten by her on 7 November). Focused projects lead now, and
    neither panel carries a list: each is its title, one paragraph and its
    button. The ongoing service keeps the photograph. */
 const ENGAGEMENTS: Engagement[] = [
   {
     id: 'focused-projects',
     title: 'Focused Projects',
-    body: 'You have a specific project in mind and need the expertise or capacity to get it done. We agree on scope, deliverables and timeline upfront, then manage the work from planning through delivery.',
+    body: 'Start with a defined need, such as a website rebuild, an SEO audit, a research study or an outreach campaign. We agree on the scope, deliverables and timeline upfront, then manage the project through delivery.',
     link: { label: 'Discuss A Project', href: '#cta' },
     dark: false,
   },
