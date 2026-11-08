@@ -88,9 +88,11 @@ by where the pages sit.
   bar, "position" or "Google rank" is the right-aligned figure, anything
   else is a note that drops out on a phone.
 * **The address.** On the production host WordPress is at /blog/, so the
-  series answers at /blog/ai-shortlist/ until the rule in
-  `deploy/ai-shortlist.htaccess` is pasted into the root .htaccess. The
-  theme notices the rule and moves its links to the root on its own.
+  series answers at /blog/ai-shortlist/ always. The rule in
+  `deploy/ai-shortlist.htaccess` is in the root .htaccess, so it answers at
+  /ai-shortlist/ too — the address the site shows. The theme notices the
+  rule and moves its links to the root on its own, including the nav's own
+  button, which is written by hand in parts/header.html.
 
 == How it is styled ==
 
@@ -113,7 +115,10 @@ at falling opacity rather than picking a new green.
   Google carrying the reader's address — but it means committing six font
   files and keeping them current, and the blog has one post. Worth doing
   before it has twenty.
-* **No custom templates.** Header, footer, archives and single-post layouts
-  are the parent's. They are competent and this theme has no reason to
-  reimplement them; when the blog needs a header that matches the main site's
-  navigation, that is the next thing to add and it belongs in `templates/`.
+* **Five templates, and the parent's for everything else.** `home.html` is the
+  blog's front page, `single.html` an article, `search.html` the results, and
+  `page-ai-shortlist.html` and `shortlist-volume.html` are the research series.
+  Archives, comments and feeds are still Twenty Twenty-Five's, which is the
+  whole reason to be a child theme. The header and footer parts carry the main
+  site's navigation, copied to the pixel — a change to the real navbar has to
+  be made here too, in `parts/header.html`.
