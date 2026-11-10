@@ -24,7 +24,7 @@ import { BASE } from '@/lib/site';
  * not because it is the one we want.
  *
  * There is no third "Manage" button because there is nothing to manage: this
- * site runs one tag and no advertising anything, so the honest choice is
+ * site runs two analytics tags under one answer and no advertising anything, so the honest choice is
  * binary and a preferences panel would be theatre.
  */
 export default function CookieBanner({ onChoice }: { onChoice: (value: Consent) => void }) {
@@ -77,7 +77,8 @@ export default function CookieBanner({ onChoice }: { onChoice: (value: Consent) 
               reads nothing else should still know that declining costs them
               nothing — which is true, and is why it is worth saying. */}
           <p className="mt-2 text-[13px] font-medium leading-relaxed text-gray-500">
-            Google Analytics, and nothing else — no advertising, no profiles, no sharing. Decline and the site works
+            Google Analytics and Microsoft Clarity, which shows us where pages are clicked and scrolled — no
+            advertising, no profiles, no selling. Decline and the site works
             exactly the same. Details in our{' '}
             <a
               href={`${BASE}/privacy/`}

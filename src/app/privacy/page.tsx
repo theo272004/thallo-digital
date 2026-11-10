@@ -3,12 +3,13 @@
  *
  * The claims below were checked against the implementation and must be kept
  * true if it changes:
- *   · Google Analytics 4 and nothing else — no tag manager, no advertising
- *     pixel — with Google Signals and ad personalisation both switched off in
+ *   · Google Analytics 4 and Microsoft Clarity and nothing else — no tag
+ *     manager, no advertising pixel — with Google Signals and ad
+ *     personalisation both switched off, and Clarity's ad storage denied, in
  *     `src/components/Analytics.tsx`. Clause 4 describes that configuration, so
  *     the two files change together;
- *   · the tag is not loaded until the visitor accepts it. Nothing is requested
- *     from googletagmanager.com and no cookie is set before that — the gate is
+ *   · neither tag is loaded until the visitor accepts. Nothing is requested
+ *     from googletagmanager.com or clarity.ms and no cookie is set before that — the gate is
  *     the `consent === 'granted'` test in Analytics.tsx, and `src/lib/consent.ts`
  *     explains why it is a gate rather than Google's Consent Mode. The one
  *     value the site keeps in localStorage is the answer itself;
@@ -107,8 +108,8 @@ export default function PrivacyPage() {
 
           <Clause n={4} heading="Cookies and tracking">
             <P>
-              This website uses Google Analytics 4, and nothing else. It is how we know which pages are read and which
-              are ignored. It sets cookies in your browser (named <code className="font-mono text-[0.9em]">_ga</code>{' '}
+              This website uses two analytics tools, Google Analytics 4 and Microsoft Clarity, and nothing else.
+              Google Analytics is how we know which pages are read and which are ignored. It sets cookies in your browser (named <code className="font-mono text-[0.9em]">_ga</code>{' '}
               and <code className="font-mono text-[0.9em]">_ga_&hellip;</code>) that give your browser an identifier so
               two visits can be recognised as the same one, and it records:
             </P>
@@ -126,8 +127,18 @@ export default function PrivacyPage() {
               and we never will.
             </P>
             <P>
+              Microsoft Clarity shows us how pages are used: where people click, how far they scroll, and recordings of
+              sessions that replay those movements so we can see where a page confuses people. What you type into forms
+              is masked before it leaves your browser. It sets cookies named{' '}
+              <code className="font-mono text-[0.9em]">_clck</code> and{' '}
+              <code className="font-mono text-[0.9em]">_clsk</code> to tie the pages of one visit together, and Microsoft
+              processes the data under its own{' '}
+              <a className="underline" href="https://privacy.microsoft.com/privacystatement" rel="noopener noreferrer" target="_blank">privacy statement</a>.
+              We tell Clarity that advertising use is refused, so the data is not used for Microsoft&rsquo;s advertising.
+            </P>
+            <P>
               None of it happens until you say so. On your first visit the site asks, and until you answer, no request
-              is made to Google and no cookie is set — the tag is not on the page at all. Decline and it never loads.
+              is made to Google or Microsoft and no cookie is set — neither tag is on the page at all. Decline and they never load.
               Nothing on this site stops working without it.
             </P>
             <P>
